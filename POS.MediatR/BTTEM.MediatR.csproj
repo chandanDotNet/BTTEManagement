@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\POS.Common\BTTEM.Common.csproj" />
+    <ProjectReference Include="..\POS.Data\BTTEM.Data.csproj" />
+    <ProjectReference Include="..\POS.Domain\BTTEM.Domain.csproj" />
+    <ProjectReference Include="..\POS.Helper\BTTEM.Helper.csproj" />
+    <ProjectReference Include="..\POS.Repository\BTTEM.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
