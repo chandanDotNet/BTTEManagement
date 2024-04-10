@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using POS.Data;
 using POS.Data.Dto;
 using AutoMapper;
+using BTTEM.Repository;
 
 namespace POS.Repository
 {
@@ -16,9 +17,13 @@ namespace POS.Repository
         //}
 
         private readonly IUserRoleRepository _userRoleRepository;
-        public UserList(IUserRoleRepository userRoleRepository)
+        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IGradeRepository _gradeRepository;
+        public UserList(IUserRoleRepository userRoleRepository, IDepartmentRepository departmentRepository)
         {
             _userRoleRepository = userRoleRepository;
+            _departmentRepository = departmentRepository;
+            //_gradeRepository = gradeRepository;
         }
 
         public int Skip { get; private set; }
@@ -48,11 +53,11 @@ namespace POS.Repository
             return await source.AsNoTracking().CountAsync();
         }
 
-        private async Task<List<RoleDto>> GetUserRole(Guid UserId)
+        private  string GetUserRole(Guid UserId)
         {
-            var rolesDetails = await _userRoleRepository.AllIncluding(c => c.Role).Where(d => d.UserId == UserId)
-                .ToListAsync();
-
+            var rolesDetails =  _userRoleRepository.AllIncluding(c => c.Role).Where(d => d.UserId == UserId)
+                .ToList();
+            string RoleName = null;
             List<RoleDto> roleDto = new List<RoleDto>();
             foreach (var role in rolesDetails)
             {
@@ -61,8 +66,9 @@ namespace POS.Repository
                 rd.Name = role.Role.Name;
                 roleDto.Add(rd);
             }
+            RoleName= roleDto.FirstOrDefault()?.Name;
             // var roleClaims = await _roleClaimRepository.All.Where(c => rolesIds.Contains(c.RoleId)).Select(c => c.ClaimType).ToListAsync();
-            return roleDto;
+            return RoleName;
         }
 
         public async Task<List<UserDto>> GetDtos(IQueryable<User> source, int skip, int pageSize)
@@ -90,8 +96,11 @@ namespace POS.Repository
                     PanNo = c.PanNo,
                     ProfilePhoto = c.ProfilePhoto,
                     //Roles = _userRoleRepository.AllIncluding(r => r.Role).Where(r => r.UserId == c.Id).Select(a=>a.Role.Name).ToList(),
-                    Roles= GetUserRole(c.Id).Result
-
+                   // Roles= GetUserRole(c.Id).Result,
+                    DepartmentName= _departmentRepository.All.Where(b => b.Id == c.Department).FirstOrDefault().DepartmentName,
+                    //GradeName = _gradeRepository.All.Where(d => d.Id == c.Grade).FirstOrDefault().GradeName,
+                   // UserRoleName= _userRoleRepository.AllIncluding(c => c.Role).Where(e => e.UserId == c.Id).FirstOrDefault().Role.Name.ToString(),
+                   // UserRoleName= GetUserRole(c.Id).ToString(),
                 })
                 .ToListAsync();
             return entities;

@@ -13,9 +13,11 @@ namespace BTTEM.Repository
 {
     public class GradeList : List<GradeDto>
     {
+        private readonly IUserRepository _userRepository;
 
-        public GradeList()
+        public GradeList(IUserRepository userRepository)
         {
+            _userRepository = userRepository;
         }
         public int Skip { get; private set; }
         public int TotalPages { get; private set; }
@@ -56,6 +58,8 @@ namespace BTTEM.Repository
                     GradeName = c.GradeName,
                     Description = c.Description,
                     IsActive=c.IsActive,
+                    NoOfUsers= _userRepository.All.Where(b => b.Grade == c.Id).Count(),
+                   
                 }).ToListAsync();
             return entities;
         }

@@ -64,6 +64,16 @@ namespace POS.MediatR.Handlers
                     companyProfile.Phone = request.Phone;
                     companyProfile.Email = request.Email;
                     companyProfile.CurrencyCode = request.CurrencyCode;
+                    companyProfile.CountryName = request.CountryName;
+                    companyProfile.CityName = request.CityName;
+                    companyProfile.CountryId = request.CountryId;
+                    companyProfile.CityId = request.CityId;
+                    companyProfile.ZipCode = request.ZipCode;
+                    companyProfile.Fax = request.Fax;
+                    companyProfile.WebSite = request.WebSite;
+                    companyProfile.FY = request.FY;
+                    companyProfile.TimeZone = request.TimeZone;
+
                     if (!string.IsNullOrWhiteSpace(request.ImageData))
                     {
                         companyProfile.LogoUrl = logoUrl;

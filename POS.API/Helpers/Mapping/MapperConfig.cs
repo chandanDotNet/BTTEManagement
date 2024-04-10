@@ -54,6 +54,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new TravelModeProfile());
                 mc.AddProfile(new ConveyanceProfile());
                 mc.AddProfile(new PoliciesDetailProfile());
+                mc.AddProfile(new PoliciesLodgingFoodingProfile());
             });
             return mappingConfig.CreateMapper();
         }

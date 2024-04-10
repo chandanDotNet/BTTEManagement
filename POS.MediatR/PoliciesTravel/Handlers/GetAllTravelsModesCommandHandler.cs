@@ -44,10 +44,30 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
         {
                      
 
-            var entities = await _travelsModeRepository.AllIncluding(c => c.classOfTravels).ToListAsync();
-            return _mapper.Map<List<TravelModeDto>>(entities);
+            //var entities = await _travelsModeRepository.AllIncluding(c => c.classOfTravels).ToListAsync();
 
-            
+            //entities = (List<Data.TravelMode>)entities.Where(c => c.PoliciesDetailId == request.Id);
+
+            //return _mapper.Map<List<TravelModeDto>>(entities);
+
+
+            List<TravelModeDto> result = new List<TravelModeDto>(new List<TravelModeDto>());
+            if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
+            {
+                result = await _travelsModeRepository.AllIncluding(c => c.classOfTravels).Where(c=>c.IsMaster==true).ProjectTo<TravelModeDto>(_mapper.ConfigurationProvider).ToListAsync();
+            }
+            else
+            {
+                result = await _travelsModeRepository.AllIncluding(c => c.classOfTravels).Where(c => c.PoliciesDetailId == request.Id).OrderBy(c => c.TravelsModesName).ProjectTo<TravelModeDto>(_mapper.ConfigurationProvider).ToListAsync();
+                if(result.Count ==0)
+                {
+                    result = await _travelsModeRepository.AllIncluding(c => c.classOfTravels).Where(c=> c.IsMaster==true).OrderBy(c => c.TravelsModesName).ProjectTo<TravelModeDto>(_mapper.ConfigurationProvider).ToListAsync();
+                }
+
+            }
+
+            return result;
+
         }
 
 

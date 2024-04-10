@@ -24,14 +24,16 @@ namespace BTTEM.Repository
     {
 
         private readonly IPropertyMappingService _propertyMappingService;
-
+        private readonly IUserRepository _userRepository;
         public GradeRepository(
             IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
-             IMapper mapper)
+             IMapper mapper,
+             IUserRepository userRepository)
             : base(uow)
         {
             _propertyMappingService = propertyMappingService;
+            _userRepository = userRepository;
         }
 
 
@@ -53,7 +55,7 @@ namespace BTTEM.Repository
                     .Where(a => EF.Functions.Like(a.GradeName, $"{encodingName}%"));
             }            
 
-            var CityList = new GradeList();
+            var CityList = new GradeList(_userRepository);
             return await CityList.Create(collectionBeforePaging, gradeResource.Skip, gradeResource.PageSize);
         }
     }

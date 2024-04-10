@@ -12,7 +12,10 @@ namespace BTTEM.Data.Dto.PoliciesTravel
         public Guid Id { get; set; }
         public string TravelsModesName { get; set; }
         public string TravelsModesImage { get; set; }
+        public Guid? PoliciesDetailId { get; set; }
+        public bool IsMaster { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsCheck { get; set; }
         public List<ClassOfTravelDto> classOfTravels { get; set; }
     }
 }

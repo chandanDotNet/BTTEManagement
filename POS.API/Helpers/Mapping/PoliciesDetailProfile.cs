@@ -4,6 +4,7 @@ using POS.MediatR.Product.Command;
 using AutoMapper;
 using BTTEM.Data;
 using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.MediatR.PoliciesTravel.Commands;
 
 namespace BTTEM.API.Helpers.Mapping
 {
@@ -15,7 +16,7 @@ namespace BTTEM.API.Helpers.Mapping
             CreateMap<PoliciesDetail, PoliciesDetailDto>().ReverseMap();
             //CreateMap<ProductTax, ProductTaxDto>().ReverseMap();
             CreateMap<AddPoliciesDetailCommand, PoliciesDetail>();
-            //CreateMap<UpdateProductCommand, Product>();
+            CreateMap<UpdatePoliciesDetailCommand, PoliciesDetail>();
         }
     }
 }

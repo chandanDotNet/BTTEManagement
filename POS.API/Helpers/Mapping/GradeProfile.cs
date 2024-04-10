@@ -4,6 +4,7 @@ using POS.Data;
 using POS.MediatR.City.Commands;
 using BTTEM.Data;
 using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.MediatR.Grade.Commands;
 
 namespace BTTEM.API.Helpers.Mapping
 {
@@ -13,7 +14,8 @@ namespace BTTEM.API.Helpers.Mapping
         {
             CreateMap<Grade, GradeDto>().ReverseMap();
             CreateMap<AddGradeCommand, Grade>();
-            //CreateMap<UpdateCityCommand, City>();
+            CreateMap<UpdateGradeCommand, Grade>();
+           // CreateMap<DeleteGradeCommand, Grade>();
         }
 
     }

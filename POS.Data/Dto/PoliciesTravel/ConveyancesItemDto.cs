@@ -12,6 +12,7 @@ namespace BTTEM.Data
         public Guid Id { get; set; }
         public Guid ConveyanceId { get; set; }
         public string ConveyanceItemName { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
+        public bool? IsCheck { get; set; }
     }
 }

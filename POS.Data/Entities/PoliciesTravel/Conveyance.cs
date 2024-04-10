@@ -9,8 +9,10 @@ namespace BTTEM.Data
     public class Conveyance
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public bool IsDeleted { get; set; }
+        public string Name { get; set; }        
+        public bool? IsMaster { get; set; }
+        public Guid? PoliciesDetailId { get; set; }
+        public bool? IsDeleted { get; set; }
         public List<ConveyancesItem> conveyancesItem { get; set; }
     }
 }

@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using POS.Data.Resources;
+using BTTEM.Repository;
 
 namespace POS.Repository
 {
@@ -25,6 +26,8 @@ namespace POS.Repository
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IActionRepository _actionRepository;
         private readonly IPropertyMappingService _propertyMappingService;
+        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IGradeRepository _gradeRepository;
         public UserRepository(
             IUnitOfWork<POSDbContext> uow,
              JwtSettings settings,
@@ -32,7 +35,9 @@ namespace POS.Repository
              IRoleClaimRepository roleClaimRepository,
              IUserRoleRepository userRoleRepository,
              IActionRepository actionRepository,
-             IPropertyMappingService propertyMappingService
+             IPropertyMappingService propertyMappingService,
+             IDepartmentRepository departmentRepository
+             //IGradeRepository gradeRepository
             ) : base(uow)
         {
             _roleClaimRepository = roleClaimRepository;
@@ -41,6 +46,8 @@ namespace POS.Repository
             _settings = settings;
             _actionRepository = actionRepository;
             _propertyMappingService = propertyMappingService;
+            _departmentRepository = departmentRepository;
+            //_gradeRepository = gradeRepository;
         }
 
         public async Task<UserList> GetUsers(UserResource userResource)
@@ -59,7 +66,7 @@ namespace POS.Repository
                     || EF.Functions.Like(c.PhoneNumber, $"%{userResource.Name}%"));
             }
 
-            var loginAudits = new UserList(_userRoleRepository);
+            var loginAudits = new UserList(_userRoleRepository, _departmentRepository);
             return await loginAudits.Create(
                 collectionBeforePaging,
                 userResource.Skip,
