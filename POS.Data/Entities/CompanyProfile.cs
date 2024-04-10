@@ -15,5 +15,6 @@ namespace POS.Data
         public string Phone { get; set; }
         public string Email { get; set; }
         public string CurrencyCode { get; set; }
+        public string GST { get; set; }
     }
 }

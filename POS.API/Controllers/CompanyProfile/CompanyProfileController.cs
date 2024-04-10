@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using POS.API.Helpers;
+using BTTEM.MediatR.CompanyProfile.Commands;
 
 namespace POS.API.Controllers.CompanyProfile
 {
@@ -51,6 +52,19 @@ namespace POS.API.Controllers.CompanyProfile
         public async Task<IActionResult> UpdateCompanyProfile(UpdateCompanyProfileCommand updateCompanyProfileCommand)
         {
             var response = await _mediator.Send(updateCompanyProfileCommand);
+            return ReturnFormattedResponse(response);
+        }
+
+        /// <summary>
+        /// Update GST
+        /// </summary>
+        /// <param name="updateGSTCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddUpdateGST")]
+        [Produces("application/json", "application/xml", Type = typeof(CompanyProfileDto))]
+        public async Task<IActionResult> AddUpdateGST(UpdateGSTCommand updateGSTCommand)
+        {
+            var response = await _mediator.Send(updateGSTCommand);
             return ReturnFormattedResponse(response);
         }
     }
