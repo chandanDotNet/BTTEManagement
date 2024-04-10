@@ -3,6 +3,7 @@ using BTTEM.Data;
 using BTTEM.MediatR.Department.Commands;
 using BTTEM.Data.Dto.PoliciesTravel;
 using AutoMapper;
+using BTTEM.MediatR.CommandAndQuery;
 
 namespace BTTEM.API.Helpers.Mapping
 {
@@ -12,9 +13,9 @@ namespace BTTEM.API.Helpers.Mapping
         public TravelModeProfile()
         {
             CreateMap<TravelMode, TravelModeDto>().ReverseMap();
-            CreateMap<ClassOfTravel, ClassOfTravelDto>();
-            //CreateMap<AddDepartmentCommand, Department>();
-            //CreateMap<UpdateDepartmentCommand, Department>();
+            CreateMap<ClassOfTravel, ClassOfTravelDto>().ReverseMap();
+            CreateMap<AddTravelModeCommand, TravelMode>();
+            CreateMap<UpdateTravelModeCommand, TravelMode>();
         }
     }
 }

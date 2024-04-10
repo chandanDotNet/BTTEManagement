@@ -11,6 +11,7 @@ namespace BTTEM.Data.Dto.PoliciesTravel
         public Guid Id { get; set; }
         public Guid TravelModeId { get; set; }
         public string ClassName { get; set; }
+        public bool IsCheck { get; set; }
         public bool IsDeleted { get; set; }
 
     }

@@ -65,6 +65,9 @@ namespace BTTEM.Repository
                     GradeId= c.GradeId,
                     GradeName=c.Grade.GradeName,
                     Description = c.Description,
+                    DailyAllowance = c.DailyAllowance,
+                    Document= c.Document,
+                    IsActive= c.IsActive,
                    
                 }).ToListAsync();
             return entities;

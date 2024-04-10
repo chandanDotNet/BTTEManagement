@@ -50,6 +50,8 @@ namespace BTTEM.MediatR.Handlers
 
                 var id = Guid.NewGuid();
                 entity.Id = id;
+                entity.IsDeleted = false;
+                entity.IsActive = true;
             }
 
             _departmentRepository.Add(entity);

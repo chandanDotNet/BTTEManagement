@@ -21,12 +21,15 @@ namespace POS.Data.Dto
         public string? PanNo { get; set; }
         public string? AadhaarNo { get; set; }
         public Guid? Department { get; set; }
+        public string? DepartmentName { get; set; }
         public Guid? Grade { get; set; }
+        public string? GradeName { get; set; }
         public string? Designation { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
         public List<UserClaimDto> UserClaims { get; set; } = new List<UserClaimDto>();
         public List<RoleDto> Roles { get; set; } = new List<RoleDto>();
         public List<string> RoleName { get; set; }
+        public string? UserRoleName { get; set; }
 
     }
 }

@@ -278,7 +278,16 @@ namespace POS.Repository
                     { "SOCreatedDate", new PropertyMappingValue(new List<string>() { "SalesOrder.SOCreatedDate" }, true )}
             };
 
-
+       // private Dictionary<string, PropertyMappingValue> _travelModesMapping =
+       //new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+       //{
+       //         { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
+       //         { "TravelsModesName", new PropertyMappingValue(new List<string>() { "TravelsModesName" }, true )},
+       //         { "TravelsModesImage", new PropertyMappingValue(new List<string>() { "TravelsModesImage" } )},
+       //         { "PoliciesDetailId", new PropertyMappingValue(new List<string>() { "PoliciesDetailId" } )},
+       //         { "IsMaster", new PropertyMappingValue(new List<string>() { "IsMaster" } )},
+               
+       //};
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()

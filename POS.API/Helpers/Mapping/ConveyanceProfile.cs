@@ -1,6 +1,7 @@
 ﻿using BTTEM.Data.Dto.PoliciesTravel;
 using BTTEM.Data;
 using AutoMapper;
+using BTTEM.MediatR.PoliciesTravel.Commands;
 
 namespace BTTEM.API.Helpers.Mapping
 {
@@ -10,9 +11,9 @@ namespace BTTEM.API.Helpers.Mapping
         public ConveyanceProfile()
         {
             CreateMap<Conveyance, ConveyanceDto>().ReverseMap();
-            CreateMap<ConveyancesItem, ConveyancesItemDto>();
-            //CreateMap<AddDepartmentCommand, Department>();
-            //CreateMap<UpdateDepartmentCommand, Department>();
+            CreateMap<ConveyancesItem, ConveyancesItemDto>().ReverseMap();
+            CreateMap<AddConveyanceCommand, Conveyance>();
+            CreateMap<UpdateConveyanceCommand, Conveyance>();
         }
     }
 }

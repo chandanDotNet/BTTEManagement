@@ -1,6 +1,5 @@
 ﻿using BTTEM.Data;
 using MediatR;
-using POS.Data.Dto;
 using POS.Helper;
 using System;
 using System.Collections.Generic;
@@ -8,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTTEM.MediatR.CommandAndQuery
+namespace BTTEM.MediatR.PoliciesTravel.Commands
 {
-    public class AddPoliciesDetailCommand : IRequest<ServiceResponse<PoliciesDetailDto>>
+    public class UpdatePoliciesDetailCommand : IRequest<ServiceResponse<bool>>
     {
 
         public Guid Id { get; set; }

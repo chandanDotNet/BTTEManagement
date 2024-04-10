@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using Azure.Core;
 using BTTEM.Data;
 using BTTEM.Data.Resources;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ namespace BTTEM.Repository
         public async Task<PoliciesDetailList> GetPoliciesDetails(PoliciesDetailResource policiesDetailResource)
         {
             var collectionBeforePaging =
-                AllIncluding(c => c.Grade);
+                AllIncluding(c => c.Grade).Where(c=>c.IsDeleted==false);
 
             if (!string.IsNullOrWhiteSpace(policiesDetailResource.Name))
             {
@@ -57,8 +58,11 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => EF.Functions.Like(a.Name, $"{encodingName}%"));
             }
-           
-
+            if (policiesDetailResource.Id.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Id == policiesDetailResource.Id);
+            }
             var products = new PoliciesDetailList(_mapper, _pathHelper);
             return await products.Create(collectionBeforePaging, policiesDetailResource.Skip, policiesDetailResource.PageSize);
         }

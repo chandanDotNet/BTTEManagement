@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POS.Data.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,9 @@ namespace BTTEM.Data.Dto
         public string DepartmentName { get; set; }
         public Guid DepartmentHeadId { get; set; }
         public bool? IsActive { get; set; }
+       // public UserDto User { get; set; }
+        public string? DepartmentHeadName { get; set; }
+        public long? DepartmentHeadCount { get; set; }
+
     }
 }

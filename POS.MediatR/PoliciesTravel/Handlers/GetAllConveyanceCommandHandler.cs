@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BTTEM.Data;
 using BTTEM.Data.Dto.PoliciesTravel;
 using BTTEM.MediatR.PoliciesTravel.Commands;
@@ -43,22 +44,26 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
             //return await _travelsModeRepository.AllIncluding(c => c.classOfTravels).ProjectTo<TravelModeDto>(_mapper.ConfigurationProvider).ToListAsync();
             //var aa= await _travelsModeRepository.AllIncluding(c => c.classOfTravels).ToListAsync();
 
-            var entities = await _conveyanceRepository.AllIncluding(c => c.conveyancesItem).ToListAsync();
-            return _mapper.Map<List<ConveyanceDto>>(entities);
+            //var entities = await _conveyanceRepository.AllIncluding(c => c.conveyancesItem).ToListAsync();
+            //return _mapper.Map<List<ConveyanceDto>>(entities);
 
-            //return aa.ToDynamicListAsync();
-            //List<DepartmentDto> result = new List<DepartmentDto>(new List<DepartmentDto>());
-            //if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
-            //{
-            //    result =
-            //}
-            //else
-            //{
-            //    result = await _departmentRepository.All.Where(c => c.Id == request.Id).OrderBy(c => c.DepartmentName).ProjectTo<DepartmentDto>(_mapper.ConfigurationProvider).ToListAsync();
+            List<ConveyanceDto> result = new List<ConveyanceDto>(new List<ConveyanceDto>());
+            if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
+            {
+                result = await _conveyanceRepository.AllIncluding(c => c.conveyancesItem).Where(c => c.IsMaster == true).ProjectTo<ConveyanceDto>(_mapper.ConfigurationProvider).ToListAsync();
+            }
+            else
+            {
+                result = await _conveyanceRepository.AllIncluding(c => c.conveyancesItem).Where(c => c.PoliciesDetailId == request.Id).OrderBy(c => c.Name).ProjectTo<ConveyanceDto>(_mapper.ConfigurationProvider).ToListAsync();
+                if (result.Count == 0)
+                {
+                    result = await _conveyanceRepository.AllIncluding(c => c.conveyancesItem).Where(c => c.IsMaster == true).OrderBy(c => c.Name).ProjectTo<ConveyanceDto>(_mapper.ConfigurationProvider).ToListAsync();
+                }
 
-            //}
+            }
 
-            // return result;
+
+            return result;
         }
 
     }
