@@ -79,6 +79,8 @@ namespace POS.API.Helpers
             services.AddScoped<IConveyanceRepository, ConveyanceRepository>();
             services.AddScoped<IPoliciesDetailRepository, PoliciesDetailRepository>();
             services.AddScoped<IPoliciesLodgingFoodingRepository, PoliciesLodgingFoodingRepository>();
+            services.AddScoped<IPurposeRepository, PurposeRepository>();
+            services.AddScoped<ITripRepository, TripRepository>();
         }
     }
 }
