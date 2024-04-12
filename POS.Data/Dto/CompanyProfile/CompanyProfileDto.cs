@@ -25,5 +25,6 @@ namespace POS.Data.Dto
         public string? WebSite { get; set; }
         public string? FY { get; set; }
         public string? TimeZone { get; set; }
+        public string GST { get; set; }
     }
 }
