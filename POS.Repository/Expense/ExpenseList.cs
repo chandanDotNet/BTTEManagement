@@ -77,6 +77,9 @@ namespace POS.Repository
                     .Select(cs => new ExpenseDto
                     {
                         Id = cs.Id,
+                        TripId = cs.TripId,
+                        Name = cs.Name,
+                        BillType=cs.BillType,
                         Amount = cs.Amount,
                         Description = cs.Description,
                         ExpenseBy = cs.ExpenseBy !=null? _mapper.Map<UserDto>(cs.ExpenseBy): null,
@@ -86,7 +89,8 @@ namespace POS.Repository
                         Reference = cs.Reference,
                         CreatedDate = cs.CreatedDate,
                         ExpenseDate = cs.ExpenseDate,
-                        ReceiptName = cs.ReceiptName
+                        ReceiptName = cs.ReceiptName,
+                        Status = cs.Status
                     })
                     .ToListAsync();
                 return entities;
@@ -100,6 +104,9 @@ namespace POS.Repository
              .Select(cs => new ExpenseDto
              {
                  Id = cs.Id,
+                 TripId = cs.TripId,
+                 Name = cs.Name,
+                 BillType = cs.BillType,
                  Amount = cs.Amount,
                  Description = cs.Description,
                  ExpenseBy = _mapper.Map<UserDto>(cs.ExpenseBy),
@@ -109,7 +116,8 @@ namespace POS.Repository
                  Reference = cs.Reference,
                  CreatedDate = cs.CreatedDate,
                  ExpenseDate = cs.ExpenseDate,
-                 ReceiptName = cs.ReceiptName
+                 ReceiptName = cs.ReceiptName,
+                 Status = cs.Status
              })
              .ToListAsync();
                 return entities;

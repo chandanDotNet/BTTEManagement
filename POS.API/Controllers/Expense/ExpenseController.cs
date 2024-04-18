@@ -11,12 +11,14 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using POS.API.Helpers;
 using POS.MediatR.Commands;
+using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.MediatR.Commands;
 
 namespace POS.API.Controllers.Expense
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ExpenseController : BaseController
     {
         private IMediator _mediator;
@@ -44,6 +46,58 @@ namespace POS.API.Controllers.Expense
         }
 
         /// <summary>
+        /// Add Master Expenses
+        /// </summary>
+        /// <param name="addExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddExpenseWithDetails")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddMasterExpense([FromBody] AddMasterExpenseCommand addMasterExpenseCommand)
+        {
+            GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
+            string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
+            addMasterExpenseCommand.ExpenseNo = ExpenseNo;
+            var result = await _mediator.Send(addMasterExpenseCommand);
+            if (result.Success)
+            {
+                Guid id = result.Data.Id;
+                foreach(var  item in addMasterExpenseCommand.ExpenseDetails)
+                {
+                    AddExpenseCommand addExpenseCommand=new AddExpenseCommand();                   
+                    addExpenseCommand=item;
+                    addExpenseCommand.MasterExpenseId = id;
+                    addExpenseCommand.TripId = result.Data.TripId;
+                    var result2 = await _mediator.Send(addExpenseCommand);
+                }
+            }
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Master Expenses
+        /// </summary>
+        /// <param name="updateMasterExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateExpenseWithDetails")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateMasterExpense([FromBody] UpdateMasterExpenseCommand updateMasterExpenseCommand)
+        {
+            var result = await _mediator.Send(updateMasterExpenseCommand);
+            if (result.Success)
+            {
+               // Guid id = result.Data.Id;
+                foreach (var item in updateMasterExpenseCommand.ExpenseDetails)
+                {
+                    UpdateExpenseCommand updateExpenseCommand = new UpdateExpenseCommand();
+                    updateExpenseCommand = item;                    
+                    var result2 = await _mediator.Send(updateExpenseCommand);
+                }
+            }
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
         /// Update Expense.
         /// </summary>
         /// <param name="id"></param>
@@ -55,6 +109,36 @@ namespace POS.API.Controllers.Expense
         {
             updateExpenseCommand.Id = id;
             var result = await _mediator.Send(updateExpenseCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Expense Status.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateExpenseStatusCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateExpenseStatus/{id}")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> UpdateExpenseStatus(Guid id, [FromBody] UpdateExpenseStatusCommand updateExpenseStatusCommand)
+        {
+            updateExpenseStatusCommand.Id = id;
+            var result = await _mediator.Send(updateExpenseStatusCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Master Expense Status.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateMasterExpenseStatusCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateMasterExpenseStatus/{id}")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> UpdateMasterExpenseStatus(Guid id, [FromBody] UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand)
+        {
+            updateMasterExpenseStatusCommand.Id = id;
+            var result = await _mediator.Send(updateMasterExpenseStatusCommand);
             return ReturnFormattedResponse(result);
         }
 
@@ -82,6 +166,37 @@ namespace POS.API.Controllers.Expense
                 skip = result.Skip,
                 totalPages = result.TotalPages,
                 totalAmount=result.TotalAmount
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Get All Master Expenses 
+        /// </summary>
+        /// <param name="masterExpenseResource"></param>
+        /// <returns></returns>
+        [HttpGet("GetAllExpensesDetailsList")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetAllExpensesDetailsList([FromQuery] ExpenseResource masterExpenseResource)
+        {
+
+            var getAllMasterExpenseQuery = new GetAllMasterExpenseQuery
+            {
+                ExpenseResource = masterExpenseResource
+            };
+
+            var result = await _mediator.Send(getAllMasterExpenseQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages,
+                totalAmount = result.TotalAmount
             };
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
@@ -138,10 +253,24 @@ namespace POS.API.Controllers.Expense
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        [ClaimCheck("EXP_DELETE_EXPENSE")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
         public async Task<IActionResult> DeleteExpense(Guid id)
         {
             var command = new DeleteExpenseCommand() { Id = id };
+            var result = await _mediator.Send(command);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Deletes the Master Expense.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteMasterExpense/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteMasterExpense(Guid id)
+        {
+            var command = new DeleteMasterExpenseCommand() { Id = id };
             var result = await _mediator.Send(command);
             return ReturnFormattedResponse(result);
         }

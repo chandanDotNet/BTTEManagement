@@ -51,6 +51,7 @@ namespace POS.API.Helpers
             services.AddScoped<ICompanyProfileRepository, CompanyProfileRepository>();
             services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IMasterExpenseRepository, MasterExpenseRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductTaxRepository, ProductTaxRepository>();
             services.AddScoped<ITaxRepository, TaxRepository>();
@@ -81,6 +82,9 @@ namespace POS.API.Helpers
             services.AddScoped<IPoliciesLodgingFoodingRepository, PoliciesLodgingFoodingRepository>();
             services.AddScoped<IPurposeRepository, PurposeRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
+            services.AddScoped<ITripItineraryRepository, TripItineraryRepository>();
+            services.AddScoped<ITripHotelBookingRepository, TripHotelBookingRepository>();
+            services.AddScoped<IMasterExpenseRepository, MasterExpenseRepository>();
         }
     }
 }

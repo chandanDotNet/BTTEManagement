@@ -81,6 +81,9 @@ namespace POS.Domain
         public DbSet<PoliciesLodgingFooding> PoliciesLodgingFoodings { get; set; }
         public DbSet<Purpose> Purposes { get; set; }
         public DbSet<Trip> Trips { get; set; }
+        public DbSet<TripItinerary> TripItinerarys { get; set; }
+        public DbSet<TripHotelBooking> TripHotelBookings { get; set; }
+        public DbSet<MasterExpense> MasterExpenses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -291,10 +294,20 @@ namespace POS.Domain
 
             builder.Entity<Expense>(b =>
             {
+               // b.HasKey(e => e.Id);    
                 b.HasOne(e => e.ExpenseBy)
                     .WithMany()
                     .HasForeignKey(rc => rc.ExpenseById)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<MasterExpense>(b =>
+            {
 
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()
@@ -487,6 +500,9 @@ namespace POS.Domain
             builder.Entity<PoliciesLodgingFooding>().ToTable("PoliciesLodgingFoodings");
             builder.Entity<Purpose>().ToTable("Purposes");
             builder.Entity<Trip>().ToTable("Trips");
+            builder.Entity<TripItinerary>().ToTable("TripItinerarys");
+            builder.Entity<TripHotelBooking>().ToTable("TripHotelBookings");
+            builder.Entity<MasterExpense>().ToTable("MasterExpenses");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }

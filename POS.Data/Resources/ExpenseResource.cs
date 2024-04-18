@@ -8,12 +8,16 @@ namespace POS.Data.Resources
         public ExpenseResource() : base("CreatedDate")
         {
         }
+        public Guid? MasterExpenseId { get; set; }
         public string Reference { get; set; }
         public Guid? ExpenseCategoryId { get; set; }
         public string Description { get; set; }
         public Guid? ExpenseById { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        public Guid? TripId { get; set; }
+        public string? Status { get; set; }
+        public string? ApprovalStage { get; set; }
  
     }
 }

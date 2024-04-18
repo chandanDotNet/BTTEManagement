@@ -57,7 +57,7 @@ namespace POS.MediatR.Handlers
                     Directory.CreateDirectory(pathToSave);
                 }
 
-                var extension = Path.GetExtension(request.ReceiptName); ;
+                var extension = Path.GetExtension(request.ReceiptName); 
                 var id = Guid.NewGuid();
                 var path = $"{id}.{extension}";
                 var documentPath = Path.Combine(pathToSave, path);

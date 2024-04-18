@@ -10,7 +10,8 @@ namespace BTTEM.Data
     public class Trip : BaseEntity
     {
 
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
+        //public string TripNumber { get; set; }
         public string TripNo { get; set; }    
         public string TripType { get; set; } 
         public string Name { get; set; }
@@ -19,6 +20,7 @@ namespace BTTEM.Data
         public Guid PurposeId { get; set; }
         public string Description { get; set; }
         public Purpose Purpose { get; set; }
+       // public User User { get; set; }
 
 
     }
