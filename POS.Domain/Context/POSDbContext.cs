@@ -79,6 +79,9 @@ namespace POS.Domain
         public DbSet<ConveyancesItem> ConveyancesItems { get; set; }
         public DbSet<PoliciesDetail> PoliciesDetails { get; set; }
         public DbSet<PoliciesLodgingFooding> PoliciesLodgingFoodings { get; set; }
+        public DbSet<Purpose> Purposes { get; set; }
+        public DbSet<Trip> Trips { get; set; }
+
         public DbSet<MultiLevelApproval> MultiLevelApprovals { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -492,6 +495,8 @@ namespace POS.Domain
             builder.Entity<ConveyancesItem>().ToTable("ConveyancesItems");
             builder.Entity<PoliciesDetail>().ToTable("PoliciesDetails");
             builder.Entity<PoliciesLodgingFooding>().ToTable("PoliciesLodgingFoodings");
+            builder.Entity<Purpose>().ToTable("Purposes");
+            builder.Entity<Trip>().ToTable("Trips");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }
