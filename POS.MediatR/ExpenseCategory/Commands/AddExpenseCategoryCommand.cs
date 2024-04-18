@@ -12,5 +12,7 @@ namespace POS.MediatR.CommandAndQuery
     public class AddExpenseCategoryCommand : IRequest<ServiceResponse<ExpenseCategoryDto>>
     {
         public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -53,10 +53,11 @@ namespace POS.MediatR.Handlers
                 return ServiceResponse<bool>.Return409("Expense Category does not Exists.");
             }
             existingEntity.Name = request.Name;
+            existingEntity.Description = request.Description;
+            existingEntity.IsActive = request.IsActive;
             _expenseCategoryRepository.Update(existingEntity);
             if (await _uow.SaveAsync() <= 0)
             {
-
                 _logger.LogError("Error while saving Expense Category");
                 return ServiceResponse<bool>.Return500();
             }

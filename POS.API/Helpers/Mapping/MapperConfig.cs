@@ -55,6 +55,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new ConveyanceProfile());
                 mc.AddProfile(new PoliciesDetailProfile());
                 mc.AddProfile(new PoliciesLodgingFoodingProfile());
+                mc.AddProfile(new MultiLevelApprovalProfile());
             });
             return mappingConfig.CreateMapper();
         }

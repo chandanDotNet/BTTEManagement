@@ -79,7 +79,7 @@ namespace POS.Domain
         public DbSet<ConveyancesItem> ConveyancesItems { get; set; }
         public DbSet<PoliciesDetail> PoliciesDetails { get; set; }
         public DbSet<PoliciesLodgingFooding> PoliciesLodgingFoodings { get; set; }
-
+        public DbSet<MultiLevelApproval> MultiLevelApprovals { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -466,6 +466,15 @@ namespace POS.Domain
                     .HasForeignKey(uc => uc.PageId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
+            });
+
+
+            builder.Entity<MultiLevelApproval>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             builder.Entity<User>().ToTable("Users");
