@@ -57,6 +57,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new PoliciesLodgingFoodingProfile());
                 mc.AddProfile(new PurposeProfile());
                 mc.AddProfile(new TripProfile());
+                mc.AddProfile(new MultiLevelApprovalProfile());
                 mc.AddProfile(new TripItineraryProfile());
                 mc.AddProfile(new TripHotelBookingProfile());
             });
