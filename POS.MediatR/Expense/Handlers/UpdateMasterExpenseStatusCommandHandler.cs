@@ -53,7 +53,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 _logger.LogError("Error while saving Expense.");
                 return ServiceResponse<bool>.Return500();
             }
-            return ServiceResponse<bool>.ReturnResultWith204();
+            return ServiceResponse<bool>.ReturnResultWith200(true);
         }
     }
 }
