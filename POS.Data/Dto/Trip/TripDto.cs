@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POS.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace BTTEM.Data
     {
 
         public Guid Id { get; set; }
+       // public string TripNumber { get; set; }
         public string TripNo { get; set; }
         public string TripType { get; set; }
         public string Name { get; set; }
@@ -18,5 +20,7 @@ namespace BTTEM.Data
         public Guid PurposeId { get; set; }
         public string Description { get; set; }
         public PurposeDto Purpose { get; set; }
+        public User CreatedByUser { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

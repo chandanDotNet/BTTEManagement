@@ -75,6 +75,10 @@ namespace POS.Domain
               .Property(b => b.ModifiedDate)
               .HasDefaultValueSql("GETUTCDATE()");
 
+            modelBuilder.Entity<MasterExpense>()
+              .Property(b => b.ModifiedDate)
+              .HasDefaultValueSql("GETUTCDATE()");
+
             modelBuilder.Entity<MultiLevelApproval>()
              .Property(b => b.ModifiedDate)
              .HasDefaultValueSql("GETUTCDATE()");
@@ -179,6 +183,9 @@ namespace POS.Domain
 
             modelBuilder.Entity<Department>()
              .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<MasterExpense>()
+            .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<MultiLevelApproval>()
             .HasQueryFilter(p => !p.IsDeleted);

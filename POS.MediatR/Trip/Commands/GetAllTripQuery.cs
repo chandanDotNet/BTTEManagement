@@ -11,5 +11,6 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class GetAllTripQuery : IRequest<List<TripDto>>
     {
         public Guid? Id { get; set; }
+        public Guid? CreatedBy { get; set; }
     }
 }

@@ -30,12 +30,20 @@ namespace BTTEM.MediatR.Trip.Handlers
             List<TripDto> result = new List<TripDto>(new List<TripDto>());
             if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
             {
-                 result = await _tripRepository.AllIncluding(c => c.Purpose).ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
+
+                if(!request.CreatedBy.HasValue || request.CreatedBy.Value == Guid.Empty)
+                {
+                    result = await _tripRepository.AllIncluding(c => c.Purpose, v => v.CreatedByUser).Where(t => t.IsDeleted == false).ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
+                }
+                else
+                {
+                    result = await _tripRepository.AllIncluding(c => c.Purpose, v => v.CreatedByUser).Where(t => t.IsDeleted == false && t.CreatedBy== request.CreatedBy).ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
+                }              
 
             }
             else
             {
-                result = await _tripRepository.AllIncluding(c => c.Purpose).Where(t=>t.Id== request.Id).ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
+                result = await _tripRepository.AllIncluding(c => c.Purpose, v => v.CreatedByUser).Where(t=>t.Id== request.Id && t.IsDeleted==false).ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
             }
                
             return _mapper.Map<List<TripDto>>(result);

@@ -30,7 +30,7 @@ namespace POS.API.Controllers.City
         /// <param name="cityName">Name of the city.</param>
         /// <returns></returns>
         [HttpGet("country")]
-        [ClaimCheck("SETT_MANAGE_CITY")]
+       // [ClaimCheck("SETT_MANAGE_CITY")]
         public async Task<IActionResult> GetCitiesByName(string countryName, string cityName)
         {
             var query = new GetCitiesByContryNameQuery
@@ -50,7 +50,7 @@ namespace POS.API.Controllers.City
         /// <returns></returns>
 
         [HttpGet(Name = "GetCities")]
-        [ClaimCheck("SETT_MANAGE_CITY")]
+       // [ClaimCheck("SETT_MANAGE_CITY")]
         public async Task<IActionResult> GetCities([FromQuery] CityResource cityResource)
         {
             var getAllCityQuery = new GetAllCityQuery

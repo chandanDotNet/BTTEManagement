@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using BTTEM.Repository;
 
 namespace POS.MediatR.Handlers
 {
@@ -15,13 +16,15 @@ namespace POS.MediatR.Handlers
         : IRequestHandler<DeleteExpenseCommand, ServiceResponse<bool>>
     {
         private readonly IExpenseRepository _expenseRepository;
+        private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly ILogger<DeleteExpenseCommandHanlder> _logger;
         private readonly IUnitOfWork<POSDbContext> _uow;
-        public DeleteExpenseCommandHanlder(IExpenseRepository expenseRepository,
+        public DeleteExpenseCommandHanlder(IExpenseRepository expenseRepository, IMasterExpenseRepository masterExpenseRepository,
             ILogger<DeleteExpenseCommandHanlder> logger,
             IUnitOfWork<POSDbContext> uow)
         {
             _expenseRepository = expenseRepository;
+            _masterExpenseRepository = masterExpenseRepository;
             _logger = logger;
             _uow = uow;
         }
@@ -42,6 +45,20 @@ namespace POS.MediatR.Handlers
                 _logger.LogError("Error while saving Expense.");
                 return ServiceResponse<bool>.Return500();
             }
+
+            var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
+            if(entityMasterExist != null)
+            {
+                entityMasterExist.TotalAmount = (entityMasterExist.TotalAmount - entityExist.Amount);
+                _masterExpenseRepository.Update(entityMasterExist);
+                if (await _uow.SaveAsync() <= 0)
+                {
+                    _logger.LogError("Error while saving Master Expense.");
+                    return ServiceResponse<bool>.Return500();
+                }
+
+            }
+
             return ServiceResponse<bool>.ReturnResultWith204();
         }
     }

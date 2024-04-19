@@ -5,6 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS.Data.Dto {
   public class ExpenseDto {
     public Guid Id { get; set; }
+    public Guid? MasterExpenseId { get; set; }
+    public Guid? TripId { get; set; }
+    public string Name { get; set; }
+    public string BillType { get; set; }
     public string Reference { get; set; }
     public Guid ExpenseCategoryId { get; set; }
     public ExpenseCategoryDto ExpenseCategory { get; set; }
@@ -15,5 +19,6 @@ namespace POS.Data.Dto {
     public DateTime ExpenseDate { get; set; }
     public DateTime CreatedDate { get; set; }
     public string ReceiptName { get; set; }
-  }
+    public string Status { get; set; }
+    }
 }

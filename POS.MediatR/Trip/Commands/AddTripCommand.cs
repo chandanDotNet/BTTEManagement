@@ -11,7 +11,7 @@ namespace BTTEM.MediatR.CommandAndQuery
 {
     public class AddTripCommand : IRequest<ServiceResponse<TripDto>>
     {
-
+       // public string TripNumber { get; set; }
         public string TripNo { get; set; }
         public string TripType { get; set; }
         public string Name { get; set; }

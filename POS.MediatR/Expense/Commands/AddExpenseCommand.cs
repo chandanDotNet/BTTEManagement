@@ -12,6 +12,10 @@ namespace POS.MediatR.CommandAndQuery
     public class AddExpenseCommand : IRequest<ServiceResponse<ExpenseDto>>
     {
         public Guid? Id { get; set; }
+        public Guid? MasterExpenseId { get; set; }
+        public Guid? TripId { get; set; }
+        public string Name { get; set; }
+        public string BillType { get; set; }
         public string Reference { get; set; }
         public Guid ExpenseCategoryId { get; set; }
         public decimal Amount { get; set; }
@@ -20,5 +24,6 @@ namespace POS.MediatR.CommandAndQuery
         public DateTime ExpenseDate { get; set; }
         public string ReceiptName { get; set; }
         public string DocumentData { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -1,0 +1,29 @@
+﻿using BTTEM.Data;
+using MediatR;
+using POS.Data.Dto;
+using POS.Helper;
+using POS.MediatR.CommandAndQuery;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BTTEM.MediatR.CommandAndQuery
+{
+    public class AddMasterExpenseCommand : IRequest<ServiceResponse<MasterExpenseDto>>
+    {
+
+        public Guid? Id { get; set; }
+        public string ExpenseNo { get; set; }
+        public Guid? TripId { get; set; }
+        public string Name { get; set; }
+        public string ExpenseType { get; set; }
+        public string Status { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal ReimbursementAmount { get; set; }
+        public string ApprovalStage { get; set; }
+        public int NoOfBill { get; set; }
+        public List<AddExpenseCommand> ExpenseDetails { get; set; }
+    }
+}

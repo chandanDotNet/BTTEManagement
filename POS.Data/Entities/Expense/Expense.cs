@@ -1,11 +1,21 @@
-﻿using System;
+﻿using BTTEM.Data;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS.Data
 {
     public class Expense : BaseEntity
     {
+        
         public Guid Id { get; set; }
+        
+        public Guid MasterExpenseId { get; set; }
+        //[ForeignKey("MasterExpenseId")]
+        //public MasterExpense MasterExpense { get; set; }
+        public Guid? TripId { get; set; }
+        public string Name { get; set; }
+        public string BillType { get; set; }
         public string Reference { get; set; }
         public Guid ExpenseCategoryId { get; set; }
         [ForeignKey("ExpenseCategoryId")]
@@ -19,5 +29,6 @@ namespace POS.Data
         public string ReceiptPath { get; set; }
         [ForeignKey("ExpenseById")]
         public User ExpenseBy { get; set; }
+        public string Status { get; set; }
     }
 }
