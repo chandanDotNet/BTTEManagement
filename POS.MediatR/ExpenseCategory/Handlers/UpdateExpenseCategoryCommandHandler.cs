@@ -17,17 +17,17 @@ using System.Threading.Tasks;
 
 namespace POS.MediatR.Handlers
 {
-    public class UpdateExpenseCategoryCommandHanlder
+    public class UpdateExpenseCategoryCommandHandler
         : IRequestHandler<UpdateExpenseCategoryCommand, ServiceResponse<bool>>
     {
         private readonly IExpenseCategoryRepository _expenseCategoryRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
-        private readonly ILogger<UpdateExpenseCategoryCommandHanlder> _logger;
+        private readonly ILogger<UpdateExpenseCategoryCommandHandler> _logger;
         private readonly IMapper _mapper;
-        public UpdateExpenseCategoryCommandHanlder(
+        public UpdateExpenseCategoryCommandHandler(
            IExpenseCategoryRepository expenseCategoryRepository,
             IUnitOfWork<POSDbContext> uow,
-            ILogger<UpdateExpenseCategoryCommandHanlder> logger,
+            ILogger<UpdateExpenseCategoryCommandHandler> logger,
             IMapper mapper
             )
         {

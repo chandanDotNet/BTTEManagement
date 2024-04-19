@@ -78,6 +78,10 @@ namespace POS.Domain
             modelBuilder.Entity<MultiLevelApproval>()
              .Property(b => b.ModifiedDate)
              .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<VehicleManagement>()
+            .Property(b => b.ModifiedDate)
+            .HasDefaultValueSql("GETUTCDATE()");
         }
 
         public static void DefalutDeleteValueFilter(this ModelBuilder modelBuilder)
@@ -178,6 +182,9 @@ namespace POS.Domain
 
             modelBuilder.Entity<MultiLevelApproval>()
             .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<VehicleManagement>()
+           .HasQueryFilter(p => !p.IsDeleted);
         }
     }
 }

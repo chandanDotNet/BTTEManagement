@@ -1,4 +1,5 @@
-﻿using BTTEM.MediatR.CommandAndQuery;
+﻿using BTTEM.MediatR.Command;
+using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,6 @@ using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Domain;
 using POS.Helper;
-using POS.MediatR.CommandAndQuery;
-using POS.MediatR.Handlers;
-using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,29 +16,29 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Handler
 {
-    public class DeleteMultiLevelApprovalCommandHandler : IRequestHandler<DeleteMultiLevelApprovalCommand, ServiceResponse<bool>>
+    public class DeleteVehicleManagementCommandHandler : IRequestHandler<DeleteVehicleManagementCommand, ServiceResponse<bool>>
     {
-        private readonly IMultiLevelApprovalRepository _multiLevelApprovalRepository;
+        private readonly IVehicleManagementRepository _vehicleManagementRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
-        private readonly ILogger<DeleteMultiLevelApprovalCommandHandler> _logger;
-        public DeleteMultiLevelApprovalCommandHandler(
-            IMultiLevelApprovalRepository multiLevelApprovalRepository,
+        private readonly ILogger<DeleteVehicleManagementCommandHandler> _logger;
+        public DeleteVehicleManagementCommandHandler(
+            IVehicleManagementRepository vehicleManagementRepository,
             IUnitOfWork<POSDbContext> uow,
-            ILogger<DeleteMultiLevelApprovalCommandHandler> logger
+            ILogger<DeleteVehicleManagementCommandHandler> logger
             )
         {
-            _multiLevelApprovalRepository = multiLevelApprovalRepository;
+            _vehicleManagementRepository = vehicleManagementRepository;
             _uow = uow;
             _logger = logger;
         }
 
-        public async Task<ServiceResponse<bool>> Handle(DeleteMultiLevelApprovalCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<bool>> Handle(DeleteVehicleManagementCommand request, CancellationToken cancellationToken)
         {
-            var existingEntity = await _multiLevelApprovalRepository.FindBy(c => c.Id == request.Id).FirstOrDefaultAsync();
+            var existingEntity = await _vehicleManagementRepository.FindBy(c => c.Id == request.Id).FirstOrDefaultAsync();
             if (existingEntity == null)
             {
-                _logger.LogError("Multi Level Approval does not Exist");
-                return ServiceResponse<bool>.Return409("Multi Level Approval does not  Exist.");
+                _logger.LogError("Vehicle Management does not Exist");
+                return ServiceResponse<bool>.Return409("Vehicle Management does not  Exist.");
             }
             //var exitingExpense = _multiLevelApprovalRepository.AllIncluding(c => c.ExpenseCategory).Any(c => c.ExpenseCategory.Id == existingEntity.Id);
             //if (exitingExpense)
@@ -49,10 +47,10 @@ namespace BTTEM.MediatR.Handler
             //    return ServiceResponse<bool>.Return409("Expense Category can not be Deleted because it is use in Expense.");
             //}
 
-            _multiLevelApprovalRepository.Delete(existingEntity);
+            _vehicleManagementRepository.Delete(existingEntity);
             if (await _uow.SaveAsync() <= 0)
             {
-                _logger.LogError("Error while saving Multi Level Approval.");
+                _logger.LogError("Error while saving Expense Category.");
                 return ServiceResponse<bool>.Return500();
             }
             return ServiceResponse<bool>.ReturnResultWith200(true);

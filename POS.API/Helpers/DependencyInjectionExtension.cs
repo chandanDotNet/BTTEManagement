@@ -82,6 +82,7 @@ namespace POS.API.Helpers
             services.AddScoped<IPurposeRepository, PurposeRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
             services.AddScoped<IMultiLevelApprovalRepository, MultiLevelApprovalRepository>();
+            services.AddScoped<IVehicleManagementRepository, VehicleManagementRepository>();
         }
     }
 }

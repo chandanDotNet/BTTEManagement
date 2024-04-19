@@ -46,7 +46,6 @@ namespace BTTEM.MediatR.Handler
             _multiLevelApprovalRepository.Add(entity);
             if (await _uow.SaveAsync() <= 0)
             {
-
                 _logger.LogError("Error While saving Multi Level Approval.");
                 return ServiceResponse<MultiLevelApprovalDto>.Return500();
             }

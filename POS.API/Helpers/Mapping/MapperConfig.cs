@@ -58,6 +58,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new PurposeProfile());
                 mc.AddProfile(new TripProfile());
                 mc.AddProfile(new MultiLevelApprovalProfile());
+                mc.AddProfile(new VehicleManagementProfile());
             });
             return mappingConfig.CreateMapper();
         }
