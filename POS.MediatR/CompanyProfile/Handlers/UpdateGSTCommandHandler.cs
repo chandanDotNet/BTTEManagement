@@ -46,6 +46,7 @@ namespace BTTEM.MediatR.CompanyProfile.Handlers
             if (companyProfile != null)
             {
                  companyProfile.GST = request.GST;
+                companyProfile.Registration = request.Registration;
                 _companyProfileRepository.Update(companyProfile);
             }
             if (await _uow.SaveAsync() <= 0)
