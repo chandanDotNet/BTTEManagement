@@ -325,5 +325,18 @@ namespace POS.API.Controllers.Expense
             }
             return contentType;
         }
+
+        /// <summary>
+        /// Add  Travel Document
+        /// </summary>
+        /// <param name="addExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddTravelDocument")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddTravelDocument([FromBody] AddTravelDocumentCommand addTravelDocumentCommand)
+        {
+            var result = await _mediator.Send(addTravelDocumentCommand);
+            return ReturnFormattedResponse(result);
+        }
     }
 }

@@ -19,5 +19,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public DateTime TripEnds { get; set; }
         public Guid PurposeId { get; set; }
         public string Description { get; set; }
+        public string Status { get; set; }
+        public string Approval { get; set; }
     }
 }
