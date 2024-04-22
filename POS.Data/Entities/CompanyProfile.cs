@@ -26,5 +26,6 @@ namespace POS.Data
         public string? FY { get; set; }
         public string? TimeZone { get; set; }
         public string GST { get; set; }
+        public bool Registration { get; set; }
     }
 }

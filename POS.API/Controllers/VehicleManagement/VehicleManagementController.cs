@@ -97,5 +97,38 @@ namespace BTTEM.API.Controllers.VehicleManagement
             var result = await _mediator.Send(deleteVehicleManagementCommand);
             return ReturnFormattedResponse(result);
         }
+
+
+        /// <summary>
+        /// Create Vehicle Management Rate.
+        /// </summary>
+        /// <param name="addVehicleManagementRateCommand"></param>
+        /// <returns></returns>
+        [HttpPost("VehicleManagementRate")]
+        [Produces("application/json", "application/xml", Type = typeof(VehicleManagementRateDto))]
+        public async Task<IActionResult> AddVehicleManagementRates(AddVehicleManagementRateCommand addVehicleManagementRateCommand)
+        {
+            var response = await _mediator.Send(addVehicleManagementRateCommand);
+            if (!response.Success)
+            {
+                return ReturnFormattedResponse(response);
+            }
+            return CreatedAtAction("VehicleManagementRates", new { vendorManagementId = response.Data.VehicleManagementId }, response.Data);
+        }
+
+        /// <summary>
+        /// Get Vehicle Management Rates.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("VehicleManagementRates/{vendorManagementId}")]
+        [Produces("application/json", "application/xml", Type = typeof(List<VehicleManagementRateDto>))]
+        public async Task<IActionResult> VehicleManagementRates(Guid vendorManagementId)
+        {
+            var getAllVehicleManagementRateQuery = new GetAllVehicleManagementRateQuery {
+            VendorManagementId = vendorManagementId
+            };
+            var result = await _mediator.Send(getAllVehicleManagementRateQuery);
+            return Ok(result);
+        }
     }
 }

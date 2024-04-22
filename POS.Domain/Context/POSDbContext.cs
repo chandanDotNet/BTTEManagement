@@ -87,6 +87,8 @@ namespace POS.Domain
 
         public DbSet<MultiLevelApproval> MultiLevelApprovals { get; set; }
         public DbSet<VehicleManagement> VehicleManagements { get; set; }
+
+        public DbSet<VehicleManagementRate> VehicleManagementRates { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -495,6 +497,14 @@ namespace POS.Domain
             });
 
             builder.Entity<VehicleManagement>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<VehicleManagementRate>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()

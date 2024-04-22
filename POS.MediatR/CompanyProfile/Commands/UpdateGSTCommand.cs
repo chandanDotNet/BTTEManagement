@@ -12,5 +12,6 @@ namespace BTTEM.MediatR.CompanyProfile.Commands
     public class UpdateGSTCommand : IRequest<ServiceResponse<CompanyProfileDto>>
     {
         public string GST { get; set; }
+        public bool Registration { get; set; }
     }
 }
