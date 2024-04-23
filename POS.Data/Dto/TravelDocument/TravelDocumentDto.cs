@@ -10,7 +10,9 @@ namespace BTTEM.Data
     {
 
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string FileName { get; set; }
+        public string ReceiptPath { get; set; }
         public string DocType { get; set; }
         public string DocNumber { get; set; }
         public DateTime IssuedOn { get; set; }

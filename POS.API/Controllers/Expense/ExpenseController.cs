@@ -338,5 +338,61 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(addTravelDocumentCommand);
             return ReturnFormattedResponse(result);
         }
+
+        /// <summary>
+        /// Gets Travel Document
+        /// </summary>
+        /// <param name="userid">The identifier.</param>
+        /// <returns></returns>
+        [HttpGet("GetTravelDocument/{userid}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetTravelDocument(Guid? userid)
+        {
+            var query = new GetTravelDocumentQuery {UserId= userid };
+            var result = await _mediator.Send(query);
+            //return ReturnFormattedResponse(result);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Download Travel Document
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/downloadTravelDocument")]
+        public async Task<IActionResult> DownloadTravelDocumentFile(Guid id)
+        {
+            var commnad = new DonwloadTravelDocumentCommand
+            {
+                Id = id,
+            };
+            var path = await _mediator.Send(commnad);
+
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+                return NotFound("File not found.");
+
+            byte[] newBytes;
+            await using (var stream = new FileStream(path, FileMode.Open))
+            {
+                byte[] bytes = new byte[stream.Length];
+                int numBytesToRead = (int)stream.Length;
+                int numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead.
+                    int n = stream.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached.
+                    if (n == 0)
+                        break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+                newBytes = bytes;
+            }
+            return File(newBytes, GetContentType(path), path);
+        }
+
     }
 }

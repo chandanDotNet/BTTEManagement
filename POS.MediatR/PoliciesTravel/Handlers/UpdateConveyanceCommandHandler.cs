@@ -63,6 +63,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
                     c.ConveyanceId = travelsModeUpdate.Id;
                     //c.ClassName = travelsModeUpdate.classOfTravels.Where(Id == c.Id);
                     c.IsCheck = travelsModeUpdate.conveyancesItem.Where(f => f.Id == c.Id).Select(n => n.IsCheck).FirstOrDefault();
+                    c.Amount = travelsModeUpdate.conveyancesItem.Where(f => f.Id == c.Id).Select(n => n.Amount).FirstOrDefault();
                 });
                 //foreach (var policy in travelsModeUpdate.classOfTravels)
                 //{
