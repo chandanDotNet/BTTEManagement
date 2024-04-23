@@ -51,6 +51,7 @@ namespace BTTEM.MediatR.Handler
                 return ServiceResponse<bool>.Return409("Vehicle name does not Exists.");
             }
             existingEntity.Name = request.Name;
+            existingEntity.FuelType = request.FuelType;
             existingEntity.Description = request.Description;
             existingEntity.IsActive = request.IsActive;
             _vehicleManagementRepository.Update(existingEntity);

@@ -26,6 +26,13 @@ namespace POS.Data.Dto
         public Guid? Department { get; set; }
         public Guid? Grade { get; set; }
         public string? Designation { get; set; }
+        public string BankName { get; set; }
+        public string IFSC { get; set; }
+        public string BranchName { get; set; }
+        public string AccountType { get; set; }
+        public string AccountName { get; set; }
+        public string AccountNumber { get; set; }
+        public string SapCode { get; set; }
         public string BearerToken { get; set; }
         public List<RoleDto> UserRoles { get; set; } = new List<RoleDto>();
         public List<AppClaimDto> Claims { get; set; }
