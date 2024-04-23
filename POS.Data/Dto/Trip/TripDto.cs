@@ -22,5 +22,7 @@ namespace BTTEM.Data
         public PurposeDto Purpose { get; set; }
         public User CreatedByUser { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string Status { get; set; }
+        public string Approval { get; set; }
     }
 }

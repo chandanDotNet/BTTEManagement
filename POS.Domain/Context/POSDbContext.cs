@@ -88,6 +88,7 @@ namespace POS.Domain
 
         public DbSet<MultiLevelApproval> MultiLevelApprovals { get; set; }
         public DbSet<VehicleManagement> VehicleManagements { get; set; }
+        public DbSet<TravelDocument> TravelDocuments { get; set; }
 
         public DbSet<VehicleManagementRate> VehicleManagementRates { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -533,6 +534,7 @@ namespace POS.Domain
             builder.Entity<TripItinerary>().ToTable("TripItinerarys");
             builder.Entity<TripHotelBooking>().ToTable("TripHotelBookings");
             builder.Entity<MasterExpense>().ToTable("MasterExpenses");
+            builder.Entity<TravelDocument>().ToTable("TravelDocuments");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }

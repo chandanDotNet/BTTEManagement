@@ -61,6 +61,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new TripItineraryProfile());
                 mc.AddProfile(new TripHotelBookingProfile());
                 mc.AddProfile(new VehicleManagementProfile());
+                mc.AddProfile(new TravelDocumentProfile());
                 mc.AddProfile(new VehicleManagementRateProfile());
             });
             return mappingConfig.CreateMapper();

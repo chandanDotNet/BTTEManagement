@@ -58,6 +58,8 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.PurposeId = request.PurposeId;
             entityExist.TripStarts = request.TripStarts;
             entityExist.TripEnds = request.TripEnds;
+            entityExist.Status = request.Status;
+            entityExist.Approval = request.Approval;
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {

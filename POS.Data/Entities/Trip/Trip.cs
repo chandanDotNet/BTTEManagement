@@ -20,8 +20,9 @@ namespace BTTEM.Data
         public Guid PurposeId { get; set; }
         public string Description { get; set; }
         public Purpose Purpose { get; set; }
-       // public User User { get; set; }
-
+        // public User User { get; set; }
+        public string Status { get; set; }
+        public string Approval { get; set; }
 
     }
 }
