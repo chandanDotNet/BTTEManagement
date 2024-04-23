@@ -12,6 +12,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class AddTravelDocumentCommand : IRequest<ServiceResponse<TravelDocumentDto>>
     {
 
+        public Guid UserId { get; set; }
         public string FileName { get; set; }
         public string DocumentData { get; set; }
         public string DocType { get; set; }

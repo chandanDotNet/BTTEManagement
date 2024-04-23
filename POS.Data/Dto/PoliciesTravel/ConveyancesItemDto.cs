@@ -14,5 +14,6 @@ namespace BTTEM.Data
         public string ConveyanceItemName { get; set; }
         public bool? IsDeleted { get; set; }
         public bool? IsCheck { get; set; }
+        public decimal? Amount { get; set; }
     }
 }

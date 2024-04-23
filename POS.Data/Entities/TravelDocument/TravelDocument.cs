@@ -10,6 +10,7 @@ namespace BTTEM.Data
     public class TravelDocument :BaseEntity
     {
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string FileName { get; set; }
         public string ReceiptPath { get; set; }
         public string DocType { get; set; }

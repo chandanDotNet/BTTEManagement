@@ -21,6 +21,8 @@ namespace BTTEM.MediatR.PoliciesTravel.Commands
         public bool IsFoodActuals { get; set; }
         public bool IsBudget { get; set; }
         public decimal BudgetAmount { get; set; }
+        public bool IsBillRequired { get; set; }
+        public decimal DeductionPercentage { get; set; }
         public bool IsDeleted { get; set; }
     }
 }
