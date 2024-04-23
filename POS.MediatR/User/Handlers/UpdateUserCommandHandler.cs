@@ -81,6 +81,7 @@ namespace POS.MediatR.Handlers
             appUser.AccountType = request.AccountType;
             appUser.AccountName = request.AccountName;
             appUser.AccountNumber = request.AccountNumber;
+            appUser.SapCode = request.SapCode;
 
             var oldProfilePhoto = appUser.ProfilePhoto;
             if (request.IsImageUpdate)

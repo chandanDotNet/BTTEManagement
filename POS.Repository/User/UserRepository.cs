@@ -96,6 +96,16 @@ namespace POS.Repository
             ret.Department=appUser.Department;
             ret.Grade=appUser.Grade;
             ret.Designation=appUser.Designation;
+
+            ret.BankName = appUser.Designation;
+            ret.AccountName = appUser.Designation;
+            ret.AccountNumber = appUser.Designation;
+            ret.IFSC = appUser.IFSC;
+            ret.AccountType = appUser.AccountType;
+            ret.BranchName = appUser.BranchName;
+            ret.SapCode = appUser.SapCode;
+
+
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);
             ret.Claims = appClaimDtos;
