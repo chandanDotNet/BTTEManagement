@@ -32,7 +32,7 @@ namespace POS.MediatR.Handlers
         }
         public async Task<CompanyProfileDto> Handle(GetCompanyProfileQuery request, CancellationToken cancellationToken)
         {
-            var companyProfile = await _companyProfileRepository.All.FirstOrDefaultAsync();
+            var companyProfile = await _companyProfileRepository.All.Include(c => c.CompanyAccounts).FirstOrDefaultAsync();
             if (companyProfile == null)
             {
                 return new CompanyProfileDto
