@@ -61,6 +61,7 @@ namespace BTTEM.Repository
                 .Select(c => new PoliciesDetailDto
                 {
                     Id = c.Id,
+                    CompanyAccountId = c.CompanyAccountId,
                     Name = c.Name,
                     GradeId= c.GradeId,
                     GradeName=c.Grade.GradeName,

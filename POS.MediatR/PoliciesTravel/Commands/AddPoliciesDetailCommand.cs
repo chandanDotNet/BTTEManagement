@@ -14,6 +14,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     {
 
         public Guid Id { get; set; }
+        public Guid CompanyAccountId { get; set; }
         public string Name { get; set; }
         public Guid GradeId { get; set; }
         public string Description { get; set; }

@@ -262,7 +262,55 @@ namespace BTTEM.API.Controllers.PoliciesTravel
             return ReturnFormattedResponse(result);
         }
 
-       
+
+        /// <summary>
+        ///  Create a PoliciesVehicleConveyance 
+        /// </summary>
+        /// <param name="addPoliciesVehicleConveyanceCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddPoliciesVehicleConveyance")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(PoliciesVehicleConveyanceDto))]
+        public async Task<IActionResult> AddPoliciesVehicleConveyance(AddPoliciesVehicleConveyanceCommand addPoliciesVehicleConveyanceCommand)
+        {
+            var result = await _mediator.Send(addPoliciesVehicleConveyanceCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        ///  Update a PoliciesVehicleConveyance
+        /// </summary>
+        /// <param name="updatePoliciesVehicleConveyanceCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdatePoliciesVehicleConveyance")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(PoliciesVehicleConveyanceDto))]
+        public async Task<IActionResult> UpdatePoliciesVehicleConveyance(UpdatePoliciesVehicleConveyanceCommand updatePoliciesVehicleConveyanceCommand)
+        {
+            var result = await _mediator.Send(updatePoliciesVehicleConveyanceCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get All Policies Vehicle Conveyance
+        /// </summary>
+
+        /// <returns></returns>
+
+        [HttpGet("GetPoliciesVehicleConveyance")]
+        public async Task<IActionResult> GetPoliciesVehicleConveyance(Guid Id)
+        {
+            var getAllConveyanceCommand = new GetAllPoliciesVehicleConveyanceCommand
+            {
+                Id = Id
+            };
+            var result = await _mediator.Send(getAllConveyanceCommand);
+          
+
+            return Ok(result);
+        }
+
+
 
     }
 }
