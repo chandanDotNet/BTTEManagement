@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using POS.API.Helpers;
 using BTTEM.MediatR.CompanyProfile.Commands;
+using POS.Data.Resources;
+using BTTEM.Data.Resources;
 
 namespace POS.API.Controllers.CompanyProfile
 {
@@ -66,6 +68,35 @@ namespace POS.API.Controllers.CompanyProfile
         {
             var response = await _mediator.Send(updateGSTCommand);
             return ReturnFormattedResponse(response);
+        }
+
+
+        /// <summary>
+        /// Get All Company Accounts
+        /// </summary>
+        /// <param name="companyAccountResource"></param>
+        /// <returns></returns>
+
+        [HttpGet("GetCompnayAccounts")]
+        // [ClaimCheck("SETT_MANAGE_CITY")]
+        public async Task<IActionResult> GetCompnayAccounts([FromQuery] CompanyAccountResource companyAccountResource)
+        {
+            var getAllCompnayAccountQuery = new GetAllCompanyAccountQuery
+            {
+                CompanyAccountResource = companyAccountResource
+            };
+            var result = await _mediator.Send(getAllCompnayAccountQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BTTEM.Data;
+using BTTEM.Data.Dto;
 using POS.Data;
 using POS.Data.Dto;
 using POS.MediatR.CommandAndQuery;
@@ -11,6 +13,7 @@ namespace POS.API.Helpers.Mapping
         public CompanyProfileProfile()
         {
             CreateMap<CompanyProfile, CompanyProfileDto>().ReverseMap();
+            CreateMap<CompanyAccount, CompanyAccountDto>().ReverseMap();
             CreateMap<UpdateCompanyProfileCommand, CompanyProfile>();
         }
     }

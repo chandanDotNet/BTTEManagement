@@ -26,6 +26,12 @@ namespace POS.MediatR.CommandAndQuery
         public Guid? Department { get; set; }
         public Guid? Grade { get; set; }
         public string? Designation { get; set; }
+        public string BankName { get; set; }
+        public string IFSC { get; set; }
+        public string BranchName { get; set; }
+        public string AccountType { get; set; }
+        public string AccountName { get; set; }
+        public string AccountNumber { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
 
     }

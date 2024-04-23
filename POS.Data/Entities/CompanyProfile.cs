@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BTTEM.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,5 +28,6 @@ namespace POS.Data
         public string? TimeZone { get; set; }
         public string GST { get; set; }
         public bool Registration { get; set; }
+        public List<CompanyAccount> CompanyAccounts { get; set; }
     }
 }

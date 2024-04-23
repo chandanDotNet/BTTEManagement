@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BTTEM.Data.Dto;
 
 namespace POS.MediatR.CommandAndQuery
 {
@@ -19,7 +20,6 @@ namespace POS.MediatR.CommandAndQuery
         public string Phone { get; set; }
         public string Email { get; set; }
         public string CurrencyCode { get; set; }
-
         public string? CountryName { get; set; }
         public string? CityName { get; set; }
         public Guid? CountryId { get; set; }
@@ -29,5 +29,7 @@ namespace POS.MediatR.CommandAndQuery
         public string? WebSite { get; set; }
         public string? FY { get; set; }
         public string? TimeZone { get; set; }
+        public List<CompanyAccountDto> CompanyAccounts { get; set; } = new List<CompanyAccountDto>();
+
     }
 }

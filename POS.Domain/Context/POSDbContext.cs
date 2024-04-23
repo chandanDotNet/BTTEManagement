@@ -49,6 +49,7 @@ namespace POS.Domain
         public DbSet<SalesOrderItem> SalesOrderItems { get; set; }
         public DbSet<SalesOrderItemTax> SalesOrderItemTaxes { get; set; }
         public DbSet<CompanyProfile> CompanyProfiles { get; set; }
+        public DbSet<CompanyAccount> CompanyAccounts { get; set; }
         public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Inventory> Inventories { get; set; }

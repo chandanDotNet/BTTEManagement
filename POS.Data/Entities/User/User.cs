@@ -29,6 +29,12 @@ namespace POS.Data
         public Guid? Department { get; set; }
         public Guid? Grade { get; set; }
         public string? Designation { get; set; }
+        public string BankName { get; set; }
+        public string IFSC { get; set; }
+        public string BranchName { get; set; }
+        public string AccountType { get; set; }
+        public string AccountName { get; set; }
+        public string AccountNumber { get; set; }
         public virtual ICollection<UserClaim> UserClaims { get; set; }
         public virtual ICollection<UserLogin> UserLogins { get; set; }
         public virtual ICollection<UserToken> UserTokens { get; set; }
