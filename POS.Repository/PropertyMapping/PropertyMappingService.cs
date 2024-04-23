@@ -1,4 +1,6 @@
-﻿using POS.Data;
+﻿using BTTEM.Data;
+using BTTEM.Data.Dto;
+using POS.Data;
 using POS.Data.Dto;
 using POS.Data.Entities;
 using System;
@@ -278,16 +280,22 @@ namespace POS.Repository
                     { "SOCreatedDate", new PropertyMappingValue(new List<string>() { "SalesOrder.SOCreatedDate" }, true )}
             };
 
-       // private Dictionary<string, PropertyMappingValue> _travelModesMapping =
-       //new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
-       //{
-       //         { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
-       //         { "TravelsModesName", new PropertyMappingValue(new List<string>() { "TravelsModesName" }, true )},
-       //         { "TravelsModesImage", new PropertyMappingValue(new List<string>() { "TravelsModesImage" } )},
-       //         { "PoliciesDetailId", new PropertyMappingValue(new List<string>() { "PoliciesDetailId" } )},
-       //         { "IsMaster", new PropertyMappingValue(new List<string>() { "IsMaster" } )},
-               
-       //};
+        private Dictionary<string, PropertyMappingValue> _companyAccountPropertyMapping =
+           new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+           {
+                { "AccountName", new PropertyMappingValue(new List<string>() { "AccountName" } ) },
+           };
+
+        // private Dictionary<string, PropertyMappingValue> _travelModesMapping =
+        //new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+        //{
+        //         { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
+        //         { "TravelsModesName", new PropertyMappingValue(new List<string>() { "TravelsModesName" }, true )},
+        //         { "TravelsModesImage", new PropertyMappingValue(new List<string>() { "TravelsModesImage" } )},
+        //         { "PoliciesDetailId", new PropertyMappingValue(new List<string>() { "PoliciesDetailId" } )},
+        //         { "IsMaster", new PropertyMappingValue(new List<string>() { "IsMaster" } )},
+
+        //};
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
@@ -312,6 +320,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<SalesOrderPaymentDto, SalesOrderPayment>(_salesOrderPaymentPropertyMapping));
             propertyMappings.Add(new PropertyMapping<PurchaseOrderItemDto, PurchaseOrderItem>(_purchaseOrderItemPropertyMapping));
             propertyMappings.Add(new PropertyMapping<SalesOrderItemDto, SalesOrderItem>(_salesOrderItemPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<CompanyAccountDto, CompanyAccount>(_companyAccountPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

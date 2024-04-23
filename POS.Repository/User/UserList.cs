@@ -99,8 +99,15 @@ namespace POS.Repository
                    // Roles= GetUserRole(c.Id).Result,
                     DepartmentName= _departmentRepository.All.Where(b => b.Id == c.Department).FirstOrDefault().DepartmentName,
                     //GradeName = _gradeRepository.All.Where(d => d.Id == c.Grade).FirstOrDefault().GradeName,
-                   // UserRoleName= _userRoleRepository.AllIncluding(c => c.Role).Where(e => e.UserId == c.Id).FirstOrDefault().Role.Name.ToString(),
-                   // UserRoleName= GetUserRole(c.Id).ToString(),
+                    // UserRoleName= _userRoleRepository.AllIncluding(c => c.Role).Where(e => e.UserId == c.Id).FirstOrDefault().Role.Name.ToString(),
+                    // UserRoleName= GetUserRole(c.Id).ToString(),
+                    BankName = c.BankName,
+                    IFSC = c.IFSC,
+                    AccountName = c.AccountName,
+                    AccountNumber = c.AccountNumber,
+                    BranchName = c.BranchName,
+                    AccountType = c.AccountType,
+
                 })
                 .ToListAsync();
             return entities;

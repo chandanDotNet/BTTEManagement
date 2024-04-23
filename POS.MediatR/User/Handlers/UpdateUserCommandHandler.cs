@@ -75,6 +75,13 @@ namespace POS.MediatR.Handlers
             appUser.Grade= request.Grade;
             appUser.Designation= request.Designation;
 
+            appUser.BankName = request.BankName;
+            appUser.IFSC = request.IFSC;
+            appUser.BranchName = request.BranchName;
+            appUser.AccountType = request.AccountType;
+            appUser.AccountName = request.AccountName;
+            appUser.AccountNumber = request.AccountNumber;
+
             var oldProfilePhoto = appUser.ProfilePhoto;
             if (request.IsImageUpdate)
             {
