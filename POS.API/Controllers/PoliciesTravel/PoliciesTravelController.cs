@@ -311,6 +311,20 @@ namespace BTTEM.API.Controllers.PoliciesTravel
         }
 
 
+        /// <summary>
+        ///  Create a Policies Setting 
+        /// </summary>
+        /// <param name="addPoliciesSettingCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddPoliciesSetting")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(PoliciesSettingDto))]
+        public async Task<IActionResult> AddPoliciesSetting(AddPoliciesSettingCommand addPoliciesSettingCommand)
+        {
+            var result = await _mediator.Send(addPoliciesSettingCommand);
+            return ReturnFormattedResponse(result);
+        }
+
 
     }
 }

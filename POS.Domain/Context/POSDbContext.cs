@@ -92,6 +92,7 @@ namespace POS.Domain
 
         public DbSet<VehicleManagementRate> VehicleManagementRates { get; set; }
         public DbSet<PoliciesVehicleConveyance> PoliciesVehicleConveyances { get; set; }
+        public DbSet<PoliciesSetting> PoliciesSettings { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -537,6 +538,7 @@ namespace POS.Domain
             builder.Entity<MasterExpense>().ToTable("MasterExpenses");
             builder.Entity<TravelDocument>().ToTable("TravelDocuments");
             builder.Entity<PoliciesVehicleConveyance>().ToTable("PoliciesVehicleConveyances");
+            builder.Entity<PoliciesSetting>().ToTable("PoliciesSettings");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }
