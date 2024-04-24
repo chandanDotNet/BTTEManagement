@@ -54,6 +54,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
             policiesDetailExit.Document = policiesDetailUpdate.Document;
             policiesDetailExit.DailyAllowance = policiesDetailUpdate.DailyAllowance;
             policiesDetailExit.IsActive= policiesDetailUpdate.IsActive;
+            policiesDetailExit.CompanyAccountId= policiesDetailUpdate.CompanyAccountId;
 
 
             _policiesDetailRepository.Update(policiesDetailExit);

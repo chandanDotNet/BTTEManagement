@@ -15,7 +15,7 @@ namespace BTTEM.Data
         public bool? IsMaster { get; set; }
         public Guid? PoliciesDetailId { get; set; }
         public bool IsDeleted { get; set; }
-    
+        public bool? IsRadio { get; set; }
 
         public List<ConveyancesItemDto> conveyancesItem { get; set; }
     }

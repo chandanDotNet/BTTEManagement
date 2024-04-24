@@ -55,6 +55,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
 
                 travelsModeExit.Name = travelsModeUpdate.Name;
                 travelsModeExit.IsMaster = travelsModeUpdate.IsMaster;
+                travelsModeExit.IsRadio = travelsModeUpdate.IsRadio;
 
 
                 travelsModeExit.conveyancesItem.ForEach(c =>
