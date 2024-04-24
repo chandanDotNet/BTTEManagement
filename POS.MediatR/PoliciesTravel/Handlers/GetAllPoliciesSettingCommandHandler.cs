@@ -4,6 +4,7 @@ using BTTEM.Data;
 using BTTEM.MediatR.PoliciesTravel.Commands;
 using BTTEM.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Data.Dto;
@@ -45,7 +46,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
 
            
 
-            var result = await _policiesSettingRepository.All.Where(c => c.PoliciesDetailId == request.Id).ProjectTo<PoliciesSettingDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var result = await _policiesSettingRepository.All.Where(c => c.PoliciesDetailId == request.Id && c.IsDeleted==false).ProjectTo<PoliciesSettingDto>(_mapper.ConfigurationProvider).ToListAsync();
 
 
             return result;

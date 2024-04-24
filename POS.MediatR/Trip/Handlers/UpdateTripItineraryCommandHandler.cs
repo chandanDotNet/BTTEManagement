@@ -57,6 +57,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 entityExist.TripReturnPreferenceTime = tv.TripReturnPreferenceTime;
                 entityExist.TripPreferenceSeat = tv.TripPreferenceSeat;
                 entityExist.ReturnDate = tv.ReturnDate;                
+                entityExist.TentativeAmount = tv.TentativeAmount;                
 
                 _tripItineraryRepository.Update(entityExist);
             }
