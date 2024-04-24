@@ -16,6 +16,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BTTEM.Repository;
+using Microsoft.EntityFrameworkCore;
+using BTTEM.Data;
 
 namespace POS.MediatR.Handlers
 {
@@ -23,6 +26,7 @@ namespace POS.MediatR.Handlers
         : IRequestHandler<UpdateCompanyProfileCommand, ServiceResponse<CompanyProfileDto>>
     {
         private readonly ICompanyProfileRepository _companyProfileRepository;
+        private readonly ICompanyAccountRepository _companyAccountRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly ILogger<UpdateCompanyProfileCommandHandler> _logger;
@@ -35,7 +39,8 @@ namespace POS.MediatR.Handlers
             IUnitOfWork<POSDbContext> uow,
             ILogger<UpdateCompanyProfileCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
-            PathHelper pathHelper)
+            PathHelper pathHelper,
+            ICompanyAccountRepository companyAccountRepository)
         {
             _companyProfileRepository = companyProfileRepository;
             _mapper = mapper;
@@ -43,6 +48,7 @@ namespace POS.MediatR.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _companyAccountRepository = companyAccountRepository;
         }
         public async Task<ServiceResponse<CompanyProfileDto>> Handle(UpdateCompanyProfileCommand request, CancellationToken cancellationToken)
         {
@@ -79,6 +85,29 @@ namespace POS.MediatR.Handlers
                         companyProfile.LogoUrl = logoUrl;
                     }
                     _companyProfileRepository.Update(companyProfile);
+
+                    var updateCompanyAccounts = await _companyAccountRepository.All.Where(x => x.CompanyProfileId == request.CompanyAccounts.FirstOrDefault().CompanyProfileId).ToListAsync();
+                    if (updateCompanyAccounts.Count > 0)
+                    {
+                        for (int i = 0; i < updateCompanyAccounts.Count; i++)
+                        {
+                            updateCompanyAccounts[i].AccountName = request.CompanyAccounts[i].AccountName;
+                        }
+                        _companyAccountRepository.UpdateRange(updateCompanyAccounts);
+                    }
+
+                    var addCompanyAccounts = request.CompanyAccounts.Where(x => x.Id == Guid.Empty).ToList();
+                    if (addCompanyAccounts.Count > 0)
+                    {
+                        var newCompanyAccounts = _mapper.Map<List<CompanyAccount>>(addCompanyAccounts);
+                        for (int i = 0; i < newCompanyAccounts.Count; i++)
+                        {
+                            newCompanyAccounts[i].Id = Guid.NewGuid();
+                            newCompanyAccounts[i].AccountName = addCompanyAccounts[i].AccountName;
+                            newCompanyAccounts[i].CompanyProfileId = request.Id.Value;
+                        }
+                        _companyAccountRepository.AddRange(newCompanyAccounts);
+                    }
                 }
                 else
                 {

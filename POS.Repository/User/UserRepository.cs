@@ -104,7 +104,7 @@ namespace POS.Repository
             ret.AccountType = appUser.AccountType;
             ret.BranchName = appUser.BranchName;
             ret.SapCode = appUser.SapCode;
-
+            ret.CompanyAccountId= appUser.CompanyAccountId;
 
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);

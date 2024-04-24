@@ -33,6 +33,7 @@ namespace POS.Data.Dto
         public string AccountName { get; set; }
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
+        public Guid CompanyAccountId { get; set; }
         public string BearerToken { get; set; }
         public List<RoleDto> UserRoles { get; set; } = new List<RoleDto>();
         public List<AppClaimDto> Claims { get; set; }

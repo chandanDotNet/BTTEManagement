@@ -8,6 +8,7 @@ using System;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.Data;
 using BTTEM.MediatR.Trip.Commands;
+using POS.API.Helpers;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -22,14 +23,12 @@ namespace BTTEM.API.Controllers.Trip
             _mediator = mediator;
         }
 
-
         /// <summary>
         /// Get All Purpose
         /// </summary>
-
         /// <returns></returns>
-
         [HttpGet("GetAllPurpose")]
+        [ClaimCheck("TRP_VIEW_PURPOSE")]
         public async Task<IActionResult> GetAllPurpose()
         {
             var getAllPurposeQuery = new GetAllPurposeQuery
@@ -57,7 +56,7 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="addTripCommand"></param>
         /// <returns></returns>
         [HttpPost]
-        //[ClaimCheck("USR_ADD_USER")]
+        [ClaimCheck("TRP_ADD_TRIP")]
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> AddTripDetail(AddTripCommand addTripCommand)
         {
@@ -74,7 +73,7 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="updateTripCommand"></param>
         /// <returns></returns>
         [HttpPut]
-        //[ClaimCheck("USR_ADD_USER")]
+        [ClaimCheck("TRP_UPDATE_TRIP")]
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> UpdateTripDetail(UpdateTripCommand updateTripCommand)
         {
@@ -88,6 +87,7 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete("{Id}")]
+        [ClaimCheck("TRP_DELETE_TRIP")]
         public async Task<IActionResult> DeleteTrip(Guid Id)
         {
             var deleteTripCommand = new DeleteTripCommand { Id = Id };
@@ -103,6 +103,7 @@ namespace BTTEM.API.Controllers.Trip
         /// <returns></returns>
 
         [HttpGet(Name ="GetAllTrip")]
+        [ClaimCheck("TRP_VIEW_TRIP")]
         public async Task<IActionResult> GetAllTrip(Guid? Id, Guid? CreatedBy)
         {
             var getAllTripQuery = new GetAllTripQuery

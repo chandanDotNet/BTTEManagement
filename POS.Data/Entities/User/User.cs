@@ -36,6 +36,7 @@ namespace POS.Data
         public string AccountName { get; set; }
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
+        public Guid CompanyAccountId { get; set; }
         public virtual ICollection<UserClaim> UserClaims { get; set; }
         public virtual ICollection<UserLogin> UserLogins { get; set; }
         public virtual ICollection<UserToken> UserTokens { get; set; }

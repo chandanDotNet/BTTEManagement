@@ -33,6 +33,7 @@ namespace POS.MediatR.CommandAndQuery
         public string AccountName { get; set; }
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
+        public Guid CompanyAccountId { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
 
     }
