@@ -31,9 +31,9 @@ namespace BTTEM.API.Controllers.VehicleManagement
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("VehicleManagement/{id}", Name = "GetVehicleManagement")]
+        [HttpGet("GetVehicleManagement/{id}", Name = "GetVehicleManagement")]
         [Produces("application/json", "application/xml", Type = typeof(VehicleManagementDto))]
-        public async Task<IActionResult> GetMultiLevelApproval(Guid id)
+        public async Task<IActionResult> GetVehicleManagement(Guid id)
         {
             var getVehicleManagementQuery = new GetVehicleManagementQuery { Id = id };
             var result = await _mediator.Send(getVehicleManagementQuery);
