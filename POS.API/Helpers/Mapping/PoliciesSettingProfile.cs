@@ -11,7 +11,7 @@ namespace BTTEM.API.Helpers.Mapping
         {
             CreateMap<PoliciesSetting, PoliciesSettingDto>().ReverseMap();
             CreateMap<AddPoliciesSettingCommand, PoliciesSetting>();
-            //CreateMap<UpdatePoliciesLodgingFoodingCommand, PoliciesLodgingFooding>();
+            CreateMap<UpdatePoliciesSettingCommand, PoliciesSetting>();
 
         }
     }

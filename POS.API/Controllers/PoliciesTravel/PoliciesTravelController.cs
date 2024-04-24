@@ -325,6 +325,40 @@ namespace BTTEM.API.Controllers.PoliciesTravel
             return ReturnFormattedResponse(result);
         }
 
+        /// <summary>
+        ///  Update a Policies Setting 
+        /// </summary>
+        /// <param name="updatePoliciesSettingCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdatePoliciesSetting")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(PoliciesSettingDto))]
+        public async Task<IActionResult> UpdatePoliciesSetting(UpdatePoliciesSettingCommand updatePoliciesSettingCommand)
+        {
+            var result = await _mediator.Send(updatePoliciesSettingCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Get All Policies Setting
+        /// </summary>
+
+        /// <returns></returns>
+
+        [HttpGet("GetPoliciesSetting")]
+        public async Task<IActionResult> GetPoliciesSetting(Guid Id)
+        {
+            var getAllPoliciesSettingCommand = new GetAllPoliciesSettingCommand
+            {
+                Id = Id
+            };
+            var result = await _mediator.Send(getAllPoliciesSettingCommand);
+
+
+            return Ok(result);
+        }
+
 
     }
 }
