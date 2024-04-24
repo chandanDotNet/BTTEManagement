@@ -4,6 +4,7 @@ using BTTEM.Data;
 using BTTEM.MediatR.PoliciesTravel.Commands;
 using BTTEM.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Data.Dto;
