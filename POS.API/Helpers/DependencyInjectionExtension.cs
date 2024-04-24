@@ -91,6 +91,7 @@ namespace POS.API.Helpers
             services.AddScoped<IVehicleManagementRateRepository, VehicleManagementRateRepository>();
             services.AddScoped<ICompanyAccountRepository, CompanyAccountRepository>();
             services.AddScoped<IPoliciesVehicleConveyanceRepository, PoliciesVehicleConveyanceRepository>();
+            services.AddScoped<IPoliciesSettingRepository, PoliciesSettingRepository>();
         }
     }
 }

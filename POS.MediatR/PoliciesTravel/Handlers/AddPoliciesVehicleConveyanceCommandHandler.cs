@@ -52,6 +52,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
             {
                 var entity = _mapper.Map<Data.PoliciesVehicleConveyance>(tv);
                 entity.Id = Guid.NewGuid();
+                entity.IsDeleted =false;
 
                 _policiesVehicleConveyanceRepository.Add(entity);
             }
