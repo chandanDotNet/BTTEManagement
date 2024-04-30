@@ -8,5 +8,6 @@ namespace POS.Data.Dto
         public string CityName { get; set; }
         public Guid CountryId { get; set; }
         public string CountryName { get; set; }
+        public bool IsMetroCity { get; set; }
     }
 }

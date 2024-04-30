@@ -9,5 +9,6 @@ namespace POS.Data
         public string CityName { get; set; }
         public Guid CountryId { get; set; }
         public Country Country { get; set; }
+        public bool IsMetroCity { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using POS.MediatR.City.Commands;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using POS.API.Helpers;
+using BTTEM.MediatR.City.Commands;
 
 namespace POS.API.Controllers.City
 {
@@ -108,6 +109,18 @@ namespace POS.API.Controllers.City
         {
             var deleteCityCommand = new DeleteCityCommand { Id = id };
             var result = await _mediator.Send(deleteCityCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Multiple City
+        /// </summary>
+        /// <param name="updateMultipleCityCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateMutipleCity")]
+        public async Task<IActionResult> UpdateMutipleCity([FromBody] UpdateMultipleCityCommand updateMultipleCityCommand)
+        {
+            var result = await _mediator.Send(updateMultipleCityCommand);
             return ReturnFormattedResponse(result);
         }
     }

@@ -9,5 +9,6 @@ namespace POS.MediatR.City.Commands
     {
         public string CityName { get; set; }
         public Guid CountryId { get; set; }
+        public bool IsMetroCity { get; set; }
     }
 }
