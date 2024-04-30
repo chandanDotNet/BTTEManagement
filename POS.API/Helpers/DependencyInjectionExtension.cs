@@ -75,6 +75,7 @@ namespace POS.API.Helpers
             services.AddScoped<IWarehouseInventoryRepository, WarehouseInventoryRepository>();
 
             services.AddScoped<IGradeRepository, GradeRepository>();
+            services.AddScoped<IEmpGradeRepository, EmpGradeRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<ITravelsModeRepository, TravelsModeRepository>();
             services.AddScoped<IConveyanceRepository, ConveyanceRepository>();
@@ -92,6 +93,7 @@ namespace POS.API.Helpers
             services.AddScoped<ICompanyAccountRepository, CompanyAccountRepository>();
             services.AddScoped<IPoliciesVehicleConveyanceRepository, PoliciesVehicleConveyanceRepository>();
             services.AddScoped<IPoliciesSettingRepository, PoliciesSettingRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
         }
     }
 }

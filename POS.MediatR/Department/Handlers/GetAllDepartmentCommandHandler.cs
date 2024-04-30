@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BTTEM.Data;
 using BTTEM.Data.Dto;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.MediatR.Department.Commands;
@@ -60,7 +61,7 @@ namespace BTTEM.MediatR.Department.Handlers
                 var query =
                         (from post in _departmentRepository.All
                          join meta in _userRepository.All on post.DepartmentHeadId equals meta.Id  //into t from rt in t.DefaultIfEmpty()
-                         select new { Post = post, Meta = meta });
+                         select new { Post = post, Meta = meta }).OrderBy(x => x.Post.DepartmentName); 
 
 
 
@@ -84,7 +85,7 @@ namespace BTTEM.MediatR.Department.Handlers
                 var query =
                         (from post in _departmentRepository.All
                          join meta in _userRepository.All on post.DepartmentHeadId equals meta.Id
-                         select new { Post = post, Meta = meta }).Where(c => c.Post.Id == request.Id);
+                         select new { Post = post, Meta = meta }).Where(c => c.Post.Id == request.Id).OrderBy(x => x.Post.DepartmentName);
 
 
 

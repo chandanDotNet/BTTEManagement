@@ -57,6 +57,7 @@ namespace BTTEM.MediatR.Handlers
                 
                 var id = Guid.NewGuid();
                 entity.Id = id;
+                entity.IsActive = true;
             }
 
             _gradeRepository.Add(entity);

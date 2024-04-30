@@ -94,7 +94,72 @@ namespace BTTEM.API.Controllers.Grade
             return ReturnFormattedResponse(result);
         }
 
+        /// <summary>
+        /// Get All Employee Grades
+        /// </summary>
+        /// <param name="empGradeResource"></param>
+        /// <returns></returns>
 
+        [HttpGet("GetEmployeeGrades")]
+        public async Task<IActionResult> GetEmployeeGrades([FromQuery] EmpGradeResource empGradeResource)
+        {
+            var getAllEmpGradeQuery = new GetAllEmpGradeQuery
+            {
+                EmpGradeResource = empGradeResource
+            };
+            var result = await _mediator.Send(getAllEmpGradeQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Add Employee Grade
+        /// </summary>
+        /// <param name="addEmpGradeCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddEmployeeGrade")]
+        public async Task<IActionResult> AddEmployeeGrade([FromBody] AddEmpGradeCommand addEmpGradeCommand)
+        {
+            var result = await _mediator.Send(addEmpGradeCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Employee Grade By Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateEmpGradeCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateEmployeeGrade/{id}")]
+        public async Task<IActionResult> UpdateEmployeeGrade(Guid id, [FromBody] UpdateEmpGradeCommand updateEmpGradeCommand)
+        {
+            updateEmpGradeCommand.Id = id;
+            var result = await _mediator.Send(updateEmpGradeCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Delete Employee Grade By Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteEmployeeGrade/{id}")]
+        public async Task<IActionResult> DeleteEmployeeGrade(Guid id)
+        {
+            var deleteEmpGradeommand = new DeleteEmpGradeCommand { Id = id };
+            var result = await _mediator.Send(deleteEmpGradeommand);
+            return ReturnFormattedResponse(result);
+        }
 
     }
 }

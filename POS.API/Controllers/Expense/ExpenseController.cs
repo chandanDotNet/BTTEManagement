@@ -394,5 +394,36 @@ namespace POS.API.Controllers.Expense
             return File(newBytes, GetContentType(path), path);
         }
 
+
+
+        /// <summary>
+        /// Add Wallet Expenses
+        /// </summary>
+        /// <param name="addWalletCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddWallet")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddWallet([FromBody] AddWalletCommand addWalletCommand)
+        {
+            
+            var result = await _mediator.Send(addWalletCommand);            
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Gets Wallet 
+        /// </summary>
+        /// <param name="userid">The identifier.</param>
+        /// <returns></returns>
+        [HttpGet("GetWallet/{userid}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetWallet(Guid userid)
+        {
+            var query = new GetWalletQuery { UserId = userid };
+            var result = await _mediator.Send(query);
+            //return ReturnFormattedResponse(result);
+            return Ok(result);
+        }
     }
 }

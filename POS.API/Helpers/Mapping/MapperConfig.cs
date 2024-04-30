@@ -50,6 +50,7 @@ namespace POS.API.Helpers.Mapping
 
                 mc.AddProfile(new InventoryProfle());
                 mc.AddProfile(new GradeProfile());
+                mc.AddProfile(new EmpGradeProfile());
                 mc.AddProfile(new DepartmentProfile());
                 mc.AddProfile(new TravelModeProfile());
                 mc.AddProfile(new ConveyanceProfile());
@@ -65,6 +66,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new VehicleManagementRateProfile());
                 mc.AddProfile(new PoliciesVehicleConveyanceProfile());
                 mc.AddProfile(new PoliciesSettingProfile());
+                mc.AddProfile(new WalletProfile());
             });
             return mappingConfig.CreateMapper();
         }

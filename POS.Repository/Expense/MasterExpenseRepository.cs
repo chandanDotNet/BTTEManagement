@@ -36,7 +36,8 @@ namespace BTTEM.Repository
         {
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
-            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser,a=>a.Expenses);
+            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser,a=>a.Expenses).ApplySort(expenseResource.OrderBy,
+                _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
 
 

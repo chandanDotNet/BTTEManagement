@@ -25,7 +25,7 @@ namespace POS.MediatR.Handlers
 
         public async Task<List<UserDto>> Handle(GetAllUserQuery request, CancellationToken cancellationToken)
         {
-            var entities = await _userRepository.AllIncluding(u=>u.UserRoles).ToListAsync();
+            var entities = await _userRepository.All.Include(d => d.CompanyAccounts).Include(c => c.Grades).Include(b => b.Departments).Include(u=>u.UserRoles).ThenInclude(a => a.Role).ToListAsync();
             return _mapper.Map<List<UserDto>>(entities);
         }
     }

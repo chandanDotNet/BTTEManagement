@@ -73,6 +73,7 @@ namespace POS.Domain
         public DbSet<UnitConversation> UnitConversations { get; set; }
         public DbSet<WarehouseInventory> WarehouseInventories { get; set; }
         public DbSet<Grade> Grades { get; set; }
+        public DbSet<EmpGrade> EmpGrades { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<TravelMode> TravelModes { get; set; }
         public DbSet<ClassOfTravel> ClassOfTravels { get; set; }
@@ -93,6 +94,7 @@ namespace POS.Domain
         public DbSet<VehicleManagementRate> VehicleManagementRates { get; set; }
         public DbSet<PoliciesVehicleConveyance> PoliciesVehicleConveyances { get; set; }
         public DbSet<PoliciesSetting> PoliciesSettings { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -524,6 +526,7 @@ namespace POS.Domain
             builder.Entity<UserRole>().ToTable("UserRoles");
             builder.Entity<UserToken>().ToTable("UserTokens");
             builder.Entity<Grade>().ToTable("Grades");
+            builder.Entity<EmpGrade>().ToTable("EmpGrades");
             builder.Entity<Department>().ToTable("Departments");
             builder.Entity<TravelMode>().ToTable("TravelModes");
             builder.Entity<ClassOfTravel>().ToTable("ClassOfTravels");
@@ -539,6 +542,7 @@ namespace POS.Domain
             builder.Entity<TravelDocument>().ToTable("TravelDocuments");
             builder.Entity<PoliciesVehicleConveyance>().ToTable("PoliciesVehicleConveyances");
             builder.Entity<PoliciesSetting>().ToTable("PoliciesSettings");
+            builder.Entity<Wallet>().ToTable("Wallets");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }

@@ -9,6 +9,8 @@ using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.Data;
 using BTTEM.MediatR.Trip.Commands;
 using POS.API.Helpers;
+using BTTEM.Data.Resources;
+using System.Threading;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -103,23 +105,24 @@ namespace BTTEM.API.Controllers.Trip
         /// <returns></returns>
 
         [HttpGet(Name ="GetAllTrip")]
-        [ClaimCheck("TRP_VIEW_TRIP")]
-        public async Task<IActionResult> GetAllTrip(Guid? Id, Guid? CreatedBy)
+        //[ClaimCheck("TRP_VIEW_TRIP")]
+        public async Task<IActionResult> GetAllTrip([FromQuery] TripResource TripResource)
         {
             var getAllTripQuery = new GetAllTripQuery
             {
-                Id = Id, CreatedBy = CreatedBy
+               TripResource=TripResource
             };
+           
             var result = await _mediator.Send(getAllTripQuery);
 
-            //var paginationMetadata = new
-            //{
-            //    totalCount = result.TotalCount,
-            //    pageSize = result.PageSize,
-            //    skip = result.Skip,
-            //    totalPages = result.TotalPages
-            //};
-            //Response.Headers.Add("X-Pagination",Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
             return Ok(result);
         }
