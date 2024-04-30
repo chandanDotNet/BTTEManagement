@@ -46,7 +46,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
 
            
 
-            var result = await _policiesSettingRepository.All.Where(c => c.PoliciesDetailId == request.Id).ProjectTo<PoliciesSettingDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var result = await _policiesSettingRepository.All.Where(c => c.PoliciesDetailId == request.Id && c.IsDeleted==false).ProjectTo<PoliciesSettingDto>(_mapper.ConfigurationProvider).ToListAsync();
 
 
             return result;

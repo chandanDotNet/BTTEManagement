@@ -32,6 +32,7 @@ namespace POS.Repository
                 { "LastName", new PropertyMappingValue(new List<string>() { "LastName" } )},
                 { "PhoneNumber", new PropertyMappingValue(new List<string>() { "PhoneNumber" } )},
                 { "IsActive", new PropertyMappingValue(new List<string>() { "IsActive" } )}
+                //{ "Grade", new PropertyMappingValue(new List<string>() { "Grade.Id" } )}
             };
 
         private Dictionary<string, PropertyMappingValue> _nLogMapping =
@@ -286,6 +287,37 @@ namespace POS.Repository
                 { "AccountName", new PropertyMappingValue(new List<string>() { "AccountName" } ) },
            };
 
+        private Dictionary<string, PropertyMappingValue> _masterExpensesPropertyMapping =
+          new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+          {
+                { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" } ) }
+          };
+
+        private Dictionary<string, PropertyMappingValue> _tripPropertyMapping =
+          new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+          {
+                { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" } ) }
+          };
+
+        private Dictionary<string, PropertyMappingValue> _gradePropertyMapping =
+         new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+         {
+                { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" } ) },
+                { "GradeName", new PropertyMappingValue(new List<string>() { "GradeName" } ) }
+         };
+
+        private Dictionary<string, PropertyMappingValue> _empGradePropertyMapping =
+        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+        {
+                { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" } ) },
+                { "GradeName", new PropertyMappingValue(new List<string>() { "GradeName" } ) }
+        };
+
+
         // private Dictionary<string, PropertyMappingValue> _travelModesMapping =
         //new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
         //{
@@ -321,6 +353,10 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<PurchaseOrderItemDto, PurchaseOrderItem>(_purchaseOrderItemPropertyMapping));
             propertyMappings.Add(new PropertyMapping<SalesOrderItemDto, SalesOrderItem>(_salesOrderItemPropertyMapping));
             propertyMappings.Add(new PropertyMapping<CompanyAccountDto, CompanyAccount>(_companyAccountPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<MasterExpenseDto, MasterExpense>(_masterExpensesPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<TripDto, Trip>(_tripPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<GradeDto, Grade>(_gradePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<EmpGradeDto, EmpGrade>(_empGradePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

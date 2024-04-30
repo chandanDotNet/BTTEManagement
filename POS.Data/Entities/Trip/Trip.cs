@@ -1,4 +1,6 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
+using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,16 @@ namespace BTTEM.Data
         // public User User { get; set; }
         public string Status { get; set; }
         public string Approval { get; set; }
+        public Guid SourceCityId { get; set; }
+        public City SourceCity { get; set; }
+        public Guid DestinationCityId { get; set; }
+        public City DestinationCity { get; set; }
+        public string MultiCity { get; set; }
+        public string ModeOfTrip { get; set; }
+        public Guid DepartmentId { get; set; }
+        public Department Department { get; set; }
+
+
 
     }
 }

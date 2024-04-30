@@ -14,6 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 using POS.Data.Resources;
 using BTTEM.Repository;
+using AutoMapper;
+using BTTEM.Data.Resources;
 
 namespace POS.Repository
 {
@@ -27,6 +29,7 @@ namespace POS.Repository
         private readonly IActionRepository _actionRepository;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
         //private readonly IGradeRepository _gradeRepository;
         public UserRepository(
             IUnitOfWork<POSDbContext> uow,
@@ -36,8 +39,9 @@ namespace POS.Repository
              IUserRoleRepository userRoleRepository,
              IActionRepository actionRepository,
              IPropertyMappingService propertyMappingService,
-             IDepartmentRepository departmentRepository
-             //IGradeRepository gradeRepository
+             IDepartmentRepository departmentRepository,
+             IMapper mapper
+            //IGradeRepository gradeRepository
             ) : base(uow)
         {
             _roleClaimRepository = roleClaimRepository;
@@ -47,15 +51,18 @@ namespace POS.Repository
             _actionRepository = actionRepository;
             _propertyMappingService = propertyMappingService;
             _departmentRepository = departmentRepository;
+            _mapper = mapper;
             //_gradeRepository = gradeRepository;
         }
 
         public async Task<UserList> GetUsers(UserResource userResource)
         {
-            var collectionBeforePaging = AllIncluding(c=>c.UserRoles);
-            collectionBeforePaging =
-               collectionBeforePaging.ApplySort(userResource.OrderBy,
-               _propertyMappingService.GetPropertyMapping<UserDto, User>());
+            //var collectionBeforePaging = All.Include(c => c.Grades).Include(c=>c.UserRoles).ThenInclude(a=>a.Role);
+
+            //collectionBeforePaging.Where(u => u.Email == userResource.Name);
+            //var collectionBeforePaging = All.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
+            var collectionBeforePaging = AllIncluding(g=>g.Grades,eg=>eg.EmpGrades,d=>d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
+            // collectionBeforePaging =collectionBeforePaging.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
 
             if (!string.IsNullOrWhiteSpace(userResource.Name))
             {
@@ -66,7 +73,47 @@ namespace POS.Repository
                     || EF.Functions.Like(c.PhoneNumber, $"%{userResource.Name}%"));
             }
 
-            var loginAudits = new UserList(_userRoleRepository, _departmentRepository);
+            if(userResource.CompanyAccountId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CompanyAccountId == userResource.CompanyAccountId);
+            }
+            if (userResource.DepartmentId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Department == userResource.DepartmentId);
+            }
+            if (userResource.GradeId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.GradeId == userResource.GradeId);
+            }
+            if (userResource.EmpGradeId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.EmpGradeId == userResource.EmpGradeId);
+            }
+            if (userResource.RoleId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.UserRoles.FirstOrDefault().RoleId == userResource.RoleId);
+            }
+            if (userResource.ReportingTo.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.ReportingTo == userResource.ReportingTo);
+            }
+            if (userResource.Id.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Id == userResource.Id);
+            }
+            if (!string.IsNullOrWhiteSpace(userResource.Email))
+            {
+                collectionBeforePaging = collectionBeforePaging.Where(c => c.Email == userResource.Email);
+            }
+
+            var loginAudits = new UserList(_mapper);
             return await loginAudits.Create(
                 collectionBeforePaging,
                 userResource.Skip,
@@ -94,7 +141,7 @@ namespace POS.Repository
             ret.AadhaarNo= appUser.AadhaarNo;
             ret.PanNo= appUser.PanNo;
             ret.Department=appUser.Department;
-            ret.Grade=appUser.Grade;
+            ret.Grade=appUser.GradeId;
             ret.Designation=appUser.Designation;
 
             ret.BankName = appUser.Designation;

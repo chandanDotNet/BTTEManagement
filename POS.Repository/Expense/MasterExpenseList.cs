@@ -91,7 +91,7 @@ namespace BTTEM.Repository.Expense
                         CreatedDate = cs.CreatedDate,
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                         Expenses =  _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
-                    })
+                    })//.OrderByDescending(x => x.CreatedDate)
                     .ToListAsync();
                 return entities;
             }
@@ -116,7 +116,7 @@ namespace BTTEM.Repository.Expense
                  CreatedDate = cs.CreatedDate,
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                  Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
-             })
+             })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
                 return entities;
             }

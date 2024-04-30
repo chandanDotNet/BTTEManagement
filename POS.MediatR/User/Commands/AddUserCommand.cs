@@ -24,7 +24,8 @@ namespace POS.MediatR.CommandAndQuery
         public string? PanNo { get; set; }
         public string? AadhaarNo { get; set; }
         public Guid? Department { get; set; }
-        public Guid? Grade { get; set; }
+        public Guid? GradeId { get; set; }
+        public Guid? EmpGradeId { get; set; }
         public string? Designation { get; set; }
         public string BankName { get; set; }
         public string IFSC { get; set; }
@@ -34,6 +35,11 @@ namespace POS.MediatR.CommandAndQuery
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
         public Guid CompanyAccountId { get; set; }
+        public Guid? ReportingTo { get; set; }
+        public string? ReportingToName { get; set; }
+        public bool? IsPermanentAdvance { get; set; }
+        public decimal? PermanentAdvance { get; set; }
+
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
 
     }

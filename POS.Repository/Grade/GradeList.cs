@@ -58,7 +58,7 @@ namespace BTTEM.Repository
                     GradeName = c.GradeName,
                     Description = c.Description,
                     IsActive=c.IsActive,
-                    NoOfUsers= _userRepository.All.Where(b => b.Grade == c.Id).Count(),
+                    NoOfUsers= _userRepository.All.Where(b => b.GradeId == c.Id).Count(),
                    
                 }).ToListAsync();
             return entities;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BTTEM.Data;
+using BTTEM.Data.Dto;
+using System;
 using System.Collections.Generic;
 
 namespace POS.Data.Dto
@@ -21,8 +23,10 @@ namespace POS.Data.Dto
         public string? PanNo { get; set; }
         public string? AadhaarNo { get; set; }
         public Guid? Department { get; set; }
+        public DepartmentDto Departments { get; set; }
         public string? DepartmentName { get; set; }
-        public Guid? Grade { get; set; }
+        public Guid? GradeId { get; set; }
+        public GradeDto Grades { get; set; }
         public string? GradeName { get; set; }
         public string? Designation { get; set; }
         public string BankName { get; set; }
@@ -33,11 +37,21 @@ namespace POS.Data.Dto
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
         public Guid CompanyAccountId { get; set; }
+        public CompanyAccountDto CompanyAccounts { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
+        public List<UserRoleDto> UserRoless { get; set; } = new List<UserRoleDto>();
         public List<UserClaimDto> UserClaims { get; set; } = new List<UserClaimDto>();
-        public List<RoleDto> Roles { get; set; } = new List<RoleDto>();
+        public List<RoleDto> Role { get; set; } = new List<RoleDto>();
         public List<string> RoleName { get; set; }
         public string? UserRoleName { get; set; }
+        public Guid? ReportingTo { get; set; }
+        public string? ReportingToName { get; set; }
+        public Guid? EmpGradeId { get; set; }
+        public EmpGrade EmpGrades { get; set; }
+        public string? EmpGradeName { get; set; }
+        public bool? IsPermanentAdvance { get; set; }
+        public decimal? PermanentAdvance { get; set; }
+        // public UserDto ReportingToDetails { get; set; }
 
     }
 }

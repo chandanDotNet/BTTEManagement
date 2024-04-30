@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BTTEM.Data;
-
+using BTTEM.Data.Dto;
 using Microsoft.EntityFrameworkCore;
 using POS.Data.Dto;
 using System;
@@ -77,7 +77,14 @@ namespace BTTEM.Repository
                         CreatedDate = cs.CreatedDate,
                         Approval = cs.Approval,
                         Status = cs.Status,
-                        //CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+                        DepartmentId = cs.DepartmentId,
+                        SourceCityId = cs.SourceCityId,
+                        DestinationCityId = cs.DestinationCityId,
+                        Department = _mapper.Map<DepartmentDto>(cs.Department),
+                        DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
+                        SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
+                        CreatedByUser=cs.CreatedByUser
+                        // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
                     .ToListAsync();
@@ -103,7 +110,14 @@ namespace BTTEM.Repository
                  CreatedDate = cs.CreatedDate,
                  Approval=cs.Approval,
                  Status = cs.Status,
-                // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+                 DepartmentId = cs.DepartmentId,
+                 SourceCityId = cs.SourceCityId,
+                 DestinationCityId = cs.DestinationCityId,
+                 Department = _mapper.Map<DepartmentDto>(cs.Department),
+                 DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
+                 SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
+                 CreatedByUser = cs.CreatedByUser
+                 // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();
                 return entities;

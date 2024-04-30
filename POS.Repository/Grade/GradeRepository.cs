@@ -39,8 +39,8 @@ namespace BTTEM.Repository
 
         public async Task<GradeList> GetGrades(GradeResource gradeResource)
         {
-            var collectionBeforePaging = All;
-                //All.ApplySort(gradeResource.OrderBy,_propertyMappingService.GetPropertyMapping<GradeDto, Grade>());
+            var collectionBeforePaging = 
+                All.ApplySort(gradeResource.OrderBy,_propertyMappingService.GetPropertyMapping<GradeDto, Grade>());
 
             if (!string.IsNullOrEmpty(gradeResource.GradeName))
             {

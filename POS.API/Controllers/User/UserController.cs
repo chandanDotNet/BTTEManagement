@@ -102,7 +102,7 @@ namespace POS.API.Controllers
         /// <param name="userResource"></param>
         /// <returns></returns>
         [HttpGet("GetUsers")]
-        [ClaimCheck("USR_VIEW_USERS")]
+        //[ClaimCheck("USR_VIEW_USERS")]
         [Produces("application/json", "application/xml", Type = typeof(UserList))]
         public async Task<IActionResult> GetUsers([FromQuery] UserResource userResource)
         {

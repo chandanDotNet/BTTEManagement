@@ -19,5 +19,6 @@ namespace BTTEM.Data
         public DateTime CheckOut { get; set; }
         public string CheckInTime { get; set; }
         public string CheckOutTime { get; set; }
+        public decimal? TentativeAmount { get; set; }
     }
 }

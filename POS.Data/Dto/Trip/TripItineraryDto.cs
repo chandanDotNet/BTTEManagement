@@ -31,6 +31,7 @@ namespace BTTEM.Data
         public string? TripPreferenceTime { get; set; }
         public string? TripReturnPreferenceTime { get; set; }
         public string? TripPreferenceSeat { get; set; }
+        public decimal? TentativeAmount { get; set; }
         public CityDto DepartureCity { get; set; }
         public CityDto ArrivalCity { get; set; }
 

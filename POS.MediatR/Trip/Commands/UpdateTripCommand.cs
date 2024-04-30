@@ -21,5 +21,10 @@ namespace BTTEM.MediatR.Trip.Commands
         public string Description { get; set; }
         public string Status { get; set; }
         public string Approval { get; set; }
+        public Guid SourceCityId { get; set; }
+        public Guid DestinationCityId { get; set; }
+        public string MultiCity { get; set; }
+        public string ModeOfTrip { get; set; }
+        public Guid DepartmentId { get; set; }
     }
 }
