@@ -69,7 +69,7 @@ namespace POS.API.Controllers
         /// <returns></returns>
 
         [HttpGet("{id}", Name = "GetRole")]
-        [ClaimCheck("ROLES_VIEW_ROLES")]
+        //[ClaimCheck("ROLES_VIEW_ROLES")]
         [Produces("application/json", "application/xml", Type = typeof(RoleDto))]
         public async Task<IActionResult> GetRole(Guid id)
         {
@@ -83,7 +83,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetRoles")]
-        [ClaimCheck("ROLES_VIEW_ROLES")]
+        //[ClaimCheck("ROLES_VIEW_ROLES")]
         [Produces("application/json", "application/xml", Type = typeof(List<RoleDto>))]
         public async Task<IActionResult> GetRoles()
         {
