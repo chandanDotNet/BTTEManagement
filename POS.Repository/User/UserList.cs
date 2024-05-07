@@ -131,7 +131,11 @@ namespace POS.Repository
                     EmpGrades = c.EmpGrades,
                     EmpGradeName = c.EmpGrades.GradeName,
                     IsPermanentAdvance = c.IsPermanentAdvance,
-                    PermanentAdvance = c.PermanentAdvance
+                    PermanentAdvance = c.PermanentAdvance,
+                    DepartmentName=c.Departments.DepartmentName,
+                    SapCode= c.SapCode
+                    
+                    
 
                 })
                 .ToListAsync();

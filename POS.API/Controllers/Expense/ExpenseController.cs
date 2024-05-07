@@ -329,7 +329,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Add  Travel Document
         /// </summary>
-        /// <param name="addExpenseCommand"></param>
+        /// <param name="addTravelDocumentCommand"></param>
         /// <returns></returns>
         [HttpPost("AddTravelDocument")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]

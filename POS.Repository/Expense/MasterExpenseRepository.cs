@@ -36,8 +36,13 @@ namespace BTTEM.Repository
         {
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
-            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser,a=>a.Expenses).ApplySort(expenseResource.OrderBy,
+
+            var collectionBeforePaging = All.Include(c => c.CreatedByUser).ThenInclude(e=>e.Grades).Include(a => a.Expenses).ThenInclude(b => b.ExpenseCategory).ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
+
+            //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Expenses).ApplySort(expenseResource.OrderBy,
+            //   _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
+
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
 
 
@@ -84,6 +89,12 @@ namespace BTTEM.Repository
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.ApprovalStage == expenseResource.ApprovalStage);
+            }
+
+            if (!string.IsNullOrEmpty(expenseResource.ExpenseType))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.ExpenseType == expenseResource.ExpenseType);
             }
 
 

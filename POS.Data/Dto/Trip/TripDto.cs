@@ -30,6 +30,11 @@ namespace BTTEM.Data
         public Guid DestinationCityId { get; set; }
         public string MultiCity { get; set; }
         public string ModeOfTrip { get; set; }
+        public bool IsRequestAdvanceMoney { get; set; }
+        public decimal? AdvanceMoney { get; set; }
+        public string? RequestAdvanceMoneyStatus { get; set; }
+        public DateTime? RequestAdvanceMoneyDate { get; set; }
+        public Guid? RequestAdvanceMoneyStatusBy { get; set; }
         public Guid DepartmentId { get; set; }
         public CityDto SourceCity { get; set; }
         public CityDto DestinationCity { get; set; }

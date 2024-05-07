@@ -30,7 +30,7 @@ namespace BTTEM.API.Controllers.Trip
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllPurpose")]
-        [ClaimCheck("TRP_VIEW_PURPOSE")]
+        //[ClaimCheck("TRP_VIEW_PURPOSE")]
         public async Task<IActionResult> GetAllPurpose()
         {
             var getAllPurposeQuery = new GetAllPurposeQuery
@@ -58,7 +58,7 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="addTripCommand"></param>
         /// <returns></returns>
         [HttpPost]
-        [ClaimCheck("TRP_ADD_TRIP")]
+        //[ClaimCheck("TRP_ADD_TRIP")]
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> AddTripDetail(AddTripCommand addTripCommand)
         {
@@ -75,7 +75,7 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="updateTripCommand"></param>
         /// <returns></returns>
         [HttpPut]
-        [ClaimCheck("TRP_UPDATE_TRIP")]
+        //[ClaimCheck("TRP_UPDATE_TRIP")]
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> UpdateTripDetail(UpdateTripCommand updateTripCommand)
         {
@@ -264,6 +264,49 @@ namespace BTTEM.API.Controllers.Trip
             //Response.Headers.Add("X-Pagination",Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
             return Ok(result);
+        }
+
+
+        /// <summary>
+        ///  Update  Trip Request Advance Money
+        /// </summary>
+        /// <param name="updateTripRequestAdvanceMoneyCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateTripRequestAdvanceMoney")]
+        //[ClaimCheck("TRP_UPDATE_TRIP")]
+        [Produces("application/json", "application/xml", Type = typeof(TripDto))]
+        public async Task<IActionResult> UpdateTripRequestAdvanceMoney(UpdateTripRequestAdvanceMoneyCommand updateTripRequestAdvanceMoneyCommand)
+        {
+            var result = await _mediator.Send(updateTripRequestAdvanceMoneyCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        ///  Update  Trip Status
+        /// </summary>
+        /// <param name="updateTripStatusCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateTripStatus")]
+        //[ClaimCheck("TRP_UPDATE_TRIP")]
+        [Produces("application/json", "application/xml", Type = typeof(TripDto))]
+        public async Task<IActionResult> UpdateTripStatus(UpdateTripStatusCommand updateTripStatusCommand)
+        {
+            var result = await _mediator.Send(updateTripStatusCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        ///  Update Status Trip Request Advance Money
+        /// </summary>
+        /// <param name="updateStatusTripRequestAdvanceMoneyCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateStatusTripRequestAdvanceMoney")]
+        //[ClaimCheck("TRP_UPDATE_TRIP")]
+        [Produces("application/json", "application/xml", Type = typeof(TripDto))]
+        public async Task<IActionResult> UpdateStatusTripRequestAdvanceMoney(UpdateStatusTripRequestAdvanceMoneyCommand updateStatusTripRequestAdvanceMoneyCommand)
+        {
+            var result = await _mediator.Send(updateStatusTripRequestAdvanceMoneyCommand);
+            return ReturnFormattedResponse(result);
         }
     }
 }

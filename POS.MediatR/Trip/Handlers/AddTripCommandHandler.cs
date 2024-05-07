@@ -47,6 +47,9 @@ namespace BTTEM.MediatR.Trip.Handlers
 
                 var id = Guid.NewGuid();
                 entity.Id = id;
+                entity.Status = "Confirmed";
+                entity.Approval = "Department Head";
+
             }
 
             _tripRepository.Add(entity);

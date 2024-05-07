@@ -26,5 +26,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string MultiCity { get; set; }
         public string ModeOfTrip { get; set; }
         public Guid DepartmentId { get; set; }
+        public bool IsRequestAdvanceMoney { get; set; }
+        public decimal? AdvanceMoney { get; set; }
     }
 }

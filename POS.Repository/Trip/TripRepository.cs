@@ -102,6 +102,11 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.TripType == tripResource.TripType);
             }
+            if (!string.IsNullOrEmpty(tripResource.TripNo))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.TripNo == tripResource.TripNo);
+            }
 
 
             return await new TripList(_mapper).Create(collectionBeforePaging,

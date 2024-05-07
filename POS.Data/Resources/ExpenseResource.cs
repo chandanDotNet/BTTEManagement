@@ -18,6 +18,7 @@ namespace POS.Data.Resources
         public Guid? TripId { get; set; }
         public string? Status { get; set; }
         public string? ApprovalStage { get; set; }
+        public string? ExpenseType { get; set; }
  
     }
 }

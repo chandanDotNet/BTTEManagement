@@ -72,8 +72,8 @@ namespace POS.MediatR.Handlers
             appUser.AadhaarNo= request.AadhaarNo;
             appUser.PanNo = request.PanNo;
             appUser.Department= request.Department;
-            appUser.GradeId= request.GradeId.Value;
-            appUser.EmpGradeId= request.EmpGradeId.Value;
+            appUser.GradeId= request.GradeId;
+            appUser.EmpGradeId= request.EmpGradeId;
             appUser.Designation= request.Designation;
 
             appUser.BankName = request.BankName;
@@ -86,6 +86,8 @@ namespace POS.MediatR.Handlers
             appUser.CompanyAccountId = request.CompanyAccountId;
             appUser.IsPermanentAdvance = request.IsPermanentAdvance;
             appUser.PermanentAdvance = request.PermanentAdvance;
+            appUser.ReportingTo = request.ReportingTo;
+            appUser.ReportingToName = request.ReportingToName;
 
             var oldProfilePhoto = appUser.ProfilePhoto;
             if (request.IsImageUpdate)

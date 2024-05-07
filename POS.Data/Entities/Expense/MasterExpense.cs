@@ -19,6 +19,7 @@ namespace BTTEM.Data
         public string Status { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal ReimbursementAmount { get; set; }
+        public decimal? AdvanceMoney { get; set; }
         public string ApprovalStage { get; set; }
         public int NoOfBill { get; set; }
         public List<Expense> Expenses { get; set; }
