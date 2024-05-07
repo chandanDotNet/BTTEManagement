@@ -59,6 +59,7 @@ namespace BTTEM.MediatR.Handlers
             entityExist.ApprovalStage = request.ApprovalStage;
             entityExist.TotalAmount = request.TotalAmount;
             entityExist.ReimbursementAmount = request.ReimbursementAmount;
+            entityExist.AdvanceMoney = request.AdvanceMoney;
             _masterExpenseRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {

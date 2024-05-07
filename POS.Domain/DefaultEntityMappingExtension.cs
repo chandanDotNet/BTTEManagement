@@ -90,6 +90,14 @@ namespace POS.Domain
             modelBuilder.Entity<VehicleManagementRate>()
           .Property(b => b.ModifiedDate)
           .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<Trip>()
+         .Property(b => b.ModifiedDate)
+         .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<MasterExpense>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
         }
 
         public static void DefalutDeleteValueFilter(this ModelBuilder modelBuilder)
@@ -199,6 +207,12 @@ namespace POS.Domain
 
             modelBuilder.Entity<VehicleManagementRate>()
           .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<Trip>()
+         .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<MasterExpense>()
+               .HasQueryFilter(p => !p.IsDeleted);
         }
     }
 }

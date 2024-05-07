@@ -112,6 +112,23 @@ namespace POS.Repository
             {
                 collectionBeforePaging = collectionBeforePaging.Where(c => c.Email == userResource.Email);
             }
+            if (!string.IsNullOrEmpty(userResource.SearchQuery))
+            {
+                var searchQueryForWhereClause = userResource.SearchQuery
+              .Trim().ToLowerInvariant();
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a =>
+                    EF.Functions.Like(a.FirstName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.LastName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Grades.GradeName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Departments.DepartmentName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.ReportingToName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Email, $"{searchQueryForWhereClause}%")
+                    || (a.PhoneNumber != null && EF.Functions.Like(a.PhoneNumber, $"{searchQueryForWhereClause}%"))
+                    || EF.Functions.Like(a.PhoneNumber, $"{searchQueryForWhereClause}%"
+                    )
+                    );
+            }
 
             var loginAudits = new UserList(_mapper);
             return await loginAudits.Create(
