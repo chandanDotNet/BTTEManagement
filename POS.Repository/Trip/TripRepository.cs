@@ -115,7 +115,7 @@ namespace BTTEM.Repository
         }
 
 
-        private async Task<List<RoleDto>> GetUserRole(Guid Id)
+        public async Task<List<RoleDto>> GetUserRole(Guid Id)
         {
             var rolesDetails = await _userRoleRepository.AllIncluding(c => c.Role).Where(d => d.UserId == Id)
                 .ToListAsync();

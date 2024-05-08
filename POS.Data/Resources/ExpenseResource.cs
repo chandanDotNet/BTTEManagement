@@ -11,6 +11,8 @@ namespace POS.Data.Resources
         public Guid? MasterExpenseId { get; set; }
         public string Reference { get; set; }
         public Guid? ExpenseCategoryId { get; set; }
+        public Guid? ReportingHeadId { get; set; }
+        public Guid? CreatedBy { get; set; }
         public string Description { get; set; }
         public Guid? ExpenseById { get; set; }
         public DateTime? FromDate { get; set; }

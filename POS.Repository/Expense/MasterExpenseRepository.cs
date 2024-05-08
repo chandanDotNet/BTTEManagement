@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BTTEM.Repository.Expense;
+using BTTEM.Data.Resources;
 
 namespace BTTEM.Repository
 {
@@ -22,18 +23,39 @@ namespace BTTEM.Repository
     {
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IMapper _mapper;
+        private readonly UserInfoToken _userInfoToken;
+        private readonly IUserRoleRepository _userRoleRepository;
         public MasterExpenseRepository(
             IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
-            IMapper mapper
+            IMapper mapper,
+             UserInfoToken userInfoToken,
+              IUserRoleRepository userRoleRepository
             ) : base(uow)
         {
             _propertyMappingService = propertyMappingService;
             _mapper = mapper;
+            _userInfoToken = userInfoToken;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<MasterExpenseList> GetAllExpenses(ExpenseResource expenseResource)
         {
+
+            Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
+            var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
+            if (Role != null)
+            {
+                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+                {
+                    expenseResource.ReportingHeadId = LoginUserId;
+                }
+                else
+                {
+                    expenseResource.CreatedBy = LoginUserId;
+                }
+            }
+
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
@@ -45,6 +67,16 @@ namespace BTTEM.Repository
 
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
 
+            if (expenseResource.ReportingHeadId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.ReportingTo == expenseResource.ReportingHeadId);
+            }
+            if (expenseResource.CreatedBy.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedBy == expenseResource.CreatedBy);
+            }
 
             if (expenseResource.TripId.HasValue)
             {
@@ -101,6 +133,24 @@ namespace BTTEM.Repository
             return await new MasterExpenseList(_mapper).Create(collectionBeforePaging,
                 expenseResource.Skip,
                 expenseResource.PageSize);
+        }
+
+
+        public async Task<List<RoleDto>> GetUserRole(Guid Id)
+        {
+            var rolesDetails = await _userRoleRepository.AllIncluding(c => c.Role).Where(d => d.UserId == Id)
+                .ToListAsync();
+
+            List<RoleDto> roleDto = new List<RoleDto>();
+            foreach (var role in rolesDetails)
+            {
+                RoleDto rd = new RoleDto();
+                rd.Id = role.Role.Id;
+                rd.Name = role.Role.Name;
+                roleDto.Add(rd);
+            }
+            // var roleClaims = await _roleClaimRepository.All.Where(c => rolesIds.Contains(c.RoleId)).Select(c => c.ClaimType).ToListAsync();
+            return roleDto;
         }
 
     }

@@ -43,18 +43,38 @@ namespace POS.Repository
 
         public async Task<List<CityDto>> GetDtos(IQueryable<City> source, int skip, int pageSize)
         {
-            var entities = await source
-                .Skip(skip)
-                .Take(pageSize)
-                .AsNoTracking()
-                .Select(c => new CityDto
-                {
-                    Id = c.Id,
-                    CityName = c.CityName,
-                    CountryId = c.Country.Id,
-                    CountryName = c.Country.CountryName
-                }).ToListAsync();
-            return entities;
+
+            if(pageSize==0)
+            {
+                var entities = await source
+               .Skip(skip)              
+               .AsNoTracking()
+               .Select(c => new CityDto
+               {
+                   Id = c.Id,
+                   CityName = c.CityName,
+                   CountryId = c.Country.Id,
+                   CountryName = c.Country.CountryName
+               }).ToListAsync();
+                return entities;
+            }
+            else
+            {
+                var entities = await source
+               .Skip(skip)
+               .Take(pageSize)
+               .AsNoTracking()
+               .Select(c => new CityDto
+               {
+                   Id = c.Id,
+                   CityName = c.CityName,
+                   CountryId = c.Country.Id,
+                   CountryName = c.Country.CountryName
+               }).ToListAsync();
+                return entities;
+            }
+           
+           
         }
     }
 }
