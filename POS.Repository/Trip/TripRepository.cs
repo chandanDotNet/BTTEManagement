@@ -43,18 +43,22 @@ namespace BTTEM.Repository
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
             if(Role != null)
             {
-                if(Role.Id ==new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+                if(Role.Id ==new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
                 {
                     tripResource.ReportingHeadId = LoginUserId;
                 }
-                else
+                //else if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //Travel Desk
+                //{
+                //    tripResource.ReportingHeadId = null;
+                //}
+                else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
                 {
                     tripResource.CreatedBy=LoginUserId;
                 }
             }
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
-            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Department,b=>b.SourceCity,d=>d.DestinationCity).ApplySort(tripResource.OrderBy,
+            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Department,b=>b.SourceCity,d=>d.DestinationCity,ti=>ti.TripItinerarys).ApplySort(tripResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
 
@@ -107,7 +111,37 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.TripNo == tripResource.TripNo);
             }
+            if (!string.IsNullOrEmpty(tripResource.BookTypeBy))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.TripItinerarys.Any(a=>a.BookTypeBy== tripResource.BookTypeBy));
+            }
+            if (!string.IsNullOrEmpty(tripResource.Status))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Status == tripResource.Status);
+            }
+            if (!string.IsNullOrEmpty(tripResource.Approval))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Approval == tripResource.Approval);
+            }
 
+            if (!string.IsNullOrEmpty(tripResource.SearchQuery))
+            {
+                var searchQueryForWhereClause = tripResource.SearchQuery
+              .Trim().ToLowerInvariant();
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a =>
+                    EF.Functions.Like(a.TripNo, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Name, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.TripType, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.ModeOfTrip, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")                    
+                    );
+            }
+
+            
 
             return await new TripList(_mapper).Create(collectionBeforePaging,
                 tripResource.Skip,

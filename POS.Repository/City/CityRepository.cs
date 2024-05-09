@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BTTEM.Data.Resources;
 using Microsoft.EntityFrameworkCore;
 using POS.Common.GenericRepository;
 using POS.Common.UnitOfWork;
@@ -50,6 +51,12 @@ namespace POS.Repository
             {
                 collectionBeforePaging = collectionBeforePaging
                   .Where(a => a.Country.CountryName == cityResource.CountryName);
+            }
+
+            if (cityResource.Id.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Id == cityResource.Id);
             }
 
             var CityList = new CityList();

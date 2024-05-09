@@ -22,5 +22,9 @@ namespace BTTEM.Data.Resources
         public Guid? DepartmentId { get; set; }
         public Guid? ReportingHeadId { get; set; }
         public Guid? CompanyAccountId { get; set; }
+        public string BookTypeBy { get; set; }
+        public string? Approval { get; set; }
+        public string? Status { get; set; }
+
     }
 }

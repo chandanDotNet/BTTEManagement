@@ -34,6 +34,8 @@ namespace BTTEM.Data
         public decimal? TentativeAmount { get; set; }
         public CityDto DepartureCity { get; set; }
         public CityDto ArrivalCity { get; set; }
+        public string? BookStatus { get; set; }
+        public Guid? ExpenseId { get; set; }
 
     }
 }

@@ -46,11 +46,15 @@ namespace BTTEM.Repository
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
             if (Role != null)
             {
-                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
                 {
                     expenseResource.ReportingHeadId = LoginUserId;
                 }
-                else
+                //else if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //Travel Desk
+                //{
+                //    tripResource.ReportingHeadId = null;
+                //}
+                else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
                 {
                     expenseResource.CreatedBy = LoginUserId;
                 }
