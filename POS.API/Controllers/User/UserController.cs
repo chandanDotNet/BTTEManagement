@@ -146,7 +146,7 @@ namespace POS.API.Controllers
         /// <param name="updateUserCommand"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        [ClaimCheck("USR_UPDATE_USER")]
+       // [ClaimCheck("USR_UPDATE_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
         public async Task<IActionResult> UpdateUser(Guid id, UpdateUserCommand updateUserCommand)
         {
@@ -162,7 +162,7 @@ namespace POS.API.Controllers
         /// <param name="updateUserProfileCommand"></param>
         /// <returns></returns>
         [HttpPut("profile")]
-        [ClaimCheck("USR_UPDATE_USER")]
+        //[ClaimCheck("USR_UPDATE_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
         public async Task<IActionResult> UpdateUserProfile(UpdateUserProfileCommand updateUserProfileCommand)
         {
@@ -175,7 +175,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("UpdateUserProfilePhoto"), DisableRequestSizeLimit]
-        [ClaimCheck("USR_UPDATE_USER")]
+       // [ClaimCheck("USR_UPDATE_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
         public async Task<IActionResult> UpdateUserProfilePhoto()
         {

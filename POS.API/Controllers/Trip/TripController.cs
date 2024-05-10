@@ -178,6 +178,22 @@ namespace BTTEM.API.Controllers.Trip
             return ReturnFormattedResponse(result);
         }
 
+
+        /// <summary>
+        ///  Update a Trip Itinerary Book Status
+        /// </summary>
+        /// <param name="updateTripItineraryBookStatusCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateTripItineraryBookStatus")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
+        public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryBookStatusCommand updateTripItineraryBookStatusCommand)
+        {
+            var result = await _mediator.Send(updateTripItineraryBookStatusCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+
         /// <summary>
         /// Get All Trips Itinerary
         /// </summary>

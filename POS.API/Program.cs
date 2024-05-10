@@ -26,8 +26,8 @@ builder.Services.AddHangfire(configuration => configuration
     .UseRecommendedSerializerSettings()
     .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
     {
-        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(50),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(50),
         QueuePollInterval = TimeSpan.Zero,
         UseRecommendedIsolationLevel = true,
         DisableGlobalLocks = true

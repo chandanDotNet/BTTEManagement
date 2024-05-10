@@ -38,6 +38,7 @@ namespace BTTEM.Data
         public Guid? RequestAdvanceMoneyStatusBy { get; set; }
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
+        public List<TripItinerary>TripItinerarys { get; set; }
 
 
 

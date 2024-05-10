@@ -14,6 +14,7 @@ namespace BTTEM.API.Helpers.Mapping
 
             CreateMap<AddTripItineraryCommand, TripItinerary>();
             CreateMap<UpdateTripItineraryCommand, TripItinerary>();
+            CreateMap<UpdateTripItineraryBookStatusCommand, TripItinerary>();
         }
     }
 }
