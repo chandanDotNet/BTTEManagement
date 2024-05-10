@@ -39,5 +39,6 @@ namespace BTTEM.Data
         public CityDto SourceCity { get; set; }
         public CityDto DestinationCity { get; set; }
         public DepartmentDto Department { get; set; }
+        public Guid CreatedBy { get; set; }
     }
 }

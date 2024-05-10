@@ -11,18 +11,26 @@ using BTTEM.MediatR.Trip.Commands;
 using POS.API.Helpers;
 using BTTEM.Data.Resources;
 using System.Threading;
+using POS.Data.Resources;
+using POS.MediatR.CommandAndQuery;
+using System.Linq;
+using POS.Data;
+using System.Security.Claims;
+using POS.Data.Dto;
 
 namespace BTTEM.API.Controllers.Trip
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TripController :  BaseController
+    public class TripController : BaseController
     {
         readonly IMediator _mediator;
+        private readonly UserInfoToken _userInfoToken;
 
-        public TripController(IMediator mediator)
+        public TripController(IMediator mediator, UserInfoToken userInfoToken)
         {
             _mediator = mediator;
+            _userInfoToken = userInfoToken;
         }
 
         /// <summary>
@@ -35,7 +43,7 @@ namespace BTTEM.API.Controllers.Trip
         {
             var getAllPurposeQuery = new GetAllPurposeQuery
             {
-               
+
             };
             var result = await _mediator.Send(getAllPurposeQuery);
 
@@ -62,10 +70,24 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> AddTripDetail(AddTripCommand addTripCommand)
         {
-            GetNewTripNumberCommand getNewTripNumber=new GetNewTripNumberCommand();
+            GetNewTripNumberCommand getNewTripNumber = new GetNewTripNumberCommand();
             string TripNo = await _mediator.Send(getNewTripNumber);
             addTripCommand.TripNo = TripNo;
             var result = await _mediator.Send(addTripCommand);
+
+            if (result.Success)
+            {
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = result.Data.Id,
+                    Type = "Activity",
+                    Remarks = "New Trip Added",
+                    Status = "New Trip Added",
+                    ActionBy = result.Data.CreatedBy,
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -104,15 +126,15 @@ namespace BTTEM.API.Controllers.Trip
 
         /// <returns></returns>
 
-        [HttpGet(Name ="GetAllTrip")]
+        [HttpGet(Name = "GetAllTrip")]
         //[ClaimCheck("TRP_VIEW_TRIP")]
         public async Task<IActionResult> GetAllTrip([FromQuery] TripResource TripResource)
         {
             var getAllTripQuery = new GetAllTripQuery
             {
-               TripResource=TripResource
+                TripResource = TripResource
             };
-           
+
             var result = await _mediator.Send(getAllTripQuery);
 
             var paginationMetadata = new
@@ -292,6 +314,21 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripStatus(UpdateTripStatusCommand updateTripStatusCommand)
         {
             var result = await _mediator.Send(updateTripStatusCommand);
+
+            if (result.Success)
+            {
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = updateTripStatusCommand.Id,
+                    Type = "Tracker",
+                    Remarks = "Trip Status Updated",
+                    Status = updateTripStatusCommand.Status,
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -306,7 +343,50 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateStatusTripRequestAdvanceMoney(UpdateStatusTripRequestAdvanceMoneyCommand updateStatusTripRequestAdvanceMoneyCommand)
         {
             var result = await _mediator.Send(updateStatusTripRequestAdvanceMoneyCommand);
+
+            if (result.Success)
+            {
+                var userId = (this.User.Claims.First(i => i.Type == "Id").Value);
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
+                    Type = "Activity",
+                    Remarks = "Requsted For Advance Money",
+                    Status = updateStatusTripRequestAdvanceMoneyCommand.Status,
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get All Trip Tracking
+        /// </summary>
+        /// <param name="tripTrackingResource"></param>
+        /// <returns></returns>
+
+        [HttpGet("GetTripTrackings")]
+        public async Task<IActionResult> GetTripTrackings([FromQuery] TripTrackingResource tripTrackingResource)
+        {
+            var getAllTripTrackingQuery = new GetAllTripTrackingQuery
+            {
+                TripTrackingResource = tripTrackingResource
+            };
+            var result = await _mediator.Send(getAllTripTrackingQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
         }
     }
 }

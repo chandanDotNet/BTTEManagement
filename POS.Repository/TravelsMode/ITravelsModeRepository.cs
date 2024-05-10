@@ -11,6 +11,5 @@ namespace BTTEM.Repository
     public interface ITravelsModeRepository : IGenericRepository<TravelMode>
     {
 
-
     }
 }

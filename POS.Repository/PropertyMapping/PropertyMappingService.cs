@@ -329,6 +329,15 @@ namespace POS.Repository
 
         //};
 
+        private Dictionary<string, PropertyMappingValue> _tripTrackingPropertyMapping =
+           new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+           {
+                { "Status", new PropertyMappingValue(new List<string>() { "Status" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) },
+                { "Type", new PropertyMappingValue(new List<string>() { "Type" } ) },
+                { "Remarks", new PropertyMappingValue(new List<string>() { "Remarks" } ) },
+           };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -357,6 +366,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<TripDto, Trip>(_tripPropertyMapping));
             propertyMappings.Add(new PropertyMapping<GradeDto, Grade>(_gradePropertyMapping));
             propertyMappings.Add(new PropertyMapping<EmpGradeDto, EmpGrade>(_empGradePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<TripTrackingDto, TripTracking>(_tripTrackingPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()
