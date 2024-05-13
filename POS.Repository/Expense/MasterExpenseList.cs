@@ -87,6 +87,7 @@ namespace BTTEM.Repository.Expense
                         AdvanceMoney = cs.AdvanceMoney,
                         ApprovalStage = cs.ApprovalStage,
                         NoOfBill = cs.NoOfBill,
+                        ExpenseByUser = cs.ExpenseByUser,
                         Status = cs.Status,
                         ExpenseType= cs.ExpenseType,
                         CreatedDate = cs.CreatedDate,

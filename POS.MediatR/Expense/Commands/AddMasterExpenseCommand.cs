@@ -25,6 +25,7 @@ namespace BTTEM.MediatR.CommandAndQuery
         public decimal AdvanceMoney { get; set; }
         public string ApprovalStage { get; set; }
         public int NoOfBill { get; set; }
+        public string ExpenseByUser { get; set; }
         public List<AddExpenseCommand> ExpenseDetails { get; set; }
     }
 }

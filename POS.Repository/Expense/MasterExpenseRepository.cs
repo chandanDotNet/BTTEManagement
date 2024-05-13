@@ -133,6 +133,11 @@ namespace BTTEM.Repository
                     .Where(a => a.ExpenseType == expenseResource.ExpenseType);
             }
 
+            if (!string.IsNullOrEmpty(expenseResource.ExpenseByUser))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.ExpenseByUser == expenseResource.ExpenseByUser);
+            }
 
             return await new MasterExpenseList(_mapper).Create(collectionBeforePaging,
                 expenseResource.Skip,
