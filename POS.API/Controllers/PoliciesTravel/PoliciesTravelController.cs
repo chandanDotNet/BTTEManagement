@@ -343,7 +343,6 @@ namespace BTTEM.API.Controllers.PoliciesTravel
         /// <summary>
         /// Get All Policies Setting
         /// </summary>
-
         /// <returns></returns>
 
         [HttpGet("GetPoliciesSetting")]
@@ -359,6 +358,20 @@ namespace BTTEM.API.Controllers.PoliciesTravel
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get User Grade And Account
+        /// </summary>
+        /// <returns></returns>
 
+        [HttpGet("GetUserGradeAndAccount")]
+        public async Task<IActionResult> GetUserGradeAndAccount(Guid UserId)
+        {
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var result = await _mediator.Send(getUserGradeAndAccountCommand);
+            return Ok(result);
+        }
     }
 }
