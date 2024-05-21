@@ -63,6 +63,16 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Id == policiesDetailResource.Id);
             }
+            if (policiesDetailResource.GradeId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.GradeId == policiesDetailResource.GradeId);
+            }
+            if (policiesDetailResource.CompanyAccountId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CompanyAccountId == policiesDetailResource.CompanyAccountId);
+            }
             var products = new PoliciesDetailList(_mapper, _pathHelper);
             return await products.Create(collectionBeforePaging, policiesDetailResource.Skip, policiesDetailResource.PageSize);
         }
