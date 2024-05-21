@@ -26,6 +26,8 @@ namespace BTTEM.Data
         public DateTime CreatedDate { get; set; }
         //public Guid? CreatedBy { get; set; }
         public UserDto CreatedByUser { get; set; }
-        public List<ExpenseDto> Expenses { get; set; }
+        public Guid ExpenseId { get; set; }
+        public string ReimbursementStatus { get; set; }
+        public List<ExpenseDto> Expenses { get; set; }        
     }
 }

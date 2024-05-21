@@ -51,7 +51,7 @@ namespace BTTEM.MediatR.Handlers
 
         public async Task<ServiceResponse<TravelDocumentDto>> Handle(AddTravelDocumentCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<TravelDocument>(request);
+            var entity = _mapper.Map<Data.TravelDocument>(request);
 
             if (!string.IsNullOrWhiteSpace(request.FileName) && !string.IsNullOrWhiteSpace(request.DocumentData))
             {

@@ -17,6 +17,9 @@ using System.Linq;
 using POS.Data;
 using System.Security.Claims;
 using POS.Data.Dto;
+using Microsoft.AspNetCore.Http.HttpResults;
+using BTTEM.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -26,11 +29,15 @@ namespace BTTEM.API.Controllers.Trip
     {
         readonly IMediator _mediator;
         private readonly UserInfoToken _userInfoToken;
+        private readonly ITripRepository _tripRepository;
+        private readonly ITripItineraryRepository _tripItineraryRepository;
 
-        public TripController(IMediator mediator, UserInfoToken userInfoToken)
+        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
+            _tripRepository = tripRepository;
+            _tripItineraryRepository = tripItineraryRepository;
         }
 
         /// <summary>
@@ -80,9 +87,10 @@ namespace BTTEM.API.Controllers.Trip
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = result.Data.Id,
-                    Type = "Activity",
-                    Remarks = "New Trip Added",
-                    Status = "New Trip Added",
+                    TripTypeName = result.Data.Name,
+                    ActionType = "Activity",
+                    Remarks = result.Data.Name + " New Trip Added",
+                    Status = "Trip Added",
                     ActionBy = result.Data.CreatedBy,
                     ActionDate = DateTime.Now,
                 };
@@ -102,6 +110,23 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripDetail(UpdateTripCommand updateTripCommand)
         {
             var result = await _mediator.Send(updateTripCommand);
+
+            if (result.Success)
+            {
+                var responseData = await _tripRepository.FindAsync(updateTripCommand.Id);
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = updateTripCommand.Id,
+                    TripTypeName = updateTripCommand.Name == string.Empty ? responseData.Name : updateTripCommand.Name,
+                    ActionType = "Activity",
+                    Remarks = updateTripCommand.Name == string.Empty ? responseData.Name : updateTripCommand.Name + "Trip Updated",
+                    Status = "Trip Updated",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -116,6 +141,23 @@ namespace BTTEM.API.Controllers.Trip
         {
             var deleteTripCommand = new DeleteTripCommand { Id = Id };
             var result = await _mediator.Send(deleteTripCommand);
+
+            if (result.Success)
+            {
+                var responseData = await _tripRepository.FindAsync(Id);
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = Id,
+                    TripTypeName = responseData.Name,
+                    ActionType = "Activity",
+                    Remarks = responseData.Name + "Trip Deleted",
+                    Status = "Trip Deleted",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -161,6 +203,23 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> AddTripItinerary(AddTripItineraryCommand addTripItineraryCommand)
         {
             var result = await _mediator.Send(addTripItineraryCommand);
+
+            if (result.Success)
+            {
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = result.Data.TripId,
+                    TripItineraryId = result.Data.Id,
+                    TripTypeName = result.Data.TripBy,
+                    ActionType = "Activity",
+                    Remarks = "Trip Itinerary Added For " + result.Data.TripBy,
+                    Status = "Trip Itinerary Added",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -190,6 +249,22 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryBookStatusCommand updateTripItineraryBookStatusCommand)
         {
             var result = await _mediator.Send(updateTripItineraryBookStatusCommand);
+            if (result.Success)
+            {
+                var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = updateTripItineraryBookStatusCommand.TripId.Value,
+                    TripItineraryId = updateTripItineraryBookStatusCommand.Id,    
+                    TripTypeName = responseData.Result.TripBy,
+                    ActionType = "Activity",
+                    Remarks = "Trip Ticket Booked By Travel Desk For" + responseData.Result.TripBy,
+                    Status = "Ticket Booked By Travel Desk",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -231,6 +306,21 @@ namespace BTTEM.API.Controllers.Trip
         {
             var deleteTripItineraryCommand = new DeleteTripItineraryCommand { Id = Id };
             var result = await _mediator.Send(deleteTripItineraryCommand);
+            if (result.Success)
+            {
+                var responseData = _tripItineraryRepository.FindAsync(Id);
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = responseData.Result.TripId,
+                    TripItineraryId = Id,
+                    ActionType = "Activity",
+                    Remarks = responseData.Result.TripBy + " Trip Itinerary Deleted",
+                    Status = "Trip Itinerary Deleted",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -316,6 +406,21 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripRequestAdvanceMoney(UpdateTripRequestAdvanceMoneyCommand updateTripRequestAdvanceMoneyCommand)
         {
             var result = await _mediator.Send(updateTripRequestAdvanceMoneyCommand);
+            if (result.Success)
+            {
+                var responseData = _tripRepository.FindAsync(updateTripRequestAdvanceMoneyCommand.Id);
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = updateTripRequestAdvanceMoneyCommand.Id,
+                    TripTypeName = responseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = responseData.Result.Name + " Trip Request For Advance Money",
+                    Status = "Trip Request For Advance Money",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -333,11 +438,13 @@ namespace BTTEM.API.Controllers.Trip
 
             if (result.Success)
             {
+                var responseData = _tripRepository.FindAsync(updateTripStatusCommand.Id);
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateTripStatusCommand.Id,
-                    Type = "Tracker",
-                    Remarks = "Trip Status Updated",
+                    TripTypeName = responseData.Result.Name,
+                    ActionType = "Tracker",
+                    Remarks = responseData.Result.Name + " Trip Status Updated",
                     Status = updateTripStatusCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
@@ -362,12 +469,16 @@ namespace BTTEM.API.Controllers.Trip
 
             if (result.Success)
             {
-                var userId = (this.User.Claims.First(i => i.Type == "Id").Value);
+                //var userId = (this.User.Claims.First(i => i.Type == "Id").Value);
+                var responseData = _tripRepository.FindAsync(updateStatusTripRequestAdvanceMoneyCommand.Id);
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
-                    Type = "Activity",
-                    Remarks = "Requsted For Advance Money",
+                    TripTypeName = responseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = updateStatusTripRequestAdvanceMoneyCommand.Status == string.Empty ?
+                    responseData.Result.Name + " Requsted For Advance Money"
+                    : responseData.Result.Name + " Requsted For Advance Money - Status Updated",
                     Status = updateStatusTripRequestAdvanceMoneyCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now

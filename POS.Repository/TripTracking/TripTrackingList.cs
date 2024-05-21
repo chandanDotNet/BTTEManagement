@@ -54,12 +54,14 @@ namespace BTTEM.Repository
                 {
                     Id = c.Id,
                     TripId = c.TripId,
-                    Type = c.Type,
+                    TripItineraryId = c.TripItineraryId,
+                    ActionType = c.ActionType,
                     Status = c.Status,
                     Remarks = c.Remarks,
                     ActionBy = c.ActionBy,
                     ActionByName = c.ActionByUser.FirstName + " " + c.ActionByUser.LastName,
                     ActionDate = c.ActionDate,
+                    TripTypeName = c.TripTypeName,
 
                 }).ToListAsync();
             return entities;

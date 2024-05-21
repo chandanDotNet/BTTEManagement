@@ -334,9 +334,27 @@ namespace POS.Repository
            {
                 { "Status", new PropertyMappingValue(new List<string>() { "Status" } ) },
                 { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) },
-                { "Type", new PropertyMappingValue(new List<string>() { "Type" } ) },
+                { "ActionType", new PropertyMappingValue(new List<string>() { "ActionType" } ) },
                 { "Remarks", new PropertyMappingValue(new List<string>() { "Remarks" } ) },
            };
+
+        private Dictionary<string, PropertyMappingValue> _expenseTrackingPropertyMapping =
+         new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+         {
+                { "Status", new PropertyMappingValue(new List<string>() { "Status" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) },
+                { "ActionType", new PropertyMappingValue(new List<string>() { "ActionType" } ) },
+                { "Remarks", new PropertyMappingValue(new List<string>() { "Remarks" } ) },
+         };
+
+        private Dictionary<string, PropertyMappingValue> _travelDocumentPropertyMapping =
+        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+        {
+                { "FileName", new PropertyMappingValue(new List<string>() { "FileName" } ) },
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) },
+                { "DocNumber", new PropertyMappingValue(new List<string>() { "DocNumber" } ) },
+                { "DocType", new PropertyMappingValue(new List<string>() { "DocType" } ) },
+        };
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
@@ -367,6 +385,8 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<GradeDto, Grade>(_gradePropertyMapping));
             propertyMappings.Add(new PropertyMapping<EmpGradeDto, EmpGrade>(_empGradePropertyMapping));
             propertyMappings.Add(new PropertyMapping<TripTrackingDto, TripTracking>(_tripTrackingPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<ExpenseTrackingDto, ExpenseTracking>(_expenseTrackingPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<TravelDocumentDto, TravelDocument>(_travelDocumentPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using POS.Data;
 
 namespace POS.MediatR.Handlers
 {
@@ -45,14 +46,24 @@ namespace POS.MediatR.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _expenseRepository.FindAsync(request.Id);
+            var entityExist = await _expenseRepository.FindAsync(request.Id);         
+
+            if (request.MasterExpenseId == Guid.Empty || request.MasterExpenseId == null)
+            {
+                request.MasterExpenseId = entityExist.MasterExpenseId;
+            }  
+            
             if (entityExist == null)
             {
-                _logger.LogError("Expense does not exists.");
-                return ServiceResponse<bool>.Return409("Expense does not exists.");
+                _mapper.Map(request, entityExist);
+                entityExist = _mapper.Map<Expense>(request);               
+                _expenseRepository.Add(entityExist);
+            }           
+            else
+            {
+                _mapper.Map(request, entityExist);
+                _expenseRepository.Update(entityExist);
             }
-
-            _mapper.Map(request, entityExist);
 
             if (request.IsReceiptChange)
             {
@@ -92,8 +103,6 @@ namespace POS.MediatR.Handlers
                     entityExist.ReceiptName = null;
                 }
             }
-
-            _expenseRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Expense.");

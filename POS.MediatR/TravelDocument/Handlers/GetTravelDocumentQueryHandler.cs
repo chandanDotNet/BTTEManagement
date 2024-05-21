@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Handlers
 {
-    public class GetTravelDocumentQueryHandler : IRequestHandler<GetTravelDocumentQuery, List<TravelDocumentDto>> 
+    public class GetTravelDocumentQueryHandler : IRequestHandler<GetTravelDocumentQuery, List<TravelDocumentDto>>
     {
 
         private readonly ITravelDocumentRepository _travelDocumentRepository;
@@ -50,15 +50,15 @@ namespace BTTEM.MediatR.Handlers
 
         public async Task<List<TravelDocumentDto>> Handle(GetTravelDocumentQuery request, CancellationToken cancellationToken)
         {
-            var expense = await _travelDocumentRepository.All.Where(a=>a.UserId==a.UserId).ToListAsync();
+            var expense = await _travelDocumentRepository.All.Where(a => a.UserId == request.UserId).ToListAsync();
             if (expense == null)
             {
                 _logger.LogError("Expense not found");
                 //return Task<List<TravelDocumentDto>>.Return404();
             }
             var expenseDto = _mapper.Map<List<TravelDocumentDto>>(expense);
-           // return Task<List<TravelDocumentDto>>.ReturnResultWith200(expenseDto);
-           return expenseDto;
+            // return Task<List<TravelDocumentDto>>.ReturnResultWith200(expenseDto);
+            return expenseDto;
         }
     }
 }

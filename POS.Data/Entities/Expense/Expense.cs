@@ -30,5 +30,7 @@ namespace POS.Data
         [ForeignKey("ExpenseById")]
         public User ExpenseBy { get; set; }
         public string Status { get; set; }
+        public string AccountStatus { get; set; }
+        public string AccountStatusRemarks { get; set; }
     }
 }

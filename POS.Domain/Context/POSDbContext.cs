@@ -96,6 +96,7 @@ namespace POS.Domain
         public DbSet<PoliciesSetting> PoliciesSettings { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<TripTracking> TripTrackings { get; set; }
+        public DbSet<ExpenseTracking> ExpenseTrackings { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -520,6 +521,14 @@ namespace POS.Domain
             });
 
             builder.Entity<TripTracking>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ExpenseTracking>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()

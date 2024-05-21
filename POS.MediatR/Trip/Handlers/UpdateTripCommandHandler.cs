@@ -58,8 +58,8 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.PurposeId = request.PurposeId;
             entityExist.TripStarts = request.TripStarts;
             entityExist.TripEnds = request.TripEnds;
-            entityExist.Status = request.Status;
-            entityExist.Approval = request.Approval;
+            //entityExist.Status = request.Status;
+            //entityExist.Approval = request.Approval;
             entityExist.SourceCityId = request.SourceCityId;
             entityExist.DestinationCityId = request.DestinationCityId;
             entityExist.DepartmentId = request.DepartmentId;
@@ -67,6 +67,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.ModeOfTrip = request.ModeOfTrip;
             entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
             entityExist.AdvanceMoney = request.AdvanceMoney;
+
 
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)

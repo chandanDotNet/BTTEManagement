@@ -40,31 +40,37 @@ namespace BTTEM.MediatR.Trip.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(UpdateTripItineraryCommand request, CancellationToken cancellationToken)
         {
-
             foreach (var tv in request.TripItinerary)
             {
-                var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
-                entityExist.TripId = tv.TripId;
-                entityExist.TripBy = tv.TripBy;
-                entityExist.BookTypeBy = tv.BookTypeBy;
-                entityExist.TripWayType = tv.TripWayType;
-                entityExist.DepartureCityId = tv.DepartureCityId;
-                entityExist.ArrivalCityId = tv.ArrivalCityId;             
-                entityExist.DepartureDate = tv.DepartureDate;
-                entityExist.TripPreference1 = tv.TripPreference1;
-                entityExist.TripPreference2 = tv.TripPreference2;
-                entityExist.TripPreferenceTime = tv.TripPreferenceTime;
-                entityExist.TripReturnPreferenceTime = tv.TripReturnPreferenceTime;
-                entityExist.TripPreferenceSeat = tv.TripPreferenceSeat;
-                entityExist.ReturnDate = tv.ReturnDate;                
-                entityExist.TentativeAmount = tv.TentativeAmount;
-                entityExist.BookStatus = tv.BookStatus;
-                entityExist.ExpenseId = tv.ExpenseId;
-
-                _tripItineraryRepository.Update(entityExist);
+                if (tv.Id == Guid.Empty)
+                {
+                    tv.Id = Guid.NewGuid();
+                    var entity = _mapper.Map<Data.TripItinerary>(tv);
+                    _tripItineraryRepository.Add(entity);
+                }
+                else
+                {
+                    var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
+                    entityExist.TripId = tv.TripId;
+                    entityExist.TripBy = tv.TripBy;
+                    entityExist.BookTypeBy = tv.BookTypeBy;
+                    entityExist.TripWayType = tv.TripWayType;
+                    entityExist.DepartureCityId = tv.DepartureCityId;
+                    entityExist.ArrivalCityId = tv.ArrivalCityId;
+                    entityExist.DepartureDate = tv.DepartureDate;
+                    entityExist.TripPreference1 = tv.TripPreference1;
+                    entityExist.TripPreference2 = tv.TripPreference2;
+                    entityExist.TripPreferenceTime = tv.TripPreferenceTime;
+                    entityExist.TripReturnPreferenceTime = tv.TripReturnPreferenceTime;
+                    entityExist.TripPreferenceSeat = tv.TripPreferenceSeat;
+                    entityExist.ReturnDate = tv.ReturnDate;
+                    entityExist.TentativeAmount = tv.TentativeAmount;
+                    entityExist.BookStatus = tv.BookStatus;
+                    entityExist.ExpenseId = tv.ExpenseId;
+                    _tripItineraryRepository.Update(entityExist);
+                }
             }
-
-           
+            
             if (await _uow.SaveAsync() <= 0)
             {
                 return ServiceResponse<bool>.Return500();

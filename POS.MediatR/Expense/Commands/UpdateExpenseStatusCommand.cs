@@ -13,6 +13,7 @@ namespace BTTEM.MediatR.CommandAndQuery
 
         public Guid Id { get; set; }
         public string Status { get; set; }
+        public string RejectReason { get; set; }
 
     }
 }

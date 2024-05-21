@@ -13,6 +13,7 @@ namespace BTTEM.Data.Resources
         {
         }
         public Guid? TripId { get; set; }
-        public string Type { get; set; }
+        public Guid? TripItineraryId { get; set; }
+        public string ActionType { get; set; }
     }
 }

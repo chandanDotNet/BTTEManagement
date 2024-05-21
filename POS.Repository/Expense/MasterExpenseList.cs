@@ -86,11 +86,13 @@ namespace BTTEM.Repository.Expense
                         ReimbursementAmount = cs.ReimbursementAmount,
                         AdvanceMoney = cs.AdvanceMoney,
                         ApprovalStage = cs.ApprovalStage,
-                        NoOfBill = cs.NoOfBill,
+                        //NoOfBill = cs.NoOfBill,
+                        NoOfBill = cs.Expenses.Count,
                         ExpenseByUser = cs.ExpenseByUser,
                         Status = cs.Status,
                         ExpenseType= cs.ExpenseType,
                         CreatedDate = cs.CreatedDate,
+                        ReimbursementStatus = cs.ReimbursementStatus,
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                         Expenses =  _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList()
                         
@@ -114,10 +116,12 @@ namespace BTTEM.Repository.Expense
                  ReimbursementAmount = cs.ReimbursementAmount,
                  AdvanceMoney = cs.AdvanceMoney,
                  ApprovalStage = cs.ApprovalStage,
-                 NoOfBill = cs.NoOfBill,
+                 //NoOfBill = cs.NoOfBill,
+                 NoOfBill = cs.Expenses.Count,
                  Status = cs.Status,
                  ExpenseType = cs.ExpenseType,
                  CreatedDate = cs.CreatedDate,
+                 ReimbursementStatus = cs.ReimbursementStatus,
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                  Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
              })//.OrderByDescending(x => x.CreatedDate)

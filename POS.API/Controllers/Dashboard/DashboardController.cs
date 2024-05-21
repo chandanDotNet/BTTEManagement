@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using POS.MediatR.CommandAndQuery;
 using POS.MediatR.Dashboard.Commands;
 using POS.API.Helpers;
+using BTTEM.MediatR.Dashboard.Commands;
+using System;
 
 namespace POS.API.Controllers.Dashboard
 {
@@ -182,6 +184,23 @@ namespace POS.API.Controllers.Dashboard
         {
             var monthlyEventQuery = new GetSalesVsPurchaseReportCommand { Month = month, Year = year };
             var result = await _mediator.Send(monthlyEventQuery);
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Gets the dashboard statistics report.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("StatisticsReport/{Id}")]
+        [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetDashboardStatisticsReport(Guid Id)
+        {
+            var dashboardStaticaticsQueryCommand = new DashboardStaticaticsQueryCommand
+            {
+                UserId = Id
+            };
+            var result = await _mediator.Send(dashboardStaticaticsQueryCommand);
             return Ok(result);
         }
     }

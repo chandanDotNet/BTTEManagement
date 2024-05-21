@@ -68,6 +68,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new PoliciesSettingProfile());
                 mc.AddProfile(new WalletProfile());
                 mc.AddProfile(new TripTrackingProfile());
+                mc.AddProfile(new ExpenseTrackingProfile());
             });
             return mappingConfig.CreateMapper();
         }

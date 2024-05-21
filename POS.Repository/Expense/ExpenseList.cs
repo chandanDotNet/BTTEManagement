@@ -81,6 +81,7 @@ namespace POS.Repository
                         Name = cs.Name,
                         BillType=cs.BillType,
                         Amount = cs.Amount,
+                        MasterExpenseId = cs.MasterExpenseId,
                         Description = cs.Description,
                         ExpenseBy = cs.ExpenseBy !=null? _mapper.Map<UserDto>(cs.ExpenseBy): null,
                         ExpenseById = cs.ExpenseById,
@@ -89,8 +90,11 @@ namespace POS.Repository
                         Reference = cs.Reference,
                         CreatedDate = cs.CreatedDate,
                         ExpenseDate = cs.ExpenseDate,
-                        ReceiptName = cs.ReceiptName,
-                        Status = cs.Status
+                        ReceiptName = cs.ReceiptName,    
+                        ReceiptPath= cs.ReceiptPath,
+                        Status = cs.Status,
+                        AccountStatus = cs.AccountStatus,
+                        AccountStatusRemarks = cs.AccountStatusRemarks
                     })
                     .ToListAsync();
                 return entities;
@@ -117,7 +121,9 @@ namespace POS.Repository
                  CreatedDate = cs.CreatedDate,
                  ExpenseDate = cs.ExpenseDate,
                  ReceiptName = cs.ReceiptName,
-                 Status = cs.Status
+                 Status = cs.Status,
+                 AccountStatus = cs.AccountStatus,
+                 AccountStatusRemarks = cs.AccountStatusRemarks
              })
              .ToListAsync();
                 return entities;

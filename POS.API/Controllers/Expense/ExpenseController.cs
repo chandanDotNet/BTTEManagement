@@ -13,6 +13,11 @@ using POS.API.Helpers;
 using POS.MediatR.Commands;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.MediatR.Commands;
+using BTTEM.MediatR.Expense.Commands;
+using BTTEM.Data.Resources;
+using POS.Data.Dto;
+using POS.Repository;
+using BTTEM.Repository;
 
 namespace POS.API.Controllers.Expense
 {
@@ -22,15 +27,21 @@ namespace POS.API.Controllers.Expense
     public class ExpenseController : BaseController
     {
         private IMediator _mediator;
+        private readonly UserInfoToken _userInfoToken;
+        private readonly IExpenseRepository _expenseRepository;
+        private readonly IMasterExpenseRepository _masterExpenseRepository;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="logger"></param>
         public ExpenseController(
-            IMediator mediator)
+            IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository, IMasterExpenseRepository masterExpenseRepository)
         {
             _mediator = mediator;
+            _userInfoToken = userInfoToken;
+            _expenseRepository = expenseRepository;
+            _masterExpenseRepository = masterExpenseRepository;
         }
         /// <summary>
         /// Add Expenses
@@ -42,6 +53,22 @@ namespace POS.API.Controllers.Expense
         public async Task<IActionResult> AddExpense([FromBody] AddExpenseCommand addExpenseCommand)
         {
             var result = await _mediator.Send(addExpenseCommand);
+            if (result.Success)
+            {
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    ExpenseId = result.Data.Id,
+                    MasterExpenseId = result.Data.MasterExpenseId.Value,
+                    ExpenseTypeName = addExpenseCommand.Name,
+                    ActionType = "Activity",
+                    Remarks = addExpenseCommand.Name + " Expense Added",
+                    Status = "Expense Added",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -61,13 +88,41 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 Guid id = result.Data.Id;
-                foreach(var  item in addMasterExpenseCommand.ExpenseDetails)
+
+                var addMasterExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
-                    AddExpenseCommand addExpenseCommand=new AddExpenseCommand();                   
-                    addExpenseCommand=item;
+                    MasterExpenseId = id,
+                    ExpenseTypeName = addMasterExpenseCommand.Name,
+                    ActionType = "Activity",
+                    Remarks = addMasterExpenseCommand.Name + " Master Expense Added",
+                    Status = "Master Expense Added",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+
+                var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand);
+
+                foreach (var item in addMasterExpenseCommand.ExpenseDetails)
+                {
+                    AddExpenseCommand addExpenseCommand = new AddExpenseCommand();
+                    addExpenseCommand = item;
                     addExpenseCommand.MasterExpenseId = id;
                     addExpenseCommand.TripId = result.Data.TripId;
                     var result2 = await _mediator.Send(addExpenseCommand);
+                    result.Data.ExpenseId = result2.Data.Id;
+
+                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                    {
+                        MasterExpenseId = id,
+                        ExpenseId = result.Data.ExpenseId,
+                        ExpenseTypeName = addExpenseCommand.Name,
+                        ActionType = "Activity",
+                        Remarks = addExpenseCommand.Name + " Expense Added",
+                        Status = "Expense Added",
+                        ActionBy = Guid.Parse(_userInfoToken.Id),
+                        ActionDate = DateTime.Now,
+                    };
+                    var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
             }
             return ReturnFormattedResponse(result);
@@ -85,12 +140,44 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(updateMasterExpenseCommand);
             if (result.Success)
             {
-               // Guid id = result.Data.Id;
+                var masterResponseData = _masterExpenseRepository.FindAsync(updateMasterExpenseCommand.Id);
+                var addMasterExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    MasterExpenseId = updateMasterExpenseCommand.Id,
+                    ExpenseTypeName = masterResponseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = masterResponseData.Result.Name + " Master Expense Updated",
+                    Status = "Master Expense Updated",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand);
+
+                // Guid id = result.Data.Id;
                 foreach (var item in updateMasterExpenseCommand.ExpenseDetails)
                 {
                     UpdateExpenseCommand updateExpenseCommand = new UpdateExpenseCommand();
-                    updateExpenseCommand = item;                    
+                    if (item.Id == null || item.Id == Guid.Empty)
+                    {
+                        item.Id = Guid.NewGuid();
+                    }
+                    updateExpenseCommand = item;
                     var result2 = await _mediator.Send(updateExpenseCommand);
+
+                    var responseData = _expenseRepository.FindAsync(item.Id);
+
+                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                    {
+                        MasterExpenseId = updateMasterExpenseCommand.Id,
+                        ExpenseId = item.Id,
+                        ExpenseTypeName = responseData.Result.Name,
+                        ActionType = "Activity",
+                        Remarks = responseData.Result.Name + " Expense Updated",
+                        Status = "Expense Updated",
+                        ActionBy = Guid.Parse(_userInfoToken.Id),
+                        ActionDate = DateTime.Now,
+                    };
+                    var response = await _mediator.Send(addMasterExpenseTrackingCommand);
                 }
             }
             return ReturnFormattedResponse(result);
@@ -109,6 +196,23 @@ namespace POS.API.Controllers.Expense
         {
             updateExpenseCommand.Id = id;
             var result = await _mediator.Send(updateExpenseCommand);
+
+            if (result.Success)
+            {
+                var responseData = _expenseRepository.FindAsync(id);
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    MasterExpenseId = updateExpenseCommand.MasterExpenseId.Value,
+                    ExpenseId = updateExpenseCommand.Id,
+                    ExpenseTypeName = responseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = responseData.Result.Name + " Expense Updated",
+                    Status = "Expense Updated",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -124,6 +228,23 @@ namespace POS.API.Controllers.Expense
         {
             updateExpenseStatusCommand.Id = id;
             var result = await _mediator.Send(updateExpenseStatusCommand);
+
+            if (result.Success)
+            {
+                var responseData = _expenseRepository.FindAsync(id);
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    ExpenseId = updateExpenseStatusCommand.Id,
+                    ExpenseTypeName = responseData.Result.Name,
+                    MasterExpenseId = responseData.Result.MasterExpenseId,
+                    ActionType = "Tracker",
+                    Remarks = updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
+                    Status = "Expense Status Updated",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -139,6 +260,22 @@ namespace POS.API.Controllers.Expense
         {
             updateMasterExpenseStatusCommand.Id = id;
             var result = await _mediator.Send(updateMasterExpenseStatusCommand);
+            if (result.Success)
+            {
+
+                var responseData = _masterExpenseRepository.FindAsync(id);
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    MasterExpenseId = id,
+                    ExpenseTypeName = responseData.Result.Name,
+                    ActionType = "Tracker",
+                    Remarks = responseData.Result.Name + " Master Expense Status Updated",
+                    Status = "Master Expense Status Updated",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -165,7 +302,7 @@ namespace POS.API.Controllers.Expense
                 pageSize = result.PageSize,
                 skip = result.Skip,
                 totalPages = result.TotalPages,
-                totalAmount=result.TotalAmount
+                totalAmount = result.TotalAmount
             };
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
@@ -193,6 +330,7 @@ namespace POS.API.Controllers.Expense
             var paginationMetadata = new
             {
                 totalCount = result.TotalCount,
+                //totalCount = result[0].Expenses.Count,
                 pageSize = result.PageSize,
                 skip = result.Skip,
                 totalPages = result.TotalPages,
@@ -258,6 +396,24 @@ namespace POS.API.Controllers.Expense
         {
             var command = new DeleteExpenseCommand() { Id = id };
             var result = await _mediator.Send(command);
+
+            if (result.Success)
+            {
+                var responseData = _expenseRepository.FindAsync(id);
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    MasterExpenseId = responseData.Result.MasterExpenseId,
+                    ExpenseId = id,
+                    ExpenseTypeName = responseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = responseData.Result.Name + " Expense Deleted",
+                    Status = "Expense Deleted",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -272,6 +428,22 @@ namespace POS.API.Controllers.Expense
         {
             var command = new DeleteMasterExpenseCommand() { Id = id };
             var result = await _mediator.Send(command);
+
+            if (result.Success)
+            {
+                var responseData = _masterExpenseRepository.FindAsync(id);
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    MasterExpenseId = responseData.Result.Id,
+                    ExpenseTypeName = responseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = responseData.Result.Name + " Master Expense Deleted",
+                    Status = "Master Expense Deleted",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -348,7 +520,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetTravelDocument(Guid? userid)
         {
-            var query = new GetTravelDocumentQuery {UserId= userid };
+            var query = new GetTravelDocumentQuery { UserId = userid };
             var result = await _mediator.Send(query);
             //return ReturnFormattedResponse(result);
             return Ok(result);
@@ -405,8 +577,8 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddWallet([FromBody] AddWalletCommand addWalletCommand)
         {
-            
-            var result = await _mediator.Send(addWalletCommand);            
+
+            var result = await _mediator.Send(addWalletCommand);
             return ReturnFormattedResponse(result);
         }
 
@@ -423,6 +595,87 @@ namespace POS.API.Controllers.Expense
             var query = new GetWalletQuery { UserId = userid };
             var result = await _mediator.Send(query);
             //return ReturnFormattedResponse(result);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update Expense And Master Expense.
+        /// </summary>
+        /// <param name="updateExpenseAndMasterExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateExpenseAndMasterExpense")]
+        //[ClaimCheck("EXP_MSTR_EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> UpdateExpenseAndMasterExpense([FromBody] UpdateExpenseAndMasterExpenseCommand updateExpenseAndMasterExpenseCommand)
+        {
+            var result = await _mediator.Send(updateExpenseAndMasterExpenseCommand);
+            if (result.Success)
+            {
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    ExpenseId = updateExpenseAndMasterExpenseCommand.ExpenseId.Value,
+                    ActionType = "Activity",
+                    Remarks = "Expense REIMBURSED (Full/Partial/Rejected)",
+                    Status = "Expense REIMBURSED (Full/Partial/Rejected)",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get All Expense Tracking
+        /// </summary>
+        /// <param name="expenseTrackingResource"></param>
+        /// <returns></returns>
+
+        [HttpGet("GetExpenseTrackings")]
+        public async Task<IActionResult> GetExpenseTrackings([FromQuery] ExpenseTrackingResource expenseTrackingResource)
+        {
+            var getAllExpenseTrackingQuery = new GetAllExpenseTrackingQuery
+            {
+                ExpenseTrackingResource = expenseTrackingResource
+            };
+            var result = await _mediator.Send(getAllExpenseTrackingQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Get All Travel Docs
+        /// </summary>
+        /// <param name="travelDocumentResource"></param>
+        /// <returns></returns>
+
+        [HttpPost("GetTravelDocuments")]
+        public async Task<IActionResult> GetTravelDocuments([FromBody] TravelDocumentResource travelDocumentResource)
+        {
+            var getAllTravelDocumentQuery = new GetAllTravelDocumentQuery
+            {
+                TravelDocumentResource = travelDocumentResource
+            };
+            var result = await _mediator.Send(getAllTravelDocumentQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(result);
         }
     }

@@ -56,10 +56,16 @@ namespace BTTEM.Repository
                   .Where(a => a.TripId == tripTrackingResource.TripId);
             }
 
-            if (!string.IsNullOrEmpty(tripTrackingResource.Type))
+            if (tripTrackingResource.TripItineraryId.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
-                  .Where(a => a.Type == tripTrackingResource.Type);
+                  .Where(a => a.TripItineraryId == tripTrackingResource.TripItineraryId);
+            }
+
+            if (!string.IsNullOrEmpty(tripTrackingResource.ActionType))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.ActionType == tripTrackingResource.ActionType);
             }
 
             var TripTrackingList = new TripTrackingList();
