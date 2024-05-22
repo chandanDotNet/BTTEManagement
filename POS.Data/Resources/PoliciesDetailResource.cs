@@ -15,6 +15,8 @@ namespace BTTEM.Data.Resources
         }
         public Guid? Id { get; set; }
         public string Name { get; set; }
+        public Guid? GradeId { get; set; }
+        public Guid? CompanyAccountId { get; set; }
 
     }
 }

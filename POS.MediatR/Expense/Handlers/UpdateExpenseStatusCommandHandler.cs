@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,7 @@ namespace BTTEM.MediatR.Expense.Handlers
         private readonly ILogger<UpdateExpenseStatusCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
+        private readonly IMasterExpenseRepository _masterExpenseRepository;
 
         public UpdateExpenseStatusCommandHandler(
             IExpenseRepository expenseRepository,
@@ -35,7 +37,8 @@ namespace BTTEM.MediatR.Expense.Handlers
             IMapper mapper,
             ILogger<UpdateExpenseStatusCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
-            PathHelper pathHelper)
+            PathHelper pathHelper,
+            IMasterExpenseRepository masterExpenseRepository)
         {
             _expenseRepository = expenseRepository;
             _uow = uow;
@@ -43,6 +46,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _masterExpenseRepository = masterExpenseRepository;
         }
 
 
@@ -54,9 +58,18 @@ namespace BTTEM.MediatR.Expense.Handlers
                 _logger.LogError("Expense does not exists.");
                 return ServiceResponse<bool>.Return409("Expense does not exists.");
             }
+            if(request.Status== "APPROVED")
+            {
+                var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
+                if (entityMasterExist != null)
+                {
+                    entityMasterExist.PayableAmount = entityMasterExist.PayableAmount + request.PayableAmount;
+                }
+                _masterExpenseRepository.Update(entityMasterExist);
+            }
+           
 
             entityExist.Status = request.Status;
-
             _expenseRepository.Update(entityExist);
 
             if (await _uow.SaveAsync() <= 0)

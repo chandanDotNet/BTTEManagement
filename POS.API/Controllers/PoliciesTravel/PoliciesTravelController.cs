@@ -15,6 +15,8 @@ using BTTEM.Data;
 using BTTEM.Data.Dto.PoliciesTravel;
 using BTTEM.MediatR.PoliciesTravel.Handlers;
 using POS.MediatR.Brand.Command;
+using System.Linq;
+using POS.Data;
 
 namespace BTTEM.API.Controllers.PoliciesTravel
 {
@@ -218,6 +220,179 @@ namespace BTTEM.API.Controllers.PoliciesTravel
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get All Policies Lodging Fooding Allowance By User 
+        /// </summary>
+
+        /// <returns></returns>
+
+        [HttpGet("GetPoliciesLodgingFoodingAllowanceByUser")]
+        public async Task<IActionResult> GetPoliciesLodgingFoodingAllowanceByUser(Guid UserId)
+        {
+                       
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId= resultUser.GradeId,
+            };
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+
+            var getAllPoliciesLodgingFoodingCommand = new GetAllPoliciesLodgingFoodingCommand
+            {
+                Id = resultPoliciesDetail.FirstOrDefault().Id
+            };
+            var result = await _mediator.Send(getAllPoliciesLodgingFoodingCommand);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get All Conveyance AllowanceByUser
+        /// </summary>
+
+        /// <returns></returns>
+
+        [HttpGet("GetConveyanceAllowanceByUser")]
+        public async Task<IActionResult> GetConveyanceAllowanceByUser(Guid UserId)
+        {
+            
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
+            };
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+
+            var getAllConveyanceCommand = new GetAllConveyanceCommand
+            {
+                Id = resultPoliciesDetail.FirstOrDefault().Id
+            };
+            var result = await _mediator.Send(getAllConveyanceCommand);
+            
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get All Policies Vehicle Conveyance AllowanceByUser
+        /// </summary>
+
+        /// <returns></returns>
+
+        [HttpGet("GetPoliciesVehicleConveyanceAllowanceByUser")]
+        public async Task<IActionResult> GetPoliciesVehicleConveyanceAllowanceByUser(Guid UserId)
+        {
+            
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
+            };
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+
+            var getAllConveyanceCommand = new GetAllPoliciesVehicleConveyanceCommand
+            {
+                Id = resultPoliciesDetail.FirstOrDefault().Id
+            };
+            var result = await _mediator.Send(getAllConveyanceCommand);
+
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get All Policies MISC AllowanceByUser
+        /// </summary>
+
+        /// <returns></returns>
+
+        [HttpGet("GetPoliciesMISCAllowanceByUser")]
+        public async Task<IActionResult> GetPoliciesMISCAllowanceByUser(Guid UserId)
+        {
+
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
+            };
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var result = await _mediator.Send(getAllPoliciesDetailCommand);           
+
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get All Policies Setting Allowance By User
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet("GetPoliciesSettingAllowanceByUser")]
+        public async Task<IActionResult> GetPoliciesSettingAllowanceByUser(Guid UserId)
+        {
+
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
+            };
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+            var getAllPoliciesSettingCommand = new GetAllPoliciesSettingCommand
+            {
+                Id = resultPoliciesDetail.FirstOrDefault().Id
+            };
+            var result = await _mediator.Send(getAllPoliciesSettingCommand);
+
+
+            return Ok(result);
+        }
+
+
 
         /// <summary>
         ///  Update a PoliciesDetail
