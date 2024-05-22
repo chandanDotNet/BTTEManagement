@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.MediatR.Expense.Commands;
 using BTTEM.Repository;
 using MediatR;
@@ -22,6 +23,7 @@ namespace BTTEM.MediatR.Expense.Handlers
 {
     public class UpdateExpenseAndMasterEpenseCommandHandler : IRequestHandler<UpdateExpenseAndMasterExpenseCommand, ServiceResponse<bool>>
     {
+        private readonly IUserRepository _userRepository;
         private readonly IExpenseRepository _expenseRepository;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
@@ -33,13 +35,15 @@ namespace BTTEM.MediatR.Expense.Handlers
             IMasterExpenseRepository masterExpenseRepository,
             IUnitOfWork<POSDbContext> uow,
             IMapper mapper,
-            ILogger<UpdateExpenseAndMasterEpenseCommandHandler> logger)
+            ILogger<UpdateExpenseAndMasterEpenseCommandHandler> logger,
+            IUserRepository userRepository)
         {
             _expenseRepository = expenseRepository;
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
             _mapper = mapper;
             _logger = logger;
+            _userRepository = userRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseAndMasterExpenseCommand request, CancellationToken cancellationToken)
@@ -92,6 +96,23 @@ namespace BTTEM.MediatR.Expense.Handlers
                 }
                 
                 _masterExpenseRepository.Update(masterEntityExist);
+
+                AddWalletCommand requestWallet = new AddWalletCommand();
+                decimal amount = 0;
+                var appUser = await _userRepository.FindAsync(masterEntityExist.CreatedBy);
+                if (appUser != null && appUser.IsPermanentAdvance == true)
+                {
+                    amount = appUser.PermanentAdvance.Value;
+                    requestWallet.CurrentWalletBalance = (amount + request.ReimbursementAmount);
+                    requestWallet.UserId = masterEntityExist.CreatedBy;
+                    requestWallet.IsCredit = false;
+                    requestWallet.PermanentAdvance = amount;
+                    requestWallet.ExpenseAmount = request.ReimbursementAmount;
+                    //var entity = _mapper.Map<Wallet>(request);
+                    //_walletRepository.Add(entity);
+                    appUser.PermanentAdvance = requestWallet.CurrentWalletBalance;
+                    _userRepository.Update(appUser);
+                }
             }
 
             if (await _uow.SaveAsync() <= 0)
