@@ -44,7 +44,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
             dashboardStatics.TotalReimbursementAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId).SumAsync(x => x.ReimbursementAmount);
             dashboardStatics.TotalApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus == "APPROVED").CountAsync();
             dashboardStatics.TotalPartialApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus == "PARTIAL").CountAsync();
-            dashboardStatics.TotalPendingExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus == "PENDIND").CountAsync();
+            dashboardStatics.TotalPendingExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus == "PENDING").CountAsync();
             return dashboardStatics;
         }
     }
