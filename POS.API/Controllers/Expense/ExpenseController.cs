@@ -191,7 +191,7 @@ namespace POS.API.Controllers.Expense
         /// <param name="updateExpenseCommand"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        [ClaimCheck("EXP_UPDATE_EXPENSE")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
         public async Task<IActionResult> UpdateExpense(Guid id, [FromBody] UpdateExpenseCommand updateExpenseCommand)
         {
             updateExpenseCommand.Id = id;
@@ -285,7 +285,7 @@ namespace POS.API.Controllers.Expense
         /// <param name="expenseResource"></param>
         /// <returns></returns>
         [HttpGet]
-        [ClaimCheck("EXP_VIEW_EXPENSES")]
+        //[ClaimCheck("EXP_VIEW_EXPENSE")]
         public async Task<IActionResult> GetExpenses([FromQuery] ExpenseResource expenseResource)
         {
 
@@ -377,7 +377,7 @@ namespace POS.API.Controllers.Expense
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}", Name = "GetExpense")]
-        [ClaimCheck("EXP_VIEW_EXPENSES")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetExpense(Guid id)
         {
             var query = new GetExpenseQuery { Id = id };
