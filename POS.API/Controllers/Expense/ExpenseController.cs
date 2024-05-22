@@ -608,18 +608,36 @@ namespace POS.API.Controllers.Expense
         public async Task<IActionResult> UpdateExpenseAndMasterExpense([FromBody] UpdateExpenseAndMasterExpenseCommand updateExpenseAndMasterExpenseCommand)
         {
             var result = await _mediator.Send(updateExpenseAndMasterExpenseCommand);
+
             if (result.Success)
             {
-                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                if (updateExpenseAndMasterExpenseCommand.ExpenseId.HasValue)
                 {
-                    ExpenseId = updateExpenseAndMasterExpenseCommand.ExpenseId.Value,
-                    ActionType = "Activity",
-                    Remarks = "Expense REIMBURSED (Full/Partial/Rejected)",
-                    Status = "Expense REIMBURSED (Full/Partial/Rejected)",
-                    ActionBy = Guid.Parse(_userInfoToken.Id),
-                    ActionDate = DateTime.Now,
-                };
-                var response = await _mediator.Send(addExpenseTrackingCommand);
+                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                    {
+                        ExpenseId = updateExpenseAndMasterExpenseCommand.ExpenseId.Value,
+                        ActionType = "Activity",
+                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected)",
+                        Status = "Expense REIMBURSED (Full/Partial/Rejected)",
+                        ActionBy = Guid.Parse(_userInfoToken.Id),
+                        ActionDate = DateTime.Now,
+                    };
+                    var response = await _mediator.Send(addExpenseTrackingCommand);
+                }
+
+                if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
+                {
+                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                    {
+                        MasterExpenseId = updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value,                        
+                        ActionType = "Activity",
+                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected)",
+                        Status = "Expense REIMBURSED (Full/Partial/Rejected)",
+                        ActionBy = Guid.Parse(_userInfoToken.Id),
+                        ActionDate = DateTime.Now,
+                    };
+                    var response = await _mediator.Send(addExpenseTrackingCommand);
+                }
             }
             return ReturnFormattedResponse(result);
         }
