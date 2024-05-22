@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BTTEM.Data;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.Repository;
 using MediatR;
@@ -31,6 +32,7 @@ namespace BTTEM.MediatR.Expense.Handlers
         private readonly PathHelper _pathHelper;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IWalletRepository _walletRepository;
 
         public UpdateExpenseStatusCommandHandler(
             IExpenseRepository expenseRepository,
@@ -40,7 +42,8 @@ namespace BTTEM.MediatR.Expense.Handlers
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
             IMasterExpenseRepository masterExpenseRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IWalletRepository walletRepository
             )
         {
             _expenseRepository = expenseRepository;
@@ -51,6 +54,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             _pathHelper = pathHelper;
             _masterExpenseRepository = masterExpenseRepository;
             _userRepository = userRepository;
+            _walletRepository = walletRepository;
         }
 
 
@@ -70,6 +74,28 @@ namespace BTTEM.MediatR.Expense.Handlers
                     entityMasterExist.PayableAmount = entityMasterExist.PayableAmount + request.PayableAmount;
                 }
                 _masterExpenseRepository.Update(entityMasterExist);
+
+                //=================
+                AddWalletCommand requestWallet = new AddWalletCommand();
+                decimal amount = 0;
+                var appUser = await _userRepository.FindAsync(entityMasterExist.CreatedBy);
+                if (appUser != null && appUser.IsPermanentAdvance == true)
+                {
+                    amount = appUser.PermanentAdvance.Value;
+
+                    requestWallet.CurrentWalletBalance = (amount - request.PayableAmount);
+                    requestWallet.UserId = entityMasterExist.CreatedBy;
+                    requestWallet.IsCredit = false;
+                    requestWallet.PermanentAdvance = amount;
+                    requestWallet.ExpenseAmount = request.PayableAmount;
+                    var entity = _mapper.Map<Wallet>(request);
+                    _walletRepository.Add(entity);
+                    appUser.PermanentAdvance = requestWallet.CurrentWalletBalance;
+                    _userRepository.Update(appUser);
+                }
+                // request.PermanentAdvance = amount;
+
+                //=========
             }
            
 

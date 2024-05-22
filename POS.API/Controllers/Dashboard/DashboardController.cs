@@ -34,7 +34,7 @@ namespace POS.API.Controllers.Dashboard
         /// </summary>
         /// <returns></returns>
         [HttpGet("statistics")]
-        [ClaimCheck("DB_STATISTICS")]
+        //[ClaimCheck("DB_STATISTICS")]
         [Produces("application/json", "application/xml", Type = typeof(int))]
         public async Task<IActionResult> GetDashboardStatistics()
         {

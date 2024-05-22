@@ -17,6 +17,7 @@ using BTTEM.MediatR.PoliciesTravel.Handlers;
 using POS.MediatR.Brand.Command;
 using System.Linq;
 using POS.Data;
+using POS.Helper;
 
 namespace BTTEM.API.Controllers.PoliciesTravel
 {
@@ -246,7 +247,10 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-
+            if (resultPoliciesDetail == null)
+            {
+                return Ok("Policies does not exists for this Grade.");
+            }
             var getAllPoliciesLodgingFoodingCommand = new GetAllPoliciesLodgingFoodingCommand
             {
                 Id = resultPoliciesDetail.FirstOrDefault().Id
@@ -281,7 +285,10 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-
+            if (resultPoliciesDetail == null)
+            {
+                return Ok("Policies does not exists for this Grade.");
+            }
             var getAllConveyanceCommand = new GetAllConveyanceCommand
             {
                 Id = resultPoliciesDetail.FirstOrDefault().Id
@@ -317,7 +324,10 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-
+            if (resultPoliciesDetail == null)
+            {
+                return Ok("Policies does not exists for this Grade.");
+            }
             var getAllConveyanceCommand = new GetAllPoliciesVehicleConveyanceCommand
             {
                 Id = resultPoliciesDetail.FirstOrDefault().Id
@@ -352,8 +362,12 @@ namespace BTTEM.API.Controllers.PoliciesTravel
             {
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
-            var result = await _mediator.Send(getAllPoliciesDetailCommand);           
 
+            var result = await _mediator.Send(getAllPoliciesDetailCommand);
+            if (result == null)
+            {
+                return Ok("Policies does not exists for this Grade.");
+            }
 
             return Ok(result);
         }
@@ -382,6 +396,10 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+            if (resultPoliciesDetail == null)
+            {
+                return Ok("Policies does not exists for this Grade.");
+            }
             var getAllPoliciesSettingCommand = new GetAllPoliciesSettingCommand
             {
                 Id = resultPoliciesDetail.FirstOrDefault().Id
