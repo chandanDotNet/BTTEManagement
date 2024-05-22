@@ -59,6 +59,8 @@ namespace POS.Data
         public EmpGrade EmpGrades { get; set; }
         public bool? IsPermanentAdvance { get; set; }
         public decimal? PermanentAdvance { get; set; }
+
+        public List<TravelDocument> TravelDocuments { get; set; }
         //public UserDto ReportingToDetails { get; set; }
     }
 }
