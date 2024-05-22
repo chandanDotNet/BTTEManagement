@@ -16,6 +16,7 @@ using BTTEM.Data.Dto.PoliciesTravel;
 using BTTEM.MediatR.PoliciesTravel.Handlers;
 using POS.MediatR.Brand.Command;
 using System.Linq;
+using POS.Data;
 
 namespace BTTEM.API.Controllers.PoliciesTravel
 {
@@ -227,15 +228,18 @@ namespace BTTEM.API.Controllers.PoliciesTravel
         /// <returns></returns>
 
         [HttpGet("GetPoliciesLodgingFoodingAllowanceByUser")]
-        public async Task<IActionResult> GetPoliciesLodgingFoodingAllowanceByUser(Guid? Id)
+        public async Task<IActionResult> GetPoliciesLodgingFoodingAllowanceByUser(Guid UserId)
         {
-           
-            Guid? CompanyAccountId = null;
-            Guid? GradeId = null;
+                       
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
             PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
             {
-                CompanyAccountId = CompanyAccountId,
-                GradeId=GradeId,
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId= resultUser.GradeId,
             };
             var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
             {
@@ -259,14 +263,18 @@ namespace BTTEM.API.Controllers.PoliciesTravel
         /// <returns></returns>
 
         [HttpGet("GetConveyanceAllowanceByUser")]
-        public async Task<IActionResult> GetConveyanceAllowanceByUser(Guid? UserId)
+        public async Task<IActionResult> GetConveyanceAllowanceByUser(Guid UserId)
         {
-            Guid? CompanyAccountId = null;
-            Guid? GradeId = null;
+            
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
             PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
             {
-                CompanyAccountId = CompanyAccountId,
-                GradeId = GradeId,
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
             };
             var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
             {
@@ -293,12 +301,16 @@ namespace BTTEM.API.Controllers.PoliciesTravel
         [HttpGet("GetPoliciesVehicleConveyanceAllowanceByUser")]
         public async Task<IActionResult> GetPoliciesVehicleConveyanceAllowanceByUser(Guid UserId)
         {
-            Guid? CompanyAccountId = null;
-            Guid? GradeId = null;
+            
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
             PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
             {
-                CompanyAccountId = CompanyAccountId,
-                GradeId = GradeId,
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
             };
             var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
             {
@@ -325,12 +337,16 @@ namespace BTTEM.API.Controllers.PoliciesTravel
         [HttpGet("GetPoliciesMISCAllowanceByUser")]
         public async Task<IActionResult> GetPoliciesMISCAllowanceByUser(Guid UserId)
         {
-            Guid? CompanyAccountId = null;
-            Guid? GradeId = null;
+
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
             PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
             {
-                CompanyAccountId = CompanyAccountId,
-                GradeId = GradeId,
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
             };
             var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
             {
@@ -342,7 +358,39 @@ namespace BTTEM.API.Controllers.PoliciesTravel
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get All Policies Setting Allowance By User
+        /// </summary>
+        /// <returns></returns>
 
+        [HttpGet("GetPoliciesSettingAllowanceByUser")]
+        public async Task<IActionResult> GetPoliciesSettingAllowanceByUser(Guid UserId)
+        {
+
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = UserId
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
+            };
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+            var getAllPoliciesSettingCommand = new GetAllPoliciesSettingCommand
+            {
+                Id = resultPoliciesDetail.FirstOrDefault().Id
+            };
+            var result = await _mediator.Send(getAllPoliciesSettingCommand);
+
+
+            return Ok(result);
+        }
 
 
 
