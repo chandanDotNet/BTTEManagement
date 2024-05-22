@@ -90,7 +90,9 @@ namespace BTTEM.Repository
                         DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
                         SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
                         CreatedByUser=cs.CreatedByUser,
-                        TripItinerarys=cs.TripItinerarys
+                        TripItinerarys=cs.TripItinerarys,
+                        GradeName = cs.CreatedByUser.Grades.GradeName,
+                        TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments)
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -130,7 +132,9 @@ namespace BTTEM.Repository
                  DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
                  SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
                  CreatedByUser = cs.CreatedByUser,
-                 TripItinerarys = cs.TripItinerarys
+                 TripItinerarys = cs.TripItinerarys,
+                 GradeName = cs.CreatedByUser.Grades.GradeName,
+                 TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments)
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();
