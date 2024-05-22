@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using POS.Data;
+using BTTEM.Repository;
 
 namespace POS.MediatR.Handlers
 {
@@ -27,6 +28,7 @@ namespace POS.MediatR.Handlers
         private readonly ILogger<UpdateExpenseCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
+        private readonly IMasterExpenseRepository _masterExpenseRepository;
 
         public UpdateExpenseCommandHandler(
             IExpenseRepository expenseRepository,
@@ -34,7 +36,8 @@ namespace POS.MediatR.Handlers
             IMapper mapper,
             ILogger<UpdateExpenseCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
-            PathHelper pathHelper)
+            PathHelper pathHelper,
+            IMasterExpenseRepository masterExpenseRepository)
         {
             _expenseRepository = expenseRepository;
             _uow = uow;
@@ -42,10 +45,12 @@ namespace POS.MediatR.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _masterExpenseRepository = masterExpenseRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
         {
+            
             var entityExist = await _expenseRepository.FindAsync(request.Id);         
 
             if (request.MasterExpenseId == Guid.Empty || request.MasterExpenseId == null)
@@ -102,6 +107,20 @@ namespace POS.MediatR.Handlers
                     entityExist.ReceiptPath = null;
                     entityExist.ReceiptName = null;
                 }
+            }
+
+            var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
+            if (entityMasterExist != null)
+            {
+                decimal UpdatedExpenseAmount = 0;
+                decimal OldExpenseAmount = entityExist.Amount;
+                decimal NowExpenseAmount = request.Amount;
+                decimal TotalExpenseAmount = entityMasterExist.TotalAmount;
+                UpdatedExpenseAmount = (TotalExpenseAmount - OldExpenseAmount);
+                UpdatedExpenseAmount = UpdatedExpenseAmount + NowExpenseAmount;
+                entityMasterExist.TotalAmount= UpdatedExpenseAmount;
+                _masterExpenseRepository.Update(entityMasterExist);
+
             }
             if (await _uow.SaveAsync() <= 0)
             {
