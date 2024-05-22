@@ -30,6 +30,7 @@ namespace BTTEM.MediatR.Expense.Handlers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
+        private readonly IUserRepository _userRepository;
 
         public UpdateExpenseStatusCommandHandler(
             IExpenseRepository expenseRepository,
@@ -38,7 +39,9 @@ namespace BTTEM.MediatR.Expense.Handlers
             ILogger<UpdateExpenseStatusCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IMasterExpenseRepository masterExpenseRepository)
+            IMasterExpenseRepository masterExpenseRepository,
+            IUserRepository userRepository
+            )
         {
             _expenseRepository = expenseRepository;
             _uow = uow;
@@ -47,6 +50,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
             _masterExpenseRepository = masterExpenseRepository;
+            _userRepository = userRepository;
         }
 
 
