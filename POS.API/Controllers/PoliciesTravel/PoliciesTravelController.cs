@@ -247,7 +247,7 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-            if (resultPoliciesDetail == null)
+            if (resultPoliciesDetail.Count == 0)
             {
                 return Ok("Policies does not exists for this Grade.");
             }
@@ -285,7 +285,7 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-            if (resultPoliciesDetail == null)
+            if (resultPoliciesDetail.Count == 0)
             {
                 return Ok("Policies does not exists for this Grade.");
             }
@@ -324,7 +324,7 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-            if (resultPoliciesDetail == null)
+            if (resultPoliciesDetail.Count == 0)
             {
                 return Ok("Policies does not exists for this Grade.");
             }
@@ -396,7 +396,7 @@ namespace BTTEM.API.Controllers.PoliciesTravel
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-            if (resultPoliciesDetail == null)
+            if (resultPoliciesDetail.Count == 0)
             {
                 return Ok("Policies does not exists for this Grade.");
             }
