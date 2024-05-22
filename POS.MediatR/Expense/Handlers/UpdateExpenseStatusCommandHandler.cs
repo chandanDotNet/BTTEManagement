@@ -71,6 +71,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
                 if (entityMasterExist != null)
                 {
+                    if(entityMasterExist.PayableAmount==null) { entityMasterExist.PayableAmount = 0; }
                     entityMasterExist.PayableAmount = entityMasterExist.PayableAmount + request.PayableAmount;
                 }
                 _masterExpenseRepository.Update(entityMasterExist);
@@ -88,8 +89,8 @@ namespace BTTEM.MediatR.Expense.Handlers
                     requestWallet.IsCredit = false;
                     requestWallet.PermanentAdvance = amount;
                     requestWallet.ExpenseAmount = request.PayableAmount;
-                    var entity = _mapper.Map<Wallet>(request);
-                    _walletRepository.Add(entity);
+                    //var entity = _mapper.Map<Wallet>(request);
+                    //_walletRepository.Add(entity);
                     appUser.PermanentAdvance = requestWallet.CurrentWalletBalance;
                     _userRepository.Update(appUser);
                 }
