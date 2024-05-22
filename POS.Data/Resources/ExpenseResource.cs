@@ -22,6 +22,7 @@ namespace POS.Data.Resources
         public string? ApprovalStage { get; set; }
         public string? ExpenseType { get; set; }
         public string? ExpenseByUser { get; set; }
+        public string? ExpenseStatus { get; set; }
 
     }
 }

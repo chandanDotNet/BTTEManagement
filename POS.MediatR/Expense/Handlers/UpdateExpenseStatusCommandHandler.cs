@@ -94,6 +94,10 @@ namespace BTTEM.MediatR.Expense.Handlers
                     appUser.PermanentAdvance = requestWallet.CurrentWalletBalance;
                     _userRepository.Update(appUser);
                 }
+                else
+                {
+                    
+                }
                 // request.PermanentAdvance = amount;
 
                 //===========
