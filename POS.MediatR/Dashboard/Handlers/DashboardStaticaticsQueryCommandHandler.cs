@@ -39,7 +39,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
             var users = await _userRepository.FindAsync(request.UserId);
             dashboardStatics.UserName = string.Concat(users.FirstName, " ", users.LastName);
             dashboardStatics.TotalTrip = await _tripRepository.All.Where(x => x.CreatedBy == request.UserId).CountAsync();
-            dashboardStatics.TotalAdvanceMoney = await _tripRepository.All.Where(x => x.CreatedBy == request.UserId).SumAsync(x => x.AdvanceMoney.Value);
+            dashboardStatics.TotalAdvanceMoney = await _userRepository.All.Where(x => x.Id == request.UserId && x.IsPermanentAdvance == true).SumAsync(x => x.PermanentAdvance.Value);
             dashboardStatics.TotalExpenseAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId).SumAsync(x => x.TotalAmount);
             dashboardStatics.TotalReimbursementAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId).SumAsync(x => x.ReimbursementAmount);
             dashboardStatics.TotalApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus == "APPROVED").CountAsync();

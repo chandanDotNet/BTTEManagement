@@ -44,34 +44,55 @@ namespace BTTEM.MediatR.Expense.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseAndMasterExpenseCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _expenseRepository.FindAsync(request.ExpenseId.Value);
-            if (entityExist == null)
+            if (request.ExpenseId.HasValue)
             {
-                _logger.LogError("Expense does not exists.");
-                return ServiceResponse<bool>.Return409("Expense does not exists.");
-            }
-            entityExist.AccountStatus = request.AccountStatus;
-            entityExist.AccountStatusRemarks = request.AccountStatusRemarks;
+                var entityExist = await _expenseRepository.FindAsync(request.ExpenseId.Value);
+                if (entityExist == null)
+                {
+                    _logger.LogError("Expense does not exists.");
+                    return ServiceResponse<bool>.Return409("Expense does not exists.");
+                }
+                entityExist.AccountStatus = request.AccountStatus;
+                entityExist.AccountStatusRemarks = request.AccountStatusRemarks;
 
-            var masterEntityExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
-            masterEntityExist.ReimbursementAmount = request.ReimbursementAmount + masterEntityExist.ReimbursementAmount;
-            if (masterEntityExist.ReimbursementAmount == masterEntityExist.TotalAmount)
-            {
-                masterEntityExist.ReimbursementStatus = "FULL";
-            }
-            else if (masterEntityExist.ReimbursementAmount != 0)
-            {
-                masterEntityExist.ReimbursementStatus = "PARTIAL";
-            }
-            else if (masterEntityExist.ReimbursementAmount == 0)
-            {
-                masterEntityExist.ReimbursementStatus = "PENDING";
-            }
+                var masterEntityExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
+                masterEntityExist.ReimbursementAmount = request.ReimbursementAmount + masterEntityExist.ReimbursementAmount;
+                if (masterEntityExist.ReimbursementAmount == masterEntityExist.TotalAmount)
+                {
+                    masterEntityExist.ReimbursementStatus = "FULL";
+                }
+                else if (masterEntityExist.ReimbursementAmount != 0)
+                {
+                    masterEntityExist.ReimbursementStatus = "PARTIAL";
+                }
+                else if (masterEntityExist.ReimbursementAmount == 0)
+                {
+                    masterEntityExist.ReimbursementStatus = "PENDING";
+                }
+                //_mapper.Map(request, entityExist);            
 
-            //_mapper.Map(request, entityExist);            
-
-            _expenseRepository.Update(entityExist);
-            _masterExpenseRepository.Update(masterEntityExist);
+                _expenseRepository.Update(entityExist);
+                _masterExpenseRepository.Update(masterEntityExist);
+            }
+            if (request.MasterExpenseId.HasValue)
+            {
+                var masterEntityExist = await _masterExpenseRepository.FindAsync(request.MasterExpenseId.Value);
+                masterEntityExist.ReimbursementAmount = request.ReimbursementAmount;
+                if (masterEntityExist.ReimbursementAmount == masterEntityExist.TotalAmount)
+                {
+                    masterEntityExist.ReimbursementStatus = "FULL";
+                }
+                else if (masterEntityExist.ReimbursementAmount != 0)
+                {
+                    masterEntityExist.ReimbursementStatus = "PARTIAL";
+                }
+                else if (masterEntityExist.ReimbursementAmount == 0)
+                {
+                    masterEntityExist.ReimbursementStatus = "PENDING";
+                }
+                
+                _masterExpenseRepository.Update(masterEntityExist);
+            }
 
             if (await _uow.SaveAsync() <= 0)
             {
