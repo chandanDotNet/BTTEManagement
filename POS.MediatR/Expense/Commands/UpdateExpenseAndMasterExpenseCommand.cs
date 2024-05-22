@@ -11,6 +11,7 @@ namespace BTTEM.MediatR.Expense.Commands
     public class UpdateExpenseAndMasterExpenseCommand : IRequest<ServiceResponse<bool>>
     {        
         public Guid? ExpenseId { get; set; }
+        public Guid? MasterExpenseId { get; set; }
         public decimal ReimbursementAmount { get; set; }
         public string AccountStatus { get; set; }
         public string AccountStatusRemarks { get; set; }
