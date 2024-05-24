@@ -347,7 +347,7 @@ namespace POS.API.Controllers.Expense
         /// <param name="expenseResource"></param>
         /// <returns></returns>
         [HttpGet("report")]
-        [ClaimCheck("EXP_VIEW_EXPENSES")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetExpensesReport([FromQuery] ExpenseResource expenseResource)
         {
 
