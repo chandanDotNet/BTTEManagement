@@ -696,5 +696,121 @@ namespace POS.API.Controllers.Expense
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(result);
         }
+
+
+        /// <summary>
+        /// Add Travel Desk Expenses
+        /// </summary>
+        /// <param name="addTravelDeskExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddTravelDeskExpense")]
+        [ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddTravelDeskExpense([FromBody] AddTravelDeskExpenseCommand addTravelDeskExpenseCommand)
+        {
+            var result = await _mediator.Send(addTravelDeskExpenseCommand);
+            if (result.Success)
+            {
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    ExpenseId = result.Data.Id,
+                    //MasterExpenseId = result.Data.MasterExpenseId.Value,
+                    ExpenseTypeName = addTravelDeskExpenseCommand.Name,
+                    ActionType = "Activity",
+                    Remarks = addTravelDeskExpenseCommand.Name + " Booking File Uploaded by Travel Desk",
+                    Status = "Booking File Uploaded by Travel Desk",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Update Travel Desk.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateTravelDeskExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateTravelDeskExpense/{id}")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> UpdateTravelDeskExpense(Guid id, [FromBody] UpdateTravelDeskExpenseCommand updateTravelDeskExpenseCommand)
+        {
+            updateTravelDeskExpenseCommand.Id = id;
+            var result = await _mediator.Send(updateTravelDeskExpenseCommand);
+
+            if (result.Success)
+            {               
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {                    
+                    ExpenseId = updateTravelDeskExpenseCommand.Id,
+                    ExpenseTypeName = updateTravelDeskExpenseCommand.Name,
+                    ActionType = "Activity",
+                    Remarks = updateTravelDeskExpenseCommand.Name + " Booking File Re-Uploaded by Travel Desk",
+                    Status = "Booking File Re-Uploaded by Travel Desk",
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Download Travel Desk Document
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/downloadTravelDeskFile")]
+        public async Task<IActionResult> DownloadTravelDeskFile(Guid id)
+        {
+            var commnad = new DonwloadTravelDeskCommand
+            {
+                Id = id,
+            };
+            var path = await _mediator.Send(commnad);
+
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+                return NotFound("File not found.");
+
+            byte[] newBytes;
+            await using (var stream = new FileStream(path, FileMode.Open))
+            {
+                byte[] bytes = new byte[stream.Length];
+                int numBytesToRead = (int)stream.Length;
+                int numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead.
+                    int n = stream.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached.
+                    if (n == 0)
+                        break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+                newBytes = bytes;
+            }
+            return File(newBytes, GetContentType(path), path);
+        }
+
+        /// <summary>
+        /// Gets All Travel Desk 
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpGet("GetTravelDeskExpense/{id}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetTravelDeskExpense(Guid id)
+        {
+            var query = new GetAllTravelDeskQuery { Id = id };
+            var result = await _mediator.Send(query);
+            //return ReturnFormattedResponse(result);
+            return Ok(result);
+        }
     }
 }

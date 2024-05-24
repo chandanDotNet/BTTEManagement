@@ -97,6 +97,7 @@ namespace POS.Domain
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<TripTracking> TripTrackings { get; set; }
         public DbSet<ExpenseTracking> ExpenseTrackings { get; set; }
+        public DbSet<TravelDeskExpense> TravelDeskExpenses { get; set; }
         public DbSet<RequestCall> RequestCalls { get; set; }
         public DbSet<ContactSupport> ContactSupports { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -579,6 +580,7 @@ namespace POS.Domain
             builder.Entity<PoliciesVehicleConveyance>().ToTable("PoliciesVehicleConveyances");
             builder.Entity<PoliciesSetting>().ToTable("PoliciesSettings");
             builder.Entity<Wallet>().ToTable("Wallets");
+            builder.Entity<TravelDeskExpense>().ToTable("TravelDeskExpenses");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }
