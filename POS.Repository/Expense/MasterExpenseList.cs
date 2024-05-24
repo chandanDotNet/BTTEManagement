@@ -94,6 +94,7 @@ namespace BTTEM.Repository.Expense
                         ExpenseType= cs.ExpenseType,
                         CreatedDate = cs.CreatedDate,
                         ReimbursementStatus = cs.ReimbursementStatus,
+                        IsExpenseCompleted = cs.IsExpenseCompleted,
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                         Expenses =  _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList()
                         
@@ -124,6 +125,7 @@ namespace BTTEM.Repository.Expense
                  ExpenseType = cs.ExpenseType,
                  CreatedDate = cs.CreatedDate,
                  ReimbursementStatus = cs.ReimbursementStatus,
+                 IsExpenseCompleted = cs.IsExpenseCompleted,
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                  Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
              })//.OrderByDescending(x => x.CreatedDate)

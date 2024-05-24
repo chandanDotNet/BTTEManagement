@@ -92,6 +92,7 @@ namespace BTTEM.Repository
                         CreatedByUser=cs.CreatedByUser,
                         TripItinerarys=cs.TripItinerarys,
                         GradeName = cs.CreatedByUser.Grades.GradeName,
+                        IsTripCompleted = cs.IsTripCompleted,
                         TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments)
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -134,6 +135,7 @@ namespace BTTEM.Repository
                  CreatedByUser = cs.CreatedByUser,
                  TripItinerarys = cs.TripItinerarys,
                  GradeName = cs.CreatedByUser.Grades.GradeName,
+                 IsTripCompleted = cs.IsTripCompleted,
                  TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments)
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })

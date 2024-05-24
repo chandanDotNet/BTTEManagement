@@ -137,5 +137,21 @@ namespace POS.Helper
                 return _configuration["ReminderFromEmail"];
             }
         }
+
+        public string RequestCallDocument
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:RequestCallDocument"];
+            }
+        }
+
+        public string ContactSupportDocument
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:ContactSupportDocument"];
+            }
+        }
     }
 }

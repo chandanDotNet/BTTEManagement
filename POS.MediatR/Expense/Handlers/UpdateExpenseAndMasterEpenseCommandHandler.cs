@@ -23,6 +23,7 @@ namespace BTTEM.MediatR.Expense.Handlers
 {
     public class UpdateExpenseAndMasterEpenseCommandHandler : IRequestHandler<UpdateExpenseAndMasterExpenseCommand, ServiceResponse<bool>>
     {
+        private readonly ITripRepository _tripRepository;
         private readonly IUserRepository _userRepository;
         private readonly IExpenseRepository _expenseRepository;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
@@ -36,7 +37,8 @@ namespace BTTEM.MediatR.Expense.Handlers
             IUnitOfWork<POSDbContext> uow,
             IMapper mapper,
             ILogger<UpdateExpenseAndMasterEpenseCommandHandler> logger,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ITripRepository tripRepository)
         {
             _expenseRepository = expenseRepository;
             _masterExpenseRepository = masterExpenseRepository;
@@ -44,6 +46,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             _mapper = mapper;
             _logger = logger;
             _userRepository = userRepository;
+            _tripRepository = tripRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseAndMasterExpenseCommand request, CancellationToken cancellationToken)
@@ -82,6 +85,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             {
                 var masterEntityExist = await _masterExpenseRepository.FindAsync(request.MasterExpenseId.Value);
                 masterEntityExist.ReimbursementAmount = request.ReimbursementAmount;
+                masterEntityExist.IsExpenseCompleted = true;
                 if (masterEntityExist.ReimbursementAmount == masterEntityExist.TotalAmount)
                 {
                     masterEntityExist.ReimbursementStatus = "FULL";
@@ -96,6 +100,10 @@ namespace BTTEM.MediatR.Expense.Handlers
                 }
                 
                 _masterExpenseRepository.Update(masterEntityExist);
+
+                var tripEntityExist = await _tripRepository.FindAsync(masterEntityExist.TripId.Value);
+                tripEntityExist.IsTripCompleted = true;
+                _tripRepository.Update(tripEntityExist);
 
                 AddWalletCommand requestWallet = new AddWalletCommand();
                 decimal amount = 0;
