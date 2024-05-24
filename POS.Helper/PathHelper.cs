@@ -106,6 +106,13 @@ namespace POS.Helper
                 return _configuration["ImagePathSettings:TravelDocument"];
             }
         }
+        public string TravelDeskAttachments
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:TravelDeskAttachments"];
+            }
+        }
 
         public string SiteMapPath
         {
