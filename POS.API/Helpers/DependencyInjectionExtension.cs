@@ -97,6 +97,8 @@ namespace POS.API.Helpers
             services.AddScoped<ITripTrackingRepository, TripTrackingRepository>();
             services.AddScoped<IExpenseTrackingRepository, ExpenseTrackingRepository>();
             services.AddScoped<ITravelDeskExpenseRepository, TravelDeskExpenseRepository>();
+            services.AddScoped<IRequestCallRepository, RequestCallRepository>();
+            services.AddScoped<IContactSupportRepository, ContactSupportRepository>();
         }
     }
 }

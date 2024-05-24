@@ -42,6 +42,7 @@ namespace BTTEM.Data
         public List<TripItinerary> TripItinerarys { get; set; }
         public Guid CreatedBy { get; set; }
         public string GradeName { get; set; }
+        public bool IsTripCompleted { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }

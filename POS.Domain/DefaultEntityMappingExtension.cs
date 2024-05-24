@@ -107,6 +107,14 @@ namespace POS.Domain
            .Property(b => b.ModifiedDate)
            .HasDefaultValueSql("GETUTCDATE()");
 
+            modelBuilder.Entity<RequestCall>()
+          .Property(b => b.ModifiedDate)
+          .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<ContactSupport>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
+
         }
 
         public static void DefalutDeleteValueFilter(this ModelBuilder modelBuilder)
@@ -228,6 +236,12 @@ namespace POS.Domain
 
             modelBuilder.Entity<ExpenseTracking>()
            .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<RequestCall>()
+          .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<ContactSupport>()
+          .HasQueryFilter(p => !p.IsDeleted);
 
         }
     }

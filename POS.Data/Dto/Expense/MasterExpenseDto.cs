@@ -29,6 +29,7 @@ namespace BTTEM.Data
         public UserDto CreatedByUser { get; set; }
         public Guid ExpenseId { get; set; }
         public string ReimbursementStatus { get; set; }
-        public List<ExpenseDto> Expenses { get; set; }        
+        public List<ExpenseDto> Expenses { get; set; }
+        public bool IsExpenseCompleted { get; set; }
     }
 }

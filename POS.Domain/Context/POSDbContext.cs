@@ -98,6 +98,8 @@ namespace POS.Domain
         public DbSet<TripTracking> TripTrackings { get; set; }
         public DbSet<ExpenseTracking> ExpenseTrackings { get; set; }
         public DbSet<TravelDeskExpense> TravelDeskExpenses { get; set; }
+        public DbSet<RequestCall> RequestCalls { get; set; }
+        public DbSet<ContactSupport> ContactSupports { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -530,6 +532,22 @@ namespace POS.Domain
             });
 
             builder.Entity<ExpenseTracking>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<RequestCall>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ContactSupport>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()
