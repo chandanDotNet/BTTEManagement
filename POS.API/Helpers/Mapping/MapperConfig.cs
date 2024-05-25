@@ -72,6 +72,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new TravelDeskProfile());
                 mc.AddProfile(new RequestCallProfile());
                 mc.AddProfile(new ContactSupportProfile());
+                mc.AddProfile(new NotificationProfile());
             });
             return mappingConfig.CreateMapper();
         }

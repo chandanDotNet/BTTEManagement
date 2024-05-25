@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.API.Controllers;
+using System;
 using System.Threading.Tasks;
 
 namespace BTTEM.API.Controllers.ContactSupport
@@ -18,14 +19,33 @@ namespace BTTEM.API.Controllers.ContactSupport
             _mediator = mediator;
         }
 
+        ///// <summary>
+        ///// Gets Request Call
+        ///// </summary>
+        ///// <param name="assignedTo">The identifier.</param>
+        ///// <returns></returns>
+        //[HttpGet("GetTravelDocument/{userid}")]
+        ////[ClaimCheck("EXP_VIEW_EXPENSES")]
+        //public async Task<IActionResult> GetRequestCall(Guid? assignedTo)
+        //{
+        //    var query = new GetRequestCallQuery { AssignedTo = assignedTo };
+        //    var result = await _mediator.Send(query);
+        //    return Ok(result);
+        //}
+
+
         /// <summary>
-        /// Get All Contact Support
+        /// Gets Contact Support
         /// </summary>
+        /// <param name="assignedTo">The identifier.</param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetContactSupport()
+        [HttpGet("GetContactSupport/{userid}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetContactSupport(Guid? assignedTo)
         {
-            return Ok();
+            var query = new GetRequestCallQuery { AssignedTo = assignedTo };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         /// <summary>
