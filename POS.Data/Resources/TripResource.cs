@@ -25,6 +25,9 @@ namespace BTTEM.Data.Resources
         public string BookTypeBy { get; set; }
         public string? Approval { get; set; }
         public string? Status { get; set; }
+        public string IsTripCompleted { get; set; }
+       // public bool? TripCompleted { get; set; }
+
 
     }
 }

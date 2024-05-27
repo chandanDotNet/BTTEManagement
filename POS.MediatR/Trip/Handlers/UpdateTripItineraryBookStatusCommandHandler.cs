@@ -23,38 +23,59 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<UpdateTripItineraryBookStatusCommandHandler> _logger;
+        private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
 
         public UpdateTripItineraryBookStatusCommandHandler(
            ITripItineraryRepository tripItineraryRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
-           ILogger<UpdateTripItineraryBookStatusCommandHandler> logger
+           ILogger<UpdateTripItineraryBookStatusCommandHandler> logger,
+            ITripHotelBookingRepository tripHotelBookingRepository
           )
         {
             _tripItineraryRepository = tripItineraryRepository;
             _uow = uow;
             _mapper = mapper;
             _logger = logger;
+            _tripHotelBookingRepository = tripHotelBookingRepository;
+
 
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateTripItineraryBookStatusCommand request, CancellationToken cancellationToken)
         {
 
-            var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
-            entityExist.BookStatus = request.BookStatus;
-
-            if (!request.ExpenseId.HasValue || request.ExpenseId.Value == Guid.Empty)
+            if (request.IsItinerary == true)
             {
-                //not valid GUID
+
+                var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
+                entityExist.BookStatus = request.BookStatus;
+
+                if (!request.ExpenseId.HasValue || request.ExpenseId.Value == Guid.Empty)
+                {
+                    //not valid GUID
+                }
+                else
+                {
+                    entityExist.ExpenseId = request.ExpenseId;
+                }
+
+                _tripItineraryRepository.Update(entityExist);
             }
             else
             {
-                entityExist.ExpenseId = request.ExpenseId;
+                var entityExist = await _tripHotelBookingRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
+                entityExist.BookStatus = request.BookStatus;
+                if (!request.ExpenseId.HasValue || request.ExpenseId.Value == Guid.Empty)
+                {
+                    //not valid GUID
+                }
+                else
+                {
+                    entityExist.ExpenseId = request.ExpenseId;
+                }
+                _tripHotelBookingRepository.Update(entityExist);
             }
-
-            _tripItineraryRepository.Update(entityExist);
-
 
             if (await _uow.SaveAsync() <= 0)
             {

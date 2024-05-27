@@ -29,6 +29,7 @@ namespace BTTEM.MediatR.Handlers
         private readonly ILogger<UpdateTravelDeskExpenseCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
+        private readonly ITripItineraryRepository _tripItineraryRepository;
 
         public UpdateTravelDeskExpenseCommandHandler(
             ITravelDeskExpenseRepository travelDeskExpenseRepository,
@@ -36,7 +37,8 @@ namespace BTTEM.MediatR.Handlers
             IMapper mapper,
             ILogger<UpdateTravelDeskExpenseCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
-            PathHelper pathHelper)
+            PathHelper pathHelper,
+            ITripItineraryRepository tripItineraryRepository)
         {
             _travelDeskExpenseRepository = travelDeskExpenseRepository;
             _uow = uow;
@@ -44,6 +46,7 @@ namespace BTTEM.MediatR.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _tripItineraryRepository = tripItineraryRepository;
         }
 
 
@@ -102,7 +105,11 @@ namespace BTTEM.MediatR.Handlers
                     entityExist.ReceiptName = null;
                 }
             }
-           
+
+            //=============================
+          //  var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
+            //===========================
+
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Expense.");
