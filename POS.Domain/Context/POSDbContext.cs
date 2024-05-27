@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using BTTEM.Data;
 
-
 namespace POS.Domain
 {
     public class POSDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
@@ -100,6 +99,7 @@ namespace POS.Domain
         public DbSet<TravelDeskExpense> TravelDeskExpenses { get; set; }
         public DbSet<RequestCall> RequestCalls { get; set; }
         public DbSet<ContactSupport> ContactSupports { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -548,6 +548,14 @@ namespace POS.Domain
             });
 
             builder.Entity<ContactSupport>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<Notification>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()

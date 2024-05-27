@@ -3,7 +3,6 @@ using POS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using BTTEM.Data;
 
-
 namespace POS.Domain
 {
     public static class DefaultEntityMappingExtension
@@ -112,6 +111,10 @@ namespace POS.Domain
           .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<ContactSupport>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<Notification>()
         .Property(b => b.ModifiedDate)
         .HasDefaultValueSql("GETUTCDATE()");
 
@@ -241,6 +244,9 @@ namespace POS.Domain
           .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<ContactSupport>()
+          .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<Notification>()
           .HasQueryFilter(p => !p.IsDeleted);
 
         }

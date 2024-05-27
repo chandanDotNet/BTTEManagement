@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.API.Controllers;
 using POS.Helper;
+using System;
 using System.Threading.Tasks;
 
 namespace BTTEM.API.Controllers.RequestACall
@@ -19,14 +20,29 @@ namespace BTTEM.API.Controllers.RequestACall
         {
             _mediator = mediator;
         }
+        ///// <summary>
+        ///// Get All Reuest Call
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public async Task<IActionResult> GetRequestCall()
+        //{
+        //    return Ok();
+        //}
+
+
         /// <summary>
-        /// Get All Reuest Call
+        /// Gets Request Call
         /// </summary>
+        /// <param name="assignedTo">The identifier.</param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetRequestCall()
+        [HttpGet("GetRequestCall/{userid}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetRequestCall(Guid? assignedTo)
         {
-            return Ok();
+            var query = new GetRequestCallQuery { AssignedTo = assignedTo };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         /// <summary>
