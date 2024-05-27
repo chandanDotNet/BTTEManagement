@@ -704,7 +704,7 @@ namespace POS.API.Controllers.Expense
         /// <param name="addTravelDeskExpenseCommand"></param>
         /// <returns></returns>
         [HttpPost("AddTravelDeskExpense")]
-        [ClaimCheck("EXP_ADD_EXPENSE")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddTravelDeskExpense([FromBody] AddTravelDeskExpenseCommand addTravelDeskExpenseCommand)
         {
             var result = await _mediator.Send(addTravelDeskExpenseCommand);

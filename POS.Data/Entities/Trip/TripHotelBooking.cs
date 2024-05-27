@@ -20,5 +20,7 @@ namespace BTTEM.Data
         public string CheckInTime { get; set; }
         public string CheckOutTime { get; set; }
         public decimal? TentativeAmount { get; set; }
+        public string? BookStatus { get; set; }
+        public Guid? ExpenseId { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using BTTEM.Data;
 using BTTEM.Data.Resources;
 using BTTEM.Repository.Expense;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.GenericRepository;
 using POS.Common.UnitOfWork;
 using POS.Data;
@@ -126,6 +127,20 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Approval == tripResource.Approval);
             }
+            if (!string.IsNullOrEmpty(tripResource.IsTripCompleted))
+            {
+                if(tripResource.IsTripCompleted == "True")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.IsTripCompleted == true);
+                }
+                if (tripResource.IsTripCompleted == "False")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.IsTripCompleted == false);
+                }
+            }
+            
 
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {

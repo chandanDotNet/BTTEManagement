@@ -15,6 +15,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public Guid? TripId { get; set; }
         public string? BookStatus { get; set; }
         public Guid? ExpenseId { get; set; }
+        public bool? IsItinerary { get; set; }
 
     }
 }
