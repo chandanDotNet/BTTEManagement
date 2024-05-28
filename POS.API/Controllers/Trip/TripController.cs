@@ -617,7 +617,7 @@ namespace BTTEM.API.Controllers.Trip
 
                     var accountManagerNotificationCommand = new AddNotificationCommand()
                     {
-                        SourceId = responseData.Result.CreatedBy,
+                        SourceId = Guid.Parse(_userInfoToken.Id),
                         Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
                         UserId = userRoles.FirstOrDefault().UserId.Value,
                     };
