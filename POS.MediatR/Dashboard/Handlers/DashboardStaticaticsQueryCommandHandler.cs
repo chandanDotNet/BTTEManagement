@@ -34,6 +34,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
             _userRepository = userRepository;
             _tripRepository = tripRepository;
         }
+
         public async Task<DashboardData> Handle(DashboardStaticaticsQueryCommand request, CancellationToken cancellationToken)
         {
             var dashboardStatics = new DashboardData();
