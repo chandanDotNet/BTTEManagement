@@ -22,6 +22,8 @@ using BTTEM.Repository;
 using Microsoft.EntityFrameworkCore;
 using POS.Repository;
 using System.Security.Cryptography.X509Certificates;
+using Azure.Core;
+using System.ComponentModel.Design;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -35,8 +37,9 @@ namespace BTTEM.API.Controllers.Trip
         private readonly ITripItineraryRepository _tripItineraryRepository;
         private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
 
-        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository, ITripHotelBookingRepository tripHotelBookingRepository, IUserRepository userRepository)
+        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository, ITripHotelBookingRepository tripHotelBookingRepository, IUserRepository userRepository, IUserRoleRepository userRoleRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -44,6 +47,7 @@ namespace BTTEM.API.Controllers.Trip
             _tripItineraryRepository = tripItineraryRepository;
             _tripHotelBookingRepository = tripHotelBookingRepository;
             _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
         }
 
         /// <summary>
@@ -285,7 +289,6 @@ namespace BTTEM.API.Controllers.Trip
                 }
                 else
                 {
-
                     var responseData = _tripHotelBookingRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
                     var addTripTrackingCommand = new AddTripTrackingCommand()
                     {
@@ -456,6 +459,15 @@ namespace BTTEM.API.Controllers.Trip
                     ActionDate = DateTime.Now
                 };
                 var response = await _mediator.Send(addTripTrackingCommand);
+
+                var addNotificationCommand = new AddNotificationCommand()
+                {
+                    SourceId = Guid.Parse(_userInfoToken.Id),
+                    Content = "Request For Advance Money For Rs." + updateTripRequestAdvanceMoneyCommand.AdvanceMoney,
+                    UserId = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result.ReportingTo.Value,
+                };
+
+                var notificationResult = await _mediator.Send(addNotificationCommand);
             }
             return ReturnFormattedResponse(result);
         }
@@ -486,24 +498,6 @@ namespace BTTEM.API.Controllers.Trip
                     ActionDate = DateTime.Now
                 };
 
-                //if (updateTripStatusCommand.Approval == "APPROVED")
-                //{
-                //    var itinerary = _tripItineraryRepository.FindAsync(updateTripStatusCommand.Id);
-                //    var hotel = _tripHotelBookingRepository.FindAsync(updateTripStatusCommand.Id);
-
-                //    var UserList = _userRepository.
-                //        AllIncluding(r => r.UserRoles).Where(x => x.UserRoles.
-                //        Select(y => y.RoleId == Guid.TryParse("F72616BE-260B-41BB-A4EE-89146622179A")))
-                //        .ToList();                     
-                        
-                                               
-                //        //.Where(x => x.Id == itinerary.Result.CreatedBy);
-
-                //    var company = _userRepository.FindAsync(
-                //      _userRepository.FindAsync(itinerary.Result.CreatedBy).Result.CompanyAccountId);
-
-                //}
-
                 var response = await _mediator.Send(addTripTrackingCommand);
 
                 var addNotificationCommand = new AddNotificationCommand()
@@ -513,6 +507,53 @@ namespace BTTEM.API.Controllers.Trip
                     UserId = responseData.Result.CreatedBy,
                 };
                 var notificationResult = await _mediator.Send(addNotificationCommand);
+
+                if (updateTripStatusCommand.Approval == "APPROVED")
+                {
+                    var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id && x.BookTypeBy == "Travel Desk").ToListAsync();
+                    var hotel = await _tripHotelBookingRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id && x.BookTypeBy == "Travel Desk").ToListAsync();
+
+                    var companyId = Guid.Empty;
+
+                    if (itinerary.Count > 0 || itinerary != null)
+                    {
+                        var requestUser = _userRepository.FindAsync(itinerary.FirstOrDefault().CreatedBy);
+                        companyId = requestUser.Result.CompanyAccountId;
+
+                    }
+                    if (hotel.Count > 0 || hotel != null)
+                    {
+                        var requestUser = _userRepository.FindAsync(hotel.FirstOrDefault().CreatedBy);
+                        companyId = requestUser.Result.CompanyAccountId;
+                    }
+
+                    if (companyId != Guid.Empty)
+                    {
+                        var userRoles = _userRoleRepository
+                           .AllIncluding(c => c.User)
+                           .Where(c => c.RoleId == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")
+                           && c.User.CompanyAccountId == companyId)
+                           .Select(cs => new UserRoleDto
+                           {
+                               UserId = cs.UserId,
+                               RoleId = cs.RoleId,
+                               UserName = cs.User.UserName,
+                               FirstName = cs.User.FirstName,
+                               LastName = cs.User.LastName
+                           }).ToList();
+
+                        if (userRoles.Count > 0)
+                        {
+                            var travelDeskNotificationCommand = new AddNotificationCommand()
+                            {
+                                SourceId = Guid.Parse(_userInfoToken.Id),
+                                Content = "Trip Status Changed",
+                                UserId = userRoles.FirstOrDefault().UserId.Value,
+                            };
+                            var travelDeskNotificationResult = await _mediator.Send(travelDeskNotificationCommand);
+                        }
+                    }
+                }
             }
 
             return ReturnFormattedResponse(result);
@@ -547,6 +588,41 @@ namespace BTTEM.API.Controllers.Trip
                     ActionDate = DateTime.Now
                 };
                 var response = await _mediator.Send(addTripTrackingCommand);
+
+
+                var addNotificationCommand = new AddNotificationCommand()
+                {
+                    SourceId = Guid.Parse(_userInfoToken.Id),
+                    Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
+                    UserId = responseData.Result.CreatedBy,
+                };
+
+                var notificationResult = await _mediator.Send(addNotificationCommand);
+
+                if (updateStatusTripRequestAdvanceMoneyCommand.Status == "APPROVED")
+                {
+                    var userRoles = _userRoleRepository
+                         .AllIncluding(c => c.User)
+                         .Where(c => c.RoleId == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")
+                         && c.User.CreatedBy == responseData.Result.CreatedBy)
+                         .Select(cs => new UserRoleDto
+                         {
+                             UserId = cs.UserId,
+                             RoleId = cs.RoleId,
+                             UserName = cs.User.UserName,
+                             FirstName = cs.User.FirstName,
+                             LastName = cs.User.LastName
+                         }).ToList();
+
+                    var accountManagerNotificationCommand = new AddNotificationCommand()
+                    {
+                        SourceId = responseData.Result.CreatedBy,
+                        Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
+                        UserId = userRoles.FirstOrDefault().UserId.Value,
+                    };
+
+                    var accountManagerNotificationnotificationResult = await _mediator.Send(accountManagerNotificationCommand);
+                }
             }
 
             return ReturnFormattedResponse(result);
