@@ -11,5 +11,8 @@ namespace BTTEM.MediatR.Dashboard.Commands
     public class DashboardStaticaticsQueryCommand : IRequest<DashboardData>
     {
         public Guid UserId { get; set; }
+        public int Year { get; set; } = 0;
+        public int Month { get; set; } = 0;
+        public Guid? CompanyAccountId { get; set; }
     }
 }
