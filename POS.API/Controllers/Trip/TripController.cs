@@ -515,13 +515,13 @@ namespace BTTEM.API.Controllers.Trip
 
                     var companyId = Guid.Empty;
 
-                    if (itinerary.Count > 0 || itinerary != null)
+                    if (itinerary.Count > 0)
                     {
                         var requestUser = _userRepository.FindAsync(itinerary.FirstOrDefault().CreatedBy);
                         companyId = requestUser.Result.CompanyAccountId;
 
                     }
-                    if (hotel.Count > 0 || hotel != null)
+                    if (hotel.Count > 0)
                     {
                         var requestUser = _userRepository.FindAsync(hotel.FirstOrDefault().CreatedBy);
                         companyId = requestUser.Result.CompanyAccountId;
