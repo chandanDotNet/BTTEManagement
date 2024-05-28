@@ -193,14 +193,17 @@ namespace POS.API.Controllers.Dashboard
         /// Gets the dashboard statistics report.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("StatisticsReport/{Id}")]
-        [Produces("application/json", "application/xml", Type = typeof(int))]
-        public async Task<IActionResult> GetDashboardStatisticsReport(Guid Id)
+        [HttpPost("StatisticsReport")]
+       // [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetDashboardStatisticsReport(DashboardStaticaticsQueryCommand  dashboardStaticaticsQueryCommand)
         {
-            var dashboardStaticaticsQueryCommand = new DashboardStaticaticsQueryCommand
-            {
-                UserId = Id
-            };
+            //var dashboardStaticaticsQueryCommand = new DashboardStaticaticsQueryCommand
+            //{
+            //    UserId = UserId,
+            //    CompanyAccountId= CompanyAccountId,
+            //    Month = month,
+            //    Year = year
+            //};
             var result = await _mediator.Send(dashboardStaticaticsQueryCommand);
             return Ok(result);
         }
