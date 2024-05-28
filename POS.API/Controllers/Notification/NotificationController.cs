@@ -39,7 +39,7 @@ namespace BTTEM.API.Controllers.Notification
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetNotification(Guid? userId)
         {
-            var query = new GetRequestCallQuery { AssignedTo = userId };
+            var query = new GetNotificationQuery { UserId = userId };
             var result = await _mediator.Send(query);
             return Ok(result);
         }

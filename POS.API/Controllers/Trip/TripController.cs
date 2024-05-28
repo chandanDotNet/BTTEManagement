@@ -20,6 +20,8 @@ using POS.Data.Dto;
 using Microsoft.AspNetCore.Http.HttpResults;
 using BTTEM.Repository;
 using Microsoft.EntityFrameworkCore;
+using POS.Repository;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -31,13 +33,17 @@ namespace BTTEM.API.Controllers.Trip
         private readonly UserInfoToken _userInfoToken;
         private readonly ITripRepository _tripRepository;
         private readonly ITripItineraryRepository _tripItineraryRepository;
+        private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
+        private readonly IUserRepository _userRepository;
 
-        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository)
+        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository, ITripHotelBookingRepository tripHotelBookingRepository, IUserRepository userRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
             _tripRepository = tripRepository;
             _tripItineraryRepository = tripItineraryRepository;
+            _tripHotelBookingRepository = tripHotelBookingRepository;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -84,6 +90,7 @@ namespace BTTEM.API.Controllers.Trip
 
             if (result.Success)
             {
+                //Tracking
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = result.Data.Id,
@@ -95,6 +102,14 @@ namespace BTTEM.API.Controllers.Trip
                     ActionDate = DateTime.Now,
                 };
                 var response = await _mediator.Send(addTripTrackingCommand);
+
+                var addNotificationCommand = new AddNotificationCommand()
+                {
+                    SourceId = result.Data.CreatedBy,
+                    Content = "New Trip Added",
+                    UserId = _userRepository.FindAsync(result.Data.CreatedBy).Result.ReportingTo.Value,
+                };
+                var notificationResult = await _mediator.Send(addNotificationCommand);
             }
             return ReturnFormattedResponse(result);
         }
@@ -251,19 +266,40 @@ namespace BTTEM.API.Controllers.Trip
             var result = await _mediator.Send(updateTripItineraryBookStatusCommand);
             if (result.Success)
             {
-                var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
-                var addTripTrackingCommand = new AddTripTrackingCommand()
+                if (updateTripItineraryBookStatusCommand.IsItinerary == true)
                 {
-                    TripId = updateTripItineraryBookStatusCommand.TripId.Value,
-                    TripItineraryId = updateTripItineraryBookStatusCommand.Id,    
-                    TripTypeName = responseData.Result.TripBy,
-                    ActionType = "Activity",
-                    Remarks = "Trip Ticket Booked By Travel Desk For" + responseData.Result.TripBy,
-                    Status = "Ticket Booked By Travel Desk",
-                    ActionBy = Guid.Parse(_userInfoToken.Id),
-                    ActionDate = DateTime.Now
-                };
-                var response = await _mediator.Send(addTripTrackingCommand);
+                    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
+
+                    var addTripTrackingCommand = new AddTripTrackingCommand()
+                    {
+                        TripId = updateTripItineraryBookStatusCommand.TripId.Value,
+                        TripItineraryId = updateTripItineraryBookStatusCommand.Id,
+                        TripTypeName = responseData.Result.TripBy,
+                        ActionType = "Activity",
+                        Remarks = "Trip Ticket Booked By Travel Desk For" + responseData.Result.TripBy,
+                        Status = "Ticket Booked By Travel Desk",
+                        ActionBy = Guid.Parse(_userInfoToken.Id),
+                        ActionDate = DateTime.Now
+                    };
+                    var response = await _mediator.Send(addTripTrackingCommand);
+                }
+                else
+                {
+
+                    var responseData = _tripHotelBookingRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
+                    var addTripTrackingCommand = new AddTripTrackingCommand()
+                    {
+                        TripId = updateTripItineraryBookStatusCommand.TripId.Value,
+                        TripItineraryId = updateTripItineraryBookStatusCommand.Id,
+                        TripTypeName = "Hotel",
+                        ActionType = "Activity",
+                        Remarks = "Trip Ticket Booked By Travel Desk For Hotel",
+                        Status = "Ticket Booked By Travel Desk",
+                        ActionBy = Guid.Parse(_userInfoToken.Id),
+                        ActionDate = DateTime.Now
+                    };
+                    var response = await _mediator.Send(addTripTrackingCommand);
+                }
             }
             return ReturnFormattedResponse(result);
         }
@@ -449,7 +485,34 @@ namespace BTTEM.API.Controllers.Trip
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
                 };
+
+                //if (updateTripStatusCommand.Approval == "APPROVED")
+                //{
+                //    var itinerary = _tripItineraryRepository.FindAsync(updateTripStatusCommand.Id);
+                //    var hotel = _tripHotelBookingRepository.FindAsync(updateTripStatusCommand.Id);
+
+                //    var UserList = _userRepository.
+                //        AllIncluding(r => r.UserRoles).Where(x => x.UserRoles.
+                //        Select(y => y.RoleId == Guid.TryParse("F72616BE-260B-41BB-A4EE-89146622179A")))
+                //        .ToList();                     
+                        
+                                               
+                //        //.Where(x => x.Id == itinerary.Result.CreatedBy);
+
+                //    var company = _userRepository.FindAsync(
+                //      _userRepository.FindAsync(itinerary.Result.CreatedBy).Result.CompanyAccountId);
+
+                //}
+
                 var response = await _mediator.Send(addTripTrackingCommand);
+
+                var addNotificationCommand = new AddNotificationCommand()
+                {
+                    SourceId = Guid.Parse(_userInfoToken.Id),
+                    Content = "Trip Status Changed",
+                    UserId = responseData.Result.CreatedBy,
+                };
+                var notificationResult = await _mediator.Send(addNotificationCommand);
             }
 
             return ReturnFormattedResponse(result);
