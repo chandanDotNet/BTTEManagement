@@ -604,7 +604,8 @@ namespace BTTEM.API.Controllers.Trip
                     var userRoles = _userRoleRepository
                          .AllIncluding(c => c.User)
                          .Where(c => c.RoleId == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")
-                         && c.User.CreatedBy == responseData.Result.CreatedBy)
+                         && c.User.CompanyAccountId == 
+                         _userRepository.FindAsync(responseData.Result.CreatedBy).Result.CompanyAccountId)
                          .Select(cs => new UserRoleDto
                          {
                              UserId = cs.UserId,
