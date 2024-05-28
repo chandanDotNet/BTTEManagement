@@ -101,10 +101,12 @@ namespace BTTEM.MediatR.Expense.Handlers
                 
                 _masterExpenseRepository.Update(masterEntityExist);
 
-                var tripEntityExist = await _tripRepository.FindAsync(masterEntityExist.TripId.Value);
-                tripEntityExist.IsTripCompleted = true;
-                _tripRepository.Update(tripEntityExist);
-
+                if (masterEntityExist.TripId.HasValue)
+                {
+                    var tripEntityExist = await _tripRepository.FindAsync(masterEntityExist.TripId.Value);
+                    tripEntityExist.IsTripCompleted = true;
+                    _tripRepository.Update(tripEntityExist);
+                }
                 AddWalletCommand requestWallet = new AddWalletCommand();
                 decimal amount = 0;
                 var appUser = await _userRepository.FindAsync(masterEntityExist.CreatedBy);
@@ -128,7 +130,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 _logger.LogError("Error while saving Expense.");
                 return ServiceResponse<bool>.Return500();
             }
-            return ServiceResponse<bool>.ReturnSuccess();
+            return ServiceResponse<bool>.ReturnResultWith200(true);
         }
     }
 }
