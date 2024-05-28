@@ -7,6 +7,7 @@ using POS.MediatR.Dashboard.Commands;
 using POS.API.Helpers;
 using BTTEM.MediatR.Dashboard.Commands;
 using System;
+using BTTEM.MediatR.CommandAndQuery;
 
 namespace POS.API.Controllers.Dashboard
 {
@@ -201,6 +202,19 @@ namespace POS.API.Controllers.Dashboard
                 UserId = Id
             };
             var result = await _mediator.Send(dashboardStaticaticsQueryCommand);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the Admin Dashboard Statistics.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("AdminDashboardStatistics")]
+        //[ClaimCheck("DB_STATISTICS")]
+        //[Produces("application/json", "application/xml")]
+        public async Task<IActionResult> GetAdminDashboardStatistics(AdminDashboardStaticaticsQuery adminDashboardStaticaticsQuery)
+        {            
+            var result = await _mediator.Send(adminDashboardStaticaticsQuery);
             return Ok(result);
         }
     }
