@@ -100,6 +100,7 @@ namespace POS.API.Helpers
             services.AddScoped<IRequestCallRepository, RequestCallRepository>();
             services.AddScoped<IContactSupportRepository, ContactSupportRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<ICompanyGSTRepository, CompanyGSTRepository>();
         }
     }
 }
