@@ -41,7 +41,7 @@ namespace BTTEM.MediatR.ContactSupport.Handler
             var contactSupport = await _contactSupportRepository.All.Where(a => a.AssignedTo == request.AssignedTo).ToListAsync();
             if (contactSupport == null)
             {
-                _logger.LogError("Expense not found");
+                _logger.LogError("Contact Support not found");
             }
             var contactSupportDto = _mapper.Map<List<ContactSupportDto>>(contactSupport);
             return contactSupportDto;

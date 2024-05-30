@@ -9,6 +9,9 @@ using POS.API.Helpers;
 using BTTEM.MediatR.CompanyProfile.Commands;
 using POS.Data.Resources;
 using BTTEM.Data.Resources;
+using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.Data.Dto;
+using System;
 
 namespace POS.API.Controllers.CompanyProfile
 {
@@ -96,6 +99,33 @@ namespace POS.API.Controllers.CompanyProfile
             };
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Add Update State Wise GST
+        /// </summary>
+        /// <param name="addUpdateStateWiseGSTCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddUpdateStateWiseGST")]
+        [Produces("application/json", "application/xml", Type = typeof(CompanyGSTDto))]
+        public async Task<IActionResult> AddUpdateStateWiseGST(AddUpdateStateWiseGSTCommand addUpdateStateWiseGSTCommand)
+        {
+            var response = await _mediator.Send(addUpdateStateWiseGSTCommand);
+            return ReturnFormattedResponse(response);
+        }
+
+        /// <summary>
+        /// Gets Company GST
+        /// </summary>
+        /// <param name="accountId">The identifier.</param>
+        /// <returns></returns>
+        [HttpGet("GetContactSupport/{accountId}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetCompanyGST(Guid? accountId)
+        {
+            var query = new GetCompanyGSTQuery { CompanyAccountId = accountId };
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
     }

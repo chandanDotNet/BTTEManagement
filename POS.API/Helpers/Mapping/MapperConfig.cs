@@ -73,6 +73,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new RequestCallProfile());
                 mc.AddProfile(new ContactSupportProfile());
                 mc.AddProfile(new NotificationProfile());
+                mc.AddProfile(new CompanyGSTProfile());
             });
             return mappingConfig.CreateMapper();
         }
