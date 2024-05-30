@@ -43,6 +43,11 @@ namespace BTTEM.Data
         public Guid CreatedBy { get; set; }
         public string GradeName { get; set; }
         public bool IsTripCompleted { get; set; }
+        public string? PurposeFor { get; set; }
+        public string? SourceCityName { get; set; }
+        public string? DestinationCityName { get; set; }
+        public string? DepartmentName { get; set; }
+        public Guid? CompanyAccountId { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }

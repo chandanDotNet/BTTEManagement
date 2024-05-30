@@ -11,10 +11,12 @@ namespace POS.Data.Dto
         public Guid? TripId { get; set; }
         public string Name { get; set; }
         public string BillType { get; set; }
+        public string GSTNo { get; set; }
         public string Reference { get; set; }
         public Guid ExpenseCategoryId { get; set; }
         public ExpenseCategoryDto ExpenseCategory { get; set; }
         public decimal Amount { get; set; }
+        public decimal PayableAmount { get; set; } = 0;
         public Guid? ExpenseById { get; set; }
         public string Description { get; set; }
         public UserDto ExpenseBy { get; set; }

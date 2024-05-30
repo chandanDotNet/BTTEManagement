@@ -22,5 +22,18 @@ namespace BTTEM.Data
         public decimal? TentativeAmount { get; set; }
         public string? BookStatus { get; set; }
         public Guid? ExpenseId { get; set; }
+
+        public string? ApprovalStatus { get; set; }
+        public DateTime? ApprovalStatusDate { get; set; }
+        public Guid? ApprovalStatusBy { get; set; }
+        public decimal? Amount { get; set; }
+        public string? BillReceiptName { get; set; }
+        public string? BillReceiptPath { get; set; }
+        public string? ApprovalDocumentsReceiptName { get; set; }
+        public string? ApprovalDocumentsReceiptPath { get; set; }
+
+        public string? CityName { get; set; }
+        public string? NearbyLocation { get; set; }
+        public string? PreferredHotel { get; set; }
     }
 }

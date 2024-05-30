@@ -17,5 +17,14 @@ namespace BTTEM.MediatR.Trip.Commands
         public Guid? ExpenseId { get; set; }
         public bool? IsItinerary { get; set; }
 
+        public string? ApprovalStatus { get; set; }
+        public DateTime? ApprovalStatusDate { get; set; } = null;
+        public Guid? ApprovalStatusBy { get; set; }
+        public decimal? Amount { get; set; }
+        public string? TicketReceiptName { get; set; }
+        public string? TicketDocumentData { get; set; }
+        public string? ApprovalDocumentsReceiptName { get; set; }
+        public string? ApprovalDocumentData { get; set; }
+
     }
 }

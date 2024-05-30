@@ -140,7 +140,32 @@ namespace BTTEM.Repository
                         .Where(a => a.IsTripCompleted == false);
                 }
             }
-            
+
+            if (!string.IsNullOrEmpty(tripResource.PurposeFor))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.PurposeFor == tripResource.PurposeFor);
+            }
+            if (!string.IsNullOrEmpty(tripResource.SourceCityName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.SourceCityName == tripResource.SourceCityName);
+            }
+            if (!string.IsNullOrEmpty(tripResource.DestinationCityName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.DestinationCityName == tripResource.DestinationCityName);
+            }
+            if (!string.IsNullOrEmpty(tripResource.DepartmentName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.DepartmentName == tripResource.DepartmentName);
+            }
+            if (tripResource.BillingCompanyAccountId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CompanyAccountId == tripResource.BillingCompanyAccountId);
+            }
 
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {

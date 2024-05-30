@@ -37,5 +37,22 @@ namespace BTTEM.Data
         public string? BookStatus { get; set; }
         public Guid? ExpenseId { get; set; }
 
+        public string? ApprovalStatus { get; set; }
+        public DateTime? ApprovalStatusDate { get; set; }
+        public Guid? ApprovalStatusBy { get; set; }
+        public decimal? Amount { get; set; }
+        public string? TicketReceiptName { get; set; }
+        public string? TicketReceiptPath { get; set; }
+        public string? ApprovalDocumentsReceiptName { get; set; }
+        public string? ApprovalDocumentsReceiptPath { get; set; }
+
+        public string? DepartureCityName { get; set; }
+        public string? ArrivalCityName { get; set; }
+        public string? TrainClass { get; set; }
+        public string? PreferredTrain { get; set; }
+        public string? PickupTime { get; set; }
+        public string? BusType { get; set; }
+        public string? CarType { get; set; }
+
     }
 }

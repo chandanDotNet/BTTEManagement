@@ -53,6 +53,9 @@ namespace BTTEM.MediatR.Trip.Handlers
                 entityExist.CheckOutTime = tv.CheckOutTime;
                 entityExist.CityId = tv.CityId;
                 entityExist.TentativeAmount = tv.TentativeAmount;
+                entityExist.CityName = tv.CityName;
+                entityExist.NearbyLocation = tv.NearbyLocation;
+                entityExist.PreferredHotel = tv.PreferredHotel;
 
                 _tripHotelBookingRepository.Update(entityExist);
             }
