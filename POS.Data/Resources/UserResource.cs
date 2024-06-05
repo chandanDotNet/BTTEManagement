@@ -12,6 +12,7 @@ namespace POS.Data.Resources
         public Guid? Id { get; set; }
         public string? Email { get; set; }
         public Guid? CompanyAccountId { get; set; }
+        public Guid? CompanyAccountBranchId { get; set; }
         public Guid? GradeId { get; set; }
         public Guid? EmpGradeId { get; set; }
         public Guid? DepartmentId { get; set; }

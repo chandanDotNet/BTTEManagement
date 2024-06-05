@@ -61,7 +61,8 @@ namespace POS.Repository
 
             //collectionBeforePaging.Where(u => u.Email == userResource.Name);
             //var collectionBeforePaging = All.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
-            var collectionBeforePaging = AllIncluding(g=>g.Grades,eg=>eg.EmpGrades,d=>d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
+            //var collectionBeforePaging = AllIncluding(g=>g.Grades,eg=>eg.EmpGrades,d=>d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
+            var collectionBeforePaging = All.Include(g=>g.Grades).Include(eg => eg.EmpGrades).Include(d => d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
             // collectionBeforePaging =collectionBeforePaging.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
 
             if (!string.IsNullOrWhiteSpace(userResource.Name))
@@ -77,6 +78,11 @@ namespace POS.Repository
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CompanyAccountId == userResource.CompanyAccountId);
+            }
+            if (userResource.CompanyAccountBranchId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CompanyAccountBranchId == userResource.CompanyAccountBranchId);
             }
             if (userResource.DepartmentId.HasValue)
             {
@@ -169,6 +175,7 @@ namespace POS.Repository
             ret.BranchName = appUser.BranchName;
             ret.SapCode = appUser.SapCode;
             ret.CompanyAccountId= appUser.CompanyAccountId;
+            ret.CompanyAccountBranchId= appUser.CompanyAccountBranchId;
 
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);

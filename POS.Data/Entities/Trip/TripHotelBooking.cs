@@ -13,7 +13,7 @@ namespace BTTEM.Data
         public Guid Id { get; set; }
         public Guid TripId { get; set; }
         public string BookTypeBy { get; set; }
-        public Guid CityId { get; set; }
+        public Guid? CityId { get; set; }
         public City City { get; set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }

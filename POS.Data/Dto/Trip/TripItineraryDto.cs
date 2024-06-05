@@ -16,9 +16,9 @@ namespace BTTEM.Data
         public string TripBy { get; set; }
         public string BookTypeBy { get; set; }
         public string TripWayType { get; set; }
-        public Guid DepartureCityId { get; set; }
+        public Guid? DepartureCityId { get; set; }
         public DateTime DepartureDate { get; set; }
-        public Guid ArrivalCityId { get; set; }
+        public Guid? ArrivalCityId { get; set; }
         private DateTime? _returnDate;
         public DateTime? ReturnDate
         {
