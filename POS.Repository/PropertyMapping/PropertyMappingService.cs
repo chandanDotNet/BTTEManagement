@@ -356,6 +356,13 @@ namespace POS.Repository
                 { "DocType", new PropertyMappingValue(new List<string>() { "DocType" } ) },
         };
 
+        private Dictionary<string, PropertyMappingValue> _statePropertyMapping =
+       new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+       {
+                { "Name", new PropertyMappingValue(new List<string>() { "Name" },true ) }
+
+       };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -387,6 +394,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<TripTrackingDto, TripTracking>(_tripTrackingPropertyMapping));
             propertyMappings.Add(new PropertyMapping<ExpenseTrackingDto, ExpenseTracking>(_expenseTrackingPropertyMapping));
             propertyMappings.Add(new PropertyMapping<TravelDocumentDto, TravelDocument>(_travelDocumentPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<StateDto, State>(_statePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

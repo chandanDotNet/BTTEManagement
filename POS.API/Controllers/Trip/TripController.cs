@@ -95,13 +95,14 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 //Tracking
+                var userResult = _userRepository.FindAsync(result.Data.CreatedBy).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = result.Data.Id,
                     TripTypeName = result.Data.Name,
                     ActionType = "Activity",
-                    Remarks = result.Data.Name + " New Trip Added",
-                    Status = "Trip Added",
+                    Remarks = result.Data.Name + " New Trip Added By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Trip Added By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = result.Data.CreatedBy,
                     ActionDate = DateTime.Now,
                 };
@@ -110,7 +111,7 @@ namespace BTTEM.API.Controllers.Trip
                 var addNotificationCommand = new AddNotificationCommand()
                 {
                     SourceId = result.Data.CreatedBy,
-                    Content = "New Trip Added",
+                    Content = "New Trip Added By " + userResult.FirstName + " " + userResult.LastName,
                     UserId = _userRepository.FindAsync(result.Data.CreatedBy).Result.ReportingTo.Value,
                 };
                 var notificationResult = await _mediator.Send(addNotificationCommand);
@@ -133,13 +134,14 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 var responseData = await _tripRepository.FindAsync(updateTripCommand.Id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateTripCommand.Id,
                     TripTypeName = updateTripCommand.Name == string.Empty ? responseData.Name : updateTripCommand.Name,
                     ActionType = "Activity",
-                    Remarks = updateTripCommand.Name == string.Empty ? responseData.Name : updateTripCommand.Name + "Trip Updated",
-                    Status = "Trip Updated",
+                    Remarks = updateTripCommand.Name == string.Empty ? responseData.Name : updateTripCommand.Name + "Trip Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Trip Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -164,13 +166,14 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 var responseData = await _tripRepository.FindAsync(Id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = Id,
                     TripTypeName = responseData.Name,
                     ActionType = "Activity",
-                    Remarks = responseData.Name + "Trip Deleted",
-                    Status = "Trip Deleted",
+                    Remarks = responseData.Name + "Trip Deleted  By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Trip Deleted  By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -225,14 +228,15 @@ namespace BTTEM.API.Controllers.Trip
 
             if (result.Success)
             {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = result.Data.TripId,
                     TripItineraryId = result.Data.Id,
                     TripTypeName = result.Data.TripBy,
                     ActionType = "Activity",
-                    Remarks = "Trip Itinerary Added For " + result.Data.TripBy,
-                    Status = "Trip Itinerary Added",
+                    Remarks = "Trip Itinerary Added For " + result.Data.TripBy + " By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Trip Itinerary Added By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -270,9 +274,10 @@ namespace BTTEM.API.Controllers.Trip
             var result = await _mediator.Send(updateTripItineraryBookStatusCommand);
             if (result.Success)
             {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 if (updateTripItineraryBookStatusCommand.IsItinerary == true)
                 {
-                    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
+                    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);                   
 
                     var addTripTrackingCommand = new AddTripTrackingCommand()
                     {
@@ -280,8 +285,8 @@ namespace BTTEM.API.Controllers.Trip
                         TripItineraryId = updateTripItineraryBookStatusCommand.Id,
                         TripTypeName = responseData.Result.TripBy,
                         ActionType = "Activity",
-                        Remarks = "Trip Ticket Booked By Travel Desk For" + responseData.Result.TripBy,
-                        Status = "Ticket Booked By Travel Desk",
+                        Remarks = "Trip Ticket Booked through Travel Desk For " + responseData.Result.TripBy,
+                        Status = "Ticket Booked through Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now
                     };
@@ -297,7 +302,7 @@ namespace BTTEM.API.Controllers.Trip
                         TripTypeName = "Hotel",
                         ActionType = "Activity",
                         Remarks = "Trip Ticket Booked By Travel Desk For Hotel",
-                        Status = "Ticket Booked By Travel Desk",
+                        Status = "Ticket Booked through Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now
                     };
@@ -347,14 +352,15 @@ namespace BTTEM.API.Controllers.Trip
             var result = await _mediator.Send(deleteTripItineraryCommand);
             if (result.Success)
             {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var responseData = _tripItineraryRepository.FindAsync(Id);
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = responseData.Result.TripId,
                     TripItineraryId = Id,
                     ActionType = "Activity",
-                    Remarks = responseData.Result.TripBy + " Trip Itinerary Deleted",
-                    Status = "Trip Itinerary Deleted",
+                    Remarks = responseData.Result.TripBy + " Trip Itinerary Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Trip Itinerary Deleted By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
                 };
@@ -448,13 +454,14 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 var responseData = _tripRepository.FindAsync(updateTripRequestAdvanceMoneyCommand.Id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateTripRequestAdvanceMoneyCommand.Id,
                     TripTypeName = responseData.Result.Name,
                     ActionType = "Activity",
-                    Remarks = responseData.Result.Name + " Trip Request For Advance Money",
-                    Status = "Trip Request For Advance Money",
+                    Remarks = responseData.Result.Name + " Trip Request For Advance Money By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Trip Request For Advance Money By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
                 };
@@ -463,7 +470,7 @@ namespace BTTEM.API.Controllers.Trip
                 var addNotificationCommand = new AddNotificationCommand()
                 {
                     SourceId = Guid.Parse(_userInfoToken.Id),
-                    Content = "Request For Advance Money For Rs." + updateTripRequestAdvanceMoneyCommand.AdvanceMoney,
+                    Content = "Request For Advance Money For Rs." + updateTripRequestAdvanceMoneyCommand.AdvanceMoney + " By "+ userResult.FirstName + " " + userResult.LastName,
                     UserId = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result.ReportingTo.Value,
                 };
 
@@ -487,12 +494,13 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 var responseData = _tripRepository.FindAsync(updateTripStatusCommand.Id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateTripStatusCommand.Id,
                     TripTypeName = responseData.Result.Name,
                     ActionType = "Tracker",
-                    Remarks = responseData.Result.Name + " Trip Status Updated",
+                    Remarks = responseData.Result.Name + " Trip Status Updated By " + userResult.FirstName + " " + userResult.LastName,
                     Status = updateTripStatusCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
@@ -503,7 +511,7 @@ namespace BTTEM.API.Controllers.Trip
                 var addNotificationCommand = new AddNotificationCommand()
                 {
                     SourceId = Guid.Parse(_userInfoToken.Id),
-                    Content = "Trip Status Changed",
+                    Content = "Trip Status Changed By " + userResult.FirstName + " " + userResult.LastName,
                     UserId = responseData.Result.CreatedBy,
                 };
                 var notificationResult = await _mediator.Send(addNotificationCommand);
@@ -547,7 +555,7 @@ namespace BTTEM.API.Controllers.Trip
                             var travelDeskNotificationCommand = new AddNotificationCommand()
                             {
                                 SourceId = Guid.Parse(_userInfoToken.Id),
-                                Content = "Trip Status Changed",
+                                Content = "Trip Status Changed By " + userResult.FirstName + " " + userResult.LastName,
                                 UserId = userRoles.FirstOrDefault().UserId.Value,
                             };
                             var travelDeskNotificationResult = await _mediator.Send(travelDeskNotificationCommand);
@@ -575,14 +583,15 @@ namespace BTTEM.API.Controllers.Trip
             {
                 //var userId = (this.User.Claims.First(i => i.Type == "Id").Value);
                 var responseData = _tripRepository.FindAsync(updateStatusTripRequestAdvanceMoneyCommand.Id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
                     TripTypeName = responseData.Result.Name,
                     ActionType = "Activity",
                     Remarks = updateStatusTripRequestAdvanceMoneyCommand.Status == string.Empty ?
-                    responseData.Result.Name + " Requsted For Advance Money"
-                    : responseData.Result.Name + " Requsted For Advance Money - Status Updated",
+                    responseData.Result.Name + " Requsted For Advance Money By " + userResult.FirstName + " " + userResult.LastName
+                    : responseData.Result.Name + " Requsted For Advance Money - Status Updated By " + userResult.FirstName + " " + userResult.LastName,
                     Status = updateStatusTripRequestAdvanceMoneyCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
@@ -604,7 +613,7 @@ namespace BTTEM.API.Controllers.Trip
                     var userRoles = _userRoleRepository
                          .AllIncluding(c => c.User)
                          .Where(c => c.RoleId == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")
-                         && c.User.CompanyAccountId == 
+                         && c.User.CompanyAccountId ==
                          _userRepository.FindAsync(responseData.Result.CreatedBy).Result.CompanyAccountId)
                          .Select(cs => new UserRoleDto
                          {

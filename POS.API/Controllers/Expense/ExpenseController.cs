@@ -30,18 +30,21 @@ namespace POS.API.Controllers.Expense
         private readonly UserInfoToken _userInfoToken;
         private readonly IExpenseRepository _expenseRepository;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
+        private readonly IUserRepository _userRepository;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="logger"></param>
         public ExpenseController(
-            IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository, IMasterExpenseRepository masterExpenseRepository)
+            IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository,
+            IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
             _expenseRepository = expenseRepository;
             _masterExpenseRepository = masterExpenseRepository;
+            _userRepository = userRepository;
         }
         /// <summary>
         /// Add Expenses
@@ -55,14 +58,15 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(addExpenseCommand);
             if (result.Success)
             {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     ExpenseId = result.Data.Id,
                     MasterExpenseId = result.Data.MasterExpenseId.Value,
                     ExpenseTypeName = addExpenseCommand.Name,
                     ActionType = "Activity",
-                    Remarks = addExpenseCommand.Name + " Expense Added",
-                    Status = "Expense Added",
+                    Remarks = addExpenseCommand.Name + " Expense Added By  " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -88,14 +92,14 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 Guid id = result.Data.Id;
-
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addMasterExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = id,
                     ExpenseTypeName = addMasterExpenseCommand.Name,
                     ActionType = "Activity",
-                    Remarks = addMasterExpenseCommand.Name + " Master Expense Added",
-                    Status = "Master Expense Added",
+                    Remarks = addMasterExpenseCommand.Name + " Master Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Master Expense Added By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -117,8 +121,8 @@ namespace POS.API.Controllers.Expense
                         ExpenseId = result.Data.ExpenseId,
                         ExpenseTypeName = addExpenseCommand.Name,
                         ActionType = "Activity",
-                        Remarks = addExpenseCommand.Name + " Expense Added",
-                        Status = "Expense Added",
+                        Remarks = addExpenseCommand.Name + " Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                        Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
                     };
@@ -141,13 +145,14 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 var masterResponseData = _masterExpenseRepository.FindAsync(updateMasterExpenseCommand.Id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addMasterExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = updateMasterExpenseCommand.Id,
                     ExpenseTypeName = masterResponseData.Result.Name,
                     ActionType = "Activity",
-                    Remarks = masterResponseData.Result.Name + " Master Expense Updated",
-                    Status = "Master Expense Updated",
+                    Remarks = masterResponseData.Result.Name + " Master Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Master Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -172,8 +177,8 @@ namespace POS.API.Controllers.Expense
                         ExpenseId = item.Id,
                         ExpenseTypeName = responseData.Result.Name,
                         ActionType = "Activity",
-                        Remarks = responseData.Result.Name + " Expense Updated",
-                        Status = "Expense Updated",
+                        Remarks = responseData.Result.Name + " Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
+                        Status = "Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
                     };
@@ -200,14 +205,15 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 var responseData = _expenseRepository.FindAsync(id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = updateExpenseCommand.MasterExpenseId.Value,
                     ExpenseId = updateExpenseCommand.Id,
                     ExpenseTypeName = responseData.Result.Name,
                     ActionType = "Activity",
-                    Remarks = responseData.Result.Name + " Expense Updated",
-                    Status = "Expense Updated",
+                    Remarks = responseData.Result.Name + " Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -232,6 +238,7 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 var responseData = _expenseRepository.FindAsync(id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     ExpenseId = updateExpenseStatusCommand.Id,
@@ -239,7 +246,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = responseData.Result.MasterExpenseId,
                     ActionType = "Tracker",
                     Remarks = updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
-                    Status = "Expense Status Updated",
+                    Status = "Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -264,13 +271,14 @@ namespace POS.API.Controllers.Expense
             {
 
                 var responseData = _masterExpenseRepository.FindAsync(id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = id,
                     ExpenseTypeName = responseData.Result.Name,
                     ActionType = "Tracker",
-                    Remarks = responseData.Result.Name + " Master Expense Status Updated",
-                    Status = "Master Expense Status Updated",
+                    Remarks = responseData.Result.Name + " Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -288,7 +296,6 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_VIEW_EXPENSE")]
         public async Task<IActionResult> GetExpenses([FromQuery] ExpenseResource expenseResource)
         {
-
             var getAllExpenseQuery = new GetAllExpenseQuery
             {
                 ExpenseResource = expenseResource
@@ -400,14 +407,15 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 var responseData = _expenseRepository.FindAsync(id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = responseData.Result.MasterExpenseId,
                     ExpenseId = id,
                     ExpenseTypeName = responseData.Result.Name,
                     ActionType = "Activity",
-                    Remarks = responseData.Result.Name + " Expense Deleted",
-                    Status = "Expense Deleted",
+                    Remarks = responseData.Result.Name + " Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -432,13 +440,14 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 var responseData = _masterExpenseRepository.FindAsync(id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = responseData.Result.Id,
                     ExpenseTypeName = responseData.Result.Name,
                     ActionType = "Activity",
-                    Remarks = responseData.Result.Name + " Master Expense Deleted",
-                    Status = "Master Expense Deleted",
+                    Remarks = responseData.Result.Name + " Master Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Master Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -611,14 +620,15 @@ namespace POS.API.Controllers.Expense
 
             if (result.Success)
             {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 if (updateExpenseAndMasterExpenseCommand.ExpenseId.HasValue)
                 {
                     var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                     {
                         ExpenseId = updateExpenseAndMasterExpenseCommand.ExpenseId.Value,
                         ActionType = "Activity",
-                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected)",
-                        Status = "Expense REIMBURSED (Full/Partial/Rejected)",
+                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected) By " + userResult.FirstName + " " + userResult.LastName,
+                        Status = "Expense REIMBURSED (Full/Partial/Rejected) By " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
                     };
@@ -631,8 +641,8 @@ namespace POS.API.Controllers.Expense
                     {
                         MasterExpenseId = updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value,                        
                         ActionType = "Activity",
-                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected)",
-                        Status = "Expense REIMBURSED (Full/Partial/Rejected)",
+                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected) By " + userResult.FirstName + " " + userResult.LastName,
+                        Status = "Expense REIMBURSED (Full/Partial/Rejected) By " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
                     };
@@ -710,14 +720,15 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(addTravelDeskExpenseCommand);
             if (result.Success)
             {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     ExpenseId = result.Data.Id,
                     //MasterExpenseId = result.Data.MasterExpenseId.Value,
                     ExpenseTypeName = addTravelDeskExpenseCommand.Name,
                     ActionType = "Activity",
-                    Remarks = addTravelDeskExpenseCommand.Name + " Booking File Uploaded by Travel Desk",
-                    Status = "Booking File Uploaded by Travel Desk",
+                    Remarks = addTravelDeskExpenseCommand.Name + " Booking File Uploaded by Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Booking File Uploaded by Travel Desk " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -742,14 +753,15 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(updateTravelDeskExpenseCommand);
 
             if (result.Success)
-            {               
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {                    
                     ExpenseId = updateTravelDeskExpenseCommand.Id,
                     ExpenseTypeName = updateTravelDeskExpenseCommand.Name,
                     ActionType = "Activity",
-                    Remarks = updateTravelDeskExpenseCommand.Name + " Booking File Re-Uploaded by Travel Desk",
-                    Status = "Booking File Re-Uploaded by Travel Desk",
+                    Remarks = updateTravelDeskExpenseCommand.Name + " Booking File Re-Uploaded by Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Booking File Re-Uploaded by Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
