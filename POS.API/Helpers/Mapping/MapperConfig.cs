@@ -75,6 +75,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new NotificationProfile());
                 mc.AddProfile(new CompanyGSTProfile());
                 mc.AddProfile(new StateProfile());
+                mc.AddProfile(new BranchProfile());
             });
             return mappingConfig.CreateMapper();
         }

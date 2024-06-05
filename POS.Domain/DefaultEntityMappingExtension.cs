@@ -126,6 +126,10 @@ namespace POS.Domain
      .Property(b => b.ModifiedDate)
      .HasDefaultValueSql("GETUTCDATE()");
 
+            modelBuilder.Entity<Branch>()
+     .Property(b => b.ModifiedDate)
+     .HasDefaultValueSql("GETUTCDATE()");
+
 
         }
 
@@ -263,6 +267,9 @@ namespace POS.Domain
 
             modelBuilder.Entity<State>()
        .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<Branch>()
+      .HasQueryFilter(p => !p.IsDeleted);
 
         }
     }
