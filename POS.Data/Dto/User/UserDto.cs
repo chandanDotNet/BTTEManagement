@@ -23,7 +23,7 @@ namespace POS.Data.Dto
         public string? PanNo { get; set; }
         public string? AadhaarNo { get; set; }
         public Guid? Department { get; set; }
-        public DepartmentDto Departments { get; set; }
+        public Department Departments { get; set; }
         public string? DepartmentName { get; set; }
         public Guid? GradeId { get; set; }
         public GradeDto Grades { get; set; }
@@ -37,6 +37,7 @@ namespace POS.Data.Dto
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
         public Guid CompanyAccountId { get; set; }
+        public Guid? CompanyAccountBranchId { get; set; }
         public CompanyAccountDto CompanyAccounts { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
         public List<UserRoleDto> UserRoless { get; set; } = new List<UserRoleDto>();

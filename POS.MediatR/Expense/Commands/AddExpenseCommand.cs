@@ -16,6 +16,7 @@ namespace POS.MediatR.CommandAndQuery
         public Guid? TripId { get; set; }
         public string Name { get; set; }
         public string BillType { get; set; }
+        public string GSTNo { get; set; }
         public string Reference { get; set; }
         public Guid ExpenseCategoryId { get; set; }
         public decimal Amount { get; set; }

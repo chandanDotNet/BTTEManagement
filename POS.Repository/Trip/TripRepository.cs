@@ -59,7 +59,7 @@ namespace BTTEM.Repository
             }
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
-            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Department,b=>b.SourceCity,d=>d.DestinationCity,ti=>ti.TripItinerarys).ApplySort(tripResource.OrderBy,
+            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser,ti=>ti.TripItinerarys).ApplySort(tripResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
 
@@ -140,7 +140,32 @@ namespace BTTEM.Repository
                         .Where(a => a.IsTripCompleted == false);
                 }
             }
-            
+
+            if (!string.IsNullOrEmpty(tripResource.PurposeFor))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.PurposeFor == tripResource.PurposeFor);
+            }
+            if (!string.IsNullOrEmpty(tripResource.SourceCityName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.SourceCityName == tripResource.SourceCityName);
+            }
+            if (!string.IsNullOrEmpty(tripResource.DestinationCityName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.DestinationCityName == tripResource.DestinationCityName);
+            }
+            if (!string.IsNullOrEmpty(tripResource.DepartmentName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.DepartmentName == tripResource.DepartmentName);
+            }
+            if (tripResource.BillingCompanyAccountId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CompanyAccountId == tripResource.BillingCompanyAccountId);
+            }
 
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {

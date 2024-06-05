@@ -23,7 +23,7 @@ namespace POS.API.Controllers.Email
         /// <param name="sendEmailCommand"></param>
         /// <returns></returns>
         [HttpPost(Name = "SendEmail")]
-        [ClaimCheck("EMAIL_SEND_EMAIL")]
+       /// [ClaimCheck("EMAIL_SEND_EMAIL")]
         [Produces("application/json", "application/xml", Type = typeof(void))]
         public async Task<IActionResult> SendEmail(SendEmailCommand sendEmailCommand)
         {

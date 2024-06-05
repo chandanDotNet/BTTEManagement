@@ -68,6 +68,12 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
             entityExist.AdvanceMoney = request.AdvanceMoney;
 
+            entityExist.DestinationCityName = request.DestinationCityName;
+            entityExist.SourceCityName = request.SourceCityName;
+            entityExist.PurposeFor = request.PurposeFor;
+            entityExist.DepartmentName = request.DepartmentName;
+            entityExist.CompanyAccountId = request.CompanyAccountId;
+
 
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)

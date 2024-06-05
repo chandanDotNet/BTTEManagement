@@ -26,7 +26,14 @@ namespace BTTEM.Data.Resources
         public string? Approval { get; set; }
         public string? Status { get; set; }
         public string IsTripCompleted { get; set; }
-       // public bool? TripCompleted { get; set; }
+
+        public string? PurposeFor { get; set; }
+        public string? SourceCityName { get; set; }
+        public string? DestinationCityName { get; set; }
+        public string? DepartmentName { get; set; }
+        public Guid? BillingCompanyAccountId { get; set; }
+
+        // public bool? TripCompleted { get; set; }
 
 
     }

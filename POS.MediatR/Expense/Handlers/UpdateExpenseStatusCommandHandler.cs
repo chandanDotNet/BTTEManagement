@@ -101,7 +101,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 // request.PermanentAdvance = amount;
 
                 //===========
-
+                entityExist.PayableAmount = request.PayableAmount;
             }
            
 

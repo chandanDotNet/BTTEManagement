@@ -16,12 +16,14 @@ namespace POS.Data
         public Guid? TripId { get; set; }
         public string Name { get; set; }
         public string BillType { get; set; }
+        public string GSTNo { get; set; }
         public string Reference { get; set; }
         public Guid ExpenseCategoryId { get; set; }
         [ForeignKey("ExpenseCategoryId")]
         public ExpenseCategory ExpenseCategory { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
+        public decimal PayableAmount { get; set; } = 0;
         public Guid? ExpenseById { get; set; }
         public string Description { get; set; }
         public DateTime ExpenseDate { get; set; }

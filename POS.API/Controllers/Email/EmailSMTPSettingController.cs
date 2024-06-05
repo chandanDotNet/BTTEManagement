@@ -87,7 +87,7 @@ namespace POS.API.Controllers.Email
         [ClaimCheck("EMAIL_MANAGE_EMAIL_SMTP_SETTINS")]
         [Produces("application/json", "application/xml", Type = typeof(EmailSMTPSettingDto))]
         public async Task<IActionResult> DeleteEmailSMTPSetting(Guid id)
-        {
+    {
             var deleteEmailSMTPSettingCommand = new DeleteEmailSMTPSettingCommand() { Id = id };
             var result = await _mediator.Send(deleteEmailSMTPSettingCommand);
             return ReturnFormattedResponse(result);

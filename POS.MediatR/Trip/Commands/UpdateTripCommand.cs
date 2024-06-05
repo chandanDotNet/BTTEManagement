@@ -28,5 +28,13 @@ namespace BTTEM.MediatR.Trip.Commands
         public Guid DepartmentId { get; set; }
         public bool IsRequestAdvanceMoney { get; set; }
         public decimal? AdvanceMoney { get; set; }
+        public string? RequestAdvanceMoneyStatus { get; set; }
+        public DateTime? RequestAdvanceMoneyDate { get; set; }
+
+        public string? PurposeFor { get; set; }
+        public string? SourceCityName { get; set; }
+        public string? DestinationCityName { get; set; }
+        public string? DepartmentName { get; set; }
+        public Guid? CompanyAccountId { get; set; }
     }
 }

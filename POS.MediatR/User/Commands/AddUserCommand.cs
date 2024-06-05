@@ -35,6 +35,7 @@ namespace POS.MediatR.CommandAndQuery
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
         public Guid CompanyAccountId { get; set; }
+        public Guid? CompanyAccountBranchId { get; set; }
         public Guid? ReportingTo { get; set; }
         public string? ReportingToName { get; set; }
         public bool? IsPermanentAdvance { get; set; }
