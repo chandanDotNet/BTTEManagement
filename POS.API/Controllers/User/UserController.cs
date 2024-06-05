@@ -125,9 +125,9 @@ namespace POS.API.Controllers
         }
 
         /// <summary>
-        /// Get Recently Registered Users
+        /// Get Recently Registered Users 
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns> 
         [HttpGet("GetRecentlyRegisteredUsers")]
         [ClaimCheck("USR_VIEW_USERS")]
         [Produces("application/json", "application/xml", Type = typeof(List<UserDto>))]
