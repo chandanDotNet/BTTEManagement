@@ -112,7 +112,9 @@ namespace POS.API.Controllers.CompanyProfile
         public async Task<IActionResult> AddUpdateStateWiseGST(AddUpdateStateWiseGSTCommand addUpdateStateWiseGSTCommand)
         {
             var response = await _mediator.Send(addUpdateStateWiseGSTCommand);
-            return ReturnFormattedResponse(response);
+            
+            return Ok(response);
+            //return ReturnFormattedResponse(response);
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace POS.API.Controllers.CompanyProfile
         /// </summary>
         /// <param name="accountId">The identifier.</param>
         /// <returns></returns>
-        [HttpGet("GetContactSupport/{accountId}")]
+        [HttpGet("GetCompanyGST/{accountId}")]
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetCompanyGST(Guid? accountId)
         {
