@@ -363,6 +363,13 @@ namespace POS.Repository
 
        };
 
+        private Dictionary<string, PropertyMappingValue> _branchPropertyMapping =
+       new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+       {
+                { "Name", new PropertyMappingValue(new List<string>() { "Name" },true ) }
+
+       };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -395,6 +402,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<ExpenseTrackingDto, ExpenseTracking>(_expenseTrackingPropertyMapping));
             propertyMappings.Add(new PropertyMapping<TravelDocumentDto, TravelDocument>(_travelDocumentPropertyMapping));
             propertyMappings.Add(new PropertyMapping<StateDto, State>(_statePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<BranchDto, Branch>(_branchPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()
