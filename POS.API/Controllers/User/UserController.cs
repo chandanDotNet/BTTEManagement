@@ -125,7 +125,7 @@ namespace POS.API.Controllers
         }
 
         /// <summary>
-        /// Get Recently Registered Users
+        /// Get Recently Registered Users 
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetRecentlyRegisteredUsers")]
