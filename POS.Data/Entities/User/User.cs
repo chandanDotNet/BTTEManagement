@@ -47,6 +47,7 @@ namespace POS.Data
         public Guid CompanyAccountId { get; set; }
         public CompanyAccount CompanyAccounts { get; set; }
         public Guid? CompanyAccountBranchId { get; set; }
+        public Branch CompanyAccountBranch { get; set; }
         public virtual ICollection<UserClaim> UserClaims { get; set; }
         public virtual ICollection<UserLogin> UserLogins { get; set; }
         public virtual ICollection<UserToken> UserTokens { get; set; }

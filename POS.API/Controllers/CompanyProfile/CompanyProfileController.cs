@@ -102,6 +102,17 @@ namespace POS.API.Controllers.CompanyProfile
             return Ok(result);
         }
 
+        [HttpDelete("DeleteCompnayAccounts/{id}")]
+        public async Task<IActionResult> DeleteCompnayAccounts(Guid id)
+        {
+            var deleteContactUsCommand = new DeleteCompanyCommand
+            {
+                Id = id
+            };
+            var result = await _mediator.Send(deleteContactUsCommand);
+            return ReturnFormattedResponse(result);
+        }
+
         /// <summary>
         /// Add Update State Wise GST
         /// </summary>
@@ -129,6 +140,17 @@ namespace POS.API.Controllers.CompanyProfile
             var query = new GetCompanyGSTQuery { CompanyAccountId = accountId };
             var result = await _mediator.Send(query);
             return Ok(result);
+        }
+
+        [HttpDelete("DeleteCompanyGST/{id}")]
+        public async Task<IActionResult> DeleteCompanyGST(Guid id)
+        {
+            var deleteContactUsCommand = new DeleteCompanyGSTCommand
+            {
+                Id = id
+            };
+            var result = await _mediator.Send(deleteContactUsCommand);
+            return ReturnFormattedResponse(result);
         }
     }
 }
