@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Data
 {
-    public class CompanyAccount
+    public class CompanyAccount : BaseEntity
     {
         public Guid Id { get; set; }
         public string AccountName { get; set; }

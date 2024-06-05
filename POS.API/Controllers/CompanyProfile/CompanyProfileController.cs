@@ -111,8 +111,7 @@ namespace POS.API.Controllers.CompanyProfile
         [Produces("application/json", "application/xml", Type = typeof(CompanyGSTDto))]
         public async Task<IActionResult> AddUpdateStateWiseGST(AddUpdateStateWiseGSTCommand addUpdateStateWiseGSTCommand)
         {
-            var response = await _mediator.Send(addUpdateStateWiseGSTCommand);
-            
+            var response = await _mediator.Send(addUpdateStateWiseGSTCommand);            
             return Ok(response);
             //return ReturnFormattedResponse(response);
         }
