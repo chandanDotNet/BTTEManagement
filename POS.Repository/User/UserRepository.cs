@@ -59,7 +59,7 @@ namespace POS.Repository
         {
             //var collectionBeforePaging = All.Include(c => c.Grades).Include(c=>c.UserRoles).ThenInclude(a=>a.Role);
 
-            //collectionBeforePaging.Where(u => u.Email == userResource.Name);
+            //collectionBeforePaging.Where(u => u.Email == userResource.Name); 
             //var collectionBeforePaging = All.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
             //var collectionBeforePaging = AllIncluding(g=>g.Grades,eg=>eg.EmpGrades,d=>d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
             var collectionBeforePaging = All.Include(g=>g.Grades).Include(eg => eg.EmpGrades).Include(d => d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
