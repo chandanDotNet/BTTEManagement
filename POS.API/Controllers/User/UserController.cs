@@ -99,7 +99,7 @@ namespace POS.API.Controllers
         /// <summary>
         /// Get Users
         /// </summary>
-        /// <param name="userResource"></param>
+        /// <param name="userResource"></param> 
         /// <returns></returns>
         [HttpGet("GetUsers")]
         //[ClaimCheck("USR_VIEW_USERS")]
