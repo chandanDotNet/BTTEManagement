@@ -40,6 +40,7 @@ namespace BTTEM.Data
         public CityDto DestinationCity { get; set; }
         public DepartmentDto Department { get; set; }
         public List<TripItinerary> TripItinerarys { get; set; }
+        public List<TripHotelBooking> TripHotelBookings { get; set; }
         public Guid CreatedBy { get; set; }
         public string GradeName { get; set; }
         public bool IsTripCompleted { get; set; }
@@ -47,7 +48,9 @@ namespace BTTEM.Data
         public string? SourceCityName { get; set; }
         public string? DestinationCityName { get; set; }
         public string? DepartmentName { get; set; }
-        public Guid? CompanyAccountId { get; set; }
+        public Guid? CompanyAccountId { get; set; }        
+        public int PendingItineraryApprove { get; set; }        
+        public int PendingHotelApprove { get; set; }        
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }
