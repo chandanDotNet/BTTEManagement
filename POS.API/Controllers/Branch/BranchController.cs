@@ -73,7 +73,7 @@ namespace BTTEM.API.Controllers.Branch
         /// <returns></returns>
         [HttpDelete]
         [Produces("application/json", "application/xml", Type = typeof(BranchDto))]
-        public async Task<IActionResult> UpdateBranch([FromBody] DeleteBranchCommand deleteBranchCommand)
+        public async Task<IActionResult> UpdateBranch([FromQuery] DeleteBranchCommand deleteBranchCommand)
         {
             var result = await _mediator.Send(deleteBranchCommand);
             return ReturnFormattedResponse(result);
