@@ -3,6 +3,7 @@ using POS.Data;
 using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,8 @@ namespace BTTEM.Data
         public string? RequestAdvanceMoneyStatus { get; set; }
         public DateTime? RequestAdvanceMoneyDate { get; set; }
         public Guid? RequestAdvanceMoneyStatusBy { get; set; }
+        [ForeignKey("RequestAdvanceMoneyStatusBy")]
+        public User RequestAdvanceMoneyStatusBys { get; set; }
         public Guid? DepartmentId { get; set; }
         public Department Department { get; set; }
         public List<TripItinerary>TripItinerarys { get; set; }
