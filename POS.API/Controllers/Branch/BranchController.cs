@@ -1,9 +1,11 @@
-﻿using BTTEM.Data.Resources;
+﻿using BTTEM.Data.Dto;
+using BTTEM.Data.Resources;
 using BTTEM.MediatR.Branch.Command;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.API.Controllers;
+using POS.Data.Dto;
 using System.Threading.Tasks;
 
 namespace BTTEM.API.Controllers.Branch
@@ -17,6 +19,7 @@ namespace BTTEM.API.Controllers.Branch
         {
             _mediator = mediator;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetBranches([FromQuery] BranchResource branchResource)
         {
@@ -35,6 +38,32 @@ namespace BTTEM.API.Controllers.Branch
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Create Branch.
+        /// </summary>
+        /// <param name="addBranchCommand"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Produces("application/json", "application/xml", Type = typeof(BranchDto))]
+        public async Task<IActionResult> AddBranch([FromBody] AddBranchCommand addBranchCommand)
+        {
+            var result = await _mediator.Send(addBranchCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Branch.
+        /// </summary>
+        /// <param name="updateBranchCommand"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Produces("application/json", "application/xml", Type = typeof(BranchDto))]
+        public async Task<IActionResult> UpdateBranch([FromBody] UpdateBranchCommand updateBranchCommand)
+        {
+            var result = await _mediator.Send(updateBranchCommand);
+            return ReturnFormattedResponse(result);
         }
     }
 }
