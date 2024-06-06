@@ -49,7 +49,7 @@ namespace BTTEM.MediatR.CompanyProfile.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(DeleteCompanyCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _companyAccountRepository.FindAsync(request.Id);
+            var entityExist = await _companyAccountRepository.FindAsync(request.Id); 
             if (entityExist == null)
             {
                 return ServiceResponse<bool>.Return404();
