@@ -22,5 +22,6 @@ namespace BTTEM.Data
         public string Remarks { get; set; }
         public string ActionType { get; set; }
         public string TripTypeName { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

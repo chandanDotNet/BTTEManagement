@@ -62,6 +62,7 @@ namespace BTTEM.Repository
                     ActionByName = c.ActionByUser.FirstName + " " + c.ActionByUser.LastName,
                     ActionDate = c.ActionDate,
                     TripTypeName = c.TripTypeName,
+                    ImageUrl = c.ImageUrl,
 
                 }).ToListAsync();
             return entities;

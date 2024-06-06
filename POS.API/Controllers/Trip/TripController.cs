@@ -24,6 +24,7 @@ using POS.Repository;
 using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
 using System.ComponentModel.Design;
+using BTTEM.Data.Dto;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -277,7 +278,7 @@ namespace BTTEM.API.Controllers.Trip
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 if (updateTripItineraryBookStatusCommand.IsItinerary == true)
                 {
-                    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);                   
+                    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
 
                     var addTripTrackingCommand = new AddTripTrackingCommand()
                     {
@@ -470,7 +471,7 @@ namespace BTTEM.API.Controllers.Trip
                 var addNotificationCommand = new AddNotificationCommand()
                 {
                     SourceId = Guid.Parse(_userInfoToken.Id),
-                    Content = "Request For Advance Money For Rs." + updateTripRequestAdvanceMoneyCommand.AdvanceMoney + " By "+ userResult.FirstName + " " + userResult.LastName,
+                    Content = "Request For Advance Money For Rs." + updateTripRequestAdvanceMoneyCommand.AdvanceMoney + " By " + userResult.FirstName + " " + userResult.LastName,
                     UserId = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result.ReportingTo.Value,
                 };
 
@@ -635,6 +636,18 @@ namespace BTTEM.API.Controllers.Trip
                 }
             }
 
+            return ReturnFormattedResponse(result);
+        }
+        /// <summary>
+        /// Add Trip Tracking
+        /// </summary>
+        /// <param name="addTripTrackingCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddTripTracking")]
+        [Produces("application/json", "application/xml", Type = typeof(TripTrackingDto))]
+        public async Task<IActionResult> AddTripTracking([FromBody] AddTripTrackingCommand addTripTrackingCommand)
+        {
+            var result = await _mediator.Send(addTripTrackingCommand);
             return ReturnFormattedResponse(result);
         }
 
