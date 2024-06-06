@@ -53,7 +53,9 @@ namespace BTTEM.Repository
                 {
                     Id = c.Id,
                     AccountName = c.AccountName,
-                    CompanyProfileId = c.CompanyProfileId
+                    CompanyProfileId = c.CompanyProfileId,
+                    GSTCount = c.CompanyGST.Count(),
+
                 }).ToListAsync();
             return entities;
         }

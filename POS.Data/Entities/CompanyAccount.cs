@@ -15,5 +15,6 @@ namespace BTTEM.Data
         public Guid CompanyProfileId { get; set; }
         [ForeignKey("CompanyProfileId")]
         public CompanyProfile CompanyProfile { get; set; }
+        public List<CompanyGST> CompanyGST { get; set; }
     }
 }
