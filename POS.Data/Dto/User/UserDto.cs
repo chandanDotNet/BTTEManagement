@@ -37,8 +37,10 @@ namespace POS.Data.Dto
         public string AccountNumber { get; set; }
         public string SapCode { get; set; }
         public Guid CompanyAccountId { get; set; }
-        public Guid? CompanyAccountBranchId { get; set; }
+       
         public CompanyAccountDto CompanyAccounts { get; set; }
+        public Guid? CompanyAccountBranchId { get; set; }
+        public Branch CompanyAccountBranch { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
         public List<UserRoleDto> UserRoless { get; set; } = new List<UserRoleDto>();
         public List<UserClaimDto> UserClaims { get; set; } = new List<UserClaimDto>();

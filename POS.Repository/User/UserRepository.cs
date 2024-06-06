@@ -62,7 +62,7 @@ namespace POS.Repository
             //collectionBeforePaging.Where(u => u.Email == userResource.Name); 
             //var collectionBeforePaging = All.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
             //var collectionBeforePaging = AllIncluding(g=>g.Grades,eg=>eg.EmpGrades,d=>d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
-            var collectionBeforePaging = All.Include(g=>g.Grades).Include(eg => eg.EmpGrades).Include(d => d.Departments).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
+            var collectionBeforePaging = All.Include(g=>g.Grades).Include(eg => eg.EmpGrades).Include(d => d.Departments).Include(d => d.CompanyAccountBranch).ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
             // collectionBeforePaging =collectionBeforePaging.ApplySort(userResource.OrderBy, _propertyMappingService.GetPropertyMapping<UserDto, User>());
 
             if (!string.IsNullOrWhiteSpace(userResource.Name))

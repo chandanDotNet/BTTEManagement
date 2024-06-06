@@ -118,6 +118,7 @@ namespace POS.Repository
                     CompanyAccounts = _mapper.Map<CompanyAccountDto>(c.CompanyAccounts),
                     CompanyAccountId =c.CompanyAccountId,
                     CompanyAccountBranchId = c.CompanyAccountBranchId,
+                    CompanyAccountBranch = c.CompanyAccountBranch,
                     UserRoles= _mapper.Map<List<UserRoleDto>>(c.UserRoles),
                     UserRoleName = c.UserRoles.FirstOrDefault().Role.Name,
                     //RoleId = c.UserRoles.FirstOrDefault().Role.Name,
