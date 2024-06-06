@@ -145,6 +145,14 @@ namespace POS.Helper
             }
         }
 
+        public string TrackingDocument
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:TrackingDocument"];
+            }
+        }
+
         public string RequestCallDocument
         {
             get

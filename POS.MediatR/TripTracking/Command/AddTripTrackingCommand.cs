@@ -20,5 +20,6 @@ namespace BTTEM.MediatR.CommandAndQuery
         public string Remarks { get; set; }
         public string ActionType { get; set; }
         public string TripTypeName { get; set; }
+        public string ImageUrlData { get; set; }
     }
 }
