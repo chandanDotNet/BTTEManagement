@@ -2,6 +2,7 @@
 using BTTEM.Data;
 using BTTEM.Data.Dto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
@@ -98,7 +99,11 @@ namespace BTTEM.Repository
                         CompanyAccountId = cs.CompanyAccountId,
                         DepartmentName = cs.DepartmentName,
                         PurposeFor = cs.PurposeFor,
-                        TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments)
+                        PendingItineraryApprove = cs.TripItinerarys.Where(a=>a.ApprovalStatus==null).Count(),
+                        PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus == null).Count(),
+                        TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
+                        TripHotelBookings=cs.TripHotelBookings
+
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -146,7 +151,10 @@ namespace BTTEM.Repository
                  CompanyAccountId = cs.CompanyAccountId,
                  DepartmentName = cs.DepartmentName,
                  PurposeFor= cs.PurposeFor,
-                 TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments)
+                 PendingItineraryApprove = cs.TripItinerarys.Where(a => a.ApprovalStatus==null).Count(),
+                 PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus==null).Count(),
+                 TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
+                 TripHotelBookings = cs.TripHotelBookings
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();

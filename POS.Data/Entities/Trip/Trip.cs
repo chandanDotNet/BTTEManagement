@@ -39,6 +39,7 @@ namespace BTTEM.Data
         public Guid? DepartmentId { get; set; }
         public Department Department { get; set; }
         public List<TripItinerary>TripItinerarys { get; set; }
+        public List<TripHotelBooking> TripHotelBookings { get; set; }
         public bool IsTripCompleted { get; set; }
         public string? PurposeFor { get; set; }
         public string? SourceCityName { get; set; }

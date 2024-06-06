@@ -84,6 +84,7 @@ namespace POS.MediatR.Handlers
             appUser.AccountNumber = request.AccountNumber;
             appUser.SapCode = request.SapCode;
             appUser.CompanyAccountId = request.CompanyAccountId;
+            appUser.CompanyAccountBranchId = request.CompanyAccountBranchId;
             appUser.IsPermanentAdvance = request.IsPermanentAdvance;
             appUser.PermanentAdvance = request.PermanentAdvance;
             appUser.ReportingTo = request.ReportingTo;
