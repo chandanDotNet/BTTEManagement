@@ -53,7 +53,7 @@ namespace BTTEM.MediatR.CompanyProfile.Handlers
             if (entityExist == null)
             {
                 return ServiceResponse<bool>.Return404();
-            }
+            } 
             _companyAccountRepository.Delete(request.Id);
             if (await _uow.SaveAsync() <= 0)
             {
