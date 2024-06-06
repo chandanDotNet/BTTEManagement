@@ -102,7 +102,9 @@ namespace BTTEM.Repository
                         PendingItineraryApprove = cs.TripItinerarys.Where(a=>a.ApprovalStatus==null).Count(),
                         PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus == null).Count(),
                         TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
-                        TripHotelBookings=cs.TripHotelBookings
+                        TripHotelBookings=cs.TripHotelBookings,
+                        RequestAdvanceMoneyStatusBys=cs.RequestAdvanceMoneyStatusBys,
+                        RequestAdvanceMoneyStatusBy=cs.RequestAdvanceMoneyStatusBy
 
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -154,7 +156,9 @@ namespace BTTEM.Repository
                  PendingItineraryApprove = cs.TripItinerarys.Where(a => a.ApprovalStatus==null).Count(),
                  PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus==null).Count(),
                  TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
-                 TripHotelBookings = cs.TripHotelBookings
+                 TripHotelBookings = cs.TripHotelBookings,
+                 RequestAdvanceMoneyStatusBys = cs.RequestAdvanceMoneyStatusBys,
+                 RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();

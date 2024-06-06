@@ -35,6 +35,7 @@ namespace BTTEM.Data
         public string? RequestAdvanceMoneyStatus { get; set; }
         public DateTime? RequestAdvanceMoneyDate { get; set; }
         public Guid? RequestAdvanceMoneyStatusBy { get; set; }
+        public User RequestAdvanceMoneyStatusBys { get; set; }
         public Guid? DepartmentId { get; set; }
         public CityDto SourceCity { get; set; }
         public CityDto DestinationCity { get; set; }
