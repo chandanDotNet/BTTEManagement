@@ -26,5 +26,7 @@ namespace POS.MediatR.CommandAndQuery
         public bool IsReceiptChange { get; set; }
         public string DocumentData { get; set; }
         public string Status { get; set; }
+        public string ReUploadRemarks { get; set; }
+
     }
 }
