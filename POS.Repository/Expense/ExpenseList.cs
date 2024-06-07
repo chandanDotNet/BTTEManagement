@@ -94,7 +94,9 @@ namespace POS.Repository
                         ReceiptPath= cs.ReceiptPath,
                         Status = cs.Status,
                         AccountStatus = cs.AccountStatus,
-                        AccountStatusRemarks = cs.AccountStatusRemarks
+                        AccountStatusRemarks = cs.AccountStatusRemarks,
+                        GSTNo = cs.GSTNo,
+                        PayableAmount=cs.PayableAmount
                     })
                     .ToListAsync();
                 return entities;
@@ -123,7 +125,9 @@ namespace POS.Repository
                  ReceiptName = cs.ReceiptName,
                  Status = cs.Status,
                  AccountStatus = cs.AccountStatus,
-                 AccountStatusRemarks = cs.AccountStatusRemarks
+                 AccountStatusRemarks = cs.AccountStatusRemarks,
+                 GSTNo = cs.GSTNo,
+                 PayableAmount = cs.PayableAmount
              })
              .ToListAsync();
                 return entities;
