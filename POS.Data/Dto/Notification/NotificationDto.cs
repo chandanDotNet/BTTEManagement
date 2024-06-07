@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POS.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,7 @@ namespace BTTEM.Data.Dto
         public Guid SourceId { get; set; }
         public string Content { get; set; }
         public int Read { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public User SourceUser { get; set; }
     }
 }
