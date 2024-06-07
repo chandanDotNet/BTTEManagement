@@ -19,6 +19,7 @@ namespace BTTEM.Data
         public string Name { get; set; }
         public DateTime TripStarts { get; set; }
         public DateTime TripEnds { get; set; }
+        public int TotalDays { get; set; }
         public Guid? PurposeId { get; set; }
         public string Description { get; set; }
         public PurposeDto Purpose { get; set; }

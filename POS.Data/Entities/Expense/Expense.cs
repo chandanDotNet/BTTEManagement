@@ -34,5 +34,6 @@ namespace POS.Data
         public string Status { get; set; }
         public string AccountStatus { get; set; }
         public string AccountStatusRemarks { get; set; }
+        public string? ReUploadRemarks { get; set; }
     }
 }
