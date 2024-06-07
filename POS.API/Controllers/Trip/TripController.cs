@@ -91,6 +91,12 @@ namespace BTTEM.API.Controllers.Trip
             GetNewTripNumberCommand getNewTripNumber = new GetNewTripNumberCommand();
             string TripNo = await _mediator.Send(getNewTripNumber);
             addTripCommand.TripNo = TripNo;
+
+            //===================
+
+            var trip=_tripRepository.All.Where(a=>a.TripStarts>=addTripCommand.TripStarts);
+            //===============
+
             var result = await _mediator.Send(addTripCommand);
 
             if (result.Success)
