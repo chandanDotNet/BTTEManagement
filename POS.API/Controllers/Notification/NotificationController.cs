@@ -35,7 +35,7 @@ namespace BTTEM.API.Controllers.Notification
         /// </summary>
         /// <param name="userId">The identifier.</param>
         /// <returns></returns>
-        [HttpGet("GetNotification/{userid}")]
+        [HttpGet("GetNotification/{userId}")]
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetNotification(Guid? userId)
         {
