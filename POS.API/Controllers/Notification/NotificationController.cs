@@ -7,6 +7,7 @@ using POS.API.Controllers;
 using System.Threading.Tasks;
 using POS.API.Helpers;
 using System;
+using System.Linq;
 
 namespace BTTEM.API.Controllers.Notification
 {
@@ -51,10 +52,37 @@ namespace BTTEM.API.Controllers.Notification
         /// <returns></returns>
         [HttpPost]
         [Produces("application/json", "application/xml", Type = typeof(NotificationDto))]
-        public async Task<IActionResult> Notification([FromBody] AddNotificationCommand addNotificationCommand )
+        public async Task<IActionResult> Notification([FromBody] AddNotificationCommand addNotificationCommand)
         {
             var result = await _mediator.Send(addNotificationCommand);
             return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Gets Notification Count
+        /// </summary>
+        /// <param name="userId">The identifier.</param>
+        /// <returns></returns>
+        [HttpGet("GetNotificationCount/{userId}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetNotificationCount(Guid? userId)
+        {
+            var query = new GetNotificationQuery { UserId = userId };
+            var result = await _mediator.Send(query);
+            NotificationResponse response = new NotificationResponse()
+            {
+                TotalCount = result.Count(),
+                ReadCount = result.Where(x => x.Read != 0).Count(),
+                UnreadCount = result.Where(x => x.Read == 0).Count(),
+            };
+            return Ok(response);
+        }
+        public class NotificationResponse
+        {
+            public int TotalCount { get; set; }
+            public int ReadCount { get; set; }
+            public int UnreadCount { get; set; }
         }
     }
 }
