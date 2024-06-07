@@ -25,6 +25,9 @@ using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
 using System.ComponentModel.Design;
 using BTTEM.Data.Dto;
+using POS.Helper;
+using AutoMapper;
+using System.Collections.Generic;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -39,8 +42,8 @@ namespace BTTEM.API.Controllers.Trip
         private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserRoleRepository _userRoleRepository;
-
-        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository, ITripHotelBookingRepository tripHotelBookingRepository, IUserRepository userRepository, IUserRoleRepository userRoleRepository)
+        private readonly IMapper _mapper;
+        public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository, ITripHotelBookingRepository tripHotelBookingRepository, IUserRepository userRepository, IUserRoleRepository userRoleRepository, IMapper mapper)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -49,6 +52,7 @@ namespace BTTEM.API.Controllers.Trip
             _tripHotelBookingRepository = tripHotelBookingRepository;
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -94,7 +98,22 @@ namespace BTTEM.API.Controllers.Trip
 
             //===================
 
-            var trip=_tripRepository.All.Where(a=>a.TripStarts>=addTripCommand.TripStarts);
+            var trip=_tripRepository.All.Where(a=>a.TripStarts<=addTripCommand.TripStarts && a.TripEnds>= addTripCommand.TripStarts && a.CreatedBy== Guid.Parse(_userInfoToken.Id)).ToList();
+            if(trip.Count>0)
+            {
+                var trip10 = _mapper.Map<List<TripDto>>(trip);
+                var ss= ServiceResponse<List<TripDto>>.ReturnResultWith200(trip10);
+               
+                //ss.Errors = false;
+                var sss= ReturnFormattedResponse(ss);
+                //sss.ShapeData = 500;
+                return Ok(sss);
+            }
+            var trip2 = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripEnds && a.TripEnds >= addTripCommand.TripEnds && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
+            if (trip2.Count>0)
+            {
+                return Ok(trip2);
+            }
             //===============
 
             var result = await _mediator.Send(addTripCommand);
