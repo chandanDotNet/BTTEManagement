@@ -18,6 +18,7 @@ using BTTEM.Data.Resources;
 using POS.Data.Dto;
 using POS.Repository;
 using BTTEM.Repository;
+using System.Linq;
 
 namespace POS.API.Controllers.Expense
 {
@@ -31,6 +32,7 @@ namespace POS.API.Controllers.Expense
         private readonly IExpenseRepository _expenseRepository;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IExpenseCategoryRepository _expenseCategoryRepository;
         /// <summary>
         /// 
         /// </summary>
@@ -38,13 +40,14 @@ namespace POS.API.Controllers.Expense
         /// <param name="logger"></param>
         public ExpenseController(
             IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository,
-            IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository)
+            IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository, IExpenseCategoryRepository expenseCategoryRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
             _expenseRepository = expenseRepository;
             _masterExpenseRepository = masterExpenseRepository;
             _userRepository = userRepository;
+            _expenseCategoryRepository = expenseCategoryRepository;
         }
         /// <summary>
         /// Add Expenses
@@ -128,6 +131,22 @@ namespace POS.API.Controllers.Expense
                     };
                     var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
+
+                //============================
+
+                var expenseCategory = _expenseCategoryRepository.All.ToList();
+                if (expenseCategory.Count>0)
+                {
+                    foreach (var item in expenseCategory)
+                    {
+                        var expenseAmount = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId== item.Id).Sum(a=>a.Amount);
+
+
+                    }                    
+                }
+
+                //===============
+
             }
             return ReturnFormattedResponse(result);
         }
