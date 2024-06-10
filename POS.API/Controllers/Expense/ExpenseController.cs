@@ -19,6 +19,8 @@ using POS.Data.Dto;
 using POS.Repository;
 using BTTEM.Repository;
 using System.Linq;
+using BTTEM.MediatR.PoliciesTravel.Commands;
+using POS.Data;
 
 namespace POS.API.Controllers.Expense
 {
@@ -137,11 +139,101 @@ namespace POS.API.Controllers.Expense
                 var expenseCategory = _expenseCategoryRepository.All.ToList();
                 if (expenseCategory.Count>0)
                 {
+                    //===============================
+                    var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+                    {
+                        UserId = result.Data.CreatedByUser.Id,
+                    };
+                    var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+                    PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+                    {
+                        CompanyAccountId = resultUser.CompanyAccountId,
+                        GradeId = resultUser.GradeId,
+                    };
+
+                    //PoliciesDetail
+                    var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+                    {
+                        PoliciesDetailResource = policiesDetailResourceQuery
+                    };
+                    var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+
+                    //Policies Lodging Fooding
+                    var getAllPoliciesLodgingFoodingCommand = new GetAllPoliciesLodgingFoodingCommand
+                    {
+                        Id = resultPoliciesDetail.FirstOrDefault().Id
+                    };
+                    var resultPoliciesLodgingFooding = await _mediator.Send(getAllPoliciesLodgingFoodingCommand);
+
+                    //Conveyance
+                    var getAllConveyanceCommand = new GetAllConveyanceCommand
+                    {
+                        Id = resultPoliciesDetail.FirstOrDefault().Id
+                    };
+                    var resultConveyance = await _mediator.Send(getAllConveyanceCommand);
+
+                    //PoliciesVehicleConveyance
+                    var getAlllPoliciesVehicleConveyanceCommand = new GetAllPoliciesVehicleConveyanceCommand
+                    {
+                        Id = resultPoliciesDetail.FirstOrDefault().Id
+                    };
+                    var resultlPoliciesVehicleConveyance = await _mediator.Send(getAlllPoliciesVehicleConveyanceCommand);
+
+                    //PoliciesSetting
+                    var getAllPoliciesSettingCommand = new GetAllPoliciesSettingCommand
+                    {
+                        Id = resultPoliciesDetail.FirstOrDefault().Id
+                    };
+                    var resultPoliciesSetting = await _mediator.Send(getAllPoliciesSettingCommand);
+                    //===============================
+
                     foreach (var item in expenseCategory)
                     {
                         var expenseAmount = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId== item.Id).Sum(a=>a.Amount);
                         var policyAmount = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId== item.Id).Sum(a=>a.Amount);
 
+                       
+
+                        //--Lodging (Metro City)
+                        if (item.Id==new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
+                        {
+                            if(resultPoliciesLodgingFooding.IsMetroCities==true)
+                            {
+                                decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
+                            }
+                             
+                        }
+                        //-- Lodging (Other City)
+                        if (item.Id == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D"))
+                        {
+                            if (resultPoliciesLodgingFooding.OtherCities == true)
+                            {
+                                decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
+                            }
+                        }
+                        //--Conveyance (within a City)
+                        if (item.Id == new Guid("B1977DB3-D909-4936-A5DA-41BF84638963"))
+                        {
+
+                        }
+                        //--Conveyance (city to outer area)
+                        if (item.Id == new Guid("5278397A-C8DD-475A-A7A7-C05708B2BB06"))
+                        {
+
+                        }
+                        //--MISC /DA
+                        if (item.Id == new Guid("ED69E9A0-2D54-4A91-A598-F79973B9FE99"))
+                        {
+
+                        }
+                        //--Fooding Allowance
+                        if (item.Id == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
+                        {
+                            if (resultPoliciesLodgingFooding.IsBudget == true)
+                            {
+                                decimal PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount;
+                            }
+                        }
 
                     }                    
                 }
