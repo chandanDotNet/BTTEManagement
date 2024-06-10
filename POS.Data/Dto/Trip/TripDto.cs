@@ -52,7 +52,8 @@ namespace BTTEM.Data
         public string? DepartmentName { get; set; }
         public Guid? CompanyAccountId { get; set; }        
         public int PendingItineraryApprove { get; set; }        
-        public int PendingHotelApprove { get; set; }        
+        public int PendingHotelApprove { get; set; }
+        public string? VendorCode { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }

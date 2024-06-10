@@ -28,6 +28,7 @@ using BTTEM.Data.Dto;
 using POS.Helper;
 using AutoMapper;
 using System.Collections.Generic;
+using BTTEM.Data.Entities;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -92,27 +93,39 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> AddTripDetail(AddTripCommand addTripCommand)
         {
+            TripDetailsData tripDetailsData = new TripDetailsData();
             GetNewTripNumberCommand getNewTripNumber = new GetNewTripNumberCommand();
             string TripNo = await _mediator.Send(getNewTripNumber);
             addTripCommand.TripNo = TripNo;
 
             //===================
+           
 
             var trip=_tripRepository.All.Where(a=>a.TripStarts<=addTripCommand.TripStarts && a.TripEnds>= addTripCommand.TripStarts && a.CreatedBy== Guid.Parse(_userInfoToken.Id)).ToList();
             if(trip.Count>0)
             {
-                var trip10 = _mapper.Map<List<TripDto>>(trip);
-                var ss= ServiceResponse<List<TripDto>>.ReturnResultWith200(trip10);
-               
+                var tripList = _mapper.Map<List<TripDto>>(trip);
+                tripDetailsData.Data = tripList;
+                tripDetailsData.status = false;
+                tripDetailsData.StatusCode = 409;
+                tripDetailsData.message = "Data already exists ";
+                return Ok(tripDetailsData);
+                //var ss= ServiceResponse<List<TripDto>>.ReturnResultWith402(trip10);               
                 //ss.Errors = false;
-                var sss= ReturnFormattedResponse(ss);
+                // var sss= ReturnFormattedResponse(ss);
                 //sss.ShapeData = 500;
-                return Ok(sss);
+                //return Ok(sss);
+                // return (IActionResult)ServiceResponse<List<TripDto>>.Return500();
             }
             var trip2 = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripEnds && a.TripEnds >= addTripCommand.TripEnds && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
             if (trip2.Count>0)
             {
-                return Ok(trip2);
+                var tripList1 = _mapper.Map<List<TripDto>>(trip2);
+                tripDetailsData.Data = tripList1;
+                tripDetailsData.status = false;
+                tripDetailsData.StatusCode = 409;
+                tripDetailsData.message = "Data already exists ";
+                return Ok(tripDetailsData);
             }
             //===============
 
@@ -142,7 +155,16 @@ namespace BTTEM.API.Controllers.Trip
                 };
                 var notificationResult = await _mediator.Send(addNotificationCommand);
             }
-            return ReturnFormattedResponse(result);
+
+            List<TripDto> tripDtoList = new List<TripDto>();
+            tripDtoList.Add(result.Data);            
+            tripDetailsData.Data = tripDtoList;
+            tripDetailsData.status = true;
+            tripDetailsData.StatusCode = 200;
+            tripDetailsData.message = "Trip added successfully";
+            return Ok(tripDetailsData);
+
+            //return ReturnFormattedResponse(result);
         }
 
         /// <summary>
@@ -155,6 +177,9 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> UpdateTripDetail(UpdateTripCommand updateTripCommand)
         {
+            TripDetailsData tripDetailsData = new TripDetailsData();
+            List<TripDto> tripDtoList = new List<TripDto>();
+
             var result = await _mediator.Send(updateTripCommand);
 
             if (result.Success)
@@ -173,8 +198,25 @@ namespace BTTEM.API.Controllers.Trip
                 };
                 var response = await _mediator.Send(addTripTrackingCommand);
             }
+            else
+            {
+               
+                //tripDtoList.Add(result.Data);
+                tripDetailsData.Data = tripDtoList;
+                tripDetailsData.status = false;
+                tripDetailsData.StatusCode = 500;
+                tripDetailsData.message = "Something went wrong!! please try again";
+                return Ok(tripDetailsData);
+            }
 
-            return ReturnFormattedResponse(result);
+            //return ReturnFormattedResponse(result);
+          
+            //tripDtoList.Add(result.Data);
+            tripDetailsData.Data = tripDtoList;
+            tripDetailsData.status = true;
+            tripDetailsData.StatusCode = 200;
+            tripDetailsData.message = "Trip updated successfully";
+            return Ok(tripDetailsData);
         }
 
         /// <summary>
