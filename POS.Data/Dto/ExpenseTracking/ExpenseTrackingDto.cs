@@ -14,6 +14,7 @@ namespace BTTEM.Data.Dto
         public Guid ActionBy { get; set; }
         public DateTime ActionDate { get; set; }
         public string ActionByName { get; set; }
+        public string ProfilePhoto { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
         public string ActionType { get; set; }

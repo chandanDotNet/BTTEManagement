@@ -9,13 +9,17 @@ using System.Text;
 using System.Threading.Tasks;
 using BTTEM.Data.Dto;
 using BTTEM.Data;
+using POS.Helper;
+using System.IO;
 
 namespace BTTEM.Repository
 {
     public class TripTrackingList : List<TripTrackingDto>
     {
-        public TripTrackingList()
+        private PathHelper _pathHelper;
+        public TripTrackingList(PathHelper pathHelper)
         {
+            _pathHelper = pathHelper;
         }
         public int Skip { get; private set; }
         public int TotalPages { get; private set; }
@@ -60,6 +64,7 @@ namespace BTTEM.Repository
                     Remarks = c.Remarks,
                     ActionBy = c.ActionBy,
                     ActionByName = c.ActionByUser.FirstName + " " + c.ActionByUser.LastName,
+                    ProfilePhoto = !string.IsNullOrWhiteSpace(c.ActionByUser.ProfilePhoto) ? Path.Combine(_pathHelper.UserProfilePath, c.ActionByUser.ProfilePhoto) : "",                    
                     ActionDate = c.ActionDate,
                     TripTypeName = c.TripTypeName,
                     ImageUrl = c.ImageUrl,

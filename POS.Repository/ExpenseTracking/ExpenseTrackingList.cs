@@ -6,13 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using POS.Helper;
 
 namespace BTTEM.Repository
 {
     public class ExpenseTrackingList : List<ExpenseTrackingDto>
     {
-        public ExpenseTrackingList()
+        private PathHelper _pathHelper;
+        public ExpenseTrackingList(PathHelper pathHelper)
         {
+            _pathHelper = pathHelper;
         }
         public int Skip { get; private set; }
         public int TotalPages { get; private set; }
@@ -57,6 +61,7 @@ namespace BTTEM.Repository
                     Remarks = c.Remarks,
                     ActionBy = c.ActionBy,
                     ActionByName = c.ActionByUser.FirstName + " " + c.ActionByUser.LastName,
+                    ProfilePhoto = !string.IsNullOrWhiteSpace(c.ActionByUser.ProfilePhoto) ? Path.Combine(_pathHelper.UserProfilePath, c.ActionByUser.ProfilePhoto) : "",
                     ActionDate = c.ActionDate,
                     ExpenseTypeName = c.ExpenseTypeName,
 

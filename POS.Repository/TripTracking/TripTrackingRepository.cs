@@ -17,18 +17,23 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BTTEM.Data.Resources;
 using BTTEM.Data.Dto;
+using POS.Helper;
 
 namespace BTTEM.Repository
 {
     public class TripTrackingRepository : GenericRepository<TripTracking, POSDbContext>, ITripTrackingRepository
     {
+        private readonly IMapper _mapper;
+        private readonly PathHelper _pathHelper;
         private readonly IPropertyMappingService _propertyMappingService;
         public TripTrackingRepository(IUnitOfWork<POSDbContext> uow,
              IPropertyMappingService propertyMappingService,
-             IMapper mapper)
+             IMapper mapper, PathHelper pathHelper)
         : base(uow)
         {
             _propertyMappingService = propertyMappingService;
+            _mapper = mapper;
+            _pathHelper = pathHelper;
         }
 
         public async Task<TripTrackingList> GetTripTrackings(TripTrackingResource tripTrackingResource)
@@ -68,7 +73,7 @@ namespace BTTEM.Repository
                   .Where(a => a.ActionType == tripTrackingResource.ActionType);
             }
 
-            var TripTrackingList = new TripTrackingList();
+            var TripTrackingList = new TripTrackingList(_pathHelper);
             return await TripTrackingList.Create(collectionBeforePaging, tripTrackingResource.Skip, tripTrackingResource.PageSize);
         }
     }
