@@ -140,6 +140,7 @@ namespace POS.API.Controllers.Expense
                     foreach (var item in expenseCategory)
                     {
                         var expenseAmount = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId== item.Id).Sum(a=>a.Amount);
+                        var policyAmount = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId== item.Id).Sum(a=>a.Amount);
 
 
                     }                    
