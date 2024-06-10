@@ -245,7 +245,7 @@ namespace POS.API.Controllers.Expense
                     ExpenseTypeName = responseData.Result.Name,
                     MasterExpenseId = responseData.Result.MasterExpenseId,
                     ActionType = "Tracker",
-                    Remarks = updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
+                    Remarks = updateExpenseStatusCommand.Status == "APPROVED" ? updateExpenseStatusCommand.Status : updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
                     Status = "Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -639,7 +639,7 @@ namespace POS.API.Controllers.Expense
                 {
                     var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                     {
-                        MasterExpenseId = updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value,                        
+                        MasterExpenseId = updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value,
                         ActionType = "Activity",
                         Remarks = "Expense REIMBURSED (Full/Partial/Rejected) By " + userResult.FirstName + " " + userResult.LastName,
                         Status = "Expense REIMBURSED (Full/Partial/Rejected) By " + userResult.FirstName + " " + userResult.LastName,
@@ -756,7 +756,7 @@ namespace POS.API.Controllers.Expense
             {
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
-                {                    
+                {
                     ExpenseId = updateTravelDeskExpenseCommand.Id,
                     ExpenseTypeName = updateTravelDeskExpenseCommand.Name,
                     ActionType = "Activity",
