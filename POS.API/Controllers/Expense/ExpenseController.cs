@@ -18,6 +18,7 @@ using BTTEM.Data.Resources;
 using POS.Data.Dto;
 using POS.Repository;
 using BTTEM.Repository;
+using BTTEM.Data.Dto;
 using System.Linq;
 using BTTEM.MediatR.PoliciesTravel.Commands;
 using POS.Data;
@@ -761,6 +762,19 @@ namespace POS.API.Controllers.Expense
                     var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
             }
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Add Expense Tracking
+        /// </summary>
+        /// <param name="addExpenseTrackingCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddExpenseTracking")]
+        [Produces("application/json", "application/xml", Type = typeof(ExpenseTrackingDto))]
+        public async Task<IActionResult> AddExpenseTracking([FromBody] AddExpenseTrackingCommand addExpenseTrackingCommand)
+        {
+            var result = await _mediator.Send(addExpenseTrackingCommand);
             return ReturnFormattedResponse(result);
         }
 

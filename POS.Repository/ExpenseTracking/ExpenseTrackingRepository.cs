@@ -11,20 +11,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using POS.Helper;
 
 namespace BTTEM.Repository
 {
     public class ExpenseTrackingRepository : GenericRepository<ExpenseTracking, POSDbContext>, IExpenseTrackingRepository
     {
         private readonly IPropertyMappingService _propertyMappingService;
+        private readonly PathHelper _pathHelper;
+        private readonly IMapper _mapper;
+
         public ExpenseTrackingRepository(IUnitOfWork<POSDbContext> uow,
              IPropertyMappingService propertyMappingService,
-             IMapper mapper)
+             IMapper mapper, PathHelper pathHelper)
         : base(uow)
-        {
+        {            
             _propertyMappingService = propertyMappingService;
+            _pathHelper = pathHelper;
+            _mapper = mapper;
         }
-
 
         public async Task<ExpenseTrackingList> GetExpenseTrackings(ExpenseTrackingResource expenseTrackingResource)
         {
@@ -50,7 +55,7 @@ namespace BTTEM.Repository
                   .Where(a => a.ActionType == expenseTrackingResource.ActionType);
             }
 
-            var ExpenseTrackingList = new ExpenseTrackingList();
+            var ExpenseTrackingList = new ExpenseTrackingList(_pathHelper);
             return await ExpenseTrackingList.Create(collectionBeforePaging, expenseTrackingResource.Skip, expenseTrackingResource.PageSize);
         }
     }
