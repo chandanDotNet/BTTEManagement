@@ -64,7 +64,7 @@ namespace BTTEM.Repository
                     Remarks = c.Remarks,
                     ActionBy = c.ActionBy,
                     ActionByName = c.ActionByUser.FirstName + " " + c.ActionByUser.LastName,
-                    ProfilePhoto = !string.IsNullOrWhiteSpace(c.ActionByUser.ProfilePhoto) ? Path.Combine(_pathHelper.UserProfilePath, c.ActionByUser.ProfilePhoto) : "",                    
+                    ProfilePhoto = c.ActionByUser.ProfilePhoto,                    
                     ActionDate = c.ActionDate,
                     TripTypeName = c.TripTypeName,
                     ImageUrl = c.ImageUrl,
