@@ -215,20 +215,46 @@ namespace POS.API.Controllers.Expense
                                 decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
                             }
                         }
+
                         //--Conveyance (within a City)
                         if (item.Id == new Guid("B1977DB3-D909-4936-A5DA-41BF84638963"))
                         {
-
+                            var Conveyance = resultConveyance.Where(a=>a.Name== "Conveyance (within a city)");
+                            if (Conveyance != null)
+                            {
+                              var ConveyancesItem=  Conveyance.Select(a => a.conveyancesItem).Where(b => b.Any(a => a.ConveyanceItemName == "Budget")).FirstOrDefault();
+                                if(ConveyancesItem != null)
+                                {
+                                    bool IsCheck = (bool)ConveyancesItem.FirstOrDefault().IsCheck;
+                                    if (IsCheck==true)
+                                    {
+                                        decimal ConveyancesAmount= (decimal)(ConveyancesItem.FirstOrDefault()?.Amount);    
+                                    }
+                                }
+                            }
                         }
+
                         //--Conveyance (city to outer area)
                         if (item.Id == new Guid("5278397A-C8DD-475A-A7A7-C05708B2BB06"))
                         {
-
+                            var Conveyance = resultConveyance.Where(a => a.Name == "Conveyance (city to outer area)");
+                            if (Conveyance != null)
+                            {
+                                var ConveyancesItem = Conveyance.Select(a => a.conveyancesItem).Where(b => b.Any(a => a.ConveyanceItemName == "Budget")).FirstOrDefault();
+                                if (ConveyancesItem != null)
+                                {
+                                    bool IsCheck = (bool)ConveyancesItem.FirstOrDefault().IsCheck;
+                                    if (IsCheck == true)
+                                    {
+                                        decimal ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault()?.Amount);
+                                    }
+                                }
+                            }
                         }
                         //--MISC /DA
                         if (item.Id == new Guid("ED69E9A0-2D54-4A91-A598-F79973B9FE99"))
                         {
-
+                            decimal DA =(decimal) resultPoliciesDetail.FirstOrDefault().DailyAllowance;
                         }
                         //--Fooding Allowance
                         if (item.Id == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
