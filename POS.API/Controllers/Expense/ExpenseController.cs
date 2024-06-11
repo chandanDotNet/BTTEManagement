@@ -23,6 +23,8 @@ using System.Linq;
 using BTTEM.MediatR.PoliciesTravel.Commands;
 using POS.Data;
 using BTTEM.Data;
+using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace POS.API.Controllers.Expense
 {
@@ -139,7 +141,7 @@ namespace POS.API.Controllers.Expense
                 //============================
 
                 var expenseCategory = _expenseCategoryRepository.All.ToList();
-                if (expenseCategory.Count>0)
+                if (expenseCategory.Count > 0)
                 {
                     //===============================
                     var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
@@ -199,9 +201,9 @@ namespace POS.API.Controllers.Expense
 
 
                         //--Lodging (Metro City)
-                        if (item.Id==new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
+                        if (item.Id == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
                         {
-                            if(resultPoliciesLodgingFooding.IsMetroCities==true)
+                            if (resultPoliciesLodgingFooding.IsMetroCities == true)
                             {
                                 decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
                                 if(expenseAmount> PoliciesLodgingFooding)
@@ -427,7 +429,7 @@ namespace POS.API.Controllers.Expense
                             }
                         }
 
-                    }                    
+                    }
                 }
 
                 //===============
@@ -1140,6 +1142,76 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(query);
             //return ReturnFormattedResponse(result);
             return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Get All Master Expenses Group 
+        /// </summary>
+        /// <param name="masterExpenseResourceGroupWise"></param>
+        /// <returns></returns>
+        [HttpGet("GetAllExpensesDetailsListGroupWise")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetAllExpensesDetailsListGroupWise([FromQuery] ExpenseResource masterExpenseResourceGroupWise)
+        {
+            var getAllMasterExpenseQuery = new GetAllMasterExpenseQuery
+            {
+                ExpenseResource = masterExpenseResourceGroupWise
+            };
+
+            var result = await _mediator.Send(getAllMasterExpenseQuery);
+
+            var expenseCategory = _expenseCategoryRepository.All.ToList();
+
+            ExpenseResponseData responseData = new ExpenseResponseData();
+            responseData.MaseterExpense = result.FirstOrDefault();
+
+            foreach (var item in expenseCategory)
+            {
+                responseData.ExpenseCategories.Add(new ExpenseCategoryData()
+                {
+                    ExpenseCategoryId = item.Id,
+                    ExpenseCategoryName = item.Name,
+                    //ExpenseDtos = new List<ExpenseDto>() { item },
+                });
+            }
+
+            foreach (var item in responseData.ExpenseCategories)
+            {
+                foreach (var expense in result)
+                {
+                    var expenseData = expense.Expenses.Where(x => x.ExpenseCategoryId == item.ExpenseCategoryId);
+                    if (expenseData != null)
+                    {
+                        item.ExpenseDtos.AddRange(expenseData);
+                    }
+                }
+            }            
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                //totalCount = result[0].Expenses.Count,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages,
+                totalAmount = result.TotalAmount
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(responseData);
+        }
+        public class ExpenseCategoryData
+        {
+            public Guid ExpenseCategoryId { get; set; }
+            public string ExpenseCategoryName { get; set; }
+            public List<ExpenseDto> ExpenseDtos { get; set; } = new List<ExpenseDto>();
+        }
+
+        public class ExpenseResponseData
+        {
+            public MasterExpenseDto MaseterExpense { get; set; }
+            public IList<ExpenseCategoryData> ExpenseCategories { get; set; } = new List<ExpenseCategoryData>();
         }
     }
 }
