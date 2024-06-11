@@ -353,8 +353,13 @@ namespace BTTEM.API.Controllers.Trip
                         TripItineraryId = updateTripItineraryBookStatusCommand.Id,
                         TripTypeName = responseData.Result.TripBy,
                         ActionType = "Activity",
-                        Remarks = "Trip Ticket Booked through Travel Desk For " + responseData.Result.TripBy,
-                        Status = "Ticket Booked through Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
+                        Remarks =
+                        !string.IsNullOrEmpty(updateTripItineraryBookStatusCommand.BookStatus) ?
+                        "Trip Ticket Booked through Travel Desk For " + responseData.Result.TripBy
+                        : "Trip Itinerary status " + updateTripItineraryBookStatusCommand.ApprovalStatus + " for " + responseData.Result.TripBy,
+                        Status = !string.IsNullOrEmpty(updateTripItineraryBookStatusCommand.BookStatus) ?
+                        "Ticket Booked through Travel Desk - " + userResult.FirstName + " " + userResult.LastName
+                        : "Trip Itinerary status updated by - " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now
                     };
@@ -369,8 +374,14 @@ namespace BTTEM.API.Controllers.Trip
                         TripItineraryId = updateTripItineraryBookStatusCommand.Id,
                         TripTypeName = "Hotel",
                         ActionType = "Activity",
-                        Remarks = "Trip Ticket Booked By Travel Desk For Hotel",
-                        Status = "Ticket Booked through Travel Desk - " + userResult.FirstName + " " + userResult.LastName,
+                        Remarks =
+                        !string.IsNullOrEmpty(updateTripItineraryBookStatusCommand.BookStatus) ?
+                        "Trip Ticket Booked By Travel Desk For Hotel" :
+                        "Trip Itinerary status " + updateTripItineraryBookStatusCommand.ApprovalStatus,
+                        Status =
+                        !string.IsNullOrEmpty(updateTripItineraryBookStatusCommand.BookStatus) ?
+                        "Ticket Hotel Booked through Travel Desk - " + userResult.FirstName + " " + userResult.LastName
+                        : "Trip Hotel Itinerary status updated by - " + userResult.FirstName + " " + userResult.LastName,
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now
                     };
