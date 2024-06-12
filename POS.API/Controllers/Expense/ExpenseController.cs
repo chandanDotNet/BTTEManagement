@@ -25,6 +25,7 @@ using POS.Data;
 using BTTEM.Data;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using BTTEM.Data.Entities;
 
 namespace POS.API.Controllers.Expense
 {
@@ -1322,20 +1323,6 @@ namespace POS.API.Controllers.Expense
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(responseData);
         }
-        public class ExpenseCategoryData
-        {
-            public Guid ExpenseCategoryId { get; set; }
-            public string ExpenseCategoryName { get; set; }
-            public decimal AllowedAmount { get; set; }
-            public decimal ExpenseAmount { get; set; }
-            public decimal DeviationAmount { get; set; }
-            public List<ExpenseDto> ExpenseDtos { get; set; } = new List<ExpenseDto>();
-        }
-
-        public class ExpenseResponseData
-        {
-            public MasterExpenseDto MaseterExpense { get; set; }
-            public IList<ExpenseCategoryData> ExpenseCategories { get; set; } = new List<ExpenseCategoryData>();
-        }
+       
     }
 }
