@@ -51,6 +51,6 @@ namespace BTTEM.Data
         public string? DepartmentName { get; set; }
         public Guid? CompanyAccountId { get; set; }
         public string? VendorCode { get; set; }
-        public int? RollbackCount { get; set; }
+        public int RollbackCount { get; set; }=0;
     }
 }

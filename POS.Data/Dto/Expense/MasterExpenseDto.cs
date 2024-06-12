@@ -23,7 +23,7 @@ namespace BTTEM.Data
         public decimal? AdvanceMoney { get; set; }
         public string ApprovalStage { get; set; }
         public int NoOfBill { get; set; }
-        public int? RollbackCount { get; set; }
+        public int RollbackCount { get; set; } = 0;
         public string ExpenseByUser { get; set; }
         public DateTime CreatedDate { get; set; }
         //public Guid? CreatedBy { get; set; }

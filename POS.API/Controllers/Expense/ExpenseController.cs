@@ -99,7 +99,7 @@ namespace POS.API.Controllers.Expense
         {
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
-            addMasterExpenseCommand.ExpenseNo = ExpenseNo;
+            addMasterExpenseCommand.ExpenseNo = ExpenseNo;            
             var result = await _mediator.Send(addMasterExpenseCommand);
             if (result.Success)
             {
@@ -1235,8 +1235,17 @@ namespace POS.API.Controllers.Expense
             ExpenseResponseData responseData = new ExpenseResponseData();
             responseData.MaseterExpense = result.FirstOrDefault();
 
-            var tripDetails = _tripRepository.FindAsync(responseData.MaseterExpense.TripId.Value);
-            var noOfDays = (tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays;
+            int noOfDays = 1;
+            if (masterExpensesDetails.ExpenseType== "Local Trip")
+            {
+                noOfDays = 1;
+            }
+            else
+            {
+                var tripDetails = _tripRepository.FindAsync(responseData.MaseterExpense.TripId.Value);
+                noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays;
+            }
+            
 
             foreach (var item in expenseCategory)
             {
