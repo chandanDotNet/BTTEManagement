@@ -9,7 +9,7 @@ namespace POS.Data.Dto
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
-        public int UserCount { get; set; }
+        public int NoOfUsers { get; set; }
         public List<RoleClaimDto> RoleClaims { get; set; }
 
     }

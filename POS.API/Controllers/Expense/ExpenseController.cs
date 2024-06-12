@@ -1301,6 +1301,10 @@ namespace POS.API.Controllers.Expense
                                     }
                                 }
                             }
+                            else
+                            {
+                                item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                            }
                         }
                     }
                     //--Conveyance (city to outer area)
@@ -1322,12 +1326,16 @@ namespace POS.API.Controllers.Expense
                                     }
                                 }
                             }
+                            else
+                            {
+                                item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                            }
                         }
                     }
                     if (expenseData != null)
                     {
                         item.ExpenseAmount = expenseData.Sum(x => x.Amount);
-                        if (item.ExpenseAmount > item.AllowedAmount)
+                        if (item.ExpenseAmount >= item.AllowedAmount)
                         {
                             item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                         }

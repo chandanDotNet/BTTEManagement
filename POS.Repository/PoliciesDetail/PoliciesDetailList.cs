@@ -72,7 +72,7 @@ namespace BTTEM.Repository
                     DailyAllowance = c.DailyAllowance,
                     Document = c.Document,
                     IsActive = c.IsActive,
-                    UserCount = _userRepository.All.Where(u => u.GradeId == c.GradeId).Count(),
+                    NoOfUsers = _userRepository.All.Where(u => u.GradeId == c.GradeId).Count(),
 
                 }).ToListAsync();
             return entities;
