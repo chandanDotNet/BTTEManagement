@@ -18,7 +18,7 @@ namespace BTTEM.Data
         public decimal DailyAllowance { get; set; }
         public string Document { get; set; }
         public Grade Grade { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }        
 
     }
 }

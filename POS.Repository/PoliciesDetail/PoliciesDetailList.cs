@@ -10,19 +10,22 @@ using System.Text;
 using System.Threading.Tasks;
 using BTTEM.Data;
 using POS.Helper;
+using POS.Repository;
 
 namespace BTTEM.Repository
 {
-    
+
 
     public class PoliciesDetailList : List<PoliciesDetailDto>
     {
+        public IUserRepository _userRepository { get; set; }
         public IMapper _mapper { get; set; }
         public PathHelper _pathHelper { get; set; }
-        public PoliciesDetailList(IMapper mapper, PathHelper pathHelper)
+        public PoliciesDetailList(IMapper mapper, PathHelper pathHelper, IUserRepository userRepository)
         {
             _mapper = mapper;
             _pathHelper = pathHelper;
+            _userRepository = userRepository;
         }
 
         public int Skip { get; private set; }
@@ -63,13 +66,14 @@ namespace BTTEM.Repository
                     Id = c.Id,
                     CompanyAccountId = c.CompanyAccountId,
                     Name = c.Name,
-                    GradeId= c.GradeId,
-                    GradeName=c.Grade.GradeName,
+                    GradeId = c.GradeId,
+                    GradeName = c.Grade.GradeName,
                     Description = c.Description,
                     DailyAllowance = c.DailyAllowance,
-                    Document= c.Document,
-                    IsActive= c.IsActive,
-                   
+                    Document = c.Document,
+                    IsActive = c.IsActive,
+                    UserCount = _userRepository.All.Where(u => u.GradeId == c.GradeId).Count(),
+
                 }).ToListAsync();
             return entities;
         }
