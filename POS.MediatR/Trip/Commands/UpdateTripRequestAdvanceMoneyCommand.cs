@@ -14,5 +14,6 @@ namespace BTTEM.MediatR.Trip.Commands
         public Guid Id { get; set; }
         public bool IsRequestAdvanceMoney { get; set; }
         public decimal? AdvanceMoney { get; set; }
+        public string? AdvanceMoneyRemarks { get; set; }
     }
 }

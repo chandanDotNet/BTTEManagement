@@ -34,6 +34,7 @@ namespace BTTEM.Data
         public bool IsRequestAdvanceMoney { get; set; }
         public decimal? AdvanceMoney { get; set; }
         public string? RequestAdvanceMoneyStatus { get; set; }
+        public string? AdvanceMoneyRemarks { get; set; }
         public DateTime? RequestAdvanceMoneyDate { get; set; }
         public Guid? RequestAdvanceMoneyStatusBy { get; set; }
         public User RequestAdvanceMoneyStatusBys { get; set; }
@@ -54,6 +55,7 @@ namespace BTTEM.Data
         public int PendingItineraryApprove { get; set; }        
         public int PendingHotelApprove { get; set; }
         public string? VendorCode { get; set; }
+        public int? RollbackCount { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }

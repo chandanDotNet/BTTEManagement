@@ -45,7 +45,13 @@ namespace BTTEM.MediatR.Expense.Handlers
             if (!string.IsNullOrEmpty(request.ApprovalStage))
             {
                 entityExist.ApprovalStage = request.ApprovalStage;
-            }                     
+            }
+
+            if (request.Status == "ROLLBACK" && entityExist.RollbackCount <= 3)
+            {
+                entityExist.RollbackCount = entityExist.RollbackCount + 1;
+                entityExist.Status = "PENDING";
+            }
 
             _masterExpenseRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)

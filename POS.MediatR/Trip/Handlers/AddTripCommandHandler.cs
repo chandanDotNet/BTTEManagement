@@ -47,7 +47,16 @@ namespace BTTEM.MediatR.Trip.Handlers
 
                 var id = Guid.NewGuid();
                 entity.Id = id;
-                entity.Status = "CONFIRMED";
+                entity.Status = "YET TO SUBMIT";
+                //if(entity.Status=="APPLIED")
+                //{
+                //    entity.Status = "APPLIED";
+                //}
+                //else
+                //{
+                //    entity.Status = "YET TO SUBMIT";  //CONFIRMED
+                //}
+
                 entity.Approval = "PENDING";
 
             }

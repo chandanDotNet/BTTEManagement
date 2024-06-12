@@ -83,6 +83,36 @@ namespace BTTEM.MediatR.Handlers
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(request.FileNameBack) && !string.IsNullOrWhiteSpace(request.DocumentDataBack))
+            {
+                string contentRootPath = _webHostEnvironment.WebRootPath;
+                var pathToSave = Path.Combine(contentRootPath, _pathHelper.TravelDocument);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                var extension = Path.GetExtension(request.FileNameBack);
+                var id = Guid.NewGuid();
+                var path = $"{id}.{extension}";
+                var documentPath = Path.Combine(pathToSave, path);
+                string base64 = request.DocumentDataBack.Split(',').LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(base64))
+                {
+                    byte[] bytes = Convert.FromBase64String(base64);
+                    try
+                    {
+                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                        entity.ReceiptPathBack = path;
+                    }
+                    catch
+                    {
+                        _logger.LogError("Error while saving files", entity);
+                    }
+                }
+            }
+
             _travelDocumentRepository.Add(entity);
 
             if (await _uow.SaveAsync() <= 0)

@@ -4,7 +4,9 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
+using POS.Data;
 using POS.Domain;
 using POS.Helper;
 using System;
@@ -42,8 +44,21 @@ namespace BTTEM.MediatR.Trip.Handlers
         {
 
             var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
-            entityExist.Status = request.Status;
-            entityExist.Approval = request.Approval;
+            if (!string.IsNullOrEmpty(request.Status))
+            {
+                entityExist.Status = request.Status;
+            }
+
+            if (!string.IsNullOrEmpty(request.Approval))
+            {
+                entityExist.Approval = request.Approval;
+            }
+
+            if(request.Status == "ROLLBACK" && entityExist.RollbackCount<=3)
+            {
+                entityExist.RollbackCount = entityExist.RollbackCount + 1;
+                entityExist.Status = "PENDING";
+            }
 
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
