@@ -24,21 +24,23 @@ namespace BTTEM.Repository
 {
     public class PoliciesDetailRepository  : GenericRepository<PoliciesDetail, POSDbContext>, IPoliciesDetailRepository
     {
-       
 
         private readonly IPropertyMappingService _propertyMappingService;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly PathHelper _pathHelper;
 
         public PoliciesDetailRepository(IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
             IMapper mapper,
-            PathHelper pathHelper)
+            PathHelper pathHelper,
+            IUserRepository userRepository)
           : base(uow)
         {
             _propertyMappingService = propertyMappingService;
             _mapper = mapper;
             _pathHelper = pathHelper;
+            _userRepository = userRepository;
         }
 
         public async Task<PoliciesDetailList> GetPoliciesDetails(PoliciesDetailResource policiesDetailResource)
@@ -73,7 +75,7 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CompanyAccountId == policiesDetailResource.CompanyAccountId);
             }
-            var products = new PoliciesDetailList(_mapper, _pathHelper);
+            var products = new PoliciesDetailList(_mapper, _pathHelper,_userRepository);
             return await products.Create(collectionBeforePaging, policiesDetailResource.Skip, policiesDetailResource.PageSize);
         }
     }

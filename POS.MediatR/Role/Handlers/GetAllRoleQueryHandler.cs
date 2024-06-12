@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using POS.Data;
+using System.Linq;
 
 namespace POS.MediatR.Handlers
 {
@@ -30,8 +32,20 @@ namespace POS.MediatR.Handlers
 
         public async Task<List<RoleDto>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
         {
-            var entities = await _roleRepository.All.ToListAsync();
-            return _mapper.Map<List<RoleDto>>(entities);
+            var entities = await _roleRepository.All.Include(c => c.UserRoles).ToListAsync();
+            var entitiesDto = entities.Select(c =>
+            {
+                return new RoleDto
+                {
+                    Id = c.Id,
+                    Description = c.Description,
+                    Name = c.Name,
+                    IsActive = c.IsActive.Value,
+                    UserCount = c.UserRoles.Count,
+                };
+            }).ToList();
+            return entitiesDto;
+            //return _mapper.Map<List<RoleDto>>(entities);
         }
     }
 }
