@@ -151,7 +151,7 @@ namespace POS.API.Controllers.Expense
                         //===============================
                         var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
                         {
-                            UserId = new Guid("094643E4-FF1F-4A5F-98A7-EC98BE96B599")//result.Data.CreatedByUser.Id,
+                            UserId = Guid.Parse(_userInfoToken.Id)//result.Data.CreatedByUser.Id,
                         };
                         var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
                         PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
@@ -581,16 +581,28 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(updateMasterExpenseStatusCommand);
             if (result.Success)
             {
-
+                string StatusMessage = null, RemarksMessage = null;
                 var responseData = _masterExpenseRepository.FindAsync(id);
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                if(updateMasterExpenseStatusCommand.Status=="ROLLBACK")
+                {
+                    StatusMessage = "Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
+                    RemarksMessage = responseData.Result.Name + " Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
+                }
+                else
+                {
+                    StatusMessage = "Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
+                    RemarksMessage = responseData.Result.Name + " Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
+                }
+                
+
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = id,
                     ExpenseTypeName = responseData.Result.Name,
                     ActionType = "Tracker",
-                    Remarks = responseData.Result.Name + " Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
-                    Status = "Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Remarks = RemarksMessage,
+                    Status = StatusMessage,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
                 };
@@ -1160,9 +1172,14 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetAllExpensesDetailsListGroupWise([FromQuery] ExpenseResource masterExpenseResourceGroupWise)
         {
+            var masterExpensesDetails = _masterExpenseRepository.All.Where(a => a.Id == masterExpenseResourceGroupWise.MasterExpenseId).FirstOrDefault();
+            if(masterExpensesDetails!=null)
+            {
+               var UserId = masterExpensesDetails.CreatedBy;
+            }
             var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
             {
-                UserId = new Guid("094643E4-FF1F-4A5F-98A7-EC98BE96B599")//result.Data.CreatedByUser.Id,
+                UserId = masterExpensesDetails.CreatedBy //result.Data.CreatedByUser.Id,
             };
             var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
             PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource

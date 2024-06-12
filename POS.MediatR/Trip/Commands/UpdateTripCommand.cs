@@ -29,6 +29,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public bool IsRequestAdvanceMoney { get; set; }
         public decimal? AdvanceMoney { get; set; }
         public string? RequestAdvanceMoneyStatus { get; set; }
+        public string? AdvanceMoneyRemarks { get; set; }
         public DateTime? RequestAdvanceMoneyDate { get; set; }
 
         public string? PurposeFor { get; set; }

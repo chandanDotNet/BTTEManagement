@@ -35,6 +35,7 @@ namespace BTTEM.Data
         public bool IsRequestAdvanceMoney { get; set; }
         public decimal? AdvanceMoney { get; set; }
         public string? RequestAdvanceMoneyStatus { get; set; }
+        public string? AdvanceMoneyRemarks { get; set; }
         public DateTime? RequestAdvanceMoneyDate { get; set; }
         public Guid? RequestAdvanceMoneyStatusBy { get; set; }
         [ForeignKey("RequestAdvanceMoneyStatusBy")]
@@ -50,5 +51,6 @@ namespace BTTEM.Data
         public string? DepartmentName { get; set; }
         public Guid? CompanyAccountId { get; set; }
         public string? VendorCode { get; set; }
+        public int? RollbackCount { get; set; }
     }
 }

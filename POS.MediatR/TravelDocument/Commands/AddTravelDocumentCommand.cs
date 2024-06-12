@@ -15,6 +15,8 @@ namespace BTTEM.MediatR.CommandAndQuery
         public Guid UserId { get; set; }
         public string FileName { get; set; }
         public string DocumentData { get; set; }
+        public string FileNameBack { get; set; }
+        public string DocumentDataBack { get; set; }
         public string DocType { get; set; }
         public string DocNumber { get; set; }
         public DateTime IssuedOn { get; set; }
