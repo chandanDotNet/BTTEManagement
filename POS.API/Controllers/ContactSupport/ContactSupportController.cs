@@ -43,7 +43,7 @@ namespace BTTEM.API.Controllers.ContactSupport
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetContactSupport(Guid? assignedTo)
         {
-            var query = new GetRequestCallQuery { AssignedTo = assignedTo };
+            var query = new GetContactSupportQuery { AssignedTo = assignedTo };
             var result = await _mediator.Send(query);
             return Ok(result);
         }

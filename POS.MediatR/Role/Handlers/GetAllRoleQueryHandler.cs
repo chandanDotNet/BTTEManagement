@@ -41,7 +41,7 @@ namespace POS.MediatR.Handlers
                     Description = c.Description,
                     Name = c.Name,
                     IsActive = c.IsActive.Value,
-                    UserCount = c.UserRoles.Count,
+                    NoOfUsers = c.UserRoles.Count,
                 };
             }).ToList();
             return entitiesDto;
