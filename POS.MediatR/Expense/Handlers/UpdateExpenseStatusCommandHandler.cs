@@ -66,6 +66,8 @@ namespace BTTEM.MediatR.Expense.Handlers
                 _logger.LogError("Expense does not exists.");
                 return ServiceResponse<bool>.Return409("Expense does not exists.");
             }
+
+
             if(request.Status== "APPROVED")
             {
                 var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);

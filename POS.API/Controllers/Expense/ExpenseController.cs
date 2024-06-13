@@ -143,7 +143,7 @@ namespace POS.API.Controllers.Expense
                 }
 
                 //============================
-                if (addMasterExpenseCommand.ExpenseType == "Pre Trip")
+                if (addMasterExpenseCommand.ExpenseType == "Approved Trip")
                 {
 
                     var expenseCategory = _expenseCategoryRepository.All.ToList();
