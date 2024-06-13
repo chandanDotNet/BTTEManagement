@@ -584,7 +584,7 @@ namespace POS.API.Controllers.Expense
                 string StatusMessage = null, RemarksMessage = null;
                 var responseData = _masterExpenseRepository.FindAsync(id);
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
-                if(updateMasterExpenseStatusCommand.Status=="ROLLBACK")
+                if (updateMasterExpenseStatusCommand.Status == "ROLLBACK")
                 {
                     StatusMessage = "Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
                     RemarksMessage = responseData.Result.Name + " Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
@@ -594,7 +594,7 @@ namespace POS.API.Controllers.Expense
                     StatusMessage = "Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
                     RemarksMessage = responseData.Result.Name + " Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
                 }
-                
+
 
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
@@ -1173,9 +1173,9 @@ namespace POS.API.Controllers.Expense
         public async Task<IActionResult> GetAllExpensesDetailsListGroupWise([FromQuery] ExpenseResource masterExpenseResourceGroupWise)
         {
             var masterExpensesDetails = _masterExpenseRepository.All.Where(a => a.Id == masterExpenseResourceGroupWise.MasterExpenseId).FirstOrDefault();
-            if(masterExpensesDetails!=null)
+            if (masterExpensesDetails != null)
             {
-               var UserId = masterExpensesDetails.CreatedBy;
+                var UserId = masterExpensesDetails.CreatedBy;
             }
             var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
             {
@@ -1234,6 +1234,7 @@ namespace POS.API.Controllers.Expense
 
             ExpenseResponseData responseData = new ExpenseResponseData();
             responseData.MaseterExpense = result.FirstOrDefault();
+
 
             var tripDetails = _tripRepository.FindAsync(responseData.MaseterExpense.TripId.Value);
             var noOfDays = (tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays;
@@ -1330,6 +1331,8 @@ namespace POS.API.Controllers.Expense
                         {
                             item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                         }
+
+                        responseData.MaseterExpense.NoOfPendingAction += item.ExpenseDtos.Where(x => x.Status == null || x.Status == string.Empty).Count();
                         item.ExpenseDtos.AddRange(expenseData);
                     }
                 }
@@ -1348,6 +1351,6 @@ namespace POS.API.Controllers.Expense
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(responseData);
         }
-       
+
     }
 }

@@ -32,5 +32,6 @@ namespace BTTEM.Data
         public string ReimbursementStatus { get; set; }
         public List<ExpenseDto> Expenses { get; set; }
         public bool IsExpenseCompleted { get; set; }
+        public int NoOfPendingAction { get; set; } = 0;
     }
 }
