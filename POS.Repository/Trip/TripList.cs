@@ -88,6 +88,7 @@ namespace BTTEM.Repository
                         MultiCity= cs.MultiCity,
                         RequestAdvanceMoneyDate= cs.RequestAdvanceMoneyDate,
                         RequestAdvanceMoneyStatus=cs.RequestAdvanceMoneyStatus,
+                        AdvanceMoneyRemarks=cs.AdvanceMoneyRemarks,
                         //Department = _mapper.Map<DepartmentDto>(cs.Department),
                         //DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
                         //SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
@@ -106,7 +107,8 @@ namespace BTTEM.Repository
                         TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
                         TripHotelBookings=cs.TripHotelBookings,
                         RequestAdvanceMoneyStatusBys=cs.RequestAdvanceMoneyStatusBys,
-                        RequestAdvanceMoneyStatusBy=cs.RequestAdvanceMoneyStatusBy
+                        RequestAdvanceMoneyStatusBy=cs.RequestAdvanceMoneyStatusBy,
+                        RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
 
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -144,9 +146,10 @@ namespace BTTEM.Repository
                  MultiCity = cs.MultiCity,
                  RequestAdvanceMoneyDate = cs.RequestAdvanceMoneyDate,
                  RequestAdvanceMoneyStatus = cs.RequestAdvanceMoneyStatus,
-                // Department = _mapper.Map<DepartmentDto>(cs.Department),
-                // DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
-                // SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
+                 AdvanceMoneyRemarks = cs.AdvanceMoneyRemarks,
+                 // Department = _mapper.Map<DepartmentDto>(cs.Department),
+                 // DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
+                 // SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
                  CreatedByUser = cs.CreatedByUser,
                  TripItinerarys = cs.TripItinerarys,
                  GradeName = cs.CreatedByUser.Grades.GradeName,
@@ -162,7 +165,8 @@ namespace BTTEM.Repository
                  TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
                  TripHotelBookings = cs.TripHotelBookings,
                  RequestAdvanceMoneyStatusBys = cs.RequestAdvanceMoneyStatusBys,
-                 RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy
+                 RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy,
+                 RollbackCount=cs.RollbackCount !=null ? cs.RollbackCount : 0,
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();

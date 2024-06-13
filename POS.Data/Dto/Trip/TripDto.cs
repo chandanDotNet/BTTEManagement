@@ -55,7 +55,7 @@ namespace BTTEM.Data
         public int PendingItineraryApprove { get; set; }        
         public int PendingHotelApprove { get; set; }
         public string? VendorCode { get; set; }
-        public int? RollbackCount { get; set; }
+        public int RollbackCount { get; set; } = 0;
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }

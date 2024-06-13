@@ -101,6 +101,7 @@ namespace BTTEM.MediatR.CommandAndQuery
             entity.Status = "YET TO SUBMIT";
             entity.ApprovalStage = "PENDING";
             entity.ReimbursementStatus = "PENDING";
+            entity.RollbackCount = 0;
             _masterExpenseRepository.Add(entity);
 
             if (await _uow.SaveAsync() <= 0)

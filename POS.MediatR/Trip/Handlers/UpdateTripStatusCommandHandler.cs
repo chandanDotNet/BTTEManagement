@@ -57,7 +57,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             if(request.Status == "ROLLBACK" && entityExist.RollbackCount<=3)
             {
                 entityExist.RollbackCount = entityExist.RollbackCount + 1;
-                entityExist.Status = "PENDING";
+                entityExist.Status = "YET TO SUBMIT";
             }
 
             _tripRepository.Update(entityExist);

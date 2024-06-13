@@ -58,6 +58,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 //}
 
                 entity.Approval = "PENDING";
+                entity.RollbackCount= 0;
 
             }
 
