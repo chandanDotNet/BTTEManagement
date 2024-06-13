@@ -99,7 +99,7 @@ namespace POS.API.Controllers.Expense
         {
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
-            addMasterExpenseCommand.ExpenseNo = ExpenseNo;            
+            addMasterExpenseCommand.ExpenseNo = ExpenseNo;
             var result = await _mediator.Send(addMasterExpenseCommand);
             if (result.Success)
             {
@@ -1234,9 +1234,10 @@ namespace POS.API.Controllers.Expense
 
             ExpenseResponseData responseData = new ExpenseResponseData();
             responseData.MaseterExpense = result.FirstOrDefault();
+            responseData.Trip = result.FirstOrDefault().Trip;
 
             int noOfDays = 1;
-            if (masterExpensesDetails.ExpenseType== "Local Trip")
+            if (masterExpensesDetails.ExpenseType == "Local Trip")
             {
                 noOfDays = 1;
             }
@@ -1245,7 +1246,7 @@ namespace POS.API.Controllers.Expense
                 var tripDetails = _tripRepository.FindAsync(responseData.MaseterExpense.TripId.Value);
                 noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays;
             }
-            
+
 
             foreach (var item in expenseCategory)
             {
@@ -1339,13 +1340,13 @@ namespace POS.API.Controllers.Expense
                         {
                             item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                         }
-
-                        responseData.MaseterExpense.NoOfPendingAction += item.ExpenseDtos.
-                            Where(x => x.Status == null || x.Status == string.Empty).Count();
                         item.ExpenseDtos.AddRange(expenseData);
                     }
                 }
             }
+
+            responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
+                .Where(x => x.Status == null || x.Status == string.Empty).Count();
 
             var paginationMetadata = new
             {
