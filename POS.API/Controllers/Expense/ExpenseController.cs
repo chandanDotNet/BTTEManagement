@@ -1293,8 +1293,9 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(getAllMasterExpenseQuery);
 
             if (result.Count() == 0)
-            {                
-                return Ok(result);
+            {
+                ExpenseResponseData returnObject = new ExpenseResponseData();
+                return Ok(returnObject);
             }
 
             var expenseCategory = _expenseCategoryRepository.All.ToList();
