@@ -589,7 +589,8 @@ namespace BTTEM.API.Controllers.Trip
                 {
                     TripId = updateTripStatusCommand.Id,
                     TripTypeName = responseData.Result.Name,
-                    ActionType = "Tracker",
+                    //ActionType = "Tracker",
+                    ActionType = "Activity",
                     Remarks = RemarksMessage,
                     Status = updateTripStatusCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
