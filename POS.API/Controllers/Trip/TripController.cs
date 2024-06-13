@@ -574,12 +574,23 @@ namespace BTTEM.API.Controllers.Trip
             {
                 var responseData = _tripRepository.FindAsync(updateTripStatusCommand.Id);
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                string StatusMessage = null, RemarksMessage = null;
+
+                if(updateTripStatusCommand.Status== "ROLLBACK")
+                {
+                    RemarksMessage = responseData.Result.Name + " Trip Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
+                }
+                else
+                {
+                    RemarksMessage = responseData.Result.Name + " Trip Status Updated By " + userResult.FirstName + " " + userResult.LastName;
+                }
+
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateTripStatusCommand.Id,
                     TripTypeName = responseData.Result.Name,
                     ActionType = "Tracker",
-                    Remarks = responseData.Result.Name + " Trip Status Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Remarks = RemarksMessage,
                     Status = updateTripStatusCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now

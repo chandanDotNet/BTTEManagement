@@ -46,6 +46,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.AdvanceMoney = request.AdvanceMoney;
             entityExist.RequestAdvanceMoneyStatus = "Waiting";
             entityExist.AdvanceMoneyRemarks = request.AdvanceMoneyRemarks;
+            entityExist.RequestAdvanceMoneyDate = request.RequestAdvanceMoneyDate;
 
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
