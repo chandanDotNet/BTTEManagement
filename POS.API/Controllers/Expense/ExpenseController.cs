@@ -26,6 +26,7 @@ using BTTEM.Data;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using BTTEM.Data.Entities;
+using BTTEM.MediatR.TravelDocument.Commands;
 
 namespace POS.API.Controllers.Expense
 {
@@ -841,6 +842,64 @@ namespace POS.API.Controllers.Expense
         public async Task<IActionResult> AddTravelDocument([FromBody] AddTravelDocumentCommand addTravelDocumentCommand)
         {
             var result = await _mediator.Send(addTravelDocumentCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update  Travel Document
+        /// </summary>
+        /// <param name="updateTravelDocumentCommand"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateTravelDocument")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateTravelDocument([FromBody] UpdateTravelDocumentCommand updateTravelDocumentCommand)
+        {
+            var result = await _mediator.Send(updateTravelDocumentCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Status Travel Document
+        /// </summary>
+        /// <param name="updateTravelDocumentStatusCommand"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateTravelDocumentStatus")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateTravelDocumentStatus([FromBody] UpdateTravelDocumentStatusCommand updateTravelDocumentStatusCommand)
+        {
+            var result = await _mediator.Send(updateTravelDocumentStatusCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Deletes the Travel Document
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteTravelDocument/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteTravelDocument(Guid id)
+        {
+            var command = new DeleteTravelDocumentCommand() { Id = id };
+            var result = await _mediator.Send(command);
+
+            //if (result.Success)
+            //{
+            //    var responseData = _masterExpenseRepository.FindAsync(id);
+            //    var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            //    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+            //    {
+            //        MasterExpenseId = responseData.Result.Id,
+            //        ExpenseTypeName = responseData.Result.Name,
+            //        ActionType = "Activity",
+            //        Remarks = responseData.Result.Name + " Master Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
+            //        Status = "Master Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
+            //        ActionBy = Guid.Parse(_userInfoToken.Id),
+            //        ActionDate = DateTime.Now,
+            //    };
+            //    var response = await _mediator.Send(addExpenseTrackingCommand);
+            //}
+
             return ReturnFormattedResponse(result);
         }
 

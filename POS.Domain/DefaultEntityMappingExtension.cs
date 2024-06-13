@@ -134,6 +134,10 @@ namespace POS.Domain
    .Property(b => b.ModifiedDate)
    .HasDefaultValueSql("GETUTCDATE()");
 
+            modelBuilder.Entity<TravelDocument>()
+  .Property(b => b.ModifiedDate)
+  .HasDefaultValueSql("GETUTCDATE()");
+
 
         }
 
@@ -277,6 +281,9 @@ namespace POS.Domain
 
             modelBuilder.Entity<CompanyAccount>()
      .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<TravelDocument>()
+    .HasQueryFilter(p => !p.IsDeleted);
 
         }
     }
