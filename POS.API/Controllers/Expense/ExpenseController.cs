@@ -883,6 +883,7 @@ namespace POS.API.Controllers.Expense
             var command = new DeleteTravelDocumentCommand() { Id = id };
             var result = await _mediator.Send(command);
 
+
             //if (result.Success)
             //{
             //    var responseData = _masterExpenseRepository.FindAsync(id);
