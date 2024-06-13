@@ -1362,11 +1362,12 @@ namespace POS.API.Controllers.Expense
                                         item.AllowedAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount * Convert.ToDecimal(noOfDays));
                                     }
                                 }
+                                else
+                                {
+                                    item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                                }
                             }
-                            else
-                            {
-                                item.AllowedAmount = expenseData.Sum(x => x.Amount);
-                            }
+                            
                         }
                     }
                     //--Conveyance (city to outer area)
@@ -1387,11 +1388,12 @@ namespace POS.API.Controllers.Expense
                                         item.AllowedAmount = ConveyancesItem.FirstOrDefault().Amount.Value * Convert.ToDecimal(noOfDays);
                                     }
                                 }
+                                else
+                                {
+                                    item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                                }
                             }
-                            else
-                            {
-                                item.AllowedAmount = expenseData.Sum(x => x.Amount);
-                            }
+                            
                         }
                     }
                     if (expenseData != null)
