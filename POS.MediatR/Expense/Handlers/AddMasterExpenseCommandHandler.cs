@@ -76,7 +76,7 @@ namespace BTTEM.MediatR.CommandAndQuery
                         request.Id = masterExpenseExist[i].Id;
                         request.TripId = masterExpenseExist[i].TripId;
 
-                        //if (Role.Id == userRole.Id) //Travel Desk
+                        //if (Role.Id == userRole.Id) //Travel Desk 
                         //{
                         //    request.Id = masterExpenseExist[i].Id;
                         //    request.TripId = masterExpenseExist[i].TripId;
@@ -92,6 +92,7 @@ namespace BTTEM.MediatR.CommandAndQuery
                         //    var requestEntity = _mapper.Map<MasterExpenseDto>(request);
                         //    return ServiceResponse<MasterExpenseDto>.ReturnResultWith200(requestEntity);
                         //}
+
                     }
                 }
             }
