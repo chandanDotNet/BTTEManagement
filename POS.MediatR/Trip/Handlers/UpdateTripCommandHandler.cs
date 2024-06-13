@@ -47,7 +47,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             //if (entityExist != null)
             //{
             //    _logger.LogError("Grade Already Exist.");
-            //    return ServiceResponse<bool>.Return409("Grade Already Exist.");
+            //    return ServiceResponse<bool>.Return409("Grade Already Exist."); 
             //}
             var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
             entityExist.TripNo = request.TripNo;
