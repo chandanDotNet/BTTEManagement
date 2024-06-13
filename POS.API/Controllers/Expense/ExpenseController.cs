@@ -1292,6 +1292,11 @@ namespace POS.API.Controllers.Expense
 
             var result = await _mediator.Send(getAllMasterExpenseQuery);
 
+            if (result.Count() == 0)
+            {                
+                return Ok(result);
+            }
+
             var expenseCategory = _expenseCategoryRepository.All.ToList();
 
             ExpenseResponseData responseData = new ExpenseResponseData();
@@ -1367,7 +1372,7 @@ namespace POS.API.Controllers.Expense
                                     item.AllowedAmount = expenseData.Sum(x => x.Amount);
                                 }
                             }
-                            
+
                         }
                     }
                     //--Conveyance (city to outer area)
@@ -1393,7 +1398,7 @@ namespace POS.API.Controllers.Expense
                                     item.AllowedAmount = expenseData.Sum(x => x.Amount);
                                 }
                             }
-                            
+
                         }
                     }
                     if (expenseData != null)
@@ -1409,7 +1414,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-                .Where(x => x.Status == null || x.Status == string.Empty).Count();
+            .Where(x => x.Status == null || x.Status == string.Empty).Count();
 
             var paginationMetadata = new
             {
