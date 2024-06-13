@@ -28,5 +28,6 @@ namespace BTTEM.Data
         public string ReimbursementStatus { get; set; }
         public List<Expense> Expenses { get; set; }
         public bool IsExpenseCompleted { get; set; }
+        public Trip Trip { get; set; }
     }
 }
