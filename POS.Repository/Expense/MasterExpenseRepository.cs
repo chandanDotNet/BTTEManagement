@@ -63,7 +63,7 @@ namespace BTTEM.Repository
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
-            var collectionBeforePaging = All.Include(c => c.CreatedByUser).ThenInclude(e=>e.Grades).Include(a => a.Expenses).ThenInclude(b => b.ExpenseCategory).ApplySort(expenseResource.OrderBy,
+            var collectionBeforePaging = All.Include(t => t.Trip).Include(c => c.CreatedByUser).ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(b => b.ExpenseCategory).ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Expenses).ApplySort(expenseResource.OrderBy,
@@ -103,18 +103,18 @@ namespace BTTEM.Repository
             if (expenseResource.FromDate.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.Expenses.Any(c=>c.ExpenseDate >= new DateTime(expenseResource.FromDate.Value.Year, expenseResource.FromDate.Value.Month, expenseResource.FromDate.Value.Day, 0, 0, 1)));
+                    .Where(a => a.Expenses.Any(c => c.ExpenseDate >= new DateTime(expenseResource.FromDate.Value.Year, expenseResource.FromDate.Value.Month, expenseResource.FromDate.Value.Day, 0, 0, 1)));
             }
             if (expenseResource.ToDate.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.Expenses.Any(c=>c.ExpenseDate <= new DateTime(expenseResource.ToDate.Value.Year, expenseResource.ToDate.Value.Month, expenseResource.ToDate.Value.Day, 23, 59, 59)));
+                    .Where(a => a.Expenses.Any(c => c.ExpenseDate <= new DateTime(expenseResource.ToDate.Value.Year, expenseResource.ToDate.Value.Month, expenseResource.ToDate.Value.Day, 23, 59, 59)));
             }
 
             if (expenseResource.ExpenseCategoryId.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.Expenses.Any(c=>c.ExpenseCategoryId == expenseResource.ExpenseCategoryId));
+                    .Where(a => a.Expenses.Any(c => c.ExpenseCategoryId == expenseResource.ExpenseCategoryId));
             }
             if (!string.IsNullOrEmpty(expenseResource.Status))
             {
