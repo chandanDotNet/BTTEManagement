@@ -1332,7 +1332,8 @@ namespace POS.API.Controllers.Expense
                             item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                         }
 
-                        responseData.MaseterExpense.NoOfPendingAction += item.ExpenseDtos.Where(x => x.Status == null || x.Status == string.Empty).Count();
+                        responseData.MaseterExpense.NoOfPendingAction += item.ExpenseDtos.
+                            Where(x => x.Status == null || x.Status == string.Empty).Count();
                         item.ExpenseDtos.AddRange(expenseData);
                     }
                 }
