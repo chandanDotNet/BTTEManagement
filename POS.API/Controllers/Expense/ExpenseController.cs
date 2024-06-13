@@ -1293,7 +1293,6 @@ namespace POS.API.Controllers.Expense
 
             ExpenseResponseData responseData = new ExpenseResponseData();
             responseData.MaseterExpense = result.FirstOrDefault();
-            responseData.Trip = result.FirstOrDefault().Trip;
 
             int noOfDays = 1;
             if (masterExpensesDetails.ExpenseType == "Local Trip")

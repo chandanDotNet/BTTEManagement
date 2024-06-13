@@ -34,7 +34,6 @@ namespace BTTEM.Data.Entities
     public class ExpenseResponseData
     {
         public MasterExpenseDto MaseterExpense { get; set; }
-        public Trip Trip { get; set; }
         public IList<ExpenseCategoryData> ExpenseCategories { get; set; } = new List<ExpenseCategoryData>();
     }
 }
