@@ -99,10 +99,10 @@ namespace BTTEM.API.Controllers.Trip
             addTripCommand.TripNo = TripNo;
 
             //===================
-           
 
-            var trip=_tripRepository.All.Where(a=>a.TripStarts<=addTripCommand.TripStarts && a.TripEnds>= addTripCommand.TripStarts && a.CreatedBy== Guid.Parse(_userInfoToken.Id)).ToList();
-            if(trip.Count>0)
+
+            var trip = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripStarts && a.TripEnds >= addTripCommand.TripStarts && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
+            if (trip.Count > 0)
             {
                 var tripList = _mapper.Map<List<TripDto>>(trip);
                 tripDetailsData.Data = tripList;
@@ -118,7 +118,7 @@ namespace BTTEM.API.Controllers.Trip
                 // return (IActionResult)ServiceResponse<List<TripDto>>.Return500();
             }
             var trip2 = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripEnds && a.TripEnds >= addTripCommand.TripEnds && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
-            if (trip2.Count>0)
+            if (trip2.Count > 0)
             {
                 var tripList1 = _mapper.Map<List<TripDto>>(trip2);
                 tripDetailsData.Data = tripList1;
@@ -157,7 +157,7 @@ namespace BTTEM.API.Controllers.Trip
             }
 
             List<TripDto> tripDtoList = new List<TripDto>();
-            tripDtoList.Add(result.Data);            
+            tripDtoList.Add(result.Data);
             tripDetailsData.Data = tripDtoList;
             tripDetailsData.status = true;
             tripDetailsData.StatusCode = 200;
@@ -200,7 +200,7 @@ namespace BTTEM.API.Controllers.Trip
             }
             else
             {
-               
+
                 //tripDtoList.Add(result.Data);
                 tripDetailsData.Data = tripDtoList;
                 tripDetailsData.status = false;
@@ -210,7 +210,7 @@ namespace BTTEM.API.Controllers.Trip
             }
 
             //return ReturnFormattedResponse(result);
-          
+
             //tripDtoList.Add(result.Data);
             tripDetailsData.Data = tripDtoList;
             tripDetailsData.status = true;
@@ -325,6 +325,24 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryCommand updateTripItineraryCommand)
         {
             var result = await _mediator.Send(updateTripItineraryCommand);
+            if (result.Data == true)
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id);
+
+                var addTripTrackingCommand = new AddTripTrackingCommand()
+                {
+                    TripId = updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id,
+                    TripItineraryId = Guid.Empty,
+                    TripTypeName = responseData.Result.TripBy,
+                    ActionType = "Activity",
+                    Remarks = "Trip Itinerary status updated by - " + userResult.FirstName + " " + userResult.LastName,
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now
+                };
+                var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
             return ReturnFormattedResponse(result);
         }
 
@@ -576,7 +594,7 @@ namespace BTTEM.API.Controllers.Trip
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 string StatusMessage = null, RemarksMessage = null;
 
-                if(updateTripStatusCommand.Status== "ROLLBACK")
+                if (updateTripStatusCommand.Status == "ROLLBACK")
                 {
                     RemarksMessage = responseData.Result.Name + " Trip Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
                 }

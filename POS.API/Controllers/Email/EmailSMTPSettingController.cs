@@ -27,7 +27,7 @@ namespace POS.API.Controllers.Email
         /// <param name="addEmailSMTPSettingCommand"></param>
         /// <returns></returns>
         [HttpPost]
-        [ClaimCheck("EMAIL_MANAGE_EMAIL_SMTP_SETTINS")]
+        //[ClaimCheck("EMAIL_MANAGE_EMAIL_SMTP_SETTINS")]
         [Produces("application/json", "application/xml", Type = typeof(EmailSMTPSettingDto))]
         public async Task<IActionResult> AddEmailSMTPSetting(AddEmailSMTPSettingCommand addEmailSMTPSettingCommand)
         {
