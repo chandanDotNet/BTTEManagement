@@ -62,13 +62,13 @@ namespace BTTEM.Data.Entities
     {
         public string Date { get; set; }
         public string Description { get; set; }
-        public string Fare { get; set; }
-        public string LocalConvey { get; set; }
-        public string Lodging { get; set; }
-        public string Fooding { get; set; }
-        public string DA { get; set; }
-        public string Others { get; set; }
-        public string Total { get; set; }
+        public decimal Fare { get; set; }
+        public decimal LocalConvey { get; set; }
+        public decimal Lodging { get; set; }
+        public decimal Fooding { get; set; }
+        public decimal DA { get; set; }
+        public decimal Others { get; set; }
+        public decimal Total { get; set; }
         public string Remarks { get; set; }    
 
 
