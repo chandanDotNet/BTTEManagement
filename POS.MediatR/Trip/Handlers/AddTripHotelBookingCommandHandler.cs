@@ -47,6 +47,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 var entity = _mapper.Map<Data.TripHotelBooking>(tv);
                 entity.Id = Guid.NewGuid();
+                entity.ApprovalStatus = "PENDING";
 
                 _tripHotelBookingRepository.Add(entity);
             }

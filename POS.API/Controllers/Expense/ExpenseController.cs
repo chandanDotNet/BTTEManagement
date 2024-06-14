@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using BTTEM.Data.Entities;
 using BTTEM.MediatR.TravelDocument.Commands;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace POS.API.Controllers.Expense
 {
@@ -101,6 +102,15 @@ namespace POS.API.Controllers.Expense
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
             addMasterExpenseCommand.ExpenseNo = ExpenseNo;
+            if(addMasterExpenseCommand.TripId.HasValue)
+            {
+                var AdvanceAmount = _tripRepository.All.Where(a => a.Id == addMasterExpenseCommand.TripId && a.RequestAdvanceMoneyStatus== "APPROVED").FirstOrDefault().AdvanceMoney;
+                if(AdvanceAmount!=null)
+                {
+                    addMasterExpenseCommand.AdvanceMoney = AdvanceAmount.Value;
+                }
+            }
+           
             var result = await _mediator.Send(addMasterExpenseCommand);
             if (result.Success)
             {
@@ -125,6 +135,7 @@ namespace POS.API.Controllers.Expense
                     addExpenseCommand = item;
                     addExpenseCommand.MasterExpenseId = id;
                     addExpenseCommand.TripId = result.Data.TripId;
+                    addExpenseCommand.Status = "PENDING";
                     var result2 = await _mediator.Send(addExpenseCommand);
                     result.Data.ExpenseId = result2.Data.Id;
 
@@ -1431,5 +1442,28 @@ namespace POS.API.Controllers.Expense
             return Ok(responseData);
         }
 
+
+        /// <summary>
+        /// Get All Master Expenses Group Date Wise
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetAllExpensesDetailsListDateWise/{id}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetAllExpensesDetailsListDateWise(Guid id)
+        {
+            var ReportQuery=new GetAllExpenseDateWiseReportQuery { MasterExpenseId = id };
+            var result = await _mediator.Send(ReportQuery);
+
+            //var masterExpensesDetails = _expenseRepository.All.Where(a => a.MasterExpenseId == id).ToList();
+
+
+            //var result = masterExpensesDetails.GroupBy(a => a.ExpenseDate).SelectMany(a => a).ToList();
+
+            return Ok(result);
+
+        }
+
+
+        }
     }
-}

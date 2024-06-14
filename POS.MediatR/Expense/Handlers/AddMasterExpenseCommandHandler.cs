@@ -99,7 +99,7 @@ namespace BTTEM.MediatR.CommandAndQuery
 
             var entity = _mapper.Map<MasterExpense>(request);
             entity.Id = Guid.NewGuid();
-            entity.Status = "YET TO SUBMIT";
+            //entity.Status = "YET TO SUBMIT";
             entity.ApprovalStage = "PENDING";
             entity.ReimbursementStatus = "PENDING";
             entity.RollbackCount = 0;

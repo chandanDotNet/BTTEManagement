@@ -105,9 +105,16 @@ namespace BTTEM.MediatR.Expense.Handlers
                 //===========
                 entityExist.PayableAmount = request.PayableAmount;
             }
-           
 
-            entityExist.Status = request.Status;
+            if(!string.IsNullOrEmpty(request.RejectReason))
+            {
+                entityExist.RejectReason = request.RejectReason;
+            }
+            if (!string.IsNullOrEmpty(request.Status))
+            {
+                entityExist.Status = request.Status;
+            }
+              
             _expenseRepository.Update(entityExist);
 
             if (await _uow.SaveAsync() <= 0)

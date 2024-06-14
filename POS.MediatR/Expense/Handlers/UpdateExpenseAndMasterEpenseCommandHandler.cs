@@ -91,12 +91,12 @@ namespace BTTEM.MediatR.Expense.Handlers
                 if (masterEntityExist.ReimbursementAmount == masterEntityExist.TotalAmount)
                 {
                     masterEntityExist.ReimbursementStatus = "FULL";
-                    masterEntityExist.Status = "Reimbursement";
+                    masterEntityExist.Status = "Reimbursed";
                 }
                 else if (masterEntityExist.ReimbursementAmount != 0)
                 {
                     masterEntityExist.ReimbursementStatus = "PARTIAL";
-                    masterEntityExist.Status = "Reimbursement";
+                    masterEntityExist.Status = "Reimbursed";
                 }
                 else if (masterEntityExist.ReimbursementAmount == 0)
                 {
@@ -109,6 +109,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 {
                     var tripEntityExist = await _tripRepository.FindAsync(masterEntityExist.TripId.Value);
                     tripEntityExist.IsTripCompleted = true;
+                    tripEntityExist.Status = "COMPLETED";
                     _tripRepository.Update(tripEntityExist);
                 }
                 AddWalletCommand requestWallet = new AddWalletCommand();

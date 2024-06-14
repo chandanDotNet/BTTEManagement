@@ -4,6 +4,7 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
 using POS.Domain;
 using POS.Helper;
@@ -55,11 +56,28 @@ namespace BTTEM.MediatR.Handlers
             }
 
             entityExist.Name = request.Name;
-            entityExist.Status = request.Status;
-            entityExist.ApprovalStage = request.ApprovalStage;
-            entityExist.TotalAmount = request.TotalAmount;
-            entityExist.ReimbursementAmount = request.ReimbursementAmount;
-            entityExist.AdvanceMoney = request.AdvanceMoney;
+            
+            if (!string.IsNullOrEmpty(request.Status))
+            {
+                entityExist.Status = request.Status;
+            }
+            if (!string.IsNullOrEmpty(request.ApprovalStage))
+            {
+                entityExist.ApprovalStage = request.ApprovalStage;
+            }
+            if (request.TotalAmount>0)
+            {
+                entityExist.TotalAmount = request.TotalAmount;
+            }
+            if (request.ReimbursementAmount > 0)
+            {
+                entityExist.ReimbursementAmount = request.ReimbursementAmount;
+            }
+            if (request.AdvanceMoney > 0)
+            {
+                entityExist.AdvanceMoney = request.AdvanceMoney;
+            }
+            
             _masterExpenseRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {

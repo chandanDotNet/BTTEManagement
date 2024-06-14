@@ -28,5 +28,6 @@ namespace POS.Data.Dto
         public string AccountStatus { get; set; }
         public string AccountStatusRemarks { get; set; }
         public string? ReUploadRemarks { get; set; }
+        public string? RejectReason { get; set; }
     }
 }

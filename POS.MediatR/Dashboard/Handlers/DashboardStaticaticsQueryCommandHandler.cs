@@ -108,13 +108,13 @@ namespace BTTEM.MediatR.Dashboard.Handlers
             else if(RoleId== new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Employee
             {
                 dashboardStatics.UserName = string.Concat(users.FirstName, " ", users.LastName);
-                dashboardStatics.TotalTrip = await _tripRepository.All.Where(x => x.CreatedBy == request.UserId).CountAsync();
+                dashboardStatics.TotalTrip = await _tripRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year).CountAsync();
                 dashboardStatics.TotalAdvanceMoney = await _userRepository.All.Where(x => x.Id == request.UserId && x.IsPermanentAdvance == true).SumAsync(x => x.PermanentAdvance.Value);
-                dashboardStatics.TotalExpenseAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ApprovalStage == "APPROVED").SumAsync(x => x.TotalAmount);
-                dashboardStatics.TotalReimbursementAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus != "PENDING").SumAsync(x => x.ReimbursementAmount);
-                dashboardStatics.TotalApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ApprovalStage == "APPROVED").CountAsync();
-                dashboardStatics.TotalPartialApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ReimbursementStatus == "PARTIAL").CountAsync();
-                dashboardStatics.TotalPendingExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.ApprovalStage == "PENDING").CountAsync();
+                dashboardStatics.TotalExpenseAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ApprovalStage == "APPROVED").SumAsync(x => x.TotalAmount);
+                dashboardStatics.TotalReimbursementAmount = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ReimbursementStatus != "PENDING").SumAsync(x => x.ReimbursementAmount);
+                dashboardStatics.TotalApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ApprovalStage == "APPROVED").CountAsync();
+                dashboardStatics.TotalPartialApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ReimbursementStatus == "PARTIAL").CountAsync();
+                dashboardStatics.TotalPendingExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ApprovalStage == "PENDING").CountAsync();
             }
             else if (RoleId == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
             {
