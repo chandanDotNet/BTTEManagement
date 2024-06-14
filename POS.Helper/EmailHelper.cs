@@ -20,19 +20,21 @@ namespace POS.Helper
                 IsBodyHtml = true,
                 Body = sendEmailSpecification.Body,
             };
-
-            if (sendEmailSpecification.Attechments.Count > 0)
+            if (sendEmailSpecification.Attechments != null)
             {
-                Attachment attach;
-                foreach (var file in sendEmailSpecification.Attechments)
+                if (sendEmailSpecification.Attechments.Count > 0)
                 {
+                    Attachment attach;
+                    foreach (var file in sendEmailSpecification.Attechments)
+                    {
 
-                    string fileData = file.Src.Split(',').LastOrDefault();
-                    byte[] bytes = Convert.FromBase64String(fileData);
-                    var ms = new MemoryStream(bytes);
-                    attach = new Attachment(ms, file.Name, file.FileType);
-                    attachments.Add(ms);
-                    message.Attachments.Add(attach);
+                        string fileData = file.Src.Split(',').LastOrDefault();
+                        byte[] bytes = Convert.FromBase64String(fileData);
+                        var ms = new MemoryStream(bytes);
+                        attach = new Attachment(ms, file.Name, file.FileType);
+                        attachments.Add(ms);
+                        message.Attachments.Add(attach);
+                    }
                 }
             }
             sendEmailSpecification.ToAddress.Split(",").ToList().ForEach(toAddress =>

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using POS.Data.Resources;
 using POS.Repository;
 using POS.API.Helpers;
+using BTTEM.MediatR.User.Commands;
+using BTTEM.MediatR.Commands;
 
 namespace POS.API.Controllers
 {
@@ -243,5 +245,43 @@ namespace POS.API.Controllers
             return ReturnFormattedResponse(result);
         }
 
+        /// <summary>
+        /// Forget password OTP
+        /// </summary>
+        /// <param name="forgetPasswordOTPCommand"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("forgetpasswordotp")]
+        public async Task<IActionResult> ForgetPasswordOTP(ForgetPasswordOTPCommand forgetPasswordOTPCommand)
+        {
+            var result = await _mediator.Send(forgetPasswordOTPCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// OTP Verification
+        /// </summary>
+        /// <param name="otpVerficationCommand"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("otpVerification")]
+        public async Task<IActionResult> OTPVerification(OTPVerificationCommand otpVerficationCommand)
+        {
+            var result = await _mediator.Send(otpVerficationCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Forget password
+        /// </summary>
+        /// <param name="forgetPasswordCommand"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("forgetpassword")]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordCommand forgetPasswordCommand)
+        {
+            var result = await _mediator.Send(forgetPasswordCommand);
+            return ReturnFormattedResponse(result);
+        }
     }
 }
