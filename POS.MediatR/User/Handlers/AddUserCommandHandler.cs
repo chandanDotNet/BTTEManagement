@@ -51,8 +51,10 @@ namespace POS.MediatR.Handlers
             var entity = _mapper.Map<User>(request);
             entity.CreatedBy = Guid.Parse(_userInfoToken.Id);
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
-            entity.CreatedDate = DateTime.UtcNow;
-            entity.ModifiedDate = DateTime.UtcNow;
+            //entity.CreatedDate = DateTime.UtcNow;
+            //entity.ModifiedDate = DateTime.UtcNow;
+            entity.CreatedDate = DateTime.Now;
+            entity.ModifiedDate = DateTime.Now;
             entity.Id = Guid.NewGuid();
 
             if (!string.IsNullOrEmpty(request.ImgSrc))

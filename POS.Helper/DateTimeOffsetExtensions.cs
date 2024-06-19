@@ -7,7 +7,8 @@ namespace POS.Helper
         public static int GetCurrentAge(this DateTimeOffset dateTimeOffset,
           DateTimeOffset? dateOfDeath)
         {
-            var dateToCalculateTo = DateTime.UtcNow;
+           // var dateToCalculateTo = DateTime.UtcNow;
+            var dateToCalculateTo = DateTime.Now;
 
             if (dateOfDeath != null)
             {

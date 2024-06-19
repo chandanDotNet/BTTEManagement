@@ -60,7 +60,8 @@ namespace BTTEM.MediatR.Handlers
             var entity = _mapper.Map<Data.PoliciesDetail>(request);
             entity.Id = Guid.NewGuid();
             entity.CreatedBy = Guid.Parse(_userInfoToken.Id);
-            entity.CreatedDate = DateTime.UtcNow;
+            //entity.CreatedDate = DateTime.UtcNow;
+            entity.CreatedDate = DateTime.Now;
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
 
             _policiesDetailRepository.Add(entity);

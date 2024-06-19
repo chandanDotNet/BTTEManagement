@@ -32,6 +32,7 @@ namespace BTTEM.Data.Resources
         public string? DestinationCityName { get; set; }
         public string? DepartmentName { get; set; }
         public Guid? BillingCompanyAccountId { get; set; }
+        public bool? IsMyRequest { get; set; }
 
         // public bool? TripCompleted { get; set; }
 

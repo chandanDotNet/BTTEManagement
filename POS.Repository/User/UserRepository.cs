@@ -242,8 +242,11 @@ namespace POS.Repository
               issuer: _settings.Issuer,
               audience: _settings.Audience,
               claims: claims,
-              notBefore: DateTime.UtcNow,
-              expires: DateTime.UtcNow.AddMinutes(
+               //notBefore: DateTime.UtcNow,
+               //expires: DateTime.UtcNow.AddMinutes(
+               //    _settings.MinutesToExpiration),
+               notBefore: DateTime.Now,
+              expires: DateTime.Now.AddMinutes(
                   _settings.MinutesToExpiration),
               signingCredentials: new SigningCredentials(key,
                           SecurityAlgorithms.HmacSha256)

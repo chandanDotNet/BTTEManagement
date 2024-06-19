@@ -40,7 +40,8 @@ namespace POS.MediatR.Handlers
                 return ServiceResponse<UserDto>.Return409("User does not exist.");
             }
             appUser.IsDeleted = true;
-            appUser.DeletedDate = DateTime.UtcNow;
+            //appUser.DeletedDate = DateTime.UtcNow;
+            appUser.DeletedDate = DateTime.Now;
             appUser.DeletedBy = Guid.Parse(_userInfoToken.Id);
             IdentityResult result = await _userManager.UpdateAsync(appUser);
             if (!result.Succeeded)

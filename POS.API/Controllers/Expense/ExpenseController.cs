@@ -28,6 +28,7 @@ using System.Security.Cryptography.X509Certificates;
 using BTTEM.Data.Entities;
 using BTTEM.MediatR.TravelDocument.Commands;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Newtonsoft.Json.Serialization;
 
 namespace POS.API.Controllers.Expense
 {
@@ -104,10 +105,15 @@ namespace POS.API.Controllers.Expense
             addMasterExpenseCommand.ExpenseNo = ExpenseNo;
             if(addMasterExpenseCommand.TripId.HasValue)
             {
-                var AdvanceAmount = _tripRepository.All.Where(a => a.Id == addMasterExpenseCommand.TripId && a.RequestAdvanceMoneyStatus== "APPROVED").FirstOrDefault().AdvanceMoney;
+                //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault();
+                //if(exitExpense==null)
+                //{
+                //    return ReturnFormattedResponse("sss");
+                //}
+                var AdvanceAmount = _tripRepository.All.Where(a => a.Id == addMasterExpenseCommand.TripId && a.RequestAdvanceMoneyStatus== "APPROVED").FirstOrDefault();
                 if(AdvanceAmount!=null)
                 {
-                    addMasterExpenseCommand.AdvanceMoney = AdvanceAmount.Value;
+                    addMasterExpenseCommand.AdvanceMoney = AdvanceAmount.AdvanceMoney.Value;
                 }
             }
            
@@ -1413,6 +1419,17 @@ namespace POS.API.Controllers.Expense
 
                         }
                     }
+
+                    //--Fare
+                    if (item.ExpenseCategoryId == new Guid("DCAA05B6-5F1E-402F-835E-0704A3A1A455"))
+                    {
+                        item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                    }
+                    //--Others
+                    if (item.ExpenseCategoryId == new Guid("6C3EB31C-DF53-495A-B871-E2EB3CEF74D2"))
+                    {
+                        item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                    }
                     if (expenseData != null)
                     {
                         item.ExpenseAmount = expenseData.Sum(x => x.Amount);
@@ -1426,7 +1443,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-            .Where(x => x.Status == null || x.Status == string.Empty).Count();
+            .Where(x => x.Status == null || x.Status == string.Empty ||x.Status== "PENDING").Count();
 
             var paginationMetadata = new
             {
@@ -1448,7 +1465,7 @@ namespace POS.API.Controllers.Expense
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetAllExpensesDetailsListDateWise/{id}")]
+        [HttpGet("GetExpensesDetailsReportDateWise/{id}")]
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetAllExpensesDetailsListDateWise(Guid id)
         {

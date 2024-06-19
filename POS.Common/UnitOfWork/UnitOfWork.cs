@@ -72,22 +72,24 @@ namespace POS.Common.UnitOfWork
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedDate = DateTime.UtcNow;
+                    //entry.Entity.CreatedDate = DateTime.UtcNow;
+                    entry.Entity.CreatedDate = DateTime.Now;
                     entry.Entity.CreatedBy = Guid.Parse(_userInfoToken.Id);
                     entry.Entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
-                    entry.Entity.ModifiedDate = DateTime.UtcNow;
+                    entry.Entity.ModifiedDate = DateTime.Now;
                 }
                 else if (entry.State == EntityState.Modified)
                 {
                     if (entry.Entity.IsDeleted)
                     {
                         entry.Entity.DeletedBy = Guid.Parse(_userInfoToken.Id);
-                        entry.Entity.DeletedDate = DateTime.UtcNow;
+                        //entry.Entity.DeletedDate = DateTime.UtcNow;
+                        entry.Entity.DeletedDate = DateTime.Now;
                     }
                     else
                     {
                         entry.Entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
-                        entry.Entity.ModifiedDate = DateTime.UtcNow;
+                        entry.Entity.ModifiedDate = DateTime.Now;
                     }
                 }
             }

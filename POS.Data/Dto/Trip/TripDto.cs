@@ -46,6 +46,7 @@ namespace BTTEM.Data
         public List<TripHotelBooking> TripHotelBookings { get; set; }
         public Guid CreatedBy { get; set; }
         public string GradeName { get; set; }
+        public string BranchName { get; set; }
         public bool IsTripCompleted { get; set; }
         public string? PurposeFor { get; set; }
         public string? SourceCityName { get; set; }

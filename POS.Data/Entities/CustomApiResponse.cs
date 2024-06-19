@@ -1,4 +1,5 @@
-﻿using POS.Data.Dto;
+﻿using BTTEM.Data.Dto;
+using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,7 @@ namespace BTTEM.Data.Entities
         public string BookedBy { get; set; }
         public string DuratioOfTravelFrom { get; set; }
         public string DuratioOfTravelTo { get; set; }
+        public string ApprovedBy { get; set; }
 
 
     }
@@ -74,6 +76,21 @@ namespace BTTEM.Data.Entities
 
     }
 
+    public class YearlyExpenseReportList
+    {
+        public int Month { get; set; }
+        public string MonthName { get; set; }
+        public decimal Amount { get; set; }
+    }
 
+    public class DashboardReportData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public DashboardData Data { get; set; }
+    }
+
+    
 
 }

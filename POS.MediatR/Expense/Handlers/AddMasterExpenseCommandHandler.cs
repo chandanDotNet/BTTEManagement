@@ -94,6 +94,7 @@ namespace BTTEM.MediatR.CommandAndQuery
                         //}
 
                     }
+                    return ServiceResponse<MasterExpenseDto>.Return409("Expense Already Exist For This Trip.");
                 }
             }
 

@@ -8,6 +8,7 @@ using POS.API.Helpers;
 using BTTEM.MediatR.Dashboard.Commands;
 using System;
 using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.Data.Entities;
 
 namespace POS.API.Controllers.Dashboard
 {
@@ -16,7 +17,7 @@ namespace POS.API.Controllers.Dashboard
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DashboardController : ControllerBase
     {
 
@@ -201,11 +202,36 @@ namespace POS.API.Controllers.Dashboard
             //{
             //    UserId = UserId,
             //    CompanyAccountId= CompanyAccountId,
-            //    Month = month,
+            //    Month = month,DashboardData
             //    Year = year
             //};
             var result = await _mediator.Send(dashboardStaticaticsQueryCommand);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the dashboard statistics report for App.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("StatisticsReportForApp")]
+        // [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetDashboardStatisticsReportForApp(DashboardStaticaticsQueryCommand dashboardStaticaticsQueryCommand)
+        {
+            DashboardReportData dashboardReportData=new DashboardReportData();
+             var result = await _mediator.Send(dashboardStaticaticsQueryCommand);
+            if(result != null)
+            {
+                dashboardReportData.status = true;
+                dashboardReportData.StatusCode = 200;
+                dashboardReportData.Data = result;
+            }
+            else
+            {
+                dashboardReportData.status = false;
+                dashboardReportData.StatusCode = 500;
+                dashboardReportData.Data = result;
+            }
+            return Ok(dashboardReportData);
         }
 
         /// <summary>
@@ -220,5 +246,21 @@ namespace POS.API.Controllers.Dashboard
             var result = await _mediator.Send(adminDashboardStaticaticsQuery);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Gets the yearly reminders.
+        /// </summary>        
+        /// <param name="year">The year.</param>
+        /// <param name="CompanyAccountId">Company Account.</param>
+        /// <returns></returns>
+        [HttpGet("GetYearlyExpenseReport/{year}/{CompanyAccountId}")]       
+        //[Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetYearlyExpenseReport(int year,Guid CompanyAccountId)
+        {
+            var monthlyEventQuery = new GetYearlyExpenseQuery { Year = year, CompanyAccountId= CompanyAccountId };
+            var result = await _mediator.Send(monthlyEventQuery);
+            return Ok(result);
+        }
+
     }
 }

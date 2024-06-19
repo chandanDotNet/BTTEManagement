@@ -47,7 +47,8 @@ namespace POS.MediatR.Handlers
             var entity = _mapper.Map<EmailTemplate>(request);
             entity.Id = Guid.NewGuid();
             entity.CreatedBy = Guid.Parse(_userInfoToken.Id);
-            entity.CreatedDate = DateTime.UtcNow;
+            //entity.CreatedDate = DateTime.UtcNow;
+            entity.CreatedDate = DateTime.Now;
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
             _emailTemplateRepository.Add(entity);
             if (await _uow.SaveAsync() <= 0)

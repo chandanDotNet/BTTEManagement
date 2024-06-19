@@ -26,7 +26,8 @@ namespace POS.MediatR.Handlers
         }
         public async Task<bool> Handle(WeeklyReminderServicesQuery request, CancellationToken cancellationToken)
         {
-            var dayOfWeek = DateTime.UtcNow.DayOfWeek;
+            //var dayOfWeek = DateTime.UtcNow.DayOfWeek;
+            var dayOfWeek = DateTime.Now.DayOfWeek;
             var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second).ToUniversalTime();
             var reminders = await _reminderRepository.All
                  .Include(c => c.ReminderUsers)

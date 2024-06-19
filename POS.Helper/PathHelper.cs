@@ -168,5 +168,13 @@ namespace POS.Helper
                 return _configuration["ImagePathSettings:ContactSupportDocument"];
             }
         }
+
+        public string connectionStrings
+        {
+            get
+            {
+                return _configuration["connectionStrings:DbConnectionString"];
+            }
+        }
     }
 }

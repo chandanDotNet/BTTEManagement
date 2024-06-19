@@ -34,7 +34,8 @@ namespace POS.Repository
         {
             if (reminders.Count() > 0)
             {
-                var currentDate = DateTime.UtcNow;
+                //var currentDate = DateTime.UtcNow;
+                var currentDate = DateTime.Now;
                 List<ReminderScheduler> lstReminderScheduler = new();
                 foreach (var reminder in reminders)
                 {
@@ -45,7 +46,8 @@ namespace POS.Repository
                             Application = ApplicationEnums.Reminder,
                             ReferenceId = reminderUser.ReminderId,
                             Frequency = reminder.Frequency,
-                            CreatedDate = DateTime.UtcNow,
+                           // CreatedDate = DateTime.UtcNow,
+                            CreatedDate = DateTime.Now,
                             IsActive = true,
                             Duration = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, reminder.StartDate.Hour, reminder.StartDate.Minute, reminder.StartDate.Second),
                             UserId = reminderUser.UserId,

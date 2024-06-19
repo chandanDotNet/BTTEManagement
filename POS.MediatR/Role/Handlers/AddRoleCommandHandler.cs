@@ -49,7 +49,8 @@ namespace POS.MediatR.Handlers
             var entity = _mapper.Map<Role>(request);
             entity.Id = Guid.NewGuid();
             entity.CreatedBy = Guid.Parse(_userInfoToken.Id);
-            entity.CreatedDate = DateTime.UtcNow;
+            //entity.CreatedDate = DateTime.UtcNow;
+            entity.CreatedDate = DateTime.Now;
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
             entity.NormalizedName = entity.Name;
             _roleRepository.Add(entity);

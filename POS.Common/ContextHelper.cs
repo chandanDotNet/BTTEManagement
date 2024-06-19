@@ -13,7 +13,8 @@ namespace POS.Common
                 if(stateInfo.ObjectState== ObjectState.Modified)
                 {
                     //entry.Entity.ModifiedBy = UserInfo.UserName;
-                    entry.Entity.ModifiedDate = System.DateTime.UtcNow;
+                    //entry.Entity.ModifiedDate = System.DateTime.UtcNow;
+                    entry.Entity.ModifiedDate = System.DateTime.Now;
                 }
                 else if(stateInfo.ObjectState == ObjectState.Added)
                 {
@@ -22,7 +23,8 @@ namespace POS.Common
                 else if (stateInfo.ObjectState == ObjectState.Deleted)
                 {
                     //entry.Entity.DeletedBy = UserInfo.UserName;
-                    entry.Entity.DeletedDate = System.DateTime.UtcNow;
+                    //entry.Entity.DeletedDate = System.DateTime.UtcNow;
+                    entry.Entity.DeletedDate = System.DateTime.Now;
                 }
                 entry.State = StateHelpers.ConvertState(stateInfo.ObjectState);
             }

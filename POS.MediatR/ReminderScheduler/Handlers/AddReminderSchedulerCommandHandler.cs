@@ -49,7 +49,8 @@ namespace POS.MediatR.Handlers
                 _reminderSchedulerRepository.Add(new Data.Entities.ReminderScheduler
                 {
                     Application = request.Application,
-                    CreatedDate = DateTime.UtcNow,
+                    //CreatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTime.Now,
                     Duration = request.CreatedDate,
                     Frequency = Data.Entities.Frequency.OneTime,
                     IsActive = true,

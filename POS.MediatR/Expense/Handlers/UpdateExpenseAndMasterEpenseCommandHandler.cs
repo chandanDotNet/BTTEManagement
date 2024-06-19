@@ -91,12 +91,12 @@ namespace BTTEM.MediatR.Expense.Handlers
                 if (masterEntityExist.ReimbursementAmount == masterEntityExist.TotalAmount)
                 {
                     masterEntityExist.ReimbursementStatus = "FULL";
-                    masterEntityExist.Status = "Reimbursed";
+                    masterEntityExist.Status = "REIMBURSED";
                 }
                 else if (masterEntityExist.ReimbursementAmount != 0)
                 {
                     masterEntityExist.ReimbursementStatus = "PARTIAL";
-                    masterEntityExist.Status = "Reimbursed";
+                    masterEntityExist.Status = "REIMBURSED";
                 }
                 else if (masterEntityExist.ReimbursementAmount == 0)
                 {

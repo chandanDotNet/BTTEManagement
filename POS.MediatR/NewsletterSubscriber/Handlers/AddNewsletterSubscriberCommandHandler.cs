@@ -29,7 +29,8 @@ namespace POS.MediatR.Handlers
             {
                 Id = Guid.NewGuid(),
                 Email = request.Email,
-                CreatedDate = DateTime.UtcNow
+                //CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.Now
             };
 
             _newsletterSubscriberRepository.Add(newsletterSubscriber);

@@ -57,7 +57,8 @@ namespace POS.Repository
                 Add(new LoginAudit
                 {
                     Id = Guid.NewGuid(),
-                    LoginTime = DateTime.UtcNow,
+                    //LoginTime = DateTime.UtcNow,
+                    LoginTime = DateTime.Now,
                     Provider = loginAudit.Provider,
                     Status = loginAudit.Status,
                     UserName = loginAudit.UserName,

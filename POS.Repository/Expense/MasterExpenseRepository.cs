@@ -44,21 +44,30 @@ namespace BTTEM.Repository
 
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
-            if (Role != null)
+            if(expenseResource.IsMyRequest==true)
             {
-                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                expenseResource.CreatedBy = LoginUserId;
+            }
+            else
+            {
+                if (Role != null)
                 {
-                    expenseResource.ReportingHeadId = LoginUserId;
-                }
-                //else if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //Travel Desk
-                //{
-                //    tripResource.ReportingHeadId = null;
-                //}
-                else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
-                {
-                    expenseResource.CreatedBy = LoginUserId;
+                    if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                    {
+                        expenseResource.ReportingHeadId = LoginUserId;
+                    }
+                    //else if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //Travel Desk
+                    //{
+                    //    tripResource.ReportingHeadId = null;
+                    //}
+
+                    else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
+                    {
+                        expenseResource.CreatedBy = LoginUserId;
+                    }
                 }
             }
+           
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
@@ -143,6 +152,25 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Expenses.Any(c => c.Status == expenseResource.ExpenseStatus));
             }
+
+            if (!string.IsNullOrEmpty(expenseResource.SearchQuery))
+            {
+                var searchQueryForWhereClause = expenseResource.SearchQuery
+              .Trim().ToLowerInvariant();
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a =>
+                    EF.Functions.Like(a.ExpenseNo, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Name, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.ExpenseType, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.ApprovalStage, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Trip.Name, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.TotalAmount.ToString(), $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.PayableAmount.ToString(), $"%{searchQueryForWhereClause}%")
+                   
+                    );
+            }
+
 
             return await new MasterExpenseList(_mapper).Create(collectionBeforePaging,
                 expenseResource.Skip,

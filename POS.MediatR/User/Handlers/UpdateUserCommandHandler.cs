@@ -64,7 +64,8 @@ namespace POS.MediatR.Handlers
             appUser.PhoneNumber = request.PhoneNumber;
             appUser.Address = request.Address;
             appUser.IsActive = request.IsActive;
-            appUser.ModifiedDate = DateTime.UtcNow;
+            //appUser.ModifiedDate = DateTime.UtcNow;
+            appUser.ModifiedDate = DateTime.Now;
             appUser.ModifiedBy = Guid.Parse(_userInfoToken.Id);
             appUser.DateOfJoining = request.DateOfJoining;
             appUser.DateOfBirth = request.DateOfBirth;

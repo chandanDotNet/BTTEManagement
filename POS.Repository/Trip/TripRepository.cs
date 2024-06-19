@@ -42,21 +42,29 @@ namespace BTTEM.Repository
         {
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
-            if(Role != null)
+            if(tripResource.IsMyRequest==true)
             {
-                if(Role.Id ==new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                tripResource.CreatedBy = LoginUserId;
+            }
+            else
+            {
+                if (Role != null)
                 {
-                    tripResource.ReportingHeadId = LoginUserId;
-                }
-                //else if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //Travel Desk
-                //{
-                //    tripResource.ReportingHeadId = null;
-                //}
-                else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
-                {
-                    tripResource.CreatedBy=LoginUserId;
+                    if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                    {
+                        tripResource.ReportingHeadId = LoginUserId;
+                    }
+                    //else if (Role.Id != new Guid("F72616BE-260B-41BB-A4EE-89146622179A") || Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Travel Desk or Submitter
+                    //{
+                    //    tripResource.ReportingHeadId = null;
+                    //}
+                    else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
+                    {
+                        tripResource.CreatedBy = LoginUserId;
+                    }
                 }
             }
+           
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
             var collectionBeforePaging = AllIncluding(c => c.CreatedByUser,ti=>ti.TripItinerarys,t=>t.TripHotelBookings, a => a.RequestAdvanceMoneyStatusBys).ApplySort(tripResource.OrderBy,
@@ -178,6 +186,11 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.TripType, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.ModeOfTrip, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")                    
+                    || EF.Functions.Like(a.SourceCityName, $"%{searchQueryForWhereClause}%")                    
+                    || EF.Functions.Like(a.DestinationCityName, $"%{searchQueryForWhereClause}%")                    
+                    || EF.Functions.Like(a.Approval, $"%{searchQueryForWhereClause}%")                    
+                    //|| EF.Functions.Like(a.TripStarts.ToShortDateString(), $"%{searchQueryForWhereClause}%")                    
+                    //|| EF.Functions.Like(a.TripEnds.ToShortDateString(), $"%{searchQueryForWhereClause}%")                    
                     );
             }
 

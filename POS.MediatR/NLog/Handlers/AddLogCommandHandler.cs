@@ -29,7 +29,8 @@ namespace POS.MediatR.Handlers
             _nLogRepository.Add(new NLog
             {
                 Id = Guid.NewGuid(),
-                Logged = DateTime.UtcNow,
+               // Logged = DateTime.UtcNow,
+                Logged = DateTime.Now,
                 Level = "Error",
                 Message = request.ErrorMessage,
                 Source = "Angular",

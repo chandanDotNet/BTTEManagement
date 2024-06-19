@@ -56,6 +56,8 @@ namespace BTTEM.Repository
                    IssuedOn = c.IssuedOn,
                    IsVerified= c.IsVerified,
                    ReceiptPath= c.ReceiptPath,
+                   FileNameBack= c.FileNameBack,
+                   ReceiptPathBack= c.ReceiptPathBack,
                    UserId= c.UserId,
                    ValidTill = c.ValidTill
 

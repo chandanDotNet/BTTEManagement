@@ -23,6 +23,7 @@ namespace POS.Data.Resources
         public string? ExpenseType { get; set; }
         public string? ExpenseByUser { get; set; }
         public string? ExpenseStatus { get; set; }
+        public bool? IsMyRequest { get; set; }
 
     }
 }

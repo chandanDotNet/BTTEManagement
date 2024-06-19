@@ -59,7 +59,8 @@ namespace POS.MediatR.Handlers
             }
             entityExist.IsDeleted = true;
             entityExist.DeletedBy = Guid.Parse(_userInfoToken.Id);
-            entityExist.DeletedDate = DateTime.UtcNow;
+            //entityExist.DeletedDate = DateTime.UtcNow;
+            entityExist.DeletedDate = DateTime.Now;
             _roleRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {

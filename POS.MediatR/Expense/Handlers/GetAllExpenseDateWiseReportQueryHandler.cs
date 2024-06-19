@@ -19,49 +19,48 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Expense.Handlers
 {
-    public class GetAllExpenseDateWiseReportQueryHandler : IRequestHandler<GetAllExpenseDateWiseReportQuery, List<ExpenseDto>>
+    public class GetAllExpenseDateWiseReportQueryHandler : IRequestHandler<GetAllExpenseDateWiseReportQuery, TourTravelExpenseReport>
     {
 
         private readonly IExpenseRepository _expenseRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<GetAllExpenseDateWiseReportQueryHandler> _logger;
+        private readonly PathHelper _pathHelper;
         public GetAllExpenseDateWiseReportQueryHandler(IExpenseRepository expenseRepository,
             IMapper mapper,
-            ILogger<GetAllExpenseDateWiseReportQueryHandler> logger)
+            ILogger<GetAllExpenseDateWiseReportQueryHandler> logger,
+            PathHelper pathHelper)
         {
             _expenseRepository = expenseRepository;
             _mapper = mapper;
             _logger = logger;
+            _pathHelper = pathHelper;
         }
 
-        public async Task<List<ExpenseDto>> Handle(GetAllExpenseDateWiseReportQuery request, CancellationToken cancellationToken)
+        public async Task<TourTravelExpenseReport> Handle(GetAllExpenseDateWiseReportQuery request, CancellationToken cancellationToken)
         {
-            //var expense = await _expenseRepository.FindAsync(request.MasterExpenseId);
-            //if (expense == null)
-            //{
-            //    _logger.LogError("Expense not found");
-            //  //  return ServiceResponse<List<ExpenseDto>>.Return404();
-            //}
-            //var expenseDto = _mapper.Map<List<ExpenseDto>>(expense);
-            //return ServiceResponse<List<ExpenseDto>>.ReturnResultWith200(expenseDto);
+            TourTravelExpenseReport tourTravelExpenseReport=new TourTravelExpenseReport();
+            string connectionString = _pathHelper.connectionStrings.Trim();
 
-           // string connectionString = "Server=10.200.109.231,1433;Database=NonCSD_29_01_2024;user=sa; password=Shyam@2023;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=FALSE";
-            string connectionString = "data source=10.200.109.231,1433;Initial Catalog=BTTEManagement;user id=sa;password=Shyam@2023; TrustServerCertificate=True";
+            // string connectionString = "Server=10.200.109.231,1433;Database=NonCSD_29_01_2024;user=sa; password=Shyam@2023;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=FALSE";
+           // string connectionString = "data source=10.200.109.231,1433;Initial Catalog=BTTEManagement;user id=sa;password=Shyam@2023; TrustServerCertificate=True";
 
-            TourTravelExpenseList expenseData = new TourTravelExpenseList();
+           
             List<TourTravelExpenseList> expenseDataList = new List<TourTravelExpenseList>();
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand("SP_ExpenseReport", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ActionId", 1);
+                cmd.Parameters.AddWithValue("@MasterExpenseId", request.MasterExpenseId);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
 
                 while (rdr.Read())
                 {
-                    expenseData.Date = rdr["Date"].ToString();
+                    TourTravelExpenseList expenseData = new TourTravelExpenseList();
+                    expenseData.Date = rdr["ExpenseDate"].ToString();
                     expenseData.Description = rdr["Description"].ToString();
                     expenseData.Fare = (decimal)rdr["Fare"];
                     expenseData.LocalConvey = (decimal)rdr["LocalConvey"];
@@ -76,8 +75,46 @@ namespace BTTEM.MediatR.Expense.Handlers
                 con.Close();
             }
 
-            List<ExpenseDto> expenseDtos = new List<ExpenseDto>();
-            return expenseDataList;
+            //========= User Details
+
+
+            TourTravelExpenseDetails expenseUserData = new TourTravelExpenseDetails();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SP_ExpenseReport", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ActionId", 2);
+                cmd.Parameters.AddWithValue("@MasterExpenseId", request.MasterExpenseId);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+
+                    expenseUserData.CompanyName = rdr["CompanyName"].ToString();
+                    expenseUserData.Branch = rdr["Branch"].ToString();
+                    expenseUserData.Dept = rdr["Dept"].ToString();
+                    expenseUserData.EmployeeName = rdr["EmployeeName"].ToString();
+                    expenseUserData.JourneyNo = rdr["JourneyNo"].ToString();
+                    expenseUserData.EmployeeId = rdr["EmployeeId"].ToString();
+                    expenseUserData.PlaceOfTravel = rdr["PlaceOfTravel"].ToString();
+                    expenseUserData.BookingDate = rdr["BookingDate"].ToString();
+                    expenseUserData.BookedBy = rdr["BookedBy"].ToString();
+                    expenseUserData.DuratioOfTravelFrom = rdr["DuratioOfTravelFrom"].ToString();
+                    expenseUserData.DuratioOfTravelTo = rdr["DuratioOfTravelTo"].ToString();
+                    expenseUserData.ApprovedBy = rdr["ApprovedBy"].ToString();
+                   
+                   // expenseDataList.Add(expenseData);
+                }
+                con.Close();
+            }
+
+            tourTravelExpenseReport.TourTravelExpenseDetails = expenseUserData;
+            tourTravelExpenseReport.TourTravelExpenseList = expenseDataList;
+
+            //List<ExpenseDto> expenseDtos = new List<ExpenseDto>();
+            return tourTravelExpenseReport;
         }
     }
 }

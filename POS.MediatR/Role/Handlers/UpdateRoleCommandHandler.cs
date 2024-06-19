@@ -64,7 +64,8 @@ namespace POS.MediatR.Handlers
 
             entityExist.Name = request.Name;
             entityExist.ModifiedBy = Guid.Parse(_userInfoToken.Id);
-            entityExist.ModifiedDate = DateTime.UtcNow;
+           // entityExist.ModifiedDate = DateTime.UtcNow;
+            entityExist.ModifiedDate = DateTime.Now;
             entityExist.NormalizedName = request.Name;
             entityExist.Description = request.Description;
             entityExist.IsActive = request.IsActive;
