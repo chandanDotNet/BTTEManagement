@@ -360,15 +360,19 @@ namespace POS.Repository
        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
        {
                 { "Name", new PropertyMappingValue(new List<string>() { "Name" },true ) }
-
        };
 
         private Dictionary<string, PropertyMappingValue> _branchPropertyMapping =
        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
        {
                 { "Name", new PropertyMappingValue(new List<string>() { "Name" },true ) }
-
        };
+
+        private Dictionary<string, PropertyMappingValue> _helpSupportPropertyMapping =
+      new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+      {
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) }
+      };
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
@@ -403,6 +407,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<TravelDocumentDto, TravelDocument>(_travelDocumentPropertyMapping));
             propertyMappings.Add(new PropertyMapping<StateDto, State>(_statePropertyMapping));
             propertyMappings.Add(new PropertyMapping<BranchDto, Branch>(_branchPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<HelpSupportDto, HelpSupport>(_helpSupportPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()
