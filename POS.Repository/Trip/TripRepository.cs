@@ -42,32 +42,37 @@ namespace BTTEM.Repository
         {
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
-            if(tripResource.IsMyRequest==true)
+
+            if (!tripResource.Id.HasValue)
             {
-                tripResource.CreatedBy = LoginUserId;
-            }
-            else
-            {
-                if (Role != null)
+                if (tripResource.IsMyRequest == true)
                 {
-                    if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                    tripResource.CreatedBy = LoginUserId;
+                }
+                else
+                {
+                    if (Role != null)
                     {
-                        tripResource.ReportingHeadId = LoginUserId;
-                    }
-                    //else if (Role.Id != new Guid("F72616BE-260B-41BB-A4EE-89146622179A") || Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Travel Desk or Submitter
-                    //{
-                    //    tripResource.ReportingHeadId = null;
-                    //}
-                    else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
-                    {
-                        tripResource.CreatedBy = LoginUserId;
+                        if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                        {
+                            tripResource.ReportingHeadId = LoginUserId;
+                        }
+                        //else if (Role.Id != new Guid("F72616BE-260B-41BB-A4EE-89146622179A") || Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Travel Desk or Submitter
+                        //{
+                        //    tripResource.ReportingHeadId = null;
+                        //}
+                        else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
+                        {
+                            tripResource.CreatedBy = LoginUserId;
+                        }
                     }
                 }
             }
-           
+            
+
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
-            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser,ti=>ti.TripItinerarys,t=>t.TripHotelBookings, a => a.RequestAdvanceMoneyStatusBys).ApplySort(tripResource.OrderBy,
+            var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, ti => ti.TripItinerarys, t => t.TripHotelBookings, a => a.RequestAdvanceMoneyStatusBys).ApplySort(tripResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
 
@@ -104,7 +109,7 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.PurposeId == tripResource.PurposeId);
             }
-            
+
             if (!string.IsNullOrEmpty(tripResource.Name))
             {
                 collectionBeforePaging = collectionBeforePaging
@@ -123,7 +128,7 @@ namespace BTTEM.Repository
             if (!string.IsNullOrEmpty(tripResource.BookTypeBy))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.TripItinerarys.Any(a=>a.BookTypeBy== tripResource.BookTypeBy));
+                    .Where(a => a.TripItinerarys.Any(a => a.BookTypeBy == tripResource.BookTypeBy));
             }
             if (!string.IsNullOrEmpty(tripResource.Status))
             {
@@ -137,7 +142,7 @@ namespace BTTEM.Repository
             }
             if (!string.IsNullOrEmpty(tripResource.IsTripCompleted))
             {
-                if(tripResource.IsTripCompleted == "True")
+                if (tripResource.IsTripCompleted == "True")
                 {
                     collectionBeforePaging = collectionBeforePaging
                         .Where(a => a.IsTripCompleted == true);
@@ -185,16 +190,16 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.Name, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.TripType, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.ModeOfTrip, $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")                    
-                    || EF.Functions.Like(a.SourceCityName, $"%{searchQueryForWhereClause}%")                    
-                    || EF.Functions.Like(a.DestinationCityName, $"%{searchQueryForWhereClause}%")                    
-                    || EF.Functions.Like(a.Approval, $"%{searchQueryForWhereClause}%")                    
+                    || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.SourceCityName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.DestinationCityName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.Approval, $"%{searchQueryForWhereClause}%")
                     //|| EF.Functions.Like(a.TripStarts.ToShortDateString(), $"%{searchQueryForWhereClause}%")                    
                     //|| EF.Functions.Like(a.TripEnds.ToShortDateString(), $"%{searchQueryForWhereClause}%")                    
                     );
             }
 
-            
+
 
             return await new TripList(_mapper).Create(collectionBeforePaging,
                 tripResource.Skip,
