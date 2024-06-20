@@ -99,6 +99,17 @@ namespace BTTEM.Data.Entities
         public MasterExpense Data { get; set; }
     }
 
-
+    public class HelpSupportResponse
+    {
+        public string Description { get; set; }
+        public List<HelpSupportQuery> helpSupportQueries { get; set; } = new List<HelpSupportQuery>();
+    }
+    public class HelpSupportQuery
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Question { get; set; }
+        public string Answer { get; set; }
+    }
 
 }
