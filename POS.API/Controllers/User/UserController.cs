@@ -11,6 +11,8 @@ using POS.Repository;
 using POS.API.Helpers;
 using BTTEM.MediatR.User.Commands;
 using BTTEM.MediatR.Commands;
+using System.Linq.Dynamic.Core;
+using System.Linq;
 
 namespace POS.API.Controllers
 {
@@ -24,6 +26,8 @@ namespace POS.API.Controllers
     {
         public IMediator _mediator { get; set; }
         public readonly UserInfoToken _userInfo;
+        public readonly IUserRepository _userRepository;
+
         /// <summary>
         /// User
         /// </summary>
@@ -31,11 +35,12 @@ namespace POS.API.Controllers
         /// <param name="userInfo"></param>
         public UserController(
             IMediator mediator,
-            UserInfoToken userInfo
+            UserInfoToken userInfo, IUserRepository userRepository
             )
         {
             _mediator = mediator;
             _userInfo = userInfo;
+            _userRepository = userRepository;
         }
         /// <summary>
         ///  Create a User
@@ -84,7 +89,7 @@ namespace POS.API.Controllers
             var result = await _mediator.Send(getUserQuery);
             return ReturnFormattedResponse(result);
         }
-        
+
         /// <summary>
         /// Get Use Notification Coung.
         /// </summary>
@@ -93,7 +98,7 @@ namespace POS.API.Controllers
         [Produces("application/json", "application/xml", Type = typeof(int))]
         public async Task<IActionResult> GetUserNotificationCount()
         {
-            var getUserNotificationCountQuery = new GetUserNotificationCountQuery {  };
+            var getUserNotificationCountQuery = new GetUserNotificationCountQuery { };
             var result = await _mediator.Send(getUserNotificationCountQuery);
             return Ok(result);
         }
@@ -148,7 +153,7 @@ namespace POS.API.Controllers
         /// <param name="updateUserCommand"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-       // [ClaimCheck("USR_UPDATE_USER")]
+        // [ClaimCheck("USR_UPDATE_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
         public async Task<IActionResult> UpdateUser(Guid id, UpdateUserCommand updateUserCommand)
         {
@@ -177,7 +182,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("UpdateUserProfilePhoto"), DisableRequestSizeLimit]
-       // [ClaimCheck("USR_UPDATE_USER")]
+        // [ClaimCheck("USR_UPDATE_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
         public async Task<IActionResult> UpdateUserProfilePhoto()
         {
@@ -282,6 +287,19 @@ namespace POS.API.Controllers
         {
             var result = await _mediator.Send(forgetPasswordCommand);
             return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Assign Employee Count
+        /// </summary>        
+        /// <returns></returns>        
+        [HttpGet("assignEmployeeCount")]
+        public async Task<IActionResult> AssignEmployeeCount()
+        {
+            //var count = _userRepository.All.Where(u => u.ReportingTo.Value == Guid.Parse(_userInfo.Id)).Count();
+            var count = _userRepository.All.Where(u => u.ReportingTo.Value == Guid.Parse(_userInfo.Id)).Count();
+            return Ok(count);
+            //return ReturnFormattedResponse();
         }
     }
 }
