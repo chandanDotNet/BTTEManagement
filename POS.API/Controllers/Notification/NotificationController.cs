@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using POS.API.Helpers;
 using System;
 using System.Linq;
+using BTTEM.MediatR.Notification.Command;
 
 namespace BTTEM.API.Controllers.Notification
 {
@@ -58,6 +59,18 @@ namespace BTTEM.API.Controllers.Notification
             return ReturnFormattedResponse(result);
         }
 
+        /// <summary>
+        /// Read Notification.
+        /// </summary>
+        /// <param name="readNotificationCommand">The identifier.</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Produces("application/json", "application/xml", Type = typeof(NotificationDto))]
+        public async Task<IActionResult> ReadNotification([FromBody] ReadNotificationCommand readNotificationCommand)
+        {
+            var result = await _mediator.Send(readNotificationCommand);
+            return ReturnFormattedResponse(result);
+        }
 
         /// <summary>
         /// Gets Notification Count

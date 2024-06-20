@@ -13,7 +13,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class AddContactSupportCommand : IRequest<ServiceResponse<ContactSupportDto>>
     {
         public string QueryText { get; set; }
-        public int ContactNo { get; set; }
+        public string ContactNo { get; set; }
         public string DocumentName { get; set; }
         public string DocumentData { get; set; }
         public int IssueNo { get; set; }

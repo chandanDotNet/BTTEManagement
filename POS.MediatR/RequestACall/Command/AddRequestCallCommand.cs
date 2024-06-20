@@ -12,7 +12,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class AddRequestCallCommand : IRequest<ServiceResponse<RequestCallDto>>
     {
         public string RequestText { get; set; }
-        public int ContactNo { get; set; }
+        public string ContactNo { get; set; }
         public string DocumentName { get; set; }
         public string DocumentData { get; set; }
         public DateTime RequestCallDate { get; set; }
