@@ -15,5 +15,7 @@ namespace BTTEM.MediatR.CommandAndQuery
         public Guid SourceId { get; set; }
         public string Content { get; set; }
         public int Read { get; set; }
+        public Guid TripId { get; set; }
+        public string TypeName { get; set; }
     }
 }

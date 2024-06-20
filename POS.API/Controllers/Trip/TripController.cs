@@ -149,6 +149,8 @@ namespace BTTEM.API.Controllers.Trip
 
                 var addNotificationCommand = new AddNotificationCommand()
                 {
+                    TripId = result.Data.Id,
+                    TypeName = result.Data.Name,
                     SourceId = result.Data.CreatedBy,
                     Content = "New Trip Added By " + userResult.FirstName + " " + userResult.LastName,
                     UserId = _userRepository.FindAsync(result.Data.CreatedBy).Result.ReportingTo.Value,
@@ -566,6 +568,8 @@ namespace BTTEM.API.Controllers.Trip
 
                 var addNotificationCommand = new AddNotificationCommand()
                 {
+                    TripId = updateTripRequestAdvanceMoneyCommand.Id,
+                    TypeName = responseData.Result.Name,
                     SourceId = Guid.Parse(_userInfoToken.Id),
                     Content = "Request For Advance Money For Rs." + updateTripRequestAdvanceMoneyCommand.AdvanceMoney + " By " + userResult.FirstName + " " + userResult.LastName,
                     UserId = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result.ReportingTo.Value,
@@ -619,6 +623,8 @@ namespace BTTEM.API.Controllers.Trip
 
                 var addNotificationCommand = new AddNotificationCommand()
                 {
+                    TripId = updateTripStatusCommand.Id,
+                    TypeName = responseData.Result.Name,
                     SourceId = Guid.Parse(_userInfoToken.Id),
                     Content = "Trip Status Changed By " + userResult.FirstName + " " + userResult.LastName,
                     UserId = responseData.Result.CreatedBy,
@@ -663,6 +669,8 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             var travelDeskNotificationCommand = new AddNotificationCommand()
                             {
+                                TripId = updateTripStatusCommand.Id,
+                                TypeName = responseData.Result.Name,
                                 SourceId = Guid.Parse(_userInfoToken.Id),
                                 Content = "Trip Status Changed By " + userResult.FirstName + " " + userResult.LastName,
                                 UserId = userRoles.FirstOrDefault().UserId.Value,
@@ -710,6 +718,8 @@ namespace BTTEM.API.Controllers.Trip
 
                 var addNotificationCommand = new AddNotificationCommand()
                 {
+                    TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
+                    TypeName = responseData.Result.Name,
                     SourceId = Guid.Parse(_userInfoToken.Id),
                     Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
                     UserId = responseData.Result.CreatedBy,
@@ -735,6 +745,8 @@ namespace BTTEM.API.Controllers.Trip
 
                     var accountManagerNotificationCommand = new AddNotificationCommand()
                     {
+                        TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
+                        TypeName = responseData.Result.Name,
                         SourceId = Guid.Parse(_userInfoToken.Id),
                         Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
                         UserId = userRoles.FirstOrDefault().UserId.Value,
