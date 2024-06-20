@@ -100,10 +100,10 @@ namespace POS.Domain
         public DbSet<RequestCall> RequestCalls { get; set; }
         public DbSet<ContactSupport> ContactSupports { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-
         public DbSet<CompanyGST> CompanyGSTs { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<Branch> Branches { get; set; }
+        public DbSet<HelpSupport> HelpSupports { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -592,6 +592,14 @@ namespace POS.Domain
             });
 
             builder.Entity<CompanyAccount>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<HelpSupport>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()

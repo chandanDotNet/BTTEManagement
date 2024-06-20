@@ -103,6 +103,7 @@ namespace POS.API.Helpers
             services.AddScoped<ICompanyGSTRepository, CompanyGSTRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped<IHelpSupportRepository, HelpSupportRepository>();
         }
     }
 }
