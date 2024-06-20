@@ -22,6 +22,8 @@ namespace BTTEM.Data
         public decimal? PayableAmount { get; set; }
         public decimal? AdvanceMoney { get; set; }
         public string ApprovalStage { get; set; }
+        public Guid? ApprovalStageBy { get; set; }
+        public DateTime? ApprovalStageDate { get; set; }
         public int NoOfBill { get; set; }
         public int RollbackCount { get; set; } = 0;
         public string ExpenseByUser { get; set; }

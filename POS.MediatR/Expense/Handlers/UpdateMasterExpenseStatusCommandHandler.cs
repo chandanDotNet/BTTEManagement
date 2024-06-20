@@ -4,6 +4,7 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
+using POS.Data.Dto;
 using POS.Data.Resources;
 using POS.Domain;
 using POS.Helper;
@@ -21,16 +22,20 @@ namespace BTTEM.MediatR.Expense.Handlers
         private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly ILogger<UpdateMasterExpenseStatusCommandHandler> _logger;
         private readonly IUnitOfWork<POSDbContext> _uow;
+        private readonly UserInfoToken _userInfoToken;
         public UpdateMasterExpenseStatusCommandHandler(IMasterExpenseRepository masterExpenseRepository,
             ILogger<UpdateMasterExpenseStatusCommandHandler> logger,
-            IUnitOfWork<POSDbContext> uow)
+            IUnitOfWork<POSDbContext> uow,
+            UserInfoToken userInfoToken)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _logger = logger;
             _uow = uow;
+            _userInfoToken = userInfoToken;
         }
         public async Task<ServiceResponse<bool>> Handle(UpdateMasterExpenseStatusCommand request, CancellationToken cancellationToken)
         {
+            Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var entityExist = await _masterExpenseRepository.FindAsync(request.Id);
             if (entityExist == null)
             {
@@ -45,6 +50,9 @@ namespace BTTEM.MediatR.Expense.Handlers
             if (!string.IsNullOrEmpty(request.ApprovalStage))
             {
                 entityExist.ApprovalStage = request.ApprovalStage;
+                entityExist.ApprovalStageBy = LoginUserId;
+                entityExist.ApprovalStageDate = DateTime.Now;
+
             }
 
             if (request.Status == "ROLLBACK" && entityExist.RollbackCount <= 3)
