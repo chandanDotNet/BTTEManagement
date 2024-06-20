@@ -14,5 +14,6 @@ namespace BTTEM.MediatR.CommandAndQuery
         public Guid Id { get; set; }
         public string Status { get; set; }
         public string ApprovalStage { get; set; }
+        public Guid? StatusBy { get; set; }
     }
 }
