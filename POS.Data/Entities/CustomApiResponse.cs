@@ -91,6 +91,14 @@ namespace BTTEM.Data.Entities
         public DashboardData Data { get; set; }
     }
 
-    
+    public class ExistingExpenseByTripData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public MasterExpense Data { get; set; }
+    }
+
+
 
 }
