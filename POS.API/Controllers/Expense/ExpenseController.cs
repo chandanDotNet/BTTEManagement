@@ -1485,7 +1485,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Gets All Expense By Trip  
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The trip identifier.</param>
         /// <returns></returns>
         [HttpGet("GetExistingExpenseByTrip/{id}")]
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
