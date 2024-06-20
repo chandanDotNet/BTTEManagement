@@ -17,7 +17,9 @@ namespace BTTEM.Data
         public User SourceUser { get; set; }
         public string Content { get; set; }
         public int Read { get; set; }
-        
+        public Guid TripId { get; set; }
+        public string TypeName { get; set; }
+
 
     }
 }

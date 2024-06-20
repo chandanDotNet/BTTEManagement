@@ -16,5 +16,7 @@ namespace BTTEM.Data.Dto
         public int Read { get; set; }
         public DateTime CreatedDate { get; set; }
         public User SourceUser { get; set; }
+        public Guid TripId { get; set; }
+        public string TypeName { get; set; }
     }
 }
