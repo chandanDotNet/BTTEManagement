@@ -11,7 +11,7 @@ namespace BTTEM.Data
     {
         public Guid Id { get; set; }
         public string RequestText { get; set; }
-        public int ContactNo { get; set; }
+        public string ContactNo { get; set; }
         public string DocumentName { get; set; }
         public DateTime RequestCallDate { get; set; }
         public string RequestCallTime { get; set; }
