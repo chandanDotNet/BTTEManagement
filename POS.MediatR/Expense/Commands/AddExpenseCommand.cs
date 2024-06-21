@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BTTEM.Data.Dto.Expense;
 
 namespace POS.MediatR.CommandAndQuery
 {
@@ -26,5 +27,6 @@ namespace POS.MediatR.CommandAndQuery
         public string ReceiptName { get; set; }
         public string DocumentData { get; set; }
         public string Status { get; set; }
+        public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
     }
 }

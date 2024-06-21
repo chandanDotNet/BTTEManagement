@@ -104,6 +104,7 @@ namespace POS.API.Helpers
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<IHelpSupportRepository, HelpSupportRepository>();
+            services.AddScoped<IExpenseDocumentRepository, ExpenseDocumentRepository>();
         }
     }
 }

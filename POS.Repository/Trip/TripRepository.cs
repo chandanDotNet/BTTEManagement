@@ -180,6 +180,17 @@ namespace BTTEM.Repository
                     .Where(a => a.CompanyAccountId == tripResource.BillingCompanyAccountId);
             }
 
+            if (tripResource.FromDate.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.TripStarts >= new DateTime(tripResource.FromDate.Value.Year, tripResource.FromDate.Value.Month, tripResource.FromDate.Value.Day, 0, 0, 1));
+            }
+            if (tripResource.ToDate.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.TripEnds <= new DateTime(tripResource.ToDate.Value.Year, tripResource.ToDate.Value.Month, tripResource.ToDate.Value.Day, 23, 59, 59));
+            }
+
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {
                 var searchQueryForWhereClause = tripResource.SearchQuery

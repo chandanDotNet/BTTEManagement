@@ -26,6 +26,8 @@ namespace BTTEM.Data.Resources
         public string? Approval { get; set; }
         public string? Status { get; set; }
         public string IsTripCompleted { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
         public string? PurposeFor { get; set; }
         public string? SourceCityName { get; set; }

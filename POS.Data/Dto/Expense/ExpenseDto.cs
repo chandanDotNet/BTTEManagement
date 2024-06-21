@@ -1,5 +1,7 @@
 ﻿
+using BTTEM.Data.Dto.Expense;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS.Data.Dto
@@ -29,5 +31,6 @@ namespace POS.Data.Dto
         public string AccountStatusRemarks { get; set; }
         public string? ReUploadRemarks { get; set; }
         public string? RejectReason { get; set; }
+        public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
     }
 }
