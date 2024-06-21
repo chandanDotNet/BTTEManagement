@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.API.Controllers;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using BTTEM.Data.Dto;
+using System;
+using BTTEM.Data.Entities;
 
 namespace BTTEM.API.Controllers.HelpSupport
 {
@@ -39,10 +44,22 @@ namespace BTTEM.API.Controllers.HelpSupport
                 totalCount = result.Count,
                 pageSize = result.PageSize,
                 skip = result.Skip,
-                totalPages = result.TotalPages
+                totalPages = result.TotalPages,
             };
             Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetaData));
-            return Ok(result);
-        }
+            HelpSupportResponse response = new HelpSupportResponse();
+            response.Description = result.FirstOrDefault().Description;
+            result.ForEach(responseItem =>
+            {
+                response.helpSupportQueries.Add(new HelpSupportQuery
+                {
+                    Id= responseItem.Id,
+                    Answer= responseItem.Answer,
+                    Question= responseItem.Question,
+                    Title = responseItem.Title,
+                });
+            });
+            return Ok(response);
+        }       
     }
 }

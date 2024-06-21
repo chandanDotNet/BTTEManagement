@@ -290,11 +290,11 @@ namespace POS.API.Controllers
         }
 
         /// <summary>
-        /// Assign Employee Count
+        /// Assigned Employee Count
         /// </summary>        
         /// <returns></returns>        
-        [HttpGet("assignEmployeeCount")]
-        public async Task<IActionResult> AssignEmployeeCount()
+        [HttpGet("assignedEmployeeCount")]
+        public async Task<IActionResult> AssignedEmployeeCount()
         {
             //var count = _userRepository.All.Where(u => u.ReportingTo.Value == Guid.Parse(_userInfo.Id)).Count();
             var count = _userRepository.All.Where(u => u.ReportingTo.Value == Guid.Parse(_userInfo.Id)).Count();
