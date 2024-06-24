@@ -29,6 +29,10 @@ using BTTEM.Data.Entities;
 using BTTEM.MediatR.TravelDocument.Commands;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Hosting;
+using System.IO.Compression;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text.Json.Nodes;
 
 namespace POS.API.Controllers.Expense
 {
@@ -44,6 +48,7 @@ namespace POS.API.Controllers.Expense
         private readonly IUserRepository _userRepository;
         private readonly IExpenseCategoryRepository _expenseCategoryRepository;
         private readonly ITripRepository _tripRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         /// <summary>
         /// 
         /// </summary>
@@ -51,7 +56,8 @@ namespace POS.API.Controllers.Expense
         /// <param name="logger"></param>
         public ExpenseController(
             IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository,
-            IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository, IExpenseCategoryRepository expenseCategoryRepository, ITripRepository tripRepository)
+            IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository, IExpenseCategoryRepository expenseCategoryRepository, ITripRepository tripRepository,
+            IWebHostEnvironment webHostEnvironment)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -60,6 +66,8 @@ namespace POS.API.Controllers.Expense
             _userRepository = userRepository;
             _expenseCategoryRepository = expenseCategoryRepository;
             _tripRepository = tripRepository;
+            _webHostEnvironment = webHostEnvironment;
+
         }
         /// <summary>
         /// Add Expenses
@@ -103,20 +111,20 @@ namespace POS.API.Controllers.Expense
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
             addMasterExpenseCommand.ExpenseNo = ExpenseNo;
-            if(addMasterExpenseCommand.TripId.HasValue)
+            if (addMasterExpenseCommand.TripId.HasValue)
             {
                 //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault();
                 //if(exitExpense==null)
                 //{
                 //    return ReturnFormattedResponse("sss");
                 //}
-                var AdvanceAmount = _tripRepository.All.Where(a => a.Id == addMasterExpenseCommand.TripId && a.RequestAdvanceMoneyStatus== "APPROVED").FirstOrDefault();
-                if(AdvanceAmount!=null)
+                var AdvanceAmount = _tripRepository.All.Where(a => a.Id == addMasterExpenseCommand.TripId && a.RequestAdvanceMoneyStatus == "APPROVED").FirstOrDefault();
+                if (AdvanceAmount != null)
                 {
                     addMasterExpenseCommand.AdvanceMoney = AdvanceAmount.AdvanceMoney.Value;
                 }
             }
-           
+
             var result = await _mediator.Send(addMasterExpenseCommand);
             if (result.Success)
             {
@@ -1443,7 +1451,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-            .Where(x => x.Status == null || x.Status == string.Empty ||x.Status== "PENDING").Count();
+            .Where(x => x.Status == null || x.Status == string.Empty || x.Status == "PENDING").Count();
 
             var paginationMetadata = new
             {
@@ -1469,7 +1477,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetAllExpensesDetailsListDateWise(Guid id)
         {
-            var ReportQuery=new GetAllExpenseDateWiseReportQuery { MasterExpenseId = id };
+            var ReportQuery = new GetAllExpenseDateWiseReportQuery { MasterExpenseId = id };
             var result = await _mediator.Send(ReportQuery);
 
             //var masterExpensesDetails = _expenseRepository.All.Where(a => a.MasterExpenseId == id).ToList();
@@ -1492,8 +1500,8 @@ namespace POS.API.Controllers.Expense
         public async Task<IActionResult> GetExistingExpenseByTrip(Guid id)
         {
             ExistingExpenseByTripData existingExpenseByTripData = new ExistingExpenseByTripData();
-            var expense=_masterExpenseRepository.All.Where(a=>a.TripId==id).FirstOrDefault();
-            if(expense != null)
+            var expense = _masterExpenseRepository.All.Where(a => a.TripId == id).FirstOrDefault();
+            if (expense != null)
             {
                 existingExpenseByTripData.status = true;
                 existingExpenseByTripData.StatusCode = 200;
@@ -1503,11 +1511,60 @@ namespace POS.API.Controllers.Expense
             {
                 existingExpenseByTripData.status = false;
                 existingExpenseByTripData.StatusCode = 500;
-                
-            }          
+
+            }
             return Ok(existingExpenseByTripData);
         }
 
+        /// <summary>
+        /// Download Expense Files
+        /// </summary>
+        /// <param name="expenseId">The trip identifier.</param>
+        /// <returns></returns>
+        [HttpGet("DownloadZipFile/{expenseId}")]
+        public async Task<IActionResult> DownloadZipFile(Guid expenseId)
+        {
+            var zipQuery = new DownloadZipFileCommand { ExpenseId = expenseId };
+            var result = await _mediator.Send(zipQuery);
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var file in result)
+                    {
 
+                        var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
+
+                        if (files.Length == 0)
+                            return NotFound("No files found to download.");
+
+                        var fileInfo = new FileInfo(file.ReceiptPath);
+                        var entry = zipArcheive.CreateEntry(fileInfo.Name);
+                        using (var entryStream = entry.Open())
+                        using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
+                        {
+                            fileStream.CopyTo(entryStream);
+                        }
+                    }
+                }
+                string fileName = DateTime.Now.Year.ToString() + "" +
+                                              DateTime.Now.Month.ToString() + "" +
+                                              DateTime.Now.Day.ToString() + "" +
+                                              DateTime.Now.Hour.ToString() + "" +
+                                              DateTime.Now.Minute.ToString() + "" +
+                                              DateTime.Now.Second.ToString();
+
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                //For Mobile App
+                var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
+                System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
+                var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");  
+                var jsonData = new { Download =  filepath };
+                return Ok(jsonData);
+                //
+                //return File(memoryStream.ToArray(), "application/zip", "ExpenseDocs_" + fileName + ".zip");
+            }
+        }
     }
-    }
+}
