@@ -59,6 +59,12 @@ namespace POS.MediatR.Handlers
                 _logger.LogError("User does not exist.");
                 return ServiceResponse<UserDto>.Return409("User does not exist.");
             }
+            //if (request.FirstName == "Sync")
+            //{
+            //    appUser.ReportingTo = request.ReportingTo;
+            //}
+            //else
+            //{
             appUser.FirstName = request.FirstName;
             appUser.LastName = request.LastName;
             appUser.PhoneNumber = request.PhoneNumber;
@@ -70,12 +76,12 @@ namespace POS.MediatR.Handlers
             appUser.DateOfJoining = request.DateOfJoining;
             appUser.DateOfBirth = request.DateOfBirth;
             appUser.EmployeeCode = request.EmployeeCode;
-            appUser.AadhaarNo= request.AadhaarNo;
+            appUser.AadhaarNo = request.AadhaarNo;
             appUser.PanNo = request.PanNo;
-            appUser.Department= request.Department;
-            appUser.GradeId= request.GradeId;
-            appUser.EmpGradeId= request.EmpGradeId;
-            appUser.Designation= request.Designation;
+            appUser.Department = request.Department;
+            appUser.GradeId = request.GradeId;
+            appUser.EmpGradeId = request.EmpGradeId;
+            appUser.Designation = request.Designation;
 
             appUser.BankName = request.BankName;
             appUser.IFSC = request.IFSC;
@@ -90,8 +96,9 @@ namespace POS.MediatR.Handlers
             appUser.PermanentAdvance = request.PermanentAdvance;
             appUser.ReportingTo = request.ReportingTo;
             appUser.ReportingToName = request.ReportingToName;
+            appUser.VendorCode = request.VendorCode;
 
-            var oldProfilePhoto = appUser.ProfilePhoto;
+            string oldProfilePhoto = appUser.ProfilePhoto;
             if (request.IsImageUpdate)
             {
                 if (!string.IsNullOrEmpty(request.ImgSrc))
@@ -103,6 +110,7 @@ namespace POS.MediatR.Handlers
                     appUser.ProfilePhoto = null;
                 }
             }
+            //}
 
             IdentityResult result = await _userManager.UpdateAsync(appUser);
 

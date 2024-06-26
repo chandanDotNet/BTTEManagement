@@ -14,6 +14,7 @@ namespace POS.API.Helpers.Mapping
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<AddUserCommand, User>();
             CreateMap<ResetPasswordCommand, UserDto>();
+            CreateMap<UpdateUserCommand, User>().ReverseMap();
         }
     }
 }

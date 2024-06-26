@@ -54,6 +54,7 @@ namespace POS.Data.Dto
         public string? EmpGradeName { get; set; }
         public bool? IsPermanentAdvance { get; set; }
         public decimal? PermanentAdvance { get; set; }
+        public string VendorCode { get; set; }
         // public UserDto ReportingToDetails { get; set; }
 
     }

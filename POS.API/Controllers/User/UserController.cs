@@ -13,6 +13,19 @@ using BTTEM.MediatR.User.Commands;
 using BTTEM.MediatR.Commands;
 using System.Linq.Dynamic.Core;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authentication;
+using System.Text.Json;
+using Newtonsoft.Json;
+using BTTEM.Data.Entities;
+using System.Security.Cryptography.X509Certificates;
+using BTTEM.Repository;
+using BTTEM.MediatR.Department.Commands;
+using BTTEM.MediatR.Grade.Commands;
+using BTTEM.MediatR.CompanyProfile.Commands;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace POS.API.Controllers
 {
@@ -27,7 +40,10 @@ namespace POS.API.Controllers
         public IMediator _mediator { get; set; }
         public readonly UserInfoToken _userInfo;
         public readonly IUserRepository _userRepository;
-
+        public readonly IDepartmentRepository _departmentRepository;
+        public readonly IGradeRepository _gradeRepository;
+        public readonly ICompanyAccountRepository _companyAccountRepository;
+        private readonly IMapper _mapper;
         /// <summary>
         /// User
         /// </summary>
@@ -35,12 +51,19 @@ namespace POS.API.Controllers
         /// <param name="userInfo"></param>
         public UserController(
             IMediator mediator,
-            UserInfoToken userInfo, IUserRepository userRepository
+            UserInfoToken userInfo, IUserRepository userRepository,
+            IDepartmentRepository departmentRepository, IGradeRepository gradeRepository,
+             ICompanyAccountRepository companyAccountRepository,
+             IMapper mapper
             )
         {
             _mediator = mediator;
             _userInfo = userInfo;
             _userRepository = userRepository;
+            _departmentRepository = departmentRepository;
+            _gradeRepository = gradeRepository;
+            _companyAccountRepository = companyAccountRepository;
+            _mapper = mapper;
         }
         /// <summary>
         ///  Create a User
@@ -300,6 +323,213 @@ namespace POS.API.Controllers
             var count = _userRepository.All.Where(u => u.ReportingTo.Value == Guid.Parse(_userInfo.Id)).Count();
             return Ok(count);
             //return ReturnFormattedResponse();
+        }
+
+        /// <summary>
+        /// Department Sync
+        /// </summary>        
+        /// <returns></returns>    
+        [AllowAnonymous]
+        [HttpGet("SyncDepartment")]
+        public async Task<IActionResult> DepartmentSync()
+        {
+            var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                requestUri);
+            request.Headers.Add("api-key", "3d4da1b5-0124-48fd-bba3-257e309333db");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseData = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
+
+            var department = result.all_users.Select(dept => dept.department_name).Distinct().ToList();
+            AddDepartmentListCommand dptList = new AddDepartmentListCommand();
+            department.ForEach(dept =>
+            {
+                dptList.DepartmentList.Add(new BTTEM.Data.Dto.DepartmentDto()
+                {
+                    DepartmentName = dept
+                });
+            });
+
+            var dptResult = await _mediator.Send(dptList);
+            return Ok(dptList);
+        }
+
+        /// <summary>
+        /// Grade Sync
+        /// </summary>        
+        /// <returns></returns>    
+        [AllowAnonymous]
+        [HttpGet("SyncGrade")]
+        public async Task<IActionResult> GradeSync()
+        {
+            var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                requestUri);
+            request.Headers.Add("api-key", "3d4da1b5-0124-48fd-bba3-257e309333db");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseData = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
+
+            var grade = result.all_users.Select(grd => grd.grade).Distinct().ToList();
+
+            AddGradeListCommand grdList = new AddGradeListCommand();
+            grade.ForEach(grd =>
+            {
+                grdList.GradeList.Add(new BTTEM.Data.GradeDto()
+                {
+                    GradeName = grd
+                });
+            });
+            var grdResult = await _mediator.Send(grdList);
+            return Ok(grdList);
+        }
+
+        /// <summary>
+        /// Grade Sync
+        /// </summary>        
+        /// <returns></returns>    
+        [AllowAnonymous]
+        [HttpGet("SyncCompany")]
+        public async Task<IActionResult> CompanySync()
+        {
+            var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                requestUri);
+            request.Headers.Add("api-key", "3d4da1b5-0124-48fd-bba3-257e309333db");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseData = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
+
+            var company = result.all_users.Select(c => c.company_name).Distinct().ToList();
+
+            AddCompanyAccountsCommand companyAccounts = new AddCompanyAccountsCommand();
+            company.ForEach(item =>
+            {
+                companyAccounts.CompanyAccountsList.Add(new BTTEM.Data.Dto.CompanyAccountDto()
+                {
+                    AccountName = item
+                });
+            });
+            var grdResult = await _mediator.Send(companyAccounts);
+            return Ok(companyAccounts);
+        }
+
+        /// <summary>
+        /// Get Employees Details
+        /// </summary>        
+        /// <returns></returns>    
+        [AllowAnonymous]
+        [HttpGet("SyncEmployee")]
+        public async Task<IActionResult> EmployeeSync(string companyName)
+        {
+            var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
+            var client = new HttpClient();
+            if (!string.IsNullOrEmpty(companyName))
+            {
+                requestUri = requestUri + "&company_name=" + companyName;
+            }
+
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                requestUri);
+            request.Headers.Add("api-key", "3d4da1b5-0124-48fd-bba3-257e309333db");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseData = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
+
+            if (result.all_users.Count > 0)
+            {
+                List<AddUserCommand> addUserCommand = new List<AddUserCommand>();
+                result.all_users.ForEach(item =>
+                {
+                    if (item.company_name != null && item.company_name != string.Empty)
+                    {
+                        //var name = item.employee_name.Split(" ");
+                        addUserCommand.Add(new AddUserCommand()
+                        {
+                            AadhaarNo = item.aadhar_no,
+                            Designation = item.designation_name,
+                            BankName = item.bank_name,
+                            SapCode = item.sap_personnel_no,
+                            UserName = !string.IsNullOrEmpty(item.official_email_id) ? item.official_email_id : item.employee_code + "@sft.com",
+                            Email = !string.IsNullOrEmpty(item.official_email_id) ? item.official_email_id : item.employee_code + "@sft.com",
+                            ReportingToName = item.reporting_head_name,
+                            PhoneNumber = item.official_contact_no,
+                            PanNo = item.pan_no,
+                            DateOfBirth = item.dob != null ? Convert.ToDateTime(item.dob) : null,
+                            DateOfJoining = item.date_of_joining,
+                            EmployeeCode = item.employee_code,
+                            Address = item.address,
+                            IsActive = item.is_active,
+                            IFSC = item.ifsc_code,
+                            AccountNumber = item.bank_account,
+                            FirstName = item.employee_name,
+                            LastName = item.employee_name,
+                            Password = "sft@123",
+                            Department = _departmentRepository.All.Where(d => d.DepartmentName == item.department_name).FirstOrDefault().Id,
+                            GradeId = _gradeRepository.All.Where(d => d.GradeName == item.grade).FirstOrDefault().Id,
+                            BranchName = item.branch_name,
+                            CompanyAccountId = _companyAccountRepository.All.Where(d => d.AccountName == item.company_name).FirstOrDefault().Id,
+                        });
+                    }
+                });
+
+                foreach (var item in addUserCommand)
+                {
+                    var userResult = await _mediator.Send(item);
+                }
+            }
+            return Ok(result);
+
+
+            //var designation = result.all_users.DistinctBy(d => d.designation_name).ToList();
+            //var department = result.all_users.Select(dept => dept.department_name).Distinct().ToList();
+            //AddDepartmentListCommand dptList = new AddDepartmentListCommand();
+            //department.ForEach(dept =>
+            //{
+            //    dptList.DepartmentList.Add(new BTTEM.Data.Dto.DepartmentDto()
+            //    {
+            //        DepartmentName = dept
+            //    });
+            //});
+            //var dptResult = await _mediator.Send(dptList);
+            //var grade = result.all_users.Select(grd => grd.grade).Distinct();
+            //var company = result.all_users.Select(c => c.company_name).Distinct();
+        }
+
+
+        /// <summary>
+        /// Update Employee
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPut("UpdateEmployee")]
+        [Produces("application/json", "application/xml", Type = typeof(UserDto))]
+        public async Task<IActionResult> UpdateEmployee()
+        {
+            UpdateUserCommand updateUserCommand = new UpdateUserCommand();
+            var entity = await _userRepository.All.ToListAsync();
+            foreach (var item in entity)
+            {
+                updateUserCommand = _mapper.Map<UpdateUserCommand>(item);
+                updateUserCommand.Id = item.Id;
+                updateUserCommand.FirstName = "Sync";
+                updateUserCommand.UserRoles.Add(new UserRoleDto
+                {
+                    RoleId = new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4"),
+                    UserId = item.Id,
+                });
+                updateUserCommand.ReportingTo = _userRepository.All.Where(x => x.ReportingToName == item.ReportingToName).FirstOrDefault().Id;
+                var result = await _mediator.Send(updateUserCommand);
+            }
+            return Ok();
         }
     }
 }

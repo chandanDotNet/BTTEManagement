@@ -136,10 +136,8 @@ namespace POS.Repository
                     IsPermanentAdvance = c.IsPermanentAdvance,
                     PermanentAdvance = c.PermanentAdvance,
                     DepartmentName=c.Departments.DepartmentName,
-                    SapCode= c.SapCode
-                    
-                    
-
+                    SapCode= c.SapCode,
+                    VendorCode = c.VendorCode
                 })
                 .ToListAsync();
             return entities;
