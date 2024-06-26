@@ -77,7 +77,8 @@ namespace BTTEM.MediatR.Handlers
             {
                 entityExist.AdvanceMoney = request.AdvanceMoney;
             }
-            
+            entityExist.NoOfBill = request.NoOfBill;
+
             _masterExpenseRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {

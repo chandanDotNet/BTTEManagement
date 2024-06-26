@@ -77,7 +77,7 @@ namespace BTTEM.Repository
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
-            var collectionBeforePaging = All.Include(t => t.Trip).Include(c => c.CreatedByUser).ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(b => b.ExpenseCategory).ApplySort(expenseResource.OrderBy,
+            var collectionBeforePaging = All.Include(t => t.Trip).Include(c => c.CreatedByUser).ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).Include(a => a.Expenses).ThenInclude(c=>c.ExpenseCategory).ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Expenses).ApplySort(expenseResource.OrderBy,
@@ -157,6 +157,9 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Expenses.Any(c => c.Status == expenseResource.ExpenseStatus));
             }
+
+            collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Expenses.Any(c => c.Amount > 0));
 
             if (!string.IsNullOrEmpty(expenseResource.SearchQuery))
             {

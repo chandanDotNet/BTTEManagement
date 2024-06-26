@@ -53,7 +53,7 @@ namespace POS.MediatR.Handlers
         {
             var entity = _mapper.Map<Expense>(request);
 
-           
+
             //if (!string.IsNullOrWhiteSpace(request.ReceiptName) && !string.IsNullOrWhiteSpace(request.DocumentData))
             //{
             //    string contentRootPath = _webHostEnvironment.WebRootPath;
@@ -83,20 +83,11 @@ namespace POS.MediatR.Handlers
             //        }
             //    }
             //}
+            int index = 0;
 
-            _expenseRepository.Add(entity);
-
-            if (await _uow.SaveAsync() <= 0)
+            foreach (var item in entity.ExpenseDocument)
             {
-                _logger.LogError("Error while saving Expense");
-                return ServiceResponse<ExpenseDto>.Return500();
-            }
-
-            //================File Upload
-
-            foreach (var item in request.ExpenseDocument)
-            {
-                var entityExpenseDocument = _mapper.Map<ExpenseDocument>(item);               
+                var entityExpenseDocument = _mapper.Map<ExpenseDocument>(item);
                 entityExpenseDocument.ExpenseId = entity.Id;
                 entityExpenseDocument.Id = Guid.NewGuid();
 
@@ -121,20 +112,76 @@ namespace POS.MediatR.Handlers
                         try
                         {
                             await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                            entityExpenseDocument.ReceiptPath = path;
+                            entity.ExpenseDocument[index].ReceiptPath = path;
                         }
                         catch
                         {
-                            _logger.LogError("Error while saving files", entityExpenseDocument);
+                            _logger.LogError("Error while saving files", entity);
                         }
                     }
                 }
+                index++;
 
-                _expenseDocumentRepository.Add(entityExpenseDocument);
+                //_expenseDocumentRepository.Add(entityExpenseDocument);
             }
 
-                //===============================
-                var industrydto = _mapper.Map<ExpenseDto>(entity);
+            _expenseRepository.Add(entity);
+
+            //if (await _uow.SaveAsync() <= 0)
+            //{
+            //    _logger.LogError("Error while saving Expense");
+            //    return ServiceResponse<ExpenseDto>.Return500();
+            //}
+
+            //================File Upload
+
+            //foreach (var item in request.ExpenseDocument)
+            //{
+            //    var entityExpenseDocument = _mapper.Map<ExpenseDocument>(item);               
+            //    entityExpenseDocument.ExpenseId = entity.Id;
+            //    entityExpenseDocument.Id = Guid.NewGuid();
+
+            //    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+            //    {
+            //        string contentRootPath = _webHostEnvironment.WebRootPath;
+            //        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+            //        if (!Directory.Exists(pathToSave))
+            //        {
+            //            Directory.CreateDirectory(pathToSave);
+            //        }
+
+            //        var extension = Path.GetExtension(item.ReceiptName);
+            //        var id = Guid.NewGuid();
+            //        var path = $"{id}.{extension}";
+            //        var documentPath = Path.Combine(pathToSave, path);
+            //        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+            //        if (!string.IsNullOrWhiteSpace(base64))
+            //        {
+            //            byte[] bytes = Convert.FromBase64String(base64);
+            //            try
+            //            {
+            //                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+            //                entityExpenseDocument.ReceiptPath = path;
+            //            }
+            //            catch
+            //            {
+            //                _logger.LogError("Error while saving files", entityExpenseDocument);
+            //            }
+            //        }
+            //    }
+
+            //    _expenseDocumentRepository.Add(entityExpenseDocument);
+            //}
+
+            if (await _uow.SaveAsync() <= 0)
+           {
+                _logger.LogError("Error while saving Expense");
+                return ServiceResponse<ExpenseDto>.Return500();
+            }
+
+            //===============================
+            var industrydto = _mapper.Map<ExpenseDto>(entity);
             return ServiceResponse<ExpenseDto>.ReturnResultWith200(industrydto);
         }
     }

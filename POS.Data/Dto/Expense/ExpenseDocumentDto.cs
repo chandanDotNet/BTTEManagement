@@ -13,6 +13,7 @@ namespace BTTEM.Data.Dto.Expense
         public Guid? ExpenseId { get; set; }
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
+        public bool IsReceiptChange { get; set; }
 
     }
 }

@@ -103,6 +103,8 @@ namespace POS.API.Controllers.Expense
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
             addMasterExpenseCommand.ExpenseNo = ExpenseNo;
+            addMasterExpenseCommand.NoOfBill = addMasterExpenseCommand.ExpenseDetails.Where(a=>a.Amount>0).Count();
+            addMasterExpenseCommand.TotalAmount = addMasterExpenseCommand.ExpenseDetails.Sum(a=>a.Amount);
             if(addMasterExpenseCommand.TripId.HasValue)
             {
                 //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault();
@@ -471,6 +473,8 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateMasterExpense([FromBody] UpdateMasterExpenseCommand updateMasterExpenseCommand)
         {
+            updateMasterExpenseCommand.NoOfBill = updateMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0).Count();
+            updateMasterExpenseCommand.TotalAmount = updateMasterExpenseCommand.ExpenseDetails.Sum(a => a.Amount);
             var result = await _mediator.Send(updateMasterExpenseCommand);
             if (result.Success)
             {
@@ -514,7 +518,50 @@ namespace POS.API.Controllers.Expense
                     };
                     var response = await _mediator.Send(addMasterExpenseTrackingCommand);
                 }
+
+                //var exp = _expenseRepository.FindBy(c => c.MasterExpenseId == updateMasterExpenseCommand.Id).ToList();
+                //_expenseRepository.RemoveRange(exp);
+
+                //foreach (var item in updateMasterExpenseCommand.ExpenseDetails)
+                //{
+                //    AddExpenseCommand addExpenseCommand = new AddExpenseCommand();
+                //    addExpenseCommand = item;
+                //    addExpenseCommand.MasterExpenseId = updateMasterExpenseCommand.Id;
+                //    addExpenseCommand.TripId = updateMasterExpenseCommand.TripId;
+                //    addExpenseCommand.Status = "PENDING";
+                //    var result2 = await _mediator.Send(addExpenseCommand);
+                //    //result.Data.ExpenseId = result2.Data.Id;
+
+                //    //var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                //    //{
+                //    //    MasterExpenseId = id,
+                //    //    ExpenseId = result.Data.ExpenseId,
+                //    //    ExpenseTypeName = addExpenseCommand.Name,
+                //    //    ActionType = "Activity",
+                //    //    Remarks = addExpenseCommand.Name + " Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                //    //    Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                //    //    ActionBy = Guid.Parse(_userInfoToken.Id),
+                //    //    ActionDate = DateTime.Now,
+                //    //};
+                //    //var response = await _mediator.Send(addExpenseTrackingCommand);
+                //}
             }
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Deletes Expense Document
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteExpenseDocument/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteExpenseDocument(Guid id)
+        {
+            var command = new DeleteExpenseDocumentCommand() { Id = id };
+            var result = await _mediator.Send(command);        
+
             return ReturnFormattedResponse(result);
         }
 
@@ -1346,7 +1393,7 @@ namespace POS.API.Controllers.Expense
             {
                 foreach (var expense in result)
                 {
-                    var expenseData = expense.Expenses.Where(x => x.ExpenseCategoryId == item.ExpenseCategoryId);
+                    var expenseData = expense.Expenses.Where(x => x.ExpenseCategoryId == item.ExpenseCategoryId && x.Amount>0);
                     //--Lodging (Metro City)
                     if (item.ExpenseCategoryId == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
                     {
@@ -1443,7 +1490,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-            .Where(x => x.Status == null || x.Status == string.Empty ||x.Status== "PENDING").Count();
+            .Where(x => x.Status == null || x.Status == string.Empty ||x.Status== "PENDING" && x.Amount>0).Count();
 
             var paginationMetadata = new
             {

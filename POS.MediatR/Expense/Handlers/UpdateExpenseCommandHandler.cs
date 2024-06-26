@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using POS.Data;
 using BTTEM.Repository;
+using BTTEM.Data.Entities.Expense;
 
 namespace POS.MediatR.Handlers
 {
@@ -29,6 +30,7 @@ namespace POS.MediatR.Handlers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
         private readonly IMasterExpenseRepository _masterExpenseRepository;
+        private readonly IExpenseDocumentRepository _expenseDocumentRepository;
 
         public UpdateExpenseCommandHandler(
             IExpenseRepository expenseRepository,
@@ -37,7 +39,8 @@ namespace POS.MediatR.Handlers
             ILogger<UpdateExpenseCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IMasterExpenseRepository masterExpenseRepository)
+            IMasterExpenseRepository masterExpenseRepository,
+            IExpenseDocumentRepository expenseDocumentRepository)
         {
             _expenseRepository = expenseRepository;
             _uow = uow;
@@ -46,90 +49,190 @@ namespace POS.MediatR.Handlers
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
             _masterExpenseRepository = masterExpenseRepository;
+            _expenseDocumentRepository = expenseDocumentRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
         {
             decimal OldExpenseAmount = 0;
             var entityExist = await _expenseRepository.FindAsync(request.Id);
-            request.Status = entityExist.Status;            
+            request.Status = entityExist.Status;
             OldExpenseAmount = entityExist.Amount;
 
             if (request.MasterExpenseId == Guid.Empty || request.MasterExpenseId == null)
             {
                 request.MasterExpenseId = entityExist.MasterExpenseId;
-            }  
-            
+            }
+            int index = 0;
+            foreach (var item in request.ExpenseDocument)
+            {
+                var document = await _expenseDocumentRepository.FindAsync(item.Id);
+
+                if (item.IsReceiptChange)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                    {
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                request.ExpenseDocument[index].ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", document);
+                            }
+
+
+                        }
+
+                    }
+                    else
+                    {
+                        request.ExpenseDocument[index].ReceiptPath = null;
+                        request.ExpenseDocument[index].ReceiptName = null;
+                    }
+                   // _expenseDocumentRepository.Update(document);
+                }
+                else
+                {
+                    if (document == null)
+                    {
+                        var entityExpenseDocument = _mapper.Map<ExpenseDocument>(item);
+                        entityExpenseDocument.ExpenseId = item.ExpenseId;
+                        entityExpenseDocument.Id = Guid.NewGuid();
+
+                        if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                        {
+                            string contentRootPath = _webHostEnvironment.WebRootPath;
+                            var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                            if (!Directory.Exists(pathToSave))
+                            {
+                                Directory.CreateDirectory(pathToSave);
+                            }
+
+                            var extension = Path.GetExtension(item.ReceiptName);
+                            var id = Guid.NewGuid();
+                            var path = $"{id}.{extension}";
+                            var documentPath = Path.Combine(pathToSave, path);
+                            string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                            if (!string.IsNullOrWhiteSpace(base64))
+                            {
+                                byte[] bytes = Convert.FromBase64String(base64);
+                                try
+                                {
+                                    await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                    request.ExpenseDocument[index].ReceiptPath = path;
+                                }
+                                catch
+                                {
+                                    _logger.LogError("Error while saving files", entityExpenseDocument);
+                                }
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            request.ExpenseDocument[index].ReceiptPath = null;
+                            request.ExpenseDocument[index].ReceiptName = null;
+                        }
+                       // _expenseDocumentRepository.Add(entityExpenseDocument);
+                    }
+
+                }
+                index++;
+            }
+
             if (entityExist == null)
             {
                 _mapper.Map(request, entityExist);
-                entityExist = _mapper.Map<Expense>(request);               
+                entityExist = _mapper.Map<Expense>(request);
                 _expenseRepository.Add(entityExist);
-            }           
+            }
             else
             {
                 _mapper.Map(request, entityExist);
                 _expenseRepository.Update(entityExist);
             }
 
-            if (request.IsReceiptChange)
-            {
-                if (!string.IsNullOrWhiteSpace(request.DocumentData)
-                    && !string.IsNullOrWhiteSpace(request.ReceiptName))
+           
+                //if (request.IsReceiptChange)
+                //{
+                //    if (!string.IsNullOrWhiteSpace(request.DocumentData)
+                //        && !string.IsNullOrWhiteSpace(request.ReceiptName))
+                //    {
+                //        string contentRootPath = _webHostEnvironment.WebRootPath;
+                //        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                //        if (!Directory.Exists(pathToSave))
+                //        {
+                //            Directory.CreateDirectory(pathToSave);
+                //        }
+
+                //        var extension = Path.GetExtension(request.ReceiptName);
+                //        var id = Guid.NewGuid();
+                //        var path = $"{id}.{extension}";
+                //        var documentPath = Path.Combine(pathToSave, path);
+                //        string base64 = request.DocumentData.Split(',').LastOrDefault();
+                //        if (!string.IsNullOrWhiteSpace(base64))
+                //        {
+                //            byte[] bytes = Convert.FromBase64String(base64);
+                //            try
+                //            {
+                //                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                //                entityExist.ReceiptPath = path;
+                //            }
+                //            catch
+                //            {
+                //                _logger.LogError("Error while saving files", entityExist);
+                //            }
+                //        }
+                //    }
+                //    else
+                //    {
+                //        entityExist.ReceiptPath = null;
+                //        entityExist.ReceiptName = null;
+                //    }
+                //}
+
+
+                var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
+                if (entityMasterExist != null)
                 {
-                    string contentRootPath = _webHostEnvironment.WebRootPath;
-                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+                    decimal UpdatedExpenseAmount = 0;
+                    //OldExpenseAmount = entityExist.Amount;
+                    decimal NowExpenseAmount = request.Amount;
+                    decimal TotalExpenseAmount = entityMasterExist.TotalAmount;
+                    UpdatedExpenseAmount = (TotalExpenseAmount - OldExpenseAmount);
+                    UpdatedExpenseAmount = UpdatedExpenseAmount + NowExpenseAmount;
+                    entityMasterExist.TotalAmount = UpdatedExpenseAmount;
+                    _masterExpenseRepository.Update(entityMasterExist);
 
-                    if (!Directory.Exists(pathToSave))
-                    {
-                        Directory.CreateDirectory(pathToSave);
-                    }
-
-                    var extension = Path.GetExtension(request.ReceiptName); ;
-                    var id = Guid.NewGuid();
-                    var path = $"{id}.{extension}";
-                    var documentPath = Path.Combine(pathToSave, path);
-                    string base64 = request.DocumentData.Split(',').LastOrDefault();
-                    if (!string.IsNullOrWhiteSpace(base64))
-                    {
-                        byte[] bytes = Convert.FromBase64String(base64);
-                        try
-                        {
-                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                            entityExist.ReceiptPath = path;
-                        }
-                        catch
-                        {
-                            _logger.LogError("Error while saving files", entityExist);
-                        }
-                    }
                 }
-                else
+                if (await _uow.SaveAsync() <= 0)
                 {
-                    entityExist.ReceiptPath = null;
-                    entityExist.ReceiptName = null;
+                    _logger.LogError("Error while saving Expense.");
+                    return ServiceResponse<bool>.Return500();
                 }
+                return ServiceResponse<bool>.ReturnSuccess();
             }
-
-            var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
-            if (entityMasterExist != null)
-            {
-                decimal UpdatedExpenseAmount = 0;
-                //OldExpenseAmount = entityExist.Amount;
-                decimal NowExpenseAmount = request.Amount;
-                decimal TotalExpenseAmount = entityMasterExist.TotalAmount;
-                UpdatedExpenseAmount = (TotalExpenseAmount - OldExpenseAmount);
-                UpdatedExpenseAmount = UpdatedExpenseAmount + NowExpenseAmount;
-                entityMasterExist.TotalAmount= UpdatedExpenseAmount;
-                _masterExpenseRepository.Update(entityMasterExist);
-
-            }
-            if (await _uow.SaveAsync() <= 0)
-            {
-                _logger.LogError("Error while saving Expense.");
-                return ServiceResponse<bool>.Return500();
-            }
-            return ServiceResponse<bool>.ReturnSuccess();
         }
     }
-}

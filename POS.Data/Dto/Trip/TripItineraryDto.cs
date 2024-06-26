@@ -39,7 +39,7 @@ namespace BTTEM.Data
 
         public string? ApprovalStatus { get; set; }
         public DateTime? ApprovalStatusDate { get; set; }
-        public Guid? ApprovalStatusStatusBy { get; set; }
+        public Guid? ApprovalStatusBy { get; set; }
         public decimal? Amount { get; set; }
         public string? TicketReceiptName { get; set; }
         public string? TicketReceiptPath { get; set; }
