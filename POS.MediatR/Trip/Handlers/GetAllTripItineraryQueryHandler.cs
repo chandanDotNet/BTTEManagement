@@ -39,6 +39,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 result = await _tripItineraryRepository.AllIncluding(c => c.ArrivalCity, b => b.DepartureCity).Where(t => t.TripId == request.Id && t.IsDeleted==false).ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
             }
 
+
             return _mapper.Map<List<TripItineraryDto>>(result);
         }
 
