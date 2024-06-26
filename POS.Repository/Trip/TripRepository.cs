@@ -81,11 +81,11 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId);
             }
-            if (tripResource.CompanyAccountId.HasValue)
-            {
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.CreatedByUser.CompanyAccountId == tripResource.CompanyAccountId);
-            }
+            //if (tripResource.CompanyAccountId.HasValue)
+            //{
+            //    collectionBeforePaging = collectionBeforePaging
+            //        .Where(a => a.CreatedByUser.CompanyAccountId == tripResource.CompanyAccountId);
+            //}
             if (tripResource.Id.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
