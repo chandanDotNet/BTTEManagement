@@ -92,8 +92,6 @@ namespace BTTEM.API.Controllers.Department
             var deleteDepartmentCommand = new DeleteDepartmentCommand { Id = id };
             var result = await _mediator.Send(deleteDepartmentCommand);
             return ReturnFormattedResponse(result);
-        }
-
-
+        }       
     }
 }

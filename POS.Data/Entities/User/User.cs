@@ -65,5 +65,6 @@ namespace POS.Data
         public List<TravelDocument> TravelDocuments { get; set; }
         //public UserDto ReportingToDetails { get; set; }
         public string OTP { get; set; }
+        public string VendorCode { get; set; }
     }
 }

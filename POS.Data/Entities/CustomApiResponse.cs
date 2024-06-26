@@ -112,4 +112,46 @@ namespace BTTEM.Data.Entities
         public string Answer { get; set; }
     }
 
+
+    public class AllUser
+    {
+        public int id { get; set; }
+        public int? company { get; set; }
+        public string branch_name { get; set; }
+        public string sap_personnel_no { get; set; }
+        public int? employee_grade { get; set; }
+        public int? department { get; set; }
+        public int? designation { get; set; }
+        public int? reporting_head { get; set; }
+        public string pan_no { get; set; }
+        public string aadhar_no { get; set; }
+        public string address { get; set; }
+        public string bank_account { get; set; }
+        public string ifsc_code { get; set; }
+        public int? user { get; set; }
+        public string employee_name { get; set; }
+        public string employee_code { get; set; }
+        public string company_name { get; set; }
+        public string official_email_id { get; set; }
+        public string email { get; set; }
+        public string grade { get; set; }
+        public string personal_contact_no { get; set; }
+        public string official_contact_no { get; set; }
+        public string dob { get; set; }
+        public string department_name { get; set; }
+        public string designation_name { get; set; }
+        public DateTime date_of_joining { get; set; }
+        public string reporting_head_name { get; set; }
+        public string bank_name { get; set; }
+        public bool is_staff { get; set; }
+        public bool is_active { get; set; }
+    }
+
+    public class ShyamSteel
+    {
+        public int request_status { get; set; }
+        public List<AllUser> all_users { get; set; }
+        public string msg { get; set; }
+    }
+
 }
