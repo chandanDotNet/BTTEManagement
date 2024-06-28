@@ -30,6 +30,7 @@ using AutoMapper;
 using System.Collections.Generic;
 using BTTEM.Data.Entities;
 
+
 namespace BTTEM.API.Controllers.Trip
 {
     [Route("api/[controller]")]
@@ -101,33 +102,33 @@ namespace BTTEM.API.Controllers.Trip
             //===================
 
 
-            var trip = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripStarts && a.TripEnds >= addTripCommand.TripStarts && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
-            if (trip.Count > 0)
-            {
-                var tripList = _mapper.Map<List<TripDto>>(trip);
-                tripDetailsData.Data = tripList;
-                tripDetailsData.status = false;
-                tripDetailsData.StatusCode = 409;
-                tripDetailsData.message = "Data already exists ";
-                return Ok(tripDetailsData);
-                //var ss= ServiceResponse<List<TripDto>>.ReturnResultWith402(trip10);               
-                //ss.Errors = false;
-                // var sss= ReturnFormattedResponse(ss);
-                //sss.ShapeData = 500;
-                //return Ok(sss);
-                // return (IActionResult)ServiceResponse<List<TripDto>>.Return500();
-            }
-            var trip2 = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripEnds && a.TripEnds >= addTripCommand.TripEnds && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
-            if (trip2.Count > 0)
-            {
-                var tripList1 = _mapper.Map<List<TripDto>>(trip2);
-                tripDetailsData.Data = tripList1;
-                tripDetailsData.status = false;
-                tripDetailsData.StatusCode = 409;
-                tripDetailsData.message = "Data already exists ";
-                return Ok(tripDetailsData);
-            }
-            //===============
+            //var trip = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripStarts && a.TripEnds >= addTripCommand.TripStarts && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
+            //if (trip.Count > 0)
+            //{
+            //    var tripList = _mapper.Map<List<TripDto>>(trip);
+            //    tripDetailsData.Data = tripList;
+            //    tripDetailsData.status = false;
+            //    tripDetailsData.StatusCode = 409;
+            //    tripDetailsData.message = "Data already exists ";
+            //    return Ok(tripDetailsData);
+            //    //var ss= ServiceResponse<List<TripDto>>.ReturnResultWith402(trip10);               
+            //    //ss.Errors = false;
+            //    // var sss= ReturnFormattedResponse(ss);
+            //    //sss.ShapeData = 500;
+            //    //return Ok(sss);
+            //    // return (IActionResult)ServiceResponse<List<TripDto>>.Return500();
+            //}
+            //var trip2 = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripEnds && a.TripEnds >= addTripCommand.TripEnds && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
+            //if (trip2.Count > 0)
+            //{
+            //    var tripList1 = _mapper.Map<List<TripDto>>(trip2);
+            //    tripDetailsData.Data = tripList1;
+            //    tripDetailsData.status = false;
+            //    tripDetailsData.StatusCode = 409;
+            //    tripDetailsData.message = "Data already exists ";
+            //    return Ok(tripDetailsData);
+            //}
+            ////===============
 
             var result = await _mediator.Send(addTripCommand);
 
@@ -315,6 +316,132 @@ namespace BTTEM.API.Controllers.Trip
 
             return ReturnFormattedResponse(result);
         }
+
+        /// <summary>
+        ///  Create a Trip Itinerary Ticket Booking
+        /// </summary>
+        /// <param name="addItineraryTicketBookingCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddItineraryTicketBooking")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryTicketBookingDto))]
+        public async Task<IActionResult> AddItineraryTicketBooking(AddItineraryTicketBookingCommand addItineraryTicketBookingCommand)
+        {
+            var result = await _mediator.Send(addItineraryTicketBookingCommand);
+
+            if (result.Success)
+            {
+               // var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                //var addTripTrackingCommand = new AddTripTrackingCommand()
+                //{
+                //    TripId = result.Data.TripId,
+                //    TripItineraryId = result.Data.Id,
+                //    TripTypeName = result.Data.TripBy,
+                //    ActionType = "Activity",
+                //    Remarks = "Trip Itinerary Added For " + result.Data.TripBy + " By " + userResult.FirstName + " " + userResult.LastName,
+                //    Status = "Trip Itinerary Added By " + userResult.FirstName + " " + userResult.LastName,
+                //    ActionBy = Guid.Parse(_userInfoToken.Id),
+                //    ActionDate = DateTime.Now,
+                //};
+               // var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        ///  Update a Trip Itinerary Ticket Booking
+        /// </summary>
+        /// <param name="updateItineraryTicketBookingCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateItineraryTicketBooking")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryTicketBookingDto))]
+        public async Task<IActionResult> UpdateItineraryTicketBooking(UpdateItineraryTicketBookingCommand updateItineraryTicketBookingCommand)
+        {
+            var result = await _mediator.Send(updateItineraryTicketBookingCommand);
+            //if (result.Data == true)
+            //{
+            //    var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            //    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id);
+
+            //    var addTripTrackingCommand = new AddTripTrackingCommand()
+            //    {
+            //        TripId = updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id,
+            //        TripItineraryId = Guid.Empty,
+            //        TripTypeName = responseData.Result.TripBy,
+            //        ActionType = "Activity",
+            //        Remarks = "Trip Itinerary status updated by - " + userResult.FirstName + " " + userResult.LastName,
+            //        ActionBy = Guid.Parse(_userInfoToken.Id),
+            //        ActionDate = DateTime.Now
+            //    };
+            //    var response = await _mediator.Send(addTripTrackingCommand);
+            //}
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Delete Trip Itinerary Ticket Booking 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteItineraryTicketBooking/{Id}")]
+        public async Task<IActionResult> DeleteItineraryTicketBooking(Guid Id)
+        {
+            var deleteTripItineraryCommand = new DeleteItineraryTicketBookingCommand { Id = Id };
+            var result = await _mediator.Send(deleteTripItineraryCommand);
+            if (result.Success)
+            {
+                //var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                //var responseData = _tripItineraryRepository.FindAsync(Id);
+                //var addTripTrackingCommand = new AddTripTrackingCommand()
+                //{
+                //    TripId = responseData.Result.TripId,
+                //    TripItineraryId = Id,
+                //    ActionType = "Activity",
+                //    Remarks = responseData.Result.TripBy + " Trip Itinerary Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                //    Status = "Trip Itinerary Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                //    ActionBy = Guid.Parse(_userInfoToken.Id),
+                //    ActionDate = DateTime.Now
+                //};
+                //var response = await _mediator.Send(addTripTrackingCommand);
+            }
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        ///  Update a Trip Itinerary Ticket Booking IsAvail
+        /// </summary>
+        /// <param name="updateItineraryTicketBookingIsAvailCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateItineraryTicketBookingIsAvail")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryTicketBookingDto))]
+        public async Task<IActionResult> UpdateItineraryTicketBookingIsAvail(UpdateItineraryTicketBookingIsAvailCommand updateItineraryTicketBookingIsAvailCommand)
+        {
+            var result = await _mediator.Send(updateItineraryTicketBookingIsAvailCommand);
+            //if (result.Data == true)
+            //{
+            //    var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            //    var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id);
+
+            //    var addTripTrackingCommand = new AddTripTrackingCommand()
+            //    {
+            //        TripId = updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id,
+            //        TripItineraryId = Guid.Empty,
+            //        TripTypeName = responseData.Result.TripBy,
+            //        ActionType = "Activity",
+            //        Remarks = "Trip Itinerary status updated by - " + userResult.FirstName + " " + userResult.LastName,
+            //        ActionBy = Guid.Parse(_userInfoToken.Id),
+            //        ActionDate = DateTime.Now
+            //    };
+            //    var response = await _mediator.Send(addTripTrackingCommand);
+            //}
+
+            return ReturnFormattedResponse(result);
+        }
+
 
         /// <summary>
         ///  Update a Trip Itinerary

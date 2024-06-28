@@ -110,8 +110,35 @@ namespace BTTEM.MediatR.Expense.Handlers
                 con.Close();
             }
 
+            List<TicketBookCancelExpenseList> ticketBookCancelExpenseList = new List<TicketBookCancelExpenseList>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SP_ExpenseReport", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ActionId", 3);
+                cmd.Parameters.AddWithValue("@MasterExpenseId", request.MasterExpenseId);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    TicketBookCancelExpenseList expenseData = new TicketBookCancelExpenseList();
+                    expenseData.Date = rdr["Date"].ToString();
+                    expenseData.Status = rdr["Status"].ToString();
+                    expenseData.Description = rdr["Description"].ToString();
+                    expenseData.Fare = (decimal)rdr["Fare"];
+                    expenseData.CancelationReason = (string)rdr["CancelationReason"];
+                    expenseData.AgentCharge = (decimal)rdr["AgentCharge"];
+
+                    ticketBookCancelExpenseList.Add(expenseData);
+                }
+                con.Close();
+            }
+
             tourTravelExpenseReport.TourTravelExpenseDetails = expenseUserData;
             tourTravelExpenseReport.TourTravelExpenseList = expenseDataList;
+            tourTravelExpenseReport.TicketBookCancelExpenseList = ticketBookCancelExpenseList;
 
             //List<ExpenseDto> expenseDtos = new List<ExpenseDto>();
             return tourTravelExpenseReport;

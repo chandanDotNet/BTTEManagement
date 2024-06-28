@@ -41,6 +41,7 @@ namespace BTTEM.Data.Entities
     {
         public TourTravelExpenseDetails TourTravelExpenseDetails { get; set; }
         public IList<TourTravelExpenseList> TourTravelExpenseList { get; set; } = new List<TourTravelExpenseList>();
+        public IList<TicketBookCancelExpenseList> TicketBookCancelExpenseList { get; set; } = new List<TicketBookCancelExpenseList>();
     }
 
     public class TourTravelExpenseDetails
@@ -72,6 +73,17 @@ namespace BTTEM.Data.Entities
         public decimal Others { get; set; }
         public decimal Total { get; set; }
         public string Remarks { get; set; }    
+
+
+    }
+    public class TicketBookCancelExpenseList
+    {
+        public string Date { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
+        public decimal Fare { get; set; }
+        public string CancelationReason { get; set; }
+        public decimal AgentCharge { get; set; }   
 
 
     }

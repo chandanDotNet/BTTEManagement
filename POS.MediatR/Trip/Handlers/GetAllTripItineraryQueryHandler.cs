@@ -31,12 +31,12 @@ namespace BTTEM.MediatR.Trip.Handlers
             List<TripItineraryDto> result = new List<TripItineraryDto>(new List<TripItineraryDto>());
             if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
             {
-                result = await _tripItineraryRepository.AllIncluding(c => c.ArrivalCity,b=>b.DepartureCity).Where(a=>a.IsDeleted==false).ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
+                result = await _tripItineraryRepository.AllIncluding(c => c.ArrivalCity,b=>b.DepartureCity,e=>e.ItineraryTicketBooking).Where(a=>a.IsDeleted==false).ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
 
             }
             else
             {
-                result = await _tripItineraryRepository.AllIncluding(c => c.ArrivalCity, b => b.DepartureCity).Where(t => t.TripId == request.Id && t.IsDeleted==false).ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
+                result = await _tripItineraryRepository.AllIncluding(c => c.ArrivalCity, b => b.DepartureCity, e => e.ItineraryTicketBooking).Where(t => t.TripId == request.Id && t.IsDeleted==false).ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
             }
 
 

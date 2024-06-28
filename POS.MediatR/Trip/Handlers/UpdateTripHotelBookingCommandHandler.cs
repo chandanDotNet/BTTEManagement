@@ -45,17 +45,70 @@ namespace BTTEM.MediatR.Trip.Handlers
             foreach (var tv in request.tripHotelBooking)
             {
                 var entityExist = await _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
-                entityExist.TripId = tv.TripId;
-                entityExist.CheckIn = tv.CheckIn;
-                entityExist.BookTypeBy = tv.BookTypeBy;
-                entityExist.CheckOut = tv.CheckOut;
-                entityExist.CheckInTime = tv.CheckInTime;
-                entityExist.CheckOutTime = tv.CheckOutTime;
-                entityExist.CityId = tv.CityId;
-                entityExist.TentativeAmount = tv.TentativeAmount;
-                entityExist.CityName = tv.CityName;
-                entityExist.NearbyLocation = tv.NearbyLocation;
-                entityExist.PreferredHotel = tv.PreferredHotel;
+                entityExist.TripId = tv.TripId;               
+                if (tv.CheckIn.HasValue)
+                {
+                    entityExist.CheckIn = (DateTime)tv.CheckIn;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.BookTypeBy))
+                {
+                    entityExist.BookTypeBy = tv.BookTypeBy;
+                }
+                if (tv.CheckOut.HasValue)
+                {
+                    entityExist.CheckOut = (DateTime)tv.CheckOut;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.CheckInTime))
+                {
+                    entityExist.CheckInTime = tv.CheckInTime;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.CheckOutTime))
+                {
+                    entityExist.CheckOutTime = tv.CheckOutTime;
+                }
+                if (tv.CityId.HasValue)
+                {
+                    entityExist.CityId = tv.CityId;
+                }
+                if (tv.TentativeAmount>0)
+                {
+                    entityExist.TentativeAmount = tv.TentativeAmount;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.CityName))
+                {
+                    entityExist.CityName = tv.CityName;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.NearbyLocation))
+                {
+                    entityExist.NearbyLocation = tv.NearbyLocation;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.PreferredHotel))
+                {
+                    entityExist.PreferredHotel = tv.PreferredHotel;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.BookStatus))
+                {
+                    entityExist.BookStatus = tv.BookStatus;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.ApprovalStatus))
+                {
+                    entityExist.ApprovalStatus = tv.ApprovalStatus;
+                }
+                if ( tv.CancelationCharge>0)
+                {
+                    entityExist.CancelationCharge = tv.CancelationCharge;
+                }
+                if (!string.IsNullOrWhiteSpace(tv.CancelationReason))
+                {
+                    entityExist.CancelationReason = tv.CancelationReason;
+                }
+                if (tv.CancelationDate.HasValue)
+                {
+                    entityExist.CancelationDate = tv.CancelationDate;
+                }
+
+
+
 
                 _tripHotelBookingRepository.Update(entityExist);
             }

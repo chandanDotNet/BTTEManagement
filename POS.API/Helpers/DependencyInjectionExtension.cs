@@ -3,6 +3,7 @@ using POS.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using BTTEM.Repository;
 
+
 namespace POS.API.Helpers
 {
     public static class DependencyInjectionExtension
@@ -105,6 +106,7 @@ namespace POS.API.Helpers
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<IHelpSupportRepository, HelpSupportRepository>();
             services.AddScoped<IExpenseDocumentRepository, ExpenseDocumentRepository>();
+            services.AddScoped<IItineraryTicketBookingRepository, ItineraryTicketBookingRepository>();
         }
     }
 }

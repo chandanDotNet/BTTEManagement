@@ -60,6 +60,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new TripProfile());
                 mc.AddProfile(new MultiLevelApprovalProfile());
                 mc.AddProfile(new TripItineraryProfile());
+                mc.AddProfile(new ItineraryTicketBookingProfile());
                 mc.AddProfile(new TripHotelBookingProfile());
                 mc.AddProfile(new VehicleManagementProfile());
                 mc.AddProfile(new TravelDocumentProfile());

@@ -142,6 +142,10 @@ namespace POS.Domain
 .Property(b => b.ModifiedDate)
 .HasDefaultValueSql("GETUTCDATE()");
 
+            modelBuilder.Entity<ItineraryTicketBooking>()
+.Property(b => b.ModifiedDate)
+.HasDefaultValueSql("GETUTCDATE()");
+
 
         }
 
@@ -254,6 +258,9 @@ namespace POS.Domain
           .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<Trip>()
+         .HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<ItineraryTicketBooking>()
+
          .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<MasterExpense>()

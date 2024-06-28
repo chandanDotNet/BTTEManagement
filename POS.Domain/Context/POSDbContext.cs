@@ -6,6 +6,7 @@ using System;
 using BTTEM.Data;
 using BTTEM.Data.Entities.Expense;
 
+
 namespace POS.Domain
 {
     public class POSDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
@@ -84,6 +85,7 @@ namespace POS.Domain
         public DbSet<Purpose> Purposes { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripItinerary> TripItinerarys { get; set; }
+        public DbSet<ItineraryTicketBooking> ItineraryTicketBookings { get; set; }
         public DbSet<TripHotelBooking> TripHotelBookings { get; set; }
         public DbSet<MasterExpense> MasterExpenses { get; set; }
 
@@ -628,6 +630,7 @@ namespace POS.Domain
             builder.Entity<Purpose>().ToTable("Purposes");
             builder.Entity<Trip>().ToTable("Trips");
             builder.Entity<TripItinerary>().ToTable("TripItinerarys");
+            builder.Entity<ItineraryTicketBooking>().ToTable("ItineraryTicketBookings");
             builder.Entity<TripHotelBooking>().ToTable("TripHotelBookings");
             builder.Entity<MasterExpense>().ToTable("MasterExpenses");
             builder.Entity<TravelDocument>().ToTable("TravelDocuments");
