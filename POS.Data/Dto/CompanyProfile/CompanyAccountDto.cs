@@ -9,6 +9,7 @@ namespace BTTEM.Data.Dto
     public class CompanyAccountDto
     {
         public Guid Id { get; set; }
+        public string AccountCode { get; set; }
         public string AccountName { get; set; }
         public Guid CompanyProfileId { get; set; }
         //public List<CompanyGST> CompanyGST { get; set; }

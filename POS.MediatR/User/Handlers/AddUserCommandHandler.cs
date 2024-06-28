@@ -42,6 +42,7 @@ namespace POS.MediatR.Handlers
         public async Task<ServiceResponse<UserDto>> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
             var appUser = await _userManager.FindByNameAsync(request.Email);
+
             if (appUser != null)
             {
                 _logger.LogError("Email already exist for another user.");
@@ -49,6 +50,15 @@ namespace POS.MediatR.Handlers
             }
 
             var entity = _mapper.Map<User>(request);
+
+            //if (appUser != null)
+            //{
+            //    entity.UserName =
+            //          entity.Email.Substring(0, entity.Email.LastIndexOf("@"))
+            //        + entity.EmployeeCode + entity.Email.Substring(entity.Email.LastIndexOf("@"), entity.Email.Length - request.Email.LastIndexOf("@"));
+            //    entity.Email = request.Email;
+            //}
+
             entity.CreatedBy = Guid.Parse(_userInfoToken.Id);
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
             //entity.CreatedDate = DateTime.UtcNow;

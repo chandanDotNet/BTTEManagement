@@ -43,7 +43,6 @@ namespace BTTEM.MediatR.Grade.Handlers
                 {
                     var entity = _mapper.Map<BTTEM.Data.Grade>(item);
                     entity.Id = Guid.NewGuid();
-                    entity.Description = item.GradeName;
                     _gradeRepository.Add(entity);
                     if (await _uow.SaveAsync() <= 0)
                     {

@@ -343,13 +343,14 @@ namespace POS.API.Controllers
             var responseData = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
 
-            var department = result.all_users.Select(dept => dept.department_name).Distinct().ToList();
+            var department = result.all_users.Select(dept => new { dept.department_name, dept.department }).Distinct().ToList();
             AddDepartmentListCommand dptList = new AddDepartmentListCommand();
             department.ForEach(dept =>
             {
                 dptList.DepartmentList.Add(new BTTEM.Data.Dto.DepartmentDto()
                 {
-                    DepartmentName = dept
+                    DepartmentName = dept.department_name,
+                    DepartmentCode = dept.department.ToString()
                 });
             });
 
@@ -375,15 +376,19 @@ namespace POS.API.Controllers
             var responseData = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
 
-            var grade = result.all_users.Select(grd => grd.grade).Distinct().ToList();
+            var grade = result.all_users.Select(grd => new { grd.grade, grd.employee_grade }).Distinct().ToList();
 
             AddGradeListCommand grdList = new AddGradeListCommand();
             grade.ForEach(grd =>
             {
-                grdList.GradeList.Add(new BTTEM.Data.GradeDto()
+                if (grd.grade != null)
                 {
-                    GradeName = grd
-                });
+                    grdList.GradeList.Add(new BTTEM.Data.GradeDto()
+                    {
+                        GradeName = grd.grade.ToString(),
+                        GradeCode = grd.employee_grade.ToString(),
+                    });
+                }
             });
             var grdResult = await _mediator.Send(grdList);
             return Ok(grdList);
@@ -407,14 +412,15 @@ namespace POS.API.Controllers
             var responseData = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ShyamSteel>(responseData);
 
-            var company = result.all_users.Select(c => c.company_name).Distinct().ToList();
+            var company = result.all_users.Select(c => new { c.company_name, c.company }).Distinct().ToList();
 
             AddCompanyAccountsCommand companyAccounts = new AddCompanyAccountsCommand();
             company.ForEach(item =>
             {
                 companyAccounts.CompanyAccountsList.Add(new BTTEM.Data.Dto.CompanyAccountDto()
                 {
-                    AccountName = item
+                    AccountName = item.company_name,
+                    AccountCode = item.company.ToString(),
                 });
             });
             var grdResult = await _mediator.Send(companyAccounts);
@@ -449,36 +455,39 @@ namespace POS.API.Controllers
                 List<AddUserCommand> addUserCommand = new List<AddUserCommand>();
                 result.all_users.ForEach(item =>
                 {
-                    if (item.company_name != null && item.company_name != string.Empty)
+                    //var name = item.employee_name.Split(" ");
+                    addUserCommand.Add(new AddUserCommand()
                     {
-                        //var name = item.employee_name.Split(" ");
-                        addUserCommand.Add(new AddUserCommand()
-                        {
-                            AadhaarNo = item.aadhar_no,
-                            Designation = item.designation_name,
-                            BankName = item.bank_name,
-                            SapCode = item.sap_personnel_no,
-                            UserName = !string.IsNullOrEmpty(item.official_email_id) ? item.official_email_id : item.employee_code + "@sft.com",
-                            Email = !string.IsNullOrEmpty(item.official_email_id) ? item.official_email_id : item.employee_code + "@sft.com",
-                            ReportingToName = item.reporting_head_name,
-                            PhoneNumber = item.official_contact_no,
-                            PanNo = item.pan_no,
-                            DateOfBirth = item.dob != null ? Convert.ToDateTime(item.dob) : null,
-                            DateOfJoining = item.date_of_joining,
-                            EmployeeCode = item.employee_code,
-                            Address = item.address,
-                            IsActive = item.is_active,
-                            IFSC = item.ifsc_code,
-                            AccountNumber = item.bank_account,
-                            FirstName = item.employee_name,
-                            LastName = item.employee_name,
-                            Password = "sft@123",
-                            Department = _departmentRepository.All.Where(d => d.DepartmentName == item.department_name).FirstOrDefault().Id,
-                            GradeId = _gradeRepository.All.Where(d => d.GradeName == item.grade).FirstOrDefault().Id,
-                            BranchName = item.branch_name,
-                            CompanyAccountId = _companyAccountRepository.All.Where(d => d.AccountName == item.company_name).FirstOrDefault().Id,
-                        });
-                    }
+                        AadhaarNo = item.aadhar_no,
+                        Designation = item.designation_name,
+                        BankName = item.bank_name,
+                        SapCode = item.sap_personnel_no,
+                        UserName = !string.IsNullOrEmpty(item.official_email_id) ? item.official_email_id : item.employee_code + "@sft.com",
+                        Email = !string.IsNullOrEmpty(item.official_email_id) ? item.official_email_id : item.employee_code + "@sft.com",
+                        ReportingToName = item.reporting_head_name,
+                        PhoneNumber = item.official_contact_no,
+                        PanNo = item.pan_no,
+                        DateOfBirth = item.dob != null ? Convert.ToDateTime(item.dob) : null,
+                        DateOfJoining = item.date_of_joining,
+                        EmployeeCode = item.employee_code,
+                        Address = item.address,
+                        IsActive = item.is_active,
+                        IFSC = item.ifsc_code,
+                        AccountNumber = item.bank_account,
+                        FirstName = item.employee_name,
+                        LastName = item.employee_name,
+                        Password = "sft@123",
+                        //Department = item.department.Value != null ? _departmentRepository.All.Where(d => d.DepartmentCode == item.department.ToString()).FirstOrDefault().Id : Guid.Empty,
+                        //GradeId = item.employee_grade.Value != null ? _gradeRepository.All.Where(d => d.GradeCode == item.employee_grade.ToString()).FirstOrDefault().Id : Guid.Empty,
+                        BranchName = item.branch_name,
+                        CompanyAccountId = _companyAccountRepository.All.Where(d => d.AccountName == item.company_name).FirstOrDefault().Id,
+                        HrmsId = item.id,
+                        HrmsReportingHeadCode = item.reporting_head,
+                        HrmsUser = item.user,
+                        HrmsDepartmentId = item.department,
+                        HrmsGradeId = item.employee_grade
+
+                    });
                 });
 
                 foreach (var item in addUserCommand)
@@ -526,7 +535,7 @@ namespace POS.API.Controllers
                     RoleId = new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4"),
                     UserId = item.Id,
                 });
-                updateUserCommand.ReportingTo = _userRepository.All.Where(x => x.ReportingToName == item.ReportingToName).FirstOrDefault().Id;
+                //updateUserCommand.ReportingTo = _userRepository.All.Where(x => x.ReportingToName == item.ReportingToName).FirstOrDefault().Id;
                 var result = await _mediator.Send(updateUserCommand);
             }
             return Ok();

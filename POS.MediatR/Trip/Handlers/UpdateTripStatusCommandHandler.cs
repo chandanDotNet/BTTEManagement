@@ -54,10 +54,23 @@ namespace BTTEM.MediatR.Trip.Handlers
                 entityExist.Approval = request.Approval;
             }
 
-            if(request.Status == "ROLLBACK" && entityExist.RollbackCount<=3)
+            if (request.Status == "ROLLBACK" && entityExist.RollbackCount <= 3)
             {
                 entityExist.RollbackCount = entityExist.RollbackCount + 1;
                 entityExist.Status = "YET TO SUBMIT";
+            }
+
+            if (request.Status == "CANCELLED")
+            {
+                entityExist.CancellationDateTime = DateTime.Now;
+                entityExist.CancellationConfirmation = request.CancellationConfirmation;
+                entityExist.TravelDeskName = request.TravelDeskName;
+                entityExist.TravelDeskId = request.TravelDeskId;
+            }
+
+            if (!string.IsNullOrEmpty(request.JourneyNumber))
+            {
+                entityExist.JourneyNumber = request.JourneyNumber;
             }
 
             _tripRepository.Update(entityExist);

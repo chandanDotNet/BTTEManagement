@@ -57,6 +57,12 @@ namespace BTTEM.Data
         public int PendingHotelApprove { get; set; }
         public string? VendorCode { get; set; }
         public int RollbackCount { get; set; } = 0;
+        public DateTime? CancellationDateTime { get; set; }
+        public string CancellationConfirmation { get; set; }
+        public string CancellationReason { get; set; }
+        public string TravelDeskName { get; set; }
+        public Guid? TravelDeskId { get; set; }
+        public string JourneyNumber { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
 
     }
