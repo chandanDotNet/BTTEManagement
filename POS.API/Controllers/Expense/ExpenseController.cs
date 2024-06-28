@@ -1614,60 +1614,57 @@ namespace POS.API.Controllers.Expense
             }
         }
 
+        /// <summary>
+        /// Download All Expense  Files
+        /// </summary>
+        /// <param name="masterExpenseId">The All Expense identifier.</param>
+        /// <returns></returns>
+        [HttpGet("DownloadAllExpenseZipFile/{masterExpenseId}")]
+        public async Task<IActionResult> DownloadAllExpenseZipFile(Guid masterExpenseId)
+        {
+            var allZipQuery = new DownloadAllExpenseZipFileCommand { MasterExpenseId = masterExpenseId };
+            var result = await _mediator.Send(allZipQuery);
 
+            return Ok(result);
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+            //    {
+            //        foreach (var file in result)
+            //        {
 
+            //            var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
 
-        ///// <summary>
-        ///// Download All Expense  Files
-        ///// </summary>
-        ///// <param name="masterExpenseId">The trip identifier.</param>
-        ///// <returns></returns>
-        //[HttpGet("DownloadZipFile/{masterExpenseId}")]
-        //public async Task<IActionResult> DownloadAllExpenseZipFile(Guid masterExpenseId)
-        //{
-        //    var allZipQuery = new DownloadAllExpenseZipFileCommand { MasterExpenseId = masterExpenseId };
-        //    var result = await _mediator.Send(allZipQuery);
+            //            if (files.Length == 0)
+            //                return NotFound("No files found to download.");
 
-        //    using (var memoryStream = new MemoryStream())
-        //    {
-        //        using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-        //        {
-        //            foreach (var file in result)
-        //            {
+            //            var fileInfo = new FileInfo(file.ReceiptPath);
+            //            var entry = zipArcheive.CreateEntry(fileInfo.Name);
+            //            using (var entryStream = entry.Open())
+            //            using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
+            //            {
+            //                fileStream.CopyTo(entryStream);
+            //            }
+            //        }
+            //    }
+            //    string fileName = DateTime.Now.Year.ToString() + "" +
+            //                                  DateTime.Now.Month.ToString() + "" +
+            //                                  DateTime.Now.Day.ToString() + "" +
+            //                                  DateTime.Now.Hour.ToString() + "" +
+            //                                  DateTime.Now.Minute.ToString() + "" +
+            //                                  DateTime.Now.Second.ToString();
 
-        //                var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
+            //    memoryStream.Seek(0, SeekOrigin.Begin);
 
-        //                if (files.Length == 0)
-        //                    return NotFound("No files found to download.");
+            //    //For Mobile App
+            //    var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
+            //    System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
+            //    var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
+            //    var jsonData = new { Download = filepath };
+            //    return Ok(jsonData);
 
-        //                var fileInfo = new FileInfo(file.ReceiptPath);
-        //                var entry = zipArcheive.CreateEntry(fileInfo.Name);
-        //                using (var entryStream = entry.Open())
-        //                using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
-        //                {
-        //                    fileStream.CopyTo(entryStream);
-        //                }
-        //            }
-        //        }
-        //        string fileName = DateTime.Now.Year.ToString() + "" +
-        //                                      DateTime.Now.Month.ToString() + "" +
-        //                                      DateTime.Now.Day.ToString() + "" +
-        //                                      DateTime.Now.Hour.ToString() + "" +
-        //                                      DateTime.Now.Minute.ToString() + "" +
-        //                                      DateTime.Now.Second.ToString();
-
-        //        memoryStream.Seek(0, SeekOrigin.Begin);
-
-        //        //For Mobile App
-        //        var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
-        //        System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
-        //        var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
-        //        var jsonData = new { Download = filepath };
-        //        return Ok(jsonData);
-        //        //
-        //        //return File(memoryStream.ToArray(), "application/zip", "ExpenseDocs_" + fileName + ".zip");
-        //    }
-        //}
+        }
     }
 }
+
 
