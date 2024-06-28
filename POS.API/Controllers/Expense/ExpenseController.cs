@@ -111,9 +111,9 @@ namespace POS.API.Controllers.Expense
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
             addMasterExpenseCommand.ExpenseNo = ExpenseNo;
-            addMasterExpenseCommand.NoOfBill = addMasterExpenseCommand.ExpenseDetails.Where(a=>a.Amount>0).Count();
-            addMasterExpenseCommand.TotalAmount = addMasterExpenseCommand.ExpenseDetails.Sum(a=>a.Amount);
-            if(addMasterExpenseCommand.TripId.HasValue)
+            addMasterExpenseCommand.NoOfBill = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0).Count();
+            addMasterExpenseCommand.TotalAmount = addMasterExpenseCommand.ExpenseDetails.Sum(a => a.Amount);
+            if (addMasterExpenseCommand.TripId.HasValue)
             {
                 //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault();
                 //if(exitExpense==null)
@@ -568,7 +568,7 @@ namespace POS.API.Controllers.Expense
         public async Task<IActionResult> DeleteExpenseDocument(Guid id)
         {
             var command = new DeleteExpenseDocumentCommand() { Id = id };
-            var result = await _mediator.Send(command);        
+            var result = await _mediator.Send(command);
 
             return ReturnFormattedResponse(result);
         }
@@ -1401,7 +1401,7 @@ namespace POS.API.Controllers.Expense
             {
                 foreach (var expense in result)
                 {
-                    var expenseData = expense.Expenses.Where(x => x.ExpenseCategoryId == item.ExpenseCategoryId && x.Amount>0);
+                    var expenseData = expense.Expenses.Where(x => x.ExpenseCategoryId == item.ExpenseCategoryId && x.Amount > 0);
                     //--Lodging (Metro City)
                     if (item.ExpenseCategoryId == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
                     {
@@ -1498,7 +1498,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-            .Where(x => x.Status == null || x.Status == string.Empty ||x.Status== "PENDING" && x.Amount>0).Count();
+            .Where(x => x.Status == null || x.Status == string.Empty || x.Status == "PENDING" && x.Amount > 0).Count();
 
             var paginationMetadata = new
             {
@@ -1566,7 +1566,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Download Expense Files
         /// </summary>
-        /// <param name="expenseId">The trip identifier.</param>
+        /// <param name="expenseId">The Expanse.</param>
         /// <returns></returns>
         [HttpGet("DownloadZipFile/{expenseId}")]
         public async Task<IActionResult> DownloadZipFile(Guid expenseId)
@@ -1606,12 +1606,68 @@ namespace POS.API.Controllers.Expense
                 //For Mobile App
                 var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
                 System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
-                var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");  
-                var jsonData = new { Download =  filepath };
+                var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
+                var jsonData = new { Download = filepath };
                 return Ok(jsonData);
                 //
                 //return File(memoryStream.ToArray(), "application/zip", "ExpenseDocs_" + fileName + ".zip");
             }
         }
+
+
+
+
+        ///// <summary>
+        ///// Download All Expense  Files
+        ///// </summary>
+        ///// <param name="masterExpenseId">The trip identifier.</param>
+        ///// <returns></returns>
+        //[HttpGet("DownloadZipFile/{masterExpenseId}")]
+        //public async Task<IActionResult> DownloadAllExpenseZipFile(Guid masterExpenseId)
+        //{
+        //    var allZipQuery = new DownloadAllExpenseZipFileCommand { MasterExpenseId = masterExpenseId };
+        //    var result = await _mediator.Send(allZipQuery);
+
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+        //        {
+        //            foreach (var file in result)
+        //            {
+
+        //                var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
+
+        //                if (files.Length == 0)
+        //                    return NotFound("No files found to download.");
+
+        //                var fileInfo = new FileInfo(file.ReceiptPath);
+        //                var entry = zipArcheive.CreateEntry(fileInfo.Name);
+        //                using (var entryStream = entry.Open())
+        //                using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
+        //                {
+        //                    fileStream.CopyTo(entryStream);
+        //                }
+        //            }
+        //        }
+        //        string fileName = DateTime.Now.Year.ToString() + "" +
+        //                                      DateTime.Now.Month.ToString() + "" +
+        //                                      DateTime.Now.Day.ToString() + "" +
+        //                                      DateTime.Now.Hour.ToString() + "" +
+        //                                      DateTime.Now.Minute.ToString() + "" +
+        //                                      DateTime.Now.Second.ToString();
+
+        //        memoryStream.Seek(0, SeekOrigin.Begin);
+
+        //        //For Mobile App
+        //        var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
+        //        System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
+        //        var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
+        //        var jsonData = new { Download = filepath };
+        //        return Ok(jsonData);
+        //        //
+        //        //return File(memoryStream.ToArray(), "application/zip", "ExpenseDocs_" + fileName + ".zip");
+        //    }
+        //}
     }
 }
+

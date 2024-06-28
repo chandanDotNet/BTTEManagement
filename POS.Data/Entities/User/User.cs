@@ -66,5 +66,10 @@ namespace POS.Data
         //public UserDto ReportingToDetails { get; set; }
         public string OTP { get; set; }
         public string VendorCode { get; set; }
+        public int? HrmsReportingHeadCode { get; set; }
+        public int? HrmsId { get; set; }
+        public int? HrmsUser { get; set; }
+        public int? HrmsDepartmentId { get; set; }
+        public int? HrmsGradeId { get; set; }
     }
 }

@@ -14,5 +14,6 @@ namespace BTTEM.Data
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public long? NoOfUsers { get; set; }
+        public string GradeCode { get; set; }
     }
 }

@@ -110,7 +110,12 @@ namespace BTTEM.Repository
                         RequestAdvanceMoneyStatusBys=cs.RequestAdvanceMoneyStatusBys,
                         RequestAdvanceMoneyStatusBy=cs.RequestAdvanceMoneyStatusBy,
                         RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
-
+                        CancellationDateTime = cs.CancellationDateTime,
+                        CancellationConfirmation = cs.CancellationConfirmation,
+                        CancellationReason = cs.CancellationReason,
+                        TravelDeskId=cs.TravelDeskId,
+                        TravelDeskName = cs.TravelDeskName,
+                        JourneyNumber = cs.JourneyNumber,
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })

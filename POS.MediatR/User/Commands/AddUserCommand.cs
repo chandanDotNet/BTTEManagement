@@ -41,6 +41,11 @@ namespace POS.MediatR.CommandAndQuery
         public bool? IsPermanentAdvance { get; set; }
         public decimal? PermanentAdvance { get; set; }
         public string VendorCode { get; set; }
+        public int? HrmsReportingHeadCode { get; set; }
+        public int? HrmsId { get; set; }
+        public int? HrmsUser { get; set; }
+        public int? HrmsDepartmentId { get; set; }
+        public int? HrmsGradeId { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
 
     }

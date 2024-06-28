@@ -13,5 +13,6 @@ namespace BTTEM.Data
         public string GradeName { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
+        public string GradeCode { get; set; }
     }
 }
