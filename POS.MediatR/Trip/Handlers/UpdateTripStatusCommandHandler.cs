@@ -64,6 +64,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.CancellationDateTime = DateTime.Now;
                 entityExist.CancellationConfirmation = request.CancellationConfirmation;
+                entityExist.CancellationReason = request.CancellationReason;
                 entityExist.TravelDeskName = request.TravelDeskName;
                 entityExist.TravelDeskId = request.TravelDeskId;
             }
