@@ -114,7 +114,12 @@ namespace BTTEM.MediatR.Expense.Handlers
             {
                 entityExist.Status = request.Status;
             }
-              
+
+            if (!string.IsNullOrEmpty(request.JourneyNumber))
+            {
+                entityExist.JourneyNumber = request.JourneyNumber;
+            }
+
             _expenseRepository.Update(entityExist);
 
             if (await _uow.SaveAsync() <= 0)
