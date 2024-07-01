@@ -1625,44 +1625,44 @@ namespace POS.API.Controllers.Expense
             var allZipQuery = new DownloadAllExpenseZipFileCommand { MasterExpenseId = masterExpenseId };
             var result = await _mediator.Send(allZipQuery);
 
-            return Ok(result);
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-            //    {
-            //        foreach (var file in result)
-            //        {
+            //return Ok(result);
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var file in result)
+                    {
+                        var files = Directory.GetFiles(file.Substring(0, file.LastIndexOf('\\')));
 
-            //            var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
+                        if (files.Length == 0)
+                            return NotFound("No files found to download.");
 
-            //            if (files.Length == 0)
-            //                return NotFound("No files found to download.");
+                        var fileInfo = new FileInfo(file);
+                        var entry = zipArcheive.CreateEntry(fileInfo.Name);
+                        using (var entryStream = entry.Open())
+                        using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                        {
+                            fileStream.CopyTo(entryStream);
+                        }
+                    }
+                }
 
-            //            var fileInfo = new FileInfo(file.ReceiptPath);
-            //            var entry = zipArcheive.CreateEntry(fileInfo.Name);
-            //            using (var entryStream = entry.Open())
-            //            using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
-            //            {
-            //                fileStream.CopyTo(entryStream);
-            //            }
-            //        }
-            //    }
-            //    string fileName = DateTime.Now.Year.ToString() + "" +
-            //                                  DateTime.Now.Month.ToString() + "" +
-            //                                  DateTime.Now.Day.ToString() + "" +
-            //                                  DateTime.Now.Hour.ToString() + "" +
-            //                                  DateTime.Now.Minute.ToString() + "" +
-            //                                  DateTime.Now.Second.ToString();
+                string fileName = DateTime.Now.Year.ToString() + "" +
+                                              DateTime.Now.Month.ToString() + "" +
+                                              DateTime.Now.Day.ToString() + "" +
+                                              DateTime.Now.Hour.ToString() + "" +
+                                              DateTime.Now.Minute.ToString() + "" +
+                                              DateTime.Now.Second.ToString();
 
-            //    memoryStream.Seek(0, SeekOrigin.Begin);
+                memoryStream.Seek(0, SeekOrigin.Begin);
 
-            //    //For Mobile App
-            //    var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
-            //    System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
-            //    var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
-            //    var jsonData = new { Download = filepath };
-            //    return Ok(jsonData);
-
+                //For Mobile App
+                var pathToSave = result[0].Substring(0, result[0].LastIndexOf('\\'));
+                System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "AllExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
+                var filepath = Path.Combine("Attachments", "AllExpenseDocs_" + fileName + ".zip");
+                var jsonData = new { Download = filepath };
+                return Ok(jsonData);
+            }
         }
     }
 }

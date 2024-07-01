@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Expense.Commands
 {
-    public class DownloadAllExpenseZipFileCommand : IRequest<bool>
+    public class DownloadAllExpenseZipFileCommand : IRequest<List<string>>
     {
         public Guid MasterExpenseId { get; set; }
     }
