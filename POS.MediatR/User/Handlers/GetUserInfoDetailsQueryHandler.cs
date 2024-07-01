@@ -43,7 +43,7 @@ namespace BTTEM.MediatR.User.Handlers
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
-
+                 
                 while (rdr.Read())
                 {
 
