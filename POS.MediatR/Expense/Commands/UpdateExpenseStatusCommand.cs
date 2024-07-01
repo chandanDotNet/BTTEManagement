@@ -15,6 +15,7 @@ namespace BTTEM.MediatR.CommandAndQuery
         public string Status { get; set; }
         public string RejectReason { get; set; }
         public decimal PayableAmount { get; set; }
+        public string JourneyNumber { get; set; }
 
     }
 }
