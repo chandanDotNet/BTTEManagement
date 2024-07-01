@@ -31,7 +31,6 @@ namespace POS.Data.Dto
         public string AccountStatusRemarks { get; set; }
         public string? ReUploadRemarks { get; set; }
         public string? RejectReason { get; set; }
-        public string JourneyNumber { get; set; }
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
     }
 }

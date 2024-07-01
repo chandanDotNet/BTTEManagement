@@ -52,13 +52,17 @@ namespace BTTEM.MediatR.Expense.Handlers
                 entityExist.ApprovalStage = request.ApprovalStage;
                 entityExist.ApprovalStageBy = LoginUserId;
                 entityExist.ApprovalStageDate = DateTime.Now;
-
             }
 
             if (request.Status == "ROLLBACK" && entityExist.RollbackCount <= 3)
             {
                 entityExist.RollbackCount = entityExist.RollbackCount + 1;
                 entityExist.Status = "YET TO SUBMIT";
+            }
+
+            if (!string.IsNullOrEmpty(request.JourneyNumber))
+            {
+                entityExist.JourneyNumber = entityExist.JourneyNumber;
             }
 
             _masterExpenseRepository.Update(entityExist);

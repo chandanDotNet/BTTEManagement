@@ -96,8 +96,7 @@ namespace POS.Repository
                         AccountStatus = cs.AccountStatus,
                         AccountStatusRemarks = cs.AccountStatusRemarks,
                         GSTNo = cs.GSTNo,
-                        PayableAmount=cs.PayableAmount,
-                        JourneyNumber = cs.JourneyNumber
+                        PayableAmount=cs.PayableAmount
                     })
                     .ToListAsync();
                 return entities;
@@ -128,8 +127,7 @@ namespace POS.Repository
                  AccountStatus = cs.AccountStatus,
                  AccountStatusRemarks = cs.AccountStatusRemarks,
                  GSTNo = cs.GSTNo,
-                 PayableAmount = cs.PayableAmount,
-                 JourneyNumber = cs.JourneyNumber
+                 PayableAmount = cs.PayableAmount
              })
              .ToListAsync();
                 return entities;
