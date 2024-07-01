@@ -101,7 +101,8 @@ namespace BTTEM.Repository.Expense
                         RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                         Expenses =  _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
-                        Trip = cs.Trip
+                        Trip = cs.Trip,
+                        JourneyNumber = cs.JourneyNumber,
                         
                     })//.OrderByDescending(x => x.CreatedDate)
                     .ToListAsync();
@@ -137,7 +138,8 @@ namespace BTTEM.Repository.Expense
                  RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                  Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
-                 Trip = cs.Trip
+                 Trip = cs.Trip,
+                 JourneyNumber = cs.JourneyNumber,
              })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
                 return entities;

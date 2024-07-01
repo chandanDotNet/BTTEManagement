@@ -36,5 +36,6 @@ namespace BTTEM.Data
         public bool IsExpenseCompleted { get; set; }
         public int NoOfPendingAction { get; set; } = 0;
         public Trip Trip { get; set; }
+        public string JourneyNumber { get; set; }
     }
 }
