@@ -26,6 +26,7 @@ using BTTEM.MediatR.Grade.Commands;
 using BTTEM.MediatR.CompanyProfile.Commands;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using BTTEM.MediatR;
 
 namespace POS.API.Controllers
 {
@@ -539,6 +540,21 @@ namespace POS.API.Controllers
                 var result = await _mediator.Send(updateUserCommand);
             }
             return Ok();
+        }
+
+        /// <summary>
+        /// Get User Info Details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetUserInfoDetails/{id}")]      
+        public async Task<IActionResult> GetUserInfoDetails(Guid id)
+        {
+            var ReportQuery = new GetUserInfoDetailsQuery { UserId = id };
+            var result = await _mediator.Send(ReportQuery);          
+
+            return Ok(result);
+
         }
     }
 }

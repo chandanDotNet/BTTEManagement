@@ -37,6 +37,53 @@ namespace BTTEM.Data.Entities
         public MasterExpenseDto MaseterExpense { get; set; }
         public IList<ExpenseCategoryData> ExpenseCategories { get; set; } = new List<ExpenseCategoryData>();
     }
+
+    public class UserInfoData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+
+        public UserInfoDetails userInfoDetails { get; set; }
+
+    }
+
+    public class UserInfoDetails
+    {
+        public Guid UserId { get; set; }
+        public string UserFullName { get; set; }
+        public string ProfilePhoto { get; set; }
+        public string Address { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string DateOfJoining { get; set; }
+        public string EmployeeCode { get; set; }
+        public string SapCode { get; set; }
+        public string PanNo { get; set; }
+        public string AadhaarNo { get; set; }
+        public Guid Department { get; set; }
+        public string DepartmentName { get; set; }
+        public Guid GradeId { get; set; }
+        public string GradeName { get; set; }
+        public string Designation { get; set; }
+        public Guid CompanyAccountId { get; set; }
+        public string CompanyAccountName { get; set; }
+        public Guid CompanyAccountBranchId { get; set; }
+        public string BranchName { get; set; }
+        public Guid ReportingTo { get; set; }
+        public string ReportingToName { get; set; }
+        public bool? IsPermanentAdvance { get; set; }
+        public decimal? PermanentAdvance { get; set; }
+        public decimal? DA { get; set; }
+        public bool? IsMetroCities { get; set; }
+        public decimal? MetroCitiesUptoAmount { get; set; }
+        public bool? OtherCities { get; set; }
+        public decimal? OtherCitiesUptoAmount { get; set; }
+        public bool? IsFoodActuals { get; set; }
+        public decimal? BudgetAmount { get; set; }
+
+    }
     public class TourTravelExpenseReport
     {
         public TourTravelExpenseDetails TourTravelExpenseDetails { get; set; }
