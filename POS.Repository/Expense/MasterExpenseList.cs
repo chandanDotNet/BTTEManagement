@@ -103,6 +103,7 @@ namespace BTTEM.Repository.Expense
                         Expenses =  _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
                         Trip = cs.Trip,
                         JourneyNumber = cs.JourneyNumber,
+                        ReimbursementRemarks = cs.ReimbursementRemarks,
                         
                     })//.OrderByDescending(x => x.CreatedDate)
                     .ToListAsync();
@@ -140,6 +141,7 @@ namespace BTTEM.Repository.Expense
                  Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
                  Trip = cs.Trip,
                  JourneyNumber = cs.JourneyNumber,
+                 ReimbursementRemarks = cs.ReimbursementRemarks,
              })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
                 return entities;

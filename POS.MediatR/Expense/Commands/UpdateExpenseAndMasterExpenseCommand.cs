@@ -16,6 +16,7 @@ namespace BTTEM.MediatR.Expense.Commands
         public string AccountStatus { get; set; }
         public string AccountStatusRemarks { get; set; }
         public string ReimbursementStatus { get; set; }
+        public string ReimbursementRemarks { get; set; }
 
     }
 }

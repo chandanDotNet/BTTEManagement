@@ -37,5 +37,6 @@ namespace BTTEM.Data
         public int NoOfPendingAction { get; set; } = 0;
         public Trip Trip { get; set; }
         public string JourneyNumber { get; set; }
+        public string? ReimbursementRemarks { get; set; }
     }
 }

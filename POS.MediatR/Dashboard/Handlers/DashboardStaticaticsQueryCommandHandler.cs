@@ -128,6 +128,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     .Where(x => x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ApprovalStage == "PENDING" && x.CreatedByUser.ReportingTo == request.UserId).CountAsync();
                 dashboardStatics.TotalApprovedExpense = await _masterExpenseRepository.All.Include(u => u.CreatedByUser)
                     .Where(x => x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ApprovalStage == "APPROVED" && x.CreatedByUser.ReportingTo == request.UserId).CountAsync();
+                dashboardStatics.TotalAdvanceMoney = await _userRepository.All.Where(x => x.Id == request.UserId && x.IsPermanentAdvance == true).SumAsync(x => x.PermanentAdvance.Value);
 
             }
             else if (RoleId == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //Travel Desk

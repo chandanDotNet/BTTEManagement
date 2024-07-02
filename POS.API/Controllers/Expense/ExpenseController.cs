@@ -231,7 +231,22 @@ namespace POS.API.Controllers.Expense
                             var expenseAmount = _expenseRepository.All.Where(a => a.MasterExpenseId == masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId == item.Id).Sum(a => a.Amount);
                             var expenseList = _expenseRepository.All.Where(a => a.MasterExpenseId == masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId == item.Id).ToList();
 
+                            //--Fare
+                            if (item.Id == new Guid("DCAA05B6-5F1E-402F-835E-0704A3A1A455"))
+                            {
 
+                                if (expenseList.Count > 0)
+                                {
+                                    foreach (var expense in expenseList)
+                                    {
+                                        updateExpenseStatusCommand.Id = expense.Id;
+                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                        var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                    }
+                                }
+
+                            }
 
                             //--Lodging (Metro City)
                             if (item.Id == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
