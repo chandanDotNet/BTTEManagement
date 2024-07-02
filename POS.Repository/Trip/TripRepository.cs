@@ -191,6 +191,12 @@ namespace BTTEM.Repository
                     .Where(a => a.TripEnds <= new DateTime(tripResource.ToDate.Value.Year, tripResource.ToDate.Value.Month, tripResource.ToDate.Value.Day, 23, 59, 59));
             }
 
+            if (!string.IsNullOrEmpty(tripResource.BranchName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.BranchName == tripResource.BranchName);
+            }
+
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {
                 var searchQueryForWhereClause = tripResource.SearchQuery

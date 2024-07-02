@@ -158,6 +158,12 @@ namespace BTTEM.Repository
                     .Where(a => a.Expenses.Any(c => c.Status == expenseResource.ExpenseStatus));
             }
 
+            if (!string.IsNullOrEmpty(expenseResource.BranchName))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.BranchName == expenseResource.BranchName);
+            }
+
             collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Expenses.Any(c => c.Amount > 0));
 
