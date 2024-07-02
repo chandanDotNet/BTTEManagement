@@ -41,7 +41,8 @@ namespace POS.MediatR.Handlers
                 return ServiceResponse<bool>.Return404();
             }
 
-            entityExist.IsDeleted = true;
+            //entityExist.IsDeleted = true;
+            entityExist.Amount = 0;
             _expenseRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
             {
