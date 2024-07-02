@@ -5,6 +5,7 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
 using POS.Domain;
 using POS.Helper;
@@ -101,6 +102,10 @@ namespace BTTEM.MediatR.Expense.Handlers
                 else if (masterEntityExist.ReimbursementAmount == 0)
                 {
                     masterEntityExist.ReimbursementStatus = "PENDING";
+                }
+                if(!string.IsNullOrEmpty(request.ReimbursementRemarks))
+                {
+                    masterEntityExist.ReimbursementRemarks = request.ReimbursementRemarks;
                 }
                 
                 _masterExpenseRepository.Update(masterEntityExist);
