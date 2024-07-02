@@ -105,7 +105,7 @@ namespace BTTEM.Repository.Expense
                         JourneyNumber = cs.JourneyNumber,
                         ReimbursementRemarks = cs.ReimbursementRemarks,
                         
-                    })//.OrderByDescending(x => x.CreatedDate)
+                    })//.OrderByDescending(x => x.CreatedDate) 
                     .ToListAsync();
                 return entities;
             }
