@@ -9,10 +9,13 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 using BTTEM.Repository;
+using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace POS.MediatR.Handlers
 {
-    public class DeleteExpenseCommandHanlder 
+    public class DeleteExpenseCommandHanlder
         : IRequestHandler<DeleteExpenseCommand, ServiceResponse<bool>>
     {
         private readonly IExpenseRepository _expenseRepository;
@@ -47,16 +50,18 @@ namespace POS.MediatR.Handlers
             }
 
             var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
-            if(entityMasterExist != null)
+            if (entityMasterExist != null)
             {
                 entityMasterExist.TotalAmount = (entityMasterExist.TotalAmount - entityExist.Amount);
+
+                entityMasterExist.NoOfBill = entityMasterExist.NoOfBill - 1;
+
                 _masterExpenseRepository.Update(entityMasterExist);
                 if (await _uow.SaveAsync() <= 0)
                 {
                     _logger.LogError("Error while saving Master Expense.");
                     return ServiceResponse<bool>.Return500();
                 }
-
             }
 
             return ServiceResponse<bool>.ReturnResultWith204();
