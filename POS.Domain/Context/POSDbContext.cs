@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using BTTEM.Data;
 using BTTEM.Data.Entities.Expense;
-
+using BTTEM.Data.Entities;
 
 namespace POS.Domain
 {
@@ -108,6 +108,8 @@ namespace POS.Domain
         public DbSet<Branch> Branches { get; set; }
         public DbSet<HelpSupport> HelpSupports { get; set; }
         public DbSet<ExpenseDocument> ExpenseDocuments { get; set; }
+        public DbSet<LocalConveyanceExpense> LocalConveyanceExpenses { get; set; }
+        public DbSet<LocalConveyanceExpenseDocument> LocalConveyanceExpenseDocuments { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -639,6 +641,8 @@ namespace POS.Domain
             builder.Entity<Wallet>().ToTable("Wallets");
             builder.Entity<TravelDeskExpense>().ToTable("TravelDeskExpenses");
             builder.Entity<ExpenseDocument>().ToTable("ExpenseDocuments");
+            builder.Entity<LocalConveyanceExpense>().ToTable("LocalConveyanceExpenses");
+            builder.Entity<LocalConveyanceExpenseDocument>().ToTable("LocalConveyanceExpenseDocuments");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }
