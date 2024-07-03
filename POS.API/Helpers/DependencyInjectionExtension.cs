@@ -84,6 +84,7 @@ namespace POS.API.Helpers
             services.AddScoped<IPoliciesLodgingFoodingRepository, PoliciesLodgingFoodingRepository>();
             services.AddScoped<IPurposeRepository, PurposeRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
+            services.AddScoped<IGroupTripRepository, GroupTripRepository>();
             services.AddScoped<ITripItineraryRepository, TripItineraryRepository>();
             services.AddScoped<ITripHotelBookingRepository, TripHotelBookingRepository>();
             services.AddScoped<IMasterExpenseRepository, MasterExpenseRepository>();

@@ -58,12 +58,16 @@ namespace BTTEM.MediatR.Trip.Handlers
                 //}
 
                 entity.Approval = "PENDING";
-                entity.RollbackCount= 0;
+                entity.RollbackCount = 0;
 
+                entity.GroupTrips.ForEach(item =>
+                {
+                    item.TripId = id;
+                    item.Id = Guid.NewGuid();
+                });
             }
 
             _tripRepository.Add(entity);
-
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Trip");

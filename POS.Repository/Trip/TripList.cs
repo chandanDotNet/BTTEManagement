@@ -116,6 +116,9 @@ namespace BTTEM.Repository
                         TravelDeskId=cs.TravelDeskId,
                         TravelDeskName = cs.TravelDeskName,
                         JourneyNumber = cs.JourneyNumber,
+                        IsGroupTrip = cs.IsGroupTrip,
+                        NoOfPerson = cs.NoOfPerson,
+                        GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips)
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
