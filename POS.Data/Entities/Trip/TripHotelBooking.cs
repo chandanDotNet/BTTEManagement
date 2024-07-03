@@ -38,5 +38,6 @@ namespace BTTEM.Data
         public decimal? CancelationCharge { get; set; } = 0;
         public string? CancelationReason { get; set; }
         public DateTime? CancelationDate { get; set; }
+        public string? NoOfRoom { get; set; }
     }
 }

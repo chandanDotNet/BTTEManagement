@@ -63,7 +63,10 @@ namespace BTTEM.Data
         public string TravelDeskName { get; set; }
         public Guid? TravelDeskId { get; set; }
         public string JourneyNumber { get; set; }
+        public bool? IsGroupTrip { get; set; }
+        public string? NoOfPerson { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
+        public List<GroupTripDto> GroupTrips { get; set; }
 
     }
 }

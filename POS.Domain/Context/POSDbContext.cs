@@ -84,6 +84,7 @@ namespace POS.Domain
         public DbSet<PoliciesLodgingFooding> PoliciesLodgingFoodings { get; set; }
         public DbSet<Purpose> Purposes { get; set; }
         public DbSet<Trip> Trips { get; set; }
+        public DbSet<GroupTrip> GroupTrips { get; set; }
         public DbSet<TripItinerary> TripItinerarys { get; set; }
         public DbSet<ItineraryTicketBooking> ItineraryTicketBookings { get; set; }
         public DbSet<TripHotelBooking> TripHotelBookings { get; set; }
@@ -473,7 +474,7 @@ namespace POS.Domain
                     .WithMany()
                     .HasForeignKey(ur => ur.WarehouseId)
                     .OnDelete(DeleteBehavior.Restrict);
-            });
+            });            
 
             builder.Entity<SalesOrderItem>(b =>
             {
@@ -629,6 +630,7 @@ namespace POS.Domain
             builder.Entity<PoliciesLodgingFooding>().ToTable("PoliciesLodgingFoodings");
             builder.Entity<Purpose>().ToTable("Purposes");
             builder.Entity<Trip>().ToTable("Trips");
+            builder.Entity<GroupTrip>().ToTable("GroupTrips");
             builder.Entity<TripItinerary>().ToTable("TripItinerarys");
             builder.Entity<ItineraryTicketBooking>().ToTable("ItineraryTicketBookings");
             builder.Entity<TripHotelBooking>().ToTable("TripHotelBookings");
