@@ -108,6 +108,10 @@ namespace POS.API.Helpers
             services.AddScoped<IHelpSupportRepository, HelpSupportRepository>();
             services.AddScoped<IExpenseDocumentRepository, ExpenseDocumentRepository>();
             services.AddScoped<IItineraryTicketBookingRepository, ItineraryTicketBookingRepository>();
+            services.AddScoped<ILocalConveyanceExpenseRepository, LocalConveyanceExpenseRepository>();
+            services.AddScoped<ILocalConveyanceExpenseDocumentRepository, LocalConveyanceExpenseDocumentRepository>();
+            services.AddScoped<ICarBikeLogBookExpenseRepository, CarBikeLogBookExpenseRepository>();
+            services.AddScoped<ICarBikeLogBookExpenseDocumentRepository, CarBikeLogBookExpenseDocumentRepository>();
         }
     }
 }

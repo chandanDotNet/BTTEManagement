@@ -374,6 +374,18 @@ namespace POS.Repository
                 { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) }
       };
 
+        private Dictionary<string, PropertyMappingValue> _localConveyanceExpensePropertyMapping =
+     new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+     {
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) }
+     };
+
+        private Dictionary<string, PropertyMappingValue> _carBikeLogBookExpensePropertyMapping =
+     new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+     {
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) }
+     };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -408,6 +420,8 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<StateDto, State>(_statePropertyMapping));
             propertyMappings.Add(new PropertyMapping<BranchDto, Branch>(_branchPropertyMapping));
             propertyMappings.Add(new PropertyMapping<HelpSupportDto, HelpSupport>(_helpSupportPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<LocalConveyanceExpenseDto, LocalConveyanceExpense>(_localConveyanceExpensePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<CarBikeLogBookExpenseDto, CarBikeLogBookExpense>(_carBikeLogBookExpensePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

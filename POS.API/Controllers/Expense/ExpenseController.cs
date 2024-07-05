@@ -99,10 +99,238 @@ namespace POS.API.Controllers.Expense
             return ReturnFormattedResponse(result);
         }
 
+
+        /// <summary>
+        /// Add Local Con Expenses
+        /// </summary>
+        /// <param name="addLocalConveyanceExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddLocalConveyanceExpense")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddLocalConveyanceExpense(List<AddLocalConveyanceExpenseCommand> addLocalConveyanceExpenseCommandList)
+        {
+
+            foreach (var item in addLocalConveyanceExpenseCommandList)
+            {
+                AddLocalConveyanceExpenseCommand addLocalConveyanceExpenseCommand = new AddLocalConveyanceExpenseCommand();
+                addLocalConveyanceExpenseCommand = item;
+                var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
+            }
+
+           
+            return Ok(true);
+
+        }
+
+        /// <summary>
+        /// Add Local Conveyance Expense Document
+        /// </summary>
+        /// <param name="addLocalConveyanceExpenseDocumentCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddLocalConveyanceExpenseDocument")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddLocalConveyanceExpenseDocument(AddLocalConveyanceExpenseDocumentCommand addLocalConveyanceExpenseDocumentCommand)
+        {
+
+            var result = await _mediator.Send(addLocalConveyanceExpenseDocumentCommand);
+
+            return ReturnFormattedResponse(result);
+
+        }
+
+
+        // <summary>
+        /// Update Local Conveyance Expenses
+        /// </summary>
+        /// <param name="updateMasterExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateLocalConveyanceExpense")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateLocalConveyanceExpense([FromBody] UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand)
+        {
+
+            var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
+            return ReturnFormattedResponse(result);
+
+        }
+
+        /// <summary>
+        /// Deletes Local Conveyance Expense 
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteLocalConveyanceExpense/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteLocalConveyanceExpense(Guid id)
+        {
+            var command = new DeleteLocalConveyanceExpenseCommand() { Id = id };
+            var result = await _mediator.Send(command);
+
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Deletes Local Conveyance Expense Document 
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteLocalConveyanceExpenseDocument/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteLocalConveyanceExpenseDocument(Guid id)
+        {
+            var command = new DeleteLocalConveyanceExpenseDocumentCommand() { Id = id };
+            var result = await _mediator.Send(command);
+
+            return ReturnFormattedResponse(result);
+        }
+
+
+
+        /// <summary>
+        /// Get All Local Conveyance Expenses 
+        /// </summary>
+        /// <param name="localConveyanceExpenseResource"></param>
+        /// <returns></returns>
+        [HttpGet("GetExpensesLocalConveyance")]        
+        public async Task<IActionResult> GetExpensesLocalConveyance([FromQuery] LocalConveyanceExpenseResource localConveyanceExpenseResource)
+        {
+            var getAllExpenseQuery = new GetAllLocalConveyanceExpenseQuery
+            {
+                ExpenseResource = localConveyanceExpenseResource
+            };
+
+            var result = await _mediator.Send(getAllExpenseQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages,
+                
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Add Car Bike LogBook Expense 
+        /// </summary>
+        /// <param name="addCarBikeLogBookExpenseCommandList"></param>
+        /// <returns></returns>
+        [HttpPost("AddCarBikeLogBookExpense")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddCarBikeLogBookExpense(List<AddCarBikeLogBookExpenseCommand> addCarBikeLogBookExpenseCommandList)
+        {
+
+            foreach (var item in addCarBikeLogBookExpenseCommandList)
+            {
+                AddCarBikeLogBookExpenseCommand addLocalConveyanceExpenseCommand = new AddCarBikeLogBookExpenseCommand();
+                addLocalConveyanceExpenseCommand = item;
+                var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
+            }
+
+
+            return Ok(true);
+
+        }
+
+        /// <summary>
+        /// Add Car Bike LogBook Expense Document
+        /// </summary>
+        /// <param name="addCarBikeLogBookExpenseDocumentCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddCarBikeLogBookExpenseDocument")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddCarBikeLogBookExpenseDocument(AddCarBikeLogBookExpenseDocumentCommand addCarBikeLogBookExpenseDocumentCommand)
+        {
+          
+          var result = await _mediator.Send(addCarBikeLogBookExpenseDocumentCommand);
+
+          return ReturnFormattedResponse(result);           
+
+        }
+
+        // <summary>
+        /// Update CarBike LogBook Expense
+        /// </summary>
+        /// <param name="updateMasterExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateCarBikeLogBookExpense")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateCarBikeLogBookExpense([FromBody] UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand)
+        {
+
+            var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+            return ReturnFormattedResponse(result);
+
+        }
+
+        /// <summary>
+        /// Deletes Car Bike LogBook Expense 
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteCarBikeLogBookExpense/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteCarBikeLogBookExpense(Guid id)
+        {
+            var command = new DeleteCarBikeLogBookExpenseCommand() { Id = id };
+            var result = await _mediator.Send(command);
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Delete Car Bike Log Book Expense Document
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteCarBikeLogBookExpenseDocument/{id}")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteCarBikeLogBookExpenseDocument(Guid id)
+        {
+            var command = new DeleteCarBikeLogBookExpenseDocumentCommand() { Id = id };
+            var result = await _mediator.Send(command);
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get All Car Bike LogBook Expense 
+        /// </summary>
+        /// <param name="carBikeLogBookExpenseResource"></param>
+        /// <returns></returns>
+        [HttpGet("GetCarBikeLogBookExpense")]
+        public async Task<IActionResult> GetCarBikeLogBookExpense([FromQuery] CarBikeLogBookExpenseResource carBikeLogBookExpenseResource)
+        {
+            var getAllExpenseQuery = new GetAllCarBikeLogBookExpenseQuery
+            {
+                ExpenseResource = carBikeLogBookExpenseResource
+            };
+
+            var result = await _mediator.Send(getAllExpenseQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages,
+
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
         /// <summary>
         /// Add Master Expenses
         /// </summary>
-        /// <param name="addExpenseCommand"></param>
+        /// <param name="addMasterExpenseCommand"></param>
         /// <returns></returns>
         [HttpPost("AddExpenseWithDetails")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
@@ -144,6 +372,7 @@ namespace POS.API.Controllers.Expense
                 };
 
                 var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand);
+
 
                 foreach (var item in addMasterExpenseCommand.ExpenseDetails)
                 {

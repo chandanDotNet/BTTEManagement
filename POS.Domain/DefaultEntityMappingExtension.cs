@@ -2,6 +2,7 @@
 using POS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using BTTEM.Data;
+using BTTEM.Data.Dto;
 
 namespace POS.Domain
 {
@@ -143,6 +144,14 @@ namespace POS.Domain
 .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<ItineraryTicketBooking>()
+.Property(b => b.ModifiedDate)
+.HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<LocalConveyanceExpense>()
+.Property(b => b.ModifiedDate)
+.HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<CarBikeLogBookExpense>()
 .Property(b => b.ModifiedDate)
 .HasDefaultValueSql("GETUTCDATE()");
 
@@ -298,6 +307,12 @@ namespace POS.Domain
 
             modelBuilder.Entity<HelpSupport>()
    .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<LocalConveyanceExpense>()
+  .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<CarBikeLogBookExpense>()
+ .HasQueryFilter(p => !p.IsDeleted);
 
         }
     }

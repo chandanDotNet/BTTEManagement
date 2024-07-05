@@ -71,6 +71,7 @@ namespace POS.Repository
                     .Where(c => EF.Functions.Like(c.UserName, $"%{userResource.Name}%")
                     || EF.Functions.Like(c.FirstName, $"%{userResource.Name}%")
                     || EF.Functions.Like(c.LastName, $"%{userResource.Name}%")
+                    || EF.Functions.Like(c.FirstName+" "+c.LastName, $"%{userResource.Name}%")
                     || EF.Functions.Like(c.PhoneNumber, $"%{userResource.Name}%"));
             }
 
@@ -126,6 +127,7 @@ namespace POS.Repository
                     .Where(a =>
                     EF.Functions.Like(a.FirstName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.LastName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.FirstName+" "+a.LastName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Grades.GradeName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Departments.DepartmentName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.ReportingToName, $"%{searchQueryForWhereClause}%")
