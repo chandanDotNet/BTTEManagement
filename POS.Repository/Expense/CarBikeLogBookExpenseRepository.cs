@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using POS.Common.GenericRepository;
 using POS.Common.UnitOfWork;
 using POS.Data.Dto;
-using POS.Data.Resources;
 using POS.Domain;
 using POS.Repository;
 using System;
@@ -18,15 +17,15 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Repository
 {
-    public class LocalConveyanceExpenseRepository : GenericRepository<LocalConveyanceExpense, POSDbContext>,
-            ILocalConveyanceExpenseRepository
+    public class CarBikeLogBookExpenseRepository : GenericRepository<CarBikeLogBookExpense, POSDbContext>,
+            ICarBikeLogBookExpenseRepository
     {
 
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IMapper _mapper;
         private readonly UserInfoToken _userInfoToken;
         private readonly IUserRoleRepository _userRoleRepository;
-        public LocalConveyanceExpenseRepository(
+        public CarBikeLogBookExpenseRepository(
             IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
             IMapper mapper,
@@ -40,14 +39,13 @@ namespace BTTEM.Repository
             _userRoleRepository = userRoleRepository;
         }
 
-        public async Task<LocalConveyanceExpenseList> GetAllLocalConveyanceExpense(LocalConveyanceExpenseResource expenseResource)
+        public async Task<CarBikeLogBookExpenseList> GetAllCarBikeLogBookExpense(CarBikeLogBookExpenseResource expenseResource)
         {
 
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
 
-            
-            if(expenseResource.IsReport==true)
+            if (expenseResource.IsReport == true)
             {
                 expenseResource.CreatedBy = expenseResource.UserId;
             }
@@ -78,13 +76,11 @@ namespace BTTEM.Repository
                 }
             }
 
-                
 
-            
 
             var collectionBeforePaging = All.Include(t => t.CreatedByUser).Include(a=>a.Documents).ApplySort(expenseResource.OrderBy,
-              _propertyMappingService.GetPropertyMapping<LocalConveyanceExpenseDto, LocalConveyanceExpense>());
-
+              _propertyMappingService.GetPropertyMapping<CarBikeLogBookExpenseDto, CarBikeLogBookExpense>());
+            
             if (expenseResource.Id.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
@@ -110,6 +106,7 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.ExpenseDate <= new DateTime(expenseResource.ToDate.Value.Year, expenseResource.ToDate.Value.Month, expenseResource.ToDate.Value.Day, 23, 59, 59));
             }
+
             if (!string.IsNullOrEmpty(expenseResource.SearchQuery))
             {
                 var searchQueryForWhereClause = expenseResource.SearchQuery
@@ -119,15 +116,16 @@ namespace BTTEM.Repository
                     EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.From, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.To, $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.ExpenseDate.ToString(), $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.StartingKMS.ToString(), $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.EndingKMS.ToString(), $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.ApproxKM.ToString(), $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.Amount.ToString(), $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.Particular, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.StartingKMS.ToString(), $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.PlaceOfVisitDepartment, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.FuelBillNo, $"%{searchQueryForWhereClause}%")                           
                     );
             }
 
-            return await new LocalConveyanceExpenseList(_mapper).Create(collectionBeforePaging,
+            return await new CarBikeLogBookExpenseList(_mapper).Create(collectionBeforePaging,
               expenseResource.Skip,
               expenseResource.PageSize);
 
@@ -149,6 +147,5 @@ namespace BTTEM.Repository
             // var roleClaims = await _roleClaimRepository.All.Where(c => rolesIds.Contains(c.RoleId)).Select(c => c.ClaimType).ToListAsync();
             return roleDto;
         }
-
     }
 }

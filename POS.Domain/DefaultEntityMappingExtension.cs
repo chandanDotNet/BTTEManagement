@@ -151,6 +151,10 @@ namespace POS.Domain
 .Property(b => b.ModifiedDate)
 .HasDefaultValueSql("GETUTCDATE()");
 
+            modelBuilder.Entity<CarBikeLogBookExpense>()
+.Property(b => b.ModifiedDate)
+.HasDefaultValueSql("GETUTCDATE()");
+
 
         }
 
@@ -306,6 +310,9 @@ namespace POS.Domain
 
             modelBuilder.Entity<LocalConveyanceExpense>()
   .HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<CarBikeLogBookExpense>()
+ .HasQueryFilter(p => !p.IsDeleted);
 
         }
     }

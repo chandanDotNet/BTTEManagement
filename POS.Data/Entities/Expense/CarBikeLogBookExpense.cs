@@ -1,4 +1,6 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using BTTEM.Data.Entities;
+using POS.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,9 @@ namespace BTTEM.Data
         public decimal RefillingLiters { get; set; } = 0;
         public decimal RefillingAmount { get; set; } = 0;
         public string FuelBillNo { get; set; }
+        public string Status { get; set; }
+        public string Remarks { get; set; }
+        public List<CarBikeLogBookExpenseDocument> Documents { get; set; }
 
     }
 }

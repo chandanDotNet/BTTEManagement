@@ -111,6 +111,8 @@ namespace POS.Domain
         public DbSet<ExpenseDocument> ExpenseDocuments { get; set; }
         public DbSet<LocalConveyanceExpense> LocalConveyanceExpenses { get; set; }
         public DbSet<LocalConveyanceExpenseDocument> LocalConveyanceExpenseDocuments { get; set; }
+        public DbSet<CarBikeLogBookExpense> CarBikeLogBookExpenses { get; set; }
+        public DbSet<CarBikeLogBookExpenseDocument> CarBikeLogBookExpenseDocuments { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -645,6 +647,8 @@ namespace POS.Domain
             builder.Entity<ExpenseDocument>().ToTable("ExpenseDocuments");
             builder.Entity<LocalConveyanceExpense>().ToTable("LocalConveyanceExpenses");
             builder.Entity<LocalConveyanceExpenseDocument>().ToTable("LocalConveyanceExpenseDocuments");
+            builder.Entity<CarBikeLogBookExpense>().ToTable("CarBikeLogBookExpenses");
+            builder.Entity<CarBikeLogBookExpenseDocument>().ToTable("CarBikeLogBookExpenseDocuments");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }

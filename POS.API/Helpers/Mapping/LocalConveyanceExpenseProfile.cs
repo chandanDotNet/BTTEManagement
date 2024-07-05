@@ -18,6 +18,7 @@ namespace BTTEM.API.Helpers.Mapping
             CreateMap<LocalConveyanceExpense, LocalConveyanceExpenseDto>().ReverseMap();
             CreateMap<LocalConveyanceExpenseDocument, LocalConveyanceExpenseDocumentDto>().ReverseMap();
             CreateMap<AddLocalConveyanceExpenseCommand, LocalConveyanceExpense>();
+            CreateMap<AddLocalConveyanceExpenseDocumentCommand, LocalConveyanceExpenseDocument>();
         }
 
     }

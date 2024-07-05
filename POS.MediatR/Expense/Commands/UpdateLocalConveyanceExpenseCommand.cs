@@ -1,14 +1,17 @@
-﻿using POS.Data.Dto;
+﻿using BTTEM.Data.Dto;
+using MediatR;
+using POS.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTTEM.Data.Dto
+namespace BTTEM.MediatR.Commands
 {
-    public class LocalConveyanceExpenseDto
+    public class UpdateLocalConveyanceExpenseCommand : IRequest<ServiceResponse<bool>>
     {
+
         public Guid Id { get; set; }
         public DateTime ExpenseDate { get; set; }
         public string Particular { get; set; }
@@ -21,8 +24,6 @@ namespace BTTEM.Data.Dto
         public decimal GrandTotal { get; set; } = 0;
         public string Status { get; set; }
         public string Remarks { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public UserDto CreatedByUser { get; set; }
         public List<LocalConveyanceExpenseDocumentDto> Documents { get; set; }
     }
 }

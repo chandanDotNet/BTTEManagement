@@ -1,16 +1,19 @@
-﻿using POS.Data.Dto;
+﻿using BTTEM.Data.Dto;
+using BTTEM.Data.Entities;
+using MediatR;
+using POS.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTTEM.Data.Dto
+namespace BTTEM.MediatR.CommandAndQuery
 {
-    public class CarBikeLogBookExpenseDto
+    public class AddCarBikeLogBookExpenseCommand : IRequest<ServiceResponse<CarBikeLogBookExpenseDto>>
     {
 
-        public Guid Id { get; set; }
+       
         public DateTime ExpenseDate { get; set; }
         public string From { get; set; }
         public string To { get; set; }
@@ -23,8 +26,6 @@ namespace BTTEM.Data.Dto
         public string FuelBillNo { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public UserDto CreatedByUser { get; set; }
         public List<CarBikeLogBookExpenseDocumentDto> Documents { get; set; }
     }
 }
