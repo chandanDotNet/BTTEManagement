@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journey Request</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+            }
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+            height: auto;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+            .content h2 {
+                font-size: 20px;
+                color: #4a90e2;
+                margin-top: 0;
+            }
+
+        .details {
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+            .details p {
+                margin: 10px 0;
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+        .cta {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+            .cta a {
+                background-color: #4a90e2;
+                color: white;
+                padding: 12px 25px;
+                text-decoration: none;
+                font-size: 16px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+
+                .cta a:hover {
+                    background-color: #3a7bd5;
+                }
+
+        .footer {
+            background-color: #f4f4f9;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px;
+                box-shadow: none;
+            }
+
+            .header, .content, .footer {
+                padding: 10px;
+            }
+
+            .details p {
+                font-size: 14px;
+            }
+
+            .cta a {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://via.placeholder.com/100" alt="Company Logo" class="logo">
+            <h1>Journey Request</h1>
+        </div>
+        <div class="content">
+            <h2>Request Details</h2>
+            <div class="details">
+                <p><strong>Requester Name:</strong> Jane Doe</p>
+                <p><strong>Journey Date:</strong> July 20, 2024</p>
+                <p><strong>Departure Time:</strong> 08:00 AM</p>
+                <p><strong>Destination:</strong> Los Angeles, CA</p>
+                <p><strong>Purpose of Journey:</strong> Client Meeting</p>
+            </div>
+            <div class="cta">
+                <a href="https://www.example.com/approve">Approve Request</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, please contact <a href="mailto:support@example.com">support@example.com</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
