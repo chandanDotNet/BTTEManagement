@@ -12,7 +12,7 @@ namespace BTTEM.Data.Resources
         public GradeResource() : base("GradeName")
         {
         }
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string GradeName { get; set; }
         public string Description { get; set; }
     }

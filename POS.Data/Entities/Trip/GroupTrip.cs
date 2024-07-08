@@ -13,7 +13,8 @@ namespace BTTEM.Data
         public Guid Id { get; set; }
         public Guid TripId { get; set; }
         [ForeignKey("TripId")]
-        public Guid UserId { get; set; }        
+        public Guid UserId { get; set; }
+        public User User { get; set; }
 
     }
 }
