@@ -53,7 +53,13 @@ namespace BTTEM.Repository
                 encodingName = encodingName.Replace(@"\", @"\\").Replace("%", @"\%").Replace("_", @"\_").Replace("[", @"\[").Replace(" ", "%");
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => EF.Functions.Like(a.GradeName, $"{encodingName}%"));
-            }            
+            }
+
+            if (gradeResource.Id.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.Id == gradeResource.Id);
+            }
 
             var CityList = new GradeList(_userRepository);
             return await CityList.Create(collectionBeforePaging, gradeResource.Skip, gradeResource.PageSize);
