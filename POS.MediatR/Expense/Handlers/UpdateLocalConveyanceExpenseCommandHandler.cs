@@ -64,7 +64,7 @@ namespace BTTEM.MediatR.Handlers
             if (entityExist == null)
             {
                 _logger.LogError("Expense does not exists.");
-                return ServiceResponse<bool>.Return409("Expense does not exists."); 
+                return ServiceResponse<bool>.Return409("Expense does not exists.");  
             }
 
             entityExist.ExpenseDate = request.ExpenseDate;
