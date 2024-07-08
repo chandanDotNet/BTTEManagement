@@ -371,7 +371,7 @@ namespace POS.API.Controllers.Expense
                     ActionDate = DateTime.Now,
                 };
 
-                var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand);
+                var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand); 
 
 
                 foreach (var item in addMasterExpenseCommand.ExpenseDetails)
