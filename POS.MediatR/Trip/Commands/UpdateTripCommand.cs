@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BTTEM.Data.Dto;
+using MediatR;
 using POS.Helper;
 using System;
 using System.Collections.Generic;
@@ -37,5 +38,6 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? DestinationCityName { get; set; }
         public string? DepartmentName { get; set; }
         public Guid? CompanyAccountId { get; set; }
+        public List<GroupTripDto> GroupTrips { get; set; }
     }
 }

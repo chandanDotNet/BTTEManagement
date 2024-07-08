@@ -924,5 +924,18 @@ namespace BTTEM.API.Controllers.Trip
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(result);
         }
+
+        /// <summary>
+        /// Delete Group Trip.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteGroupTrip/{Id}")]       
+        public async Task<IActionResult> DeleteGroupTrip(Guid Id)
+        {
+            var deleteGroupTripCommand = new DeleteGroupTripCommand { Id = Id };
+            var result = await _mediator.Send(deleteGroupTripCommand);
+            return ReturnFormattedResponse(result);
+        }
     }
 }
