@@ -83,13 +83,16 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.IsGroupTrip = request.IsGroupTrip;
             entityExist.NoOfPerson = request.NoOfPerson;
 
-            _tripRepository.Update(entityExist);            
+            _tripRepository.Update(entityExist);
+
+            var groupTripExist = await _groupTripRepository.All.Where(v => v.TripId == request.Id).ToListAsync();
+            if (groupTripExist.Count > 0)
+            {
+                _groupTripRepository.RemoveRange(groupTripExist);
+            }
 
             if (request.GroupTrips.Count > 0)
             {
-                var groupTripExist = await _groupTripRepository.All.Where(v => v.TripId == request.Id).ToListAsync();
-                _groupTripRepository.RemoveRange(groupTripExist);
-
                 request.GroupTrips.ForEach(item =>
                 {
                     item.TripId = request.Id;
