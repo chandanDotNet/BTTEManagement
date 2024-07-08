@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POS.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace BTTEM.Data.Dto
         public Guid Id { get; set; }
         public Guid TripId { get; set; }
         public Guid UserId { get; set; }
-        
+        public User User { get; set; }
     }
 }
