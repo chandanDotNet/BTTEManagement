@@ -116,7 +116,7 @@ namespace BTTEM.Repository
               .Trim().ToLowerInvariant();
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a =>
-                    EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")
+                    EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%") 
                     || EF.Functions.Like(a.From, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.To, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.ExpenseDate.ToString(), $"%{searchQueryForWhereClause}%")
