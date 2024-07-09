@@ -12,6 +12,7 @@ namespace BTTEM.Data
     public class CarBikeLogBookExpense :BaseEntity
     {
         public Guid Id { get; set; }
+        public Guid MasterExpenseId { get; set; }
         public DateTime ExpenseDate { get; set; }
         public string From { get; set; }
         public string To { get; set; }

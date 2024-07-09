@@ -401,6 +401,18 @@ namespace POS.API.Controllers.Expense
                 //============================
                 if (addMasterExpenseCommand.ExpenseType == "Approved Trip")
                 {
+                    //================
+                    int noOfDays = 1;
+                    if (addMasterExpenseCommand.ExpenseType == "Local Trip")
+                    {
+                        noOfDays = 1;
+                    }
+                    else
+                    {
+                        var tripDetails = _tripRepository.FindAsync(addMasterExpenseCommand.TripId.Value);
+                        noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays;
+                    }
+                    //===================
 
                     var expenseCategory = _expenseCategoryRepository.All.ToList();
                     if (expenseCategory.Count > 0)
@@ -482,7 +494,7 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.IsMetroCities == true)
                                 {
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(noOfDays);
                                     if (expenseAmount > PoliciesLodgingFooding)
                                     {
                                         IsDeviation = true;
@@ -508,7 +520,7 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.OtherCities == true)
                                 {
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(noOfDays);
                                     if (expenseAmount > PoliciesLodgingFooding)
                                     {
                                         IsDeviation = true;
@@ -546,7 +558,7 @@ namespace POS.API.Controllers.Expense
                                             decimal ConveyancesAmount = 0;
                                             if (ConveyancesItem.FirstOrDefault().Amount != null)
                                             {
-                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount);
+                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount) * Convert.ToDecimal(noOfDays);
                                             }
                                             if (expenseAmount > ConveyancesAmount)
                                             {
@@ -599,7 +611,7 @@ namespace POS.API.Controllers.Expense
                                             decimal ConveyancesAmount = 0;
                                             if (ConveyancesItem.FirstOrDefault().Amount != null)
                                             {
-                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount);
+                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount) * Convert.ToDecimal(noOfDays);
                                             }
                                             if (expenseAmount > ConveyancesAmount)
                                             {
@@ -641,7 +653,7 @@ namespace POS.API.Controllers.Expense
                                 decimal DA = 0;
                                 if (resultPoliciesDetail.FirstOrDefault().DailyAllowance != null)
                                 {
-                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance;
+                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
                                 }
 
                                 if (expenseAmount > DA)
@@ -670,7 +682,7 @@ namespace POS.API.Controllers.Expense
                                     decimal PoliciesFooding = 0;
                                     if (resultPoliciesLodgingFooding.BudgetAmount != null)
                                     {
-                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount;
+                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(noOfDays);
                                     }
                                     if (expenseAmount > PoliciesFooding)
                                     {

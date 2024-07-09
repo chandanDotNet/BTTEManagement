@@ -13,7 +13,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class AddCarBikeLogBookExpenseCommand : IRequest<ServiceResponse<CarBikeLogBookExpenseDto>>
     {
 
-       
+        public Guid MasterExpenseId { get; set; }
         public DateTime ExpenseDate { get; set; }
         public string From { get; set; }
         public string To { get; set; }

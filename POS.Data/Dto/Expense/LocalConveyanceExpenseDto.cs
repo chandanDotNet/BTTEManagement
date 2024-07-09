@@ -10,6 +10,7 @@ namespace BTTEM.Data.Dto
     public class LocalConveyanceExpenseDto
     {
         public Guid Id { get; set; }
+        public Guid MasterExpenseId { get; set; }
         public DateTime ExpenseDate { get; set; }
         public string Particular { get; set; }
         public string Place { get; set; }

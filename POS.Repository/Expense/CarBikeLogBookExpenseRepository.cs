@@ -86,6 +86,11 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Id == expenseResource.Id);
             }
+            if (expenseResource.MasterExpenseId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.MasterExpenseId == expenseResource.MasterExpenseId);
+            }
             if (expenseResource.CreatedBy.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
