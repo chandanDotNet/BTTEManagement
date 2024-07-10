@@ -13,7 +13,8 @@ namespace BTTEM.Data.Resources
         public LocalConveyanceExpenseResource() : base("CreatedDate")
         {
         }
-        public Guid? Id { get; set; }      
+        public Guid? Id { get; set; }
+        public Guid? MasterExpenseId { get; set; }
         public Guid? CreatedBy { get; set; }       
         public Guid? ReportingHeadId { get; set; }
         public bool? IsReport { get; set; }

@@ -117,7 +117,7 @@ namespace POS.API.Controllers.Expense
                 var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
             }
 
-           
+
             return Ok(true);
 
         }
@@ -192,7 +192,7 @@ namespace POS.API.Controllers.Expense
         /// </summary>
         /// <param name="localConveyanceExpenseResource"></param>
         /// <returns></returns>
-        [HttpGet("GetExpensesLocalConveyance")]        
+        [HttpGet("GetExpensesLocalConveyance")]
         public async Task<IActionResult> GetExpensesLocalConveyance([FromQuery] LocalConveyanceExpenseResource localConveyanceExpenseResource)
         {
             var getAllExpenseQuery = new GetAllLocalConveyanceExpenseQuery
@@ -208,7 +208,7 @@ namespace POS.API.Controllers.Expense
                 pageSize = result.PageSize,
                 skip = result.Skip,
                 totalPages = result.TotalPages,
-                
+
             };
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
@@ -247,10 +247,10 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddCarBikeLogBookExpenseDocument(AddCarBikeLogBookExpenseDocumentCommand addCarBikeLogBookExpenseDocumentCommand)
         {
-          
-          var result = await _mediator.Send(addCarBikeLogBookExpenseDocumentCommand);
 
-          return ReturnFormattedResponse(result);           
+            var result = await _mediator.Send(addCarBikeLogBookExpenseDocumentCommand);
+
+            return ReturnFormattedResponse(result);
 
         }
 
@@ -371,7 +371,7 @@ namespace POS.API.Controllers.Expense
                     ActionDate = DateTime.Now,
                 };
 
-                var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand); 
+                var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand);
 
 
                 foreach (var item in addMasterExpenseCommand.ExpenseDetails)
@@ -398,9 +398,32 @@ namespace POS.API.Controllers.Expense
                     var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
 
-                //============================
-                if (addMasterExpenseCommand.ExpenseType == "Approved Trip")
+                //============================Approved Trip
+                int noOfDays = 1;
+                if (addMasterExpenseCommand.ExpenseType == "Local Trip")
                 {
+                    if (addMasterExpenseCommand.ExpenseDetails.Count > 0)
+                    {
+                        var ExpenseDetailsList= addMasterExpenseCommand.ExpenseDetails.OrderBy(comparer => comparer.ExpenseDate).ToList();
+                        var FirstDate = ExpenseDetailsList.First().ExpenseDate;
+                        var LastDate = ExpenseDetailsList.Last().ExpenseDate;
+                        noOfDays = (int)(LastDate - FirstDate).TotalDays+1;
+                    }
+                    else
+                    {
+                        noOfDays = 1;
+                    }
+
+                }
+                else
+                {
+                    var tripDetails = _tripRepository.FindAsync(addMasterExpenseCommand.TripId.Value);
+                    noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays + 1;
+                }
+                if(noOfDays>0)
+                {
+                                    
+                    
 
                     var expenseCategory = _expenseCategoryRepository.All.ToList();
                     if (expenseCategory.Count > 0)
@@ -423,6 +446,10 @@ namespace POS.API.Controllers.Expense
                             PoliciesDetailResource = policiesDetailResourceQuery
                         };
                         var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+                        if(resultPoliciesDetail==null)
+                        {
+                            return NotFound("Policies not mapped with user");
+                        }
 
                         //Policies Lodging Fooding
                         var getAllPoliciesLodgingFoodingCommand = new GetAllPoliciesLodgingFoodingCommand
@@ -482,7 +509,7 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.IsMetroCities == true)
                                 {
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(noOfDays);
                                     if (expenseAmount > PoliciesLodgingFooding)
                                     {
                                         IsDeviation = true;
@@ -508,7 +535,7 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.OtherCities == true)
                                 {
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(noOfDays);
                                     if (expenseAmount > PoliciesLodgingFooding)
                                     {
                                         IsDeviation = true;
@@ -546,7 +573,7 @@ namespace POS.API.Controllers.Expense
                                             decimal ConveyancesAmount = 0;
                                             if (ConveyancesItem.FirstOrDefault().Amount != null)
                                             {
-                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount);
+                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount) * Convert.ToDecimal(noOfDays);
                                             }
                                             if (expenseAmount > ConveyancesAmount)
                                             {
@@ -599,7 +626,7 @@ namespace POS.API.Controllers.Expense
                                             decimal ConveyancesAmount = 0;
                                             if (ConveyancesItem.FirstOrDefault().Amount != null)
                                             {
-                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount);
+                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount) * Convert.ToDecimal(noOfDays);
                                             }
                                             if (expenseAmount > ConveyancesAmount)
                                             {
@@ -641,7 +668,7 @@ namespace POS.API.Controllers.Expense
                                 decimal DA = 0;
                                 if (resultPoliciesDetail.FirstOrDefault().DailyAllowance != null)
                                 {
-                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance;
+                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
                                 }
 
                                 if (expenseAmount > DA)
@@ -670,7 +697,7 @@ namespace POS.API.Controllers.Expense
                                     decimal PoliciesFooding = 0;
                                     if (resultPoliciesLodgingFooding.BudgetAmount != null)
                                     {
-                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount;
+                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(noOfDays);
                                     }
                                     if (expenseAmount > PoliciesFooding)
                                     {
@@ -1572,6 +1599,10 @@ namespace POS.API.Controllers.Expense
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+            if(resultPoliciesDetail.Count==0)
+            {
+                return NotFound("Policies not mapped with user.");
+            }
 
             //Policies Lodging Fooding
             var getAllPoliciesLodgingFoodingCommand = new GetAllPoliciesLodgingFoodingCommand
@@ -1621,13 +1652,19 @@ namespace POS.API.Controllers.Expense
 
             int noOfDays = 1;
             if (masterExpensesDetails.ExpenseType == "Local Trip")
-            {
-                noOfDays = 1;
+            {               
+                var ExpenseDetailsList = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterExpenseResourceGroupWise.MasterExpenseId).OrderBy(comparer => comparer.ExpenseDate).ToList();
+                if (ExpenseDetailsList.Count > 0)
+                {
+                    var FirstDate = ExpenseDetailsList.First().ExpenseDate;
+                    var LastDate = ExpenseDetailsList.Last().ExpenseDate;
+                    noOfDays = (int)(LastDate - FirstDate).TotalDays + 1;
+                }
             }
             else
             {
                 var tripDetails = _tripRepository.FindAsync(responseData.MaseterExpense.TripId.Value);
-                noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays;
+                noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays + 1;
             }
 
 
