@@ -246,16 +246,23 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddCarBikeLogBookExpense(List<AddCarBikeLogBookExpenseCommand> addCarBikeLogBookExpenseCommandList)
         {
-
+            ResponseData responseData = new ResponseData();
             foreach (var item in addCarBikeLogBookExpenseCommandList)
             {
                 AddCarBikeLogBookExpenseCommand addLocalConveyanceExpenseCommand = new AddCarBikeLogBookExpenseCommand();
                 addLocalConveyanceExpenseCommand = item;
                 var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
             }
+            responseData.message = "Data Added Successfully";
 
+            return Ok(responseData);
 
-            return Ok(true);
+           
 
         }
 
@@ -282,11 +289,25 @@ namespace POS.API.Controllers.Expense
         /// <returns></returns>
         [HttpPut("UpdateCarBikeLogBookExpense")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
-        public async Task<IActionResult> UpdateCarBikeLogBookExpense([FromBody] UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand)
+        public async Task<IActionResult> UpdateCarBikeLogBookExpense(List<UpdateCarBikeLogBookExpenseCommand> updateCarBikeLogBookExpenseCommandList)
         {
+            ResponseData responseData = new ResponseData();
+            foreach (var item in updateCarBikeLogBookExpenseCommandList)
+            {
+                UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand = new UpdateCarBikeLogBookExpenseCommand();
+                updateCarBikeLogBookExpenseCommand = item;
+                var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
 
-            var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
-            return ReturnFormattedResponse(result);
+            }
+            //var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
 
         }
 
