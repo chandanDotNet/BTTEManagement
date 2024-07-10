@@ -220,4 +220,11 @@ namespace BTTEM.Data.Entities
         public string message { get; set; }
     }
 
+    public class ResponseData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }       
+    }
+
 }
