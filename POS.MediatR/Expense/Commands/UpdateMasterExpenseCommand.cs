@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BTTEM.Data.Dto;
+using MediatR;
 using POS.Helper;
 using POS.MediatR.CommandAndQuery;
 using System;
@@ -21,6 +22,9 @@ namespace BTTEM.MediatR.Commands
         public decimal AdvanceMoney { get; set; }
         public string ApprovalStage { get; set; }
         public int NoOfBill { get; set; }
+        public bool IsGroupExpense { get; set; }
+        public string NoOfPerson { get; set; }
+        public List<GroupExpenseDto> GroupExpenses { get; set; }
         public List<UpdateExpenseCommand> ExpenseDetails { get; set; }
 
     }

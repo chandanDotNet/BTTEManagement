@@ -89,6 +89,7 @@ namespace POS.Domain
         public DbSet<ItineraryTicketBooking> ItineraryTicketBookings { get; set; }
         public DbSet<TripHotelBooking> TripHotelBookings { get; set; }
         public DbSet<MasterExpense> MasterExpenses { get; set; }
+        public DbSet<GroupExpense> GroupExpenses { get; set; }
 
         public DbSet<MultiLevelApproval> MultiLevelApprovals { get; set; }
         public DbSet<VehicleManagement> VehicleManagements { get; set; }
@@ -639,6 +640,7 @@ namespace POS.Domain
             builder.Entity<ItineraryTicketBooking>().ToTable("ItineraryTicketBookings");
             builder.Entity<TripHotelBooking>().ToTable("TripHotelBookings");
             builder.Entity<MasterExpense>().ToTable("MasterExpenses");
+            builder.Entity<GroupExpense>().ToTable("GroupExpenses");
             builder.Entity<TravelDocument>().ToTable("TravelDocuments");
             builder.Entity<PoliciesVehicleConveyance>().ToTable("PoliciesVehicleConveyances");
             builder.Entity<PoliciesSetting>().ToTable("PoliciesSettings");

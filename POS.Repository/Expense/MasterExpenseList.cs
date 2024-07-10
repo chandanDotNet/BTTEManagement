@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BTTEM.Data;
+using BTTEM.Data.Dto;
 using Microsoft.EntityFrameworkCore;
 using POS.Data.Dto;
 using POS.Repository;
@@ -104,6 +105,8 @@ namespace BTTEM.Repository.Expense
                         Trip = cs.Trip,
                         JourneyNumber = cs.JourneyNumber,
                         ReimbursementRemarks = cs.ReimbursementRemarks,
+                        IsGroupExpense= cs.IsGroupExpense,
+                        NoOfPerson = cs.NoOfPerson,
                         
                     })//.OrderByDescending(x => x.CreatedDate) 
                     .ToListAsync();
@@ -142,6 +145,9 @@ namespace BTTEM.Repository.Expense
                  Trip = cs.Trip,
                  JourneyNumber = cs.JourneyNumber,
                  ReimbursementRemarks = cs.ReimbursementRemarks,
+                 IsGroupExpense = cs.IsGroupExpense,
+                 NoOfPerson = cs.NoOfPerson,
+                 GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
              })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
                 return entities;
