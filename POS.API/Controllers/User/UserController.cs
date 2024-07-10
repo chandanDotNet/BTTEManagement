@@ -561,6 +561,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="Email"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpDelete("DeleteUserByEmail/{Email}")]
         public async Task<IActionResult> DeleteUserByEmail(string Email)
         {

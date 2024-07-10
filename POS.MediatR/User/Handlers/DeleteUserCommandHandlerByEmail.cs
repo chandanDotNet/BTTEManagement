@@ -2,6 +2,7 @@
 using BTTEM.MediatR.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Data;
 using POS.Data.Dto;
@@ -32,7 +33,7 @@ namespace BTTEM.MediatR.Handlers
         }
         public async Task<ServiceResponse<UserDto>> Handle(DeleteUserCommandByEmail request, CancellationToken cancellationToken)
         {
-            var appUser = await _userManager.FindByEmailAsync(request.Email.ToString());
+            var appUser = await _userManager.Users.Where(x => x.UserName == request.Email.ToString()).FirstOrDefaultAsync();
             if (appUser == null)
             {
                 _logger.LogError("User does not exist.");
