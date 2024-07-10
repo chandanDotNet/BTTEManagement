@@ -446,10 +446,11 @@ namespace POS.API.Controllers.Expense
                 {
                     if (addMasterExpenseCommand.ExpenseDetails.Count > 0)
                     {
-                        var ExpenseDetailsList= addMasterExpenseCommand.ExpenseDetails.OrderBy(comparer => comparer.ExpenseDate).ToList();
-                        var FirstDate = ExpenseDetailsList.First().ExpenseDate;
-                        var LastDate = ExpenseDetailsList.Last().ExpenseDate;
-                        noOfDays = (int)(LastDate - FirstDate).TotalDays+1;
+                        var ExpenseDetailsList= addMasterExpenseCommand.ExpenseDetails.GroupBy(a => a.ExpenseDate).ToList();
+                        //var FirstDate = ExpenseDetailsList.First().ExpenseDate;
+                        //var LastDate = ExpenseDetailsList.Last().ExpenseDate;
+                        //noOfDays = (int)(LastDate - FirstDate).TotalDays+1;
+                        noOfDays= ExpenseDetailsList.Count();
                     }
                     else
                     {
@@ -1695,12 +1696,13 @@ namespace POS.API.Controllers.Expense
             int noOfDays = 1;
             if (masterExpensesDetails.ExpenseType == "Local Trip")
             {               
-                var ExpenseDetailsList = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterExpenseResourceGroupWise.MasterExpenseId).OrderBy(comparer => comparer.ExpenseDate).ToList();
+                var ExpenseDetailsList = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterExpenseResourceGroupWise.MasterExpenseId).GroupBy(a=>a.ExpenseDate).ToList();
                 if (ExpenseDetailsList.Count > 0)
                 {
-                    var FirstDate = ExpenseDetailsList.First().ExpenseDate;
-                    var LastDate = ExpenseDetailsList.Last().ExpenseDate;
-                    noOfDays = (int)(LastDate - FirstDate).TotalDays + 1;
+                    //var FirstDate = ExpenseDetailsList.First().ExpenseDate;
+                    //var LastDate = ExpenseDetailsList.Last().ExpenseDate;
+                    //noOfDays = (int)(LastDate - FirstDate).TotalDays + 1;
+                    noOfDays = ExpenseDetailsList.Count();
                 }
             }
             else
@@ -1822,6 +1824,9 @@ namespace POS.API.Controllers.Expense
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
             .Where(x => x.Status == null || x.Status == string.Empty || x.Status == "PENDING" && x.Amount > 0).Count();
+
+            responseData.MaseterExpense.NoOfPendingReimbursementAction = result.FirstOrDefault().Expenses
+            .Where(x => x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING" && x.Amount > 0).Count();
 
             var paginationMetadata = new
             {
