@@ -39,6 +39,7 @@ namespace BTTEM.MediatR.Handlers
                 _logger.LogError("User does not exist.");
                 return ServiceResponse<UserDto>.Return409("User does not exist.");
             }
+
             appUser.IsDeleted = true;
             appUser.DeletedDate = DateTime.Now;
             appUser.DeletedBy = Guid.Parse(_userInfoToken.Id);

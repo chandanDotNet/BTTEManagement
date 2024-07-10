@@ -547,11 +547,11 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetUserInfoDetails/{id}")]      
+        [HttpGet("GetUserInfoDetails/{id}")]
         public async Task<IActionResult> GetUserInfoDetails(Guid id)
         {
             var ReportQuery = new GetUserInfoDetailsQuery { UserId = id };
-            var result = await _mediator.Send(ReportQuery);          
+            var result = await _mediator.Send(ReportQuery);
 
             return Ok(result);
         }
@@ -560,14 +560,28 @@ namespace POS.API.Controllers
         /// Delete User By Email
         /// </summary>
         /// <param name="Email"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
+        /// <returns></returns>       
         [HttpDelete("DeleteUserByEmail/{Email}")]
         public async Task<IActionResult> DeleteUserByEmail(string Email)
         {
             var deleteUserCommandByEmail = new DeleteUserCommandByEmail { Email = Email };
             var result = await _mediator.Send(deleteUserCommandByEmail);
-            return ReturnFormattedResponse(result);
+
+            UserDeleteResponse response = new UserDeleteResponse();
+            if (result.Success)
+            {
+                response.status = true;
+                response.StatusCode = result.StatusCode;
+                response.message = "User Deleted Successfully";
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = result.StatusCode;
+                response.message = "User not exists";
+            }
+            return Ok(response);
+            //return ReturnFormattedResponse(result);
         }
     }
 }

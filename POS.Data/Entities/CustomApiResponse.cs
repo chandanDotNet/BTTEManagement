@@ -213,4 +213,11 @@ namespace BTTEM.Data.Entities
         public string msg { get; set; }
     }
 
+    public class UserDeleteResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+    }
+
 }
