@@ -554,7 +554,19 @@ namespace POS.API.Controllers
             var result = await _mediator.Send(ReportQuery);          
 
             return Ok(result);
+        }
 
+        /// <summary>
+        /// Delete User By Email
+        /// </summary>
+        /// <param name="Email"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteUserByEmail/{Email}")]
+        public async Task<IActionResult> DeleteUserByEmail(string Email)
+        {
+            var deleteUserCommandByEmail = new DeleteUserCommandByEmail { Email = Email };
+            var result = await _mediator.Send(deleteUserCommandByEmail);
+            return ReturnFormattedResponse(result);
         }
     }
 }

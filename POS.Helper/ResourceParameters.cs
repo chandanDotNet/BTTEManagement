@@ -1,4 +1,6 @@
-﻿namespace POS.Helper
+﻿using System;
+
+namespace POS.Helper
 {
     public abstract class ResourceParameters
     {
@@ -29,5 +31,6 @@
 
         public string Fields { get; set; }
         public string BranchName { get; set; }
+        public Guid? BranchId { get; set; }
     }
 }
