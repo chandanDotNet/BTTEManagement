@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using BTTEM.Data;
 using BTTEM.MediatR.Commands;
 using BTTEM.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
@@ -24,6 +26,7 @@ namespace BTTEM.MediatR.Handlers
     {
 
         private readonly IMasterExpenseRepository _masterExpenseRepository;
+        private readonly IGroupExpenseRepository _groupExpenseRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<UpdateMasterExpenseCommandHandler> _logger;
@@ -36,7 +39,8 @@ namespace BTTEM.MediatR.Handlers
             IMapper mapper,
             ILogger<UpdateMasterExpenseCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
-            PathHelper pathHelper)
+            PathHelper pathHelper,
+            IGroupExpenseRepository groupExpenseRepository)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -44,6 +48,7 @@ namespace BTTEM.MediatR.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _groupExpenseRepository = groupExpenseRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateMasterExpenseCommand request, CancellationToken cancellationToken)
@@ -56,7 +61,7 @@ namespace BTTEM.MediatR.Handlers
             }
 
             entityExist.Name = request.Name;
-            
+
             if (!string.IsNullOrEmpty(request.Status))
             {
                 entityExist.Status = request.Status;
@@ -65,7 +70,7 @@ namespace BTTEM.MediatR.Handlers
             {
                 entityExist.ApprovalStage = request.ApprovalStage;
             }
-            if (request.TotalAmount>0)
+            if (request.TotalAmount > 0)
             {
                 entityExist.TotalAmount = request.TotalAmount;
             }
@@ -80,6 +85,25 @@ namespace BTTEM.MediatR.Handlers
             entityExist.NoOfBill = request.NoOfBill;
 
             _masterExpenseRepository.Update(entityExist);
+
+            var groupExpenseExist = await _groupExpenseRepository.All.Where(v => v.MasterExpenseId == request.Id).ToListAsync();
+            if (groupExpenseExist.Count > 0)
+            {
+                _groupExpenseRepository.RemoveRange(groupExpenseExist);
+            }
+
+            if (request.GroupExpenses != null)
+            {
+                request.GroupExpenses.ForEach(item =>
+                {
+                    item.MasterExpenseId = request.Id;
+                    item.Id = Guid.NewGuid();
+                });
+
+                var groupExpense = _mapper.Map<List<GroupExpense>>(request.GroupExpenses);
+                _groupExpenseRepository.AddRange(groupExpense);
+            }
+
             if (await _uow.SaveAsync() <= 0)
             {
 
@@ -89,5 +113,5 @@ namespace BTTEM.MediatR.Handlers
             return ServiceResponse<bool>.ReturnResultWith200(true);
 
         }
-        }
+    }
 }

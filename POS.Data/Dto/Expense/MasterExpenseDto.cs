@@ -1,4 +1,5 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
 using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
@@ -38,5 +39,8 @@ namespace BTTEM.Data
         public Trip Trip { get; set; }
         public string JourneyNumber { get; set; }
         public string? ReimbursementRemarks { get; set; }
+        public bool IsGroupExpense { get; set; }
+        public string NoOfPerson { get; set; }
+        public List<GroupExpenseDto> GroupExpenses { get; set; }
     }
 }

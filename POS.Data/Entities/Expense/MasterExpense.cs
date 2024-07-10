@@ -33,5 +33,8 @@ namespace BTTEM.Data
         public Trip Trip { get; set; }
         public string JourneyNumber { get; set; }
         public string? ReimbursementRemarks { get; set; }
+        public bool IsGroupExpense { get; set; }
+        public string NoOfPerson { get; set; }
+        public List<GroupExpense> GroupExpenses { get; set; }
     }
 }

@@ -104,6 +104,13 @@ namespace BTTEM.MediatR.CommandAndQuery
             entity.ApprovalStage = "PENDING";
             entity.ReimbursementStatus = "PENDING";
             entity.RollbackCount = 0;
+
+            entity.GroupExpenses.ForEach(item =>
+            {
+                item.MasterExpenseId = entity.Id;
+                item.Id = Guid.NewGuid();
+            });
+
             _masterExpenseRepository.Add(entity);
 
             if (await _uow.SaveAsync() <= 0)
