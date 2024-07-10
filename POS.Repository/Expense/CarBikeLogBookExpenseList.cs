@@ -76,6 +76,7 @@ namespace BTTEM.Repository.Expense
                         RefillingLiters = cs.RefillingLiters,
                         StartingKMS=cs.StartingKMS,                       
                         CreatedDate = cs.CreatedDate,
+                        MasterExpenseId = cs.MasterExpenseId,
                         Documents = _mapper.Map<List<CarBikeLogBookExpenseDocumentDto>>(cs.Documents).ToList(),
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -103,6 +104,7 @@ namespace BTTEM.Repository.Expense
                  RefillingLiters = cs.RefillingLiters,
                  StartingKMS = cs.StartingKMS,
                  CreatedDate = cs.CreatedDate,
+                 MasterExpenseId = cs.MasterExpenseId,
                  Documents = _mapper.Map<List<CarBikeLogBookExpenseDocumentDto>>(cs.Documents).ToList(),
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })//.OrderByDescending(x => x.CreatedDate)

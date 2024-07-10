@@ -74,6 +74,7 @@ namespace BTTEM.Repository.Expense
                        Place = cs.Place,
                        GrandTotal = cs.GrandTotal,
                        CreatedDate = cs.CreatedDate,
+                       MasterExpenseId = cs.MasterExpenseId,
                        Documents = _mapper.Map<List<LocalConveyanceExpenseDocumentDto>>(cs.Documents).ToList(),
                        CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -100,6 +101,7 @@ namespace BTTEM.Repository.Expense
                  Place = cs.Place,
                  GrandTotal = cs.GrandTotal,
                  CreatedDate = cs.CreatedDate,
+                 MasterExpenseId = cs.MasterExpenseId,
                  Documents = _mapper.Map<List<LocalConveyanceExpenseDocumentDto>>(cs.Documents).ToList(),
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })//.OrderByDescending(x => x.CreatedDate)

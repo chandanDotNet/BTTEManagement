@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BTTEM.Data;
 using BTTEM.Data.Entities;
 using BTTEM.MediatR.Commands;
 using BTTEM.MediatR.Handler;
@@ -60,95 +61,148 @@ namespace BTTEM.MediatR.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(UpdateLocalConveyanceExpenseCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _localConveyanceExpenseRepository.FindAsync(request.Id);
-            if (entityExist == null)
+            if(request.Id.HasValue)
             {
-                _logger.LogError("Expense does not exists.");
-                return ServiceResponse<bool>.Return409("Expense does not exists.");  
-            }
-
-            entityExist.ExpenseDate = request.ExpenseDate;
-
-            if (!string.IsNullOrEmpty(request.Status))
-            {
-                entityExist.Status = request.Status;
-            }
-            if (!string.IsNullOrEmpty(request.Particular))
-            {
-                entityExist.Particular = request.Particular;
-            }
-            if (!string.IsNullOrEmpty(request.ModeOfTransport))
-            {
-                entityExist.ModeOfTransport = request.ModeOfTransport;
-            }
-            if (request.Amount > 0)
-            {
-                entityExist.Amount = request.Amount;
-            }
-            if (request.ApproxKM > 0)
-            {
-                entityExist.ApproxKM = request.ApproxKM;
-            }
-            if (request.GrandTotal > 0)
-            {
-                entityExist.GrandTotal = request.GrandTotal;
-            }
-            if (!string.IsNullOrEmpty(request.From))
-            {
-                entityExist.From = request.From;
-            }
-            if (!string.IsNullOrEmpty(request.To))
-            {
-                entityExist.To = request.To;
-            }
-            if (!string.IsNullOrEmpty(request.Place))
-            {
-                entityExist.Place = request.Place;
-            }
-            if (!string.IsNullOrEmpty(request.Remarks))
-            {
-                entityExist.Remarks = request.Remarks;
-            }
-
-            foreach (var item in request.Documents)
-            {
-                var entityExpenseDocument = _mapper.Map<LocalConveyanceExpenseDocument>(item);
-                entityExpenseDocument.LocalConveyanceExpenseId = entityExist.Id;
-                entityExpenseDocument.Id = Guid.NewGuid();
-
-                if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                var entityExist = await _localConveyanceExpenseRepository.FindAsync(request.Id.Value);
+                if (entityExist == null)
                 {
-                    string contentRootPath = _webHostEnvironment.WebRootPath;
-                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
-
-                    if (!Directory.Exists(pathToSave))
-                    {
-                        Directory.CreateDirectory(pathToSave);
-                    }
-
-                    var extension = Path.GetExtension(item.ReceiptName);
-                    var id = Guid.NewGuid();
-                    var path = $"{id}.{extension}";
-                    var documentPath = Path.Combine(pathToSave, path);
-                    string base64 = item.ReceiptPath.Split(',').LastOrDefault();
-                    if (!string.IsNullOrWhiteSpace(base64))
-                    {
-                        byte[] bytes = Convert.FromBase64String(base64);
-                        try
-                        {
-                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                            entityExpenseDocument.ReceiptPath = path;
-                        }
-                        catch
-                        {
-                            _logger.LogError("Error while saving files", entityExpenseDocument);
-                        }
-                    }
+                    _logger.LogError("Expense does not exists.");
+                    return ServiceResponse<bool>.Return409("Expense does not exists.");
                 }
-                _localConveyanceExpenseDocumentRepository.Add(entityExpenseDocument);
+
+                entityExist.ExpenseDate = request.ExpenseDate;
+
+                if (!string.IsNullOrEmpty(request.Status))
+                {
+                    entityExist.Status = request.Status;
+                }
+                if (!string.IsNullOrEmpty(request.Particular))
+                {
+                    entityExist.Particular = request.Particular;
+                }
+                if (!string.IsNullOrEmpty(request.ModeOfTransport))
+                {
+                    entityExist.ModeOfTransport = request.ModeOfTransport;
+                }
+                if (request.Amount > 0)
+                {
+                    entityExist.Amount = request.Amount;
+                }
+                if (request.ApproxKM > 0)
+                {
+                    entityExist.ApproxKM = request.ApproxKM;
+                }
+                if (request.GrandTotal > 0)
+                {
+                    entityExist.GrandTotal = request.GrandTotal;
+                }
+                if (!string.IsNullOrEmpty(request.From))
+                {
+                    entityExist.From = request.From;
+                }
+                if (!string.IsNullOrEmpty(request.To))
+                {
+                    entityExist.To = request.To;
+                }
+                if (!string.IsNullOrEmpty(request.Place))
+                {
+                    entityExist.Place = request.Place;
+                }
+                if (!string.IsNullOrEmpty(request.Remarks))
+                {
+                    entityExist.Remarks = request.Remarks;
+                }
+
+                foreach (var item in request.Documents)
+                {
+                    var entityExpenseDocument = _mapper.Map<LocalConveyanceExpenseDocument>(item);
+                    entityExpenseDocument.LocalConveyanceExpenseId = entityExist.Id;
+                    entityExpenseDocument.Id = Guid.NewGuid();
+
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                    {
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                entityExpenseDocument.ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", entityExpenseDocument);
+                            }
+                        }
+                    }
+                    _localConveyanceExpenseDocumentRepository.Add(entityExpenseDocument);
+                }
+
+                _localConveyanceExpenseRepository.Update(entityExist);
+            }
+            else
+            {
+                var entity = _mapper.Map<LocalConveyanceExpense>(request);
+                entity.Id = Guid.NewGuid();
+
+                int index = 0;
+                foreach (var item in entity.Documents)
+                {
+                    var entityExpenseDocument = _mapper.Map<LocalConveyanceExpenseDocument>(item);
+                    entityExpenseDocument.LocalConveyanceExpenseId = entity.Id;
+                    entityExpenseDocument.Id = Guid.NewGuid();
+
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                    {
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                entity.Documents[index].ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", entity);
+                            }
+                        }
+                    }
+                    index++;
+
+                }
+
+
+                _localConveyanceExpenseRepository.Add(entity);
             }
 
-            _localConveyanceExpenseRepository.Update(entityExist);
+            
 
 
             if (await _uow.SaveAsync() <= 0)

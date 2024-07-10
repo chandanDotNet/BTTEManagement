@@ -109,16 +109,22 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddLocalConveyanceExpense(List<AddLocalConveyanceExpenseCommand> addLocalConveyanceExpenseCommandList)
         {
-
+            ResponseData responseData = new ResponseData();
             foreach (var item in addLocalConveyanceExpenseCommandList)
             {
                 AddLocalConveyanceExpenseCommand addLocalConveyanceExpenseCommand = new AddLocalConveyanceExpenseCommand();
                 addLocalConveyanceExpenseCommand = item;
                 var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
             }
 
+            responseData.message = "Data Updated Successfully";
 
-            return Ok(true);
+            return Ok(responseData);        
 
         }
 
@@ -146,11 +152,26 @@ namespace POS.API.Controllers.Expense
         /// <returns></returns>
         [HttpPut("UpdateLocalConveyanceExpense")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
-        public async Task<IActionResult> UpdateLocalConveyanceExpense([FromBody] UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand)
+        public async Task<IActionResult> UpdateLocalConveyanceExpense(List<UpdateLocalConveyanceExpenseCommand> updateLocalConveyanceExpenseCommandList)
         {
+            ResponseData responseData= new ResponseData();
+            foreach (var item in updateLocalConveyanceExpenseCommandList)
+            {
+                UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand = new UpdateLocalConveyanceExpenseCommand();
+                updateLocalConveyanceExpenseCommand = item;
+                var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
+                if(result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+            }
 
-            var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
-            return ReturnFormattedResponse(result);
+            // var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
+           
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
 
         }
 

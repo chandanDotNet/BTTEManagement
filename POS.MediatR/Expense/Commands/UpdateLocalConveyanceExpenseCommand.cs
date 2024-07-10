@@ -12,7 +12,7 @@ namespace BTTEM.MediatR.Commands
     public class UpdateLocalConveyanceExpenseCommand : IRequest<ServiceResponse<bool>>
     {
 
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public Guid MasterExpenseId { get; set; }
         public DateTime ExpenseDate { get; set; }
         public string Particular { get; set; }
