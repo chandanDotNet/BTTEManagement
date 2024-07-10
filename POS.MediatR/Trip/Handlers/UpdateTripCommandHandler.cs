@@ -91,7 +91,8 @@ namespace BTTEM.MediatR.Trip.Handlers
                 _groupTripRepository.RemoveRange(groupTripExist);
             }
 
-            if (request.GroupTrips.Count > 0)
+
+            if (request.GroupTrips!=null)
             {
                 request.GroupTrips.ForEach(item =>
                 {
