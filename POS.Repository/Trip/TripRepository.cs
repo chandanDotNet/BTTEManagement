@@ -201,6 +201,12 @@ namespace BTTEM.Repository
                     .Where(a => a.CreatedByUser.BranchName == tripResource.BranchName);
             }
 
+            if (tripResource.BranchId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.CompanyAccountBranchId == tripResource.BranchId);
+            }
+
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {
                 var searchQueryForWhereClause = tripResource.SearchQuery

@@ -25,6 +25,7 @@ namespace POS.Data.Resources
         public string? ExpenseStatus { get; set; }
         public bool? IsMyRequest { get; set; }
         public string? BranchName { get; set; }
+        public Guid? BranchId { get; set; }
 
     }
 }

@@ -73,6 +73,12 @@ namespace POS.Repository
                     .Where(a => a.ExpenseById == expenseResource.ExpenseById);
             }
 
+            if (expenseResource.BranchId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.CompanyAccountBranchId == expenseResource.BranchId);
+            }
+
             return await new ExpenseList(_mapper).Create(collectionBeforePaging,
                 expenseResource.Skip,
                 expenseResource.PageSize);
