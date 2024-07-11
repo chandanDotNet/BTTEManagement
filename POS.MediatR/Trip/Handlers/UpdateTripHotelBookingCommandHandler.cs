@@ -106,6 +106,11 @@ namespace BTTEM.MediatR.Trip.Handlers
                 {
                     entityExist.CancelationDate = tv.CancelationDate;
                 }
+                if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
+                {
+                    entityExist.NoOfRoom = tv.NoOfRoom;
+                }
+                
 
 
 

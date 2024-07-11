@@ -75,6 +75,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     entityExist.PickupTime = tv.PickupTime;
                     entityExist.BusType = tv.BusType;
                     entityExist.CarType = tv.CarType;
+                    entityExist.NoOfTickets = tv.NoOfTickets;
                     _tripItineraryRepository.Update(entityExist);
                 }
             }
