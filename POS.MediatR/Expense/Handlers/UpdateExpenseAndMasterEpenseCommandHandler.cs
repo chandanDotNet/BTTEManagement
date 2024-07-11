@@ -62,6 +62,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 }
                 entityExist.AccountStatus = request.AccountStatus;
                 entityExist.AccountStatusRemarks = request.AccountStatusRemarks;
+                entityExist.ReimbursementAmount = request.ReimbursementAmount;
 
                 var masterEntityExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
                 masterEntityExist.ReimbursementAmount = request.ReimbursementAmount + masterEntityExist.ReimbursementAmount;
