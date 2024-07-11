@@ -72,7 +72,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     entityExist.ArrivalCityName = tv.ArrivalCityName;
                     entityExist.TrainClass = tv.TrainClass;
                     entityExist.PreferredTrain = tv.PreferredTrain;
-                    entityExist.PickupTime = tv.PickupTime;
+                    entityExist.PickupTime = tv.PickupTime; 
                     entityExist.BusType = tv.BusType;
                     entityExist.CarType = tv.CarType;
                     entityExist.NoOfTickets = tv.NoOfTickets; 
