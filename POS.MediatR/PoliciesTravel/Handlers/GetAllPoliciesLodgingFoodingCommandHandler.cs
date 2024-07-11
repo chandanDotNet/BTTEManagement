@@ -32,7 +32,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
         {
             _policiesLodgingFoodingRepository = policiesLodgingFoodingRepository;
             _uow = uow;
-            _mapper = mapper;
+            _mapper = mapper; 
 
         }
 
