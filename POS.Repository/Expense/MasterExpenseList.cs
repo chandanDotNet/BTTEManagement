@@ -107,7 +107,8 @@ namespace BTTEM.Repository.Expense
                         ReimbursementRemarks = cs.ReimbursementRemarks,
                         IsGroupExpense= cs.IsGroupExpense,
                         NoOfPerson = cs.NoOfPerson,
-                        
+                        GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
+
                     })//.OrderByDescending(x => x.CreatedDate) 
                     .ToListAsync();
                 return entities;
