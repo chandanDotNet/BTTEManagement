@@ -2,6 +2,7 @@
 using BTTEM.Data;
 using BTTEM.Data.Dto;
 using Microsoft.EntityFrameworkCore;
+using POS.Data;
 using POS.Data.Dto;
 using POS.Repository;
 using System;
@@ -9,16 +10,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BTTEM.Repository.Expense
 {
     public class MasterExpenseList : List<MasterExpenseDto>
     {
-
         IMapper _mapper;
-        public MasterExpenseList(IMapper mapper)
+        IUserRepository _userRepository;
+        public MasterExpenseList(IMapper mapper, IUserRepository userRepository)
         {
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public int Skip { get; private set; }
@@ -26,7 +29,6 @@ namespace BTTEM.Repository.Expense
         public int PageSize { get; private set; }
         public int TotalCount { get; private set; }
         public decimal TotalAmount { get; set; }
-
         public MasterExpenseList(List<MasterExpenseDto> items, int count, int skip, int pageSize, decimal totalAmount)
         {
             TotalCount = count;
@@ -87,30 +89,50 @@ namespace BTTEM.Repository.Expense
                         ReimbursementAmount = cs.ReimbursementAmount,
                         PayableAmount = cs.PayableAmount,
                         AdvanceMoney = cs.AdvanceMoney,
-                        ApprovalStage = cs.ApprovalStage,                        
-                        ApprovalStageBy = cs.ApprovalStageBy,                        
-                        ApprovalStageDate = cs.ApprovalStageDate,                        
+                        ApprovalStage = cs.ApprovalStage,
+                        ApprovalStageBy = cs.ApprovalStageBy,
+                        ApprovalStageDate = cs.ApprovalStageDate,
                         NoOfBill = cs.NoOfBill,
                         //ExpenseByUser= cs.ExpenseByUser,
                         //NoOfBill = cs.Expenses.Count,
                         ExpenseByUser = cs.ExpenseByUser,
                         Status = cs.Status,
-                        ExpenseType= cs.ExpenseType,
+                        ExpenseType = cs.ExpenseType,
                         CreatedDate = cs.CreatedDate,
                         ReimbursementStatus = cs.ReimbursementStatus,
                         IsExpenseCompleted = cs.IsExpenseCompleted,
                         RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
-                        Expenses =  _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
+                        Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
                         Trip = cs.Trip,
                         JourneyNumber = cs.JourneyNumber,
                         ReimbursementRemarks = cs.ReimbursementRemarks,
-                        IsGroupExpense= cs.IsGroupExpense,
+                        IsGroupExpense = cs.IsGroupExpense,
                         NoOfPerson = cs.NoOfPerson,
                         GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
+                        IsGroupTrip = cs.Trip.IsGroupTrip.Value,
+                        GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
+                        {
+                            Id = c.Id,
+                            UserId = c.UserId,
+                            TripId = c.TripId,
+                            //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
+
+                        }).ToList(),
+
+                        //_mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
 
                     })//.OrderByDescending(x => x.CreatedDate) 
                     .ToListAsync();
+
+                foreach (var item in entities)
+                {
+                    foreach (var data in item.GroupTrips)
+                    {
+                        data.User = await _userRepository.FindAsync(data.UserId);
+                    }
+                }
+
                 return entities;
             }
             else
@@ -149,8 +171,26 @@ namespace BTTEM.Repository.Expense
                  IsGroupExpense = cs.IsGroupExpense,
                  NoOfPerson = cs.NoOfPerson,
                  GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
+                 IsGroupTrip = cs.Trip.IsGroupTrip.Value,
+                 //GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
+                 GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
+                 {
+                     Id = c.Id,
+                     UserId = c.UserId,
+                     TripId = c.TripId,                     
+                     //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
+
+                 }).ToList(),
              })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
+
+                foreach (var item in entities)
+                {
+                    foreach (var data in item.GroupTrips)
+                    {
+                        data.User = await _userRepository.FindAsync(data.UserId);
+                    }
+                }
                 return entities;
             }
         }
