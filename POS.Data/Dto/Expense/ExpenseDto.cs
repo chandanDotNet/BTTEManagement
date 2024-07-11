@@ -31,6 +31,7 @@ namespace POS.Data.Dto
         public string AccountStatusRemarks { get; set; }
         public string? ReUploadRemarks { get; set; }
         public string? RejectReason { get; set; }
+        public decimal ReimbursementAmount { get; set; } = 0;
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
     }
 }
