@@ -25,18 +25,21 @@ namespace BTTEM.Repository
         private readonly IMapper _mapper;
         private readonly UserInfoToken _userInfoToken;
         private readonly IUserRoleRepository _userRoleRepository;
+        private readonly IUserRepository _userRepository;
         public MasterExpenseRepository(
             IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
             IMapper mapper,
              UserInfoToken userInfoToken,
-              IUserRoleRepository userRoleRepository
+              IUserRoleRepository userRoleRepository,
+              IUserRepository userRepository
             ) : base(uow)
         {
             _propertyMappingService = propertyMappingService;
             _mapper = mapper;
             _userInfoToken = userInfoToken;
             _userRoleRepository = userRoleRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<MasterExpenseList> GetAllExpenses(ExpenseResource expenseResource)
@@ -77,7 +80,10 @@ namespace BTTEM.Repository
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
-            var collectionBeforePaging = All.Include(t => t.Trip).Include(g => g.GroupExpenses).ThenInclude(u => u.User).Include(c => c.CreatedByUser).ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory).ApplySort(expenseResource.OrderBy,
+            var collectionBeforePaging = All.Include(t => t.Trip).ThenInclude(g => g.GroupTrips)
+                .Include(g => g.GroupExpenses).ThenInclude(u => u.User).Include(c => c.CreatedByUser).
+                ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).
+                Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory).ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Expenses).ApplySort(expenseResource.OrderBy,
@@ -186,7 +192,7 @@ namespace BTTEM.Repository
             }
 
 
-            return await new MasterExpenseList(_mapper).Create(collectionBeforePaging,
+            return await new MasterExpenseList(_mapper, _userRepository).Create(collectionBeforePaging,
                 expenseResource.Skip,
                 expenseResource.PageSize);
         }
