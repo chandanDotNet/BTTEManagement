@@ -43,7 +43,7 @@ namespace BTTEM.Data
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
-        public bool IsGroupTrip { get; set; }
-        public List<GroupTripDto> GroupTrips { get; set; }
+        public bool? IsGroupTrip { get; set; }
+        public List<GroupTripDto>? GroupTrips { get; set; }
     }
 }

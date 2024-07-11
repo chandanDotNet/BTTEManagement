@@ -111,14 +111,15 @@ namespace BTTEM.Repository.Expense
                         NoOfPerson = cs.NoOfPerson,
                         GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
                         IsGroupTrip = cs.Trip.IsGroupTrip.Value,
-                        GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
-                        {
-                            Id = c.Id,
-                            UserId = c.UserId,
-                            TripId = c.TripId,
-                            //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
+                        GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
+                        //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
+                        //{
+                        //    Id = c.Id,
+                        //    UserId = c.UserId,
+                        //    TripId = c.TripId,
+                        //    //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
 
-                        }).ToList(),
+                        //}).ToList(),
 
                         //_mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
 
@@ -127,9 +128,12 @@ namespace BTTEM.Repository.Expense
 
                 foreach (var item in entities)
                 {
-                    foreach (var data in item.GroupTrips)
+                    if (item.TripId != null)
                     {
-                        data.User = await _userRepository.FindAsync(data.UserId);
+                        foreach (var data in item.GroupTrips)
+                        {
+                            data.User = await _userRepository.FindAsync(data.UserId);
+                        }
                     }
                 }
 
@@ -172,23 +176,26 @@ namespace BTTEM.Repository.Expense
                  NoOfPerson = cs.NoOfPerson,
                  GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
                  IsGroupTrip = cs.Trip.IsGroupTrip.Value,
-                 //GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
-                 GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
-                 {
-                     Id = c.Id,
-                     UserId = c.UserId,
-                     TripId = c.TripId,                     
-                     //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
+                 GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
+                 //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
+                 //{
+                 //    Id = c.Id,
+                 //    UserId = c.UserId,
+                 //    TripId = c.TripId,                     
+                 //    //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
 
-                 }).ToList(),
+                 //}).ToList(),
              })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
 
                 foreach (var item in entities)
                 {
-                    foreach (var data in item.GroupTrips)
+                    if (item.TripId != null)
                     {
-                        data.User = await _userRepository.FindAsync(data.UserId);
+                        foreach (var data in item.GroupTrips)
+                        {
+                            data.User = await _userRepository.FindAsync(data.UserId);
+                        }
                     }
                 }
                 return entities;
