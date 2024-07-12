@@ -170,6 +170,12 @@ namespace BTTEM.Repository
                     .Where(a => a.CreatedByUser.BranchName == expenseResource.BranchName);
             }
 
+            if (expenseResource.BranchId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.CompanyAccountBranchId == expenseResource.BranchId);
+            }
+
             collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Expenses.Any(c => c.Amount > 0));
 

@@ -98,6 +98,7 @@ namespace POS.Repository
                         GSTNo = cs.GSTNo,
                         PayableAmount=cs.PayableAmount,
                         ReimbursementAmount=cs.ReimbursementAmount,
+
                     })
                     .ToListAsync();
                 return entities;
@@ -130,6 +131,7 @@ namespace POS.Repository
                  GSTNo = cs.GSTNo,
                  PayableAmount = cs.PayableAmount,
                  ReimbursementAmount = cs.ReimbursementAmount,
+
              })
              .ToListAsync();
                 return entities;
