@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace POS.MediatR.Handlers
+namespace POS.MediatR.Handlers 
 {
     public class DonwloadExpenseReceiptCommandHandler
         : IRequestHandler<DonwloadExpenseReceiptCommand, string>
