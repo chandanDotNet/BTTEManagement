@@ -33,6 +33,8 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO.Compression;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.Json.Nodes;
+using POS.Helper;
+using Microsoft.EntityFrameworkCore;
 
 namespace POS.API.Controllers.Expense
 {
@@ -49,6 +51,7 @@ namespace POS.API.Controllers.Expense
         private readonly IExpenseCategoryRepository _expenseCategoryRepository;
         private readonly ITripRepository _tripRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailSMTPSettingRepository _emailSMTPSettingRepository;
         /// <summary>
         /// 
         /// </summary>
@@ -57,7 +60,8 @@ namespace POS.API.Controllers.Expense
         public ExpenseController(
             IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository,
             IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository, IExpenseCategoryRepository expenseCategoryRepository, ITripRepository tripRepository,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IEmailSMTPSettingRepository emailSMTPSettingRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -67,7 +71,7 @@ namespace POS.API.Controllers.Expense
             _expenseCategoryRepository = expenseCategoryRepository;
             _tripRepository = tripRepository;
             _webHostEnvironment = webHostEnvironment;
-
+            _emailSMTPSettingRepository = emailSMTPSettingRepository;
         }
         /// <summary>
         /// Add Expenses
@@ -782,6 +786,34 @@ namespace POS.API.Controllers.Expense
                 }
                 //===============
 
+
+                //**Email Start**
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
+                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+
+                var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string templateBody = sr.ReadToEnd();
+                    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                    templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(addMasterExpenseCommand.TotalAmount));
+                    EmailHelper.SendEmail(new SendEmailSpecification
+                    {
+                        Body = templateBody,
+                        FromAddress = defaultSmtp.UserName,
+                        Host = defaultSmtp.Host,
+                        IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        Password = defaultSmtp.Password,
+                        Port = defaultSmtp.Port,
+                        Subject = "Expenses",
+                        ToAddress = reportingHead.UserName,
+                        CCAddress = userResult.UserName,
+                        UserName = defaultSmtp.UserName
+                    });
+                }
+                //**Email End**
             }
             return ReturnFormattedResponse(result);
         }
@@ -1913,7 +1945,7 @@ namespace POS.API.Controllers.Expense
                         if (files.Length == 0)
                             return NotFound("No files found to download.");
 
-                        var fileInfo = new FileInfo(file.ReceiptPath);
+                        var fileInfo = new System.IO.FileInfo(file.ReceiptPath);
                         var entry = zipArcheive.CreateEntry(fileInfo.Name);
                         using (var entryStream = entry.Open())
                         using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
@@ -1965,7 +1997,7 @@ namespace POS.API.Controllers.Expense
                         if (files.Length == 0)
                             return NotFound("No files found to download.");
 
-                        var fileInfo = new FileInfo(file);
+                        var fileInfo = new System.IO.FileInfo(file);
                         var entry = zipArcheive.CreateEntry(fileInfo.Name);
                         using (var entryStream = entry.Open())
                         using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
