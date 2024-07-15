@@ -26,6 +26,7 @@ namespace POS.Data.Resources
         public bool? IsMyRequest { get; set; }
         public string? BranchName { get; set; }
         public Guid? BranchId { get; set; }
+        public string? JourneyNumber { get; set; }
 
     }
 }

@@ -14,5 +14,7 @@ namespace BTTEM.Data.Dto
         public Guid CompanyProfileId { get; set; }
         //public List<CompanyGST> CompanyGST { get; set; }
         public int GSTCount { get; set; }
+        public string? ReceiptName { get; set; }
+        public string? ReceiptPath { get; set; }
     }
 }

@@ -120,7 +120,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 }
                 AddWalletCommand requestWallet = new AddWalletCommand();
                 decimal amount = 0;
-                var appUser = await _userRepository.FindAsync(masterEntityExist.CreatedBy);
+                var appUser = await _userRepository.FindAsync(masterEntityExist.CreatedBy); 
                 if (appUser != null && appUser.IsPermanentAdvance == true)
                 {
                     amount = appUser.PermanentAdvance.Value;

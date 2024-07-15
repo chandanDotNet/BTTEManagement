@@ -60,7 +60,7 @@ namespace BTTEM.Repository
             {
                 var entities = await source
                .Skip(skip)
-               .Take(pageSize)
+               //.Take(pageSize)
                .AsNoTracking()
                .Select(c => new BranchDto
                {

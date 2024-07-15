@@ -175,6 +175,11 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CreatedByUser.CompanyAccountBranchId == expenseResource.BranchId);
             }
+            if (!string.IsNullOrEmpty(expenseResource.JourneyNumber))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.JourneyNumber == expenseResource.JourneyNumber);
+            }
 
             collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.Expenses.Any(c => c.Amount > 0));
@@ -193,6 +198,7 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.Trip.Name, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.TotalAmount.ToString(), $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.PayableAmount.ToString(), $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.JourneyNumber.ToString(), $"%{searchQueryForWhereClause}%")
 
                     );
             }
