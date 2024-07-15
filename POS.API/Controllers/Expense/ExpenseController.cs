@@ -790,7 +790,6 @@ namespace POS.API.Controllers.Expense
                 //**Email Start**
                 var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
                 var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-
                 var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
                 using (StreamReader sr = new StreamReader(filePath))
@@ -1028,6 +1027,36 @@ namespace POS.API.Controllers.Expense
                     ActionDate = DateTime.Now,
                 };
                 var response = await _mediator.Send(addExpenseTrackingCommand);
+
+
+
+
+                //**Email Start**
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string templateBody = sr.ReadToEnd();
+                    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                    templateBody = templateBody.Replace("{STATUS}", Convert.ToString(StatusMessage));
+                    EmailHelper.SendEmail(new SendEmailSpecification
+                    {
+                        Body = templateBody,
+                        FromAddress = defaultSmtp.UserName,
+                        Host = defaultSmtp.Host,
+                        IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        Password = defaultSmtp.Password,
+                        Port = defaultSmtp.Port,
+                        Subject = "Expense Status",
+                        ToAddress = responseData.Result.CreatedByUser.UserName,
+                        CCAddress = userResult.UserName,
+                        UserName = defaultSmtp.UserName
+                    });
+                }
+                //**Email End**
             }
             return ReturnFormattedResponse(result);
         }
@@ -1452,6 +1481,40 @@ namespace POS.API.Controllers.Expense
                     };
                     var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
+
+                //**Email Start**
+
+                var responseData = _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string templateBody = sr.ReadToEnd();
+                    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                    templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
+                    templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
+                    templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
+                    templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
+                    EmailHelper.SendEmail(new SendEmailSpecification
+                    {
+                        Body = templateBody,
+                        FromAddress = defaultSmtp.UserName,
+                        Host = defaultSmtp.Host,
+                        IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        Password = defaultSmtp.Password,
+                        Port = defaultSmtp.Port,
+                        Subject = "Expense Reimburse Status",
+                        ToAddress = responseData.Result.CreatedByUser.UserName,
+                        CCAddress = userResult.UserName,
+                        UserName = defaultSmtp.UserName
+                    });
+                }
+                //**Email End**
+
+
             }
             return ReturnFormattedResponse(result);
         }
