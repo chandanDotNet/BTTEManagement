@@ -93,7 +93,9 @@ namespace BTTEM.Data.Entities
 
     public class TourTravelExpenseDetails
     {
+        public string CompanyId { get; set; }
         public string CompanyName { get; set; }
+        public string CompanyLogo { get; set; }
         public string Branch { get; set; }
         public string Dept { get; set; }
         public string EmployeeName { get; set; }

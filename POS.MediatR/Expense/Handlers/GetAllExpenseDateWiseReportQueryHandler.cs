@@ -92,7 +92,9 @@ namespace BTTEM.MediatR.Expense.Handlers
                 while (rdr.Read())
                 {
 
+                    expenseUserData.CompanyId = rdr["CompanyId"].ToString();
                     expenseUserData.CompanyName = rdr["CompanyName"].ToString();
+                    expenseUserData.CompanyLogo = rdr["CompanyLogo"].ToString();
                     expenseUserData.Branch = rdr["Branch"].ToString();
                     expenseUserData.Dept = rdr["Dept"].ToString();
                     expenseUserData.EmployeeName = rdr["EmployeeName"].ToString();

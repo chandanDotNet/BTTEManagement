@@ -17,6 +17,8 @@ namespace BTTEM.Data
         [ForeignKey("CompanyProfileId")]
         public CompanyProfile CompanyProfile { get; set; }
         public List<CompanyGST> CompanyGST { get; set; }
-        
+        public string? ReceiptName { get; set; }
+        public string? ReceiptPath { get; set; }
+
     }
 }

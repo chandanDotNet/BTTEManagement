@@ -1826,7 +1826,7 @@ namespace POS.API.Controllers.Expense
             .Where(x => x.Status == null || x.Status == string.Empty || x.Status == "PENDING" && x.Amount > 0).Count();
 
             responseData.MaseterExpense.NoOfPendingReimbursementAction = result.FirstOrDefault().Expenses
-            .Where(x =>  x.Amount > 0 && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();
+            .Where(x =>  x.Amount > 0 && x.Status == "APPROVED" && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();
 
             var paginationMetadata = new
             {
