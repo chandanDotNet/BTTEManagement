@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace POS.MediatR.Handlers 
 {
     public class DonwloadExpenseReceiptCommandHandler
-        : IRequestHandler<DonwloadExpenseReceiptCommand, string>
+        : IRequestHandler<DonwloadExpenseReceiptCommand, string> 
     {
         private readonly IExpenseRepository _expenseRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
