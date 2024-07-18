@@ -431,7 +431,7 @@ namespace POS.API.Controllers.Expense
                     addExpenseCommand = item;
                     addExpenseCommand.MasterExpenseId = id;
                     addExpenseCommand.TripId = result.Data.TripId;
-                    if(addExpenseCommand.Amount>0)
+                    if (addExpenseCommand.Amount > 0)
                     {
                         addExpenseCommand.Status = "PENDING";
                     }
@@ -439,7 +439,7 @@ namespace POS.API.Controllers.Expense
                     {
                         addExpenseCommand.Status = "APPROVED";
                     }
-                   
+
                     var result2 = await _mediator.Send(addExpenseCommand);
                     result.Data.ExpenseId = result2.Data.Id;
 
@@ -804,38 +804,38 @@ namespace POS.API.Controllers.Expense
                 if (addMasterExpenseCommand.Status == "APPLIED")
                 {
 
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
-                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
-                string email = this._configuration.GetSection("AppSettings")["Email"];
-                if (email == "Yes")
-                {
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
-                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
-
-                    using (StreamReader sr = new StreamReader(filePath))
+                   
+                    string email = this._configuration.GetSection("AppSettings")["Email"];
+                    if (email == "Yes")
                     {
-                        string templateBody = sr.ReadToEnd();
-                        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
-                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                        templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(addMasterExpenseCommand.TotalAmount));
-                        EmailHelper.SendEmail(new SendEmailSpecification
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                        using (StreamReader sr = new StreamReader(filePath))
                         {
-                            Body = templateBody,
-                            FromAddress = defaultSmtp.UserName,
-                            Host = defaultSmtp.Host,
-                            IsEnableSSL = defaultSmtp.IsEnableSSL,
-                            Password = defaultSmtp.Password,
-                            Port = defaultSmtp.Port,
-                            Subject = "Expenses",
-                            ToAddress = reportingHead.UserName,
-                            CCAddress = userResult.UserName,
-                            UserName = defaultSmtp.UserName
-                        });
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(addMasterExpenseCommand.TotalAmount));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Expenses",
+                                ToAddress = reportingHead.UserName,
+                                CCAddress = userResult.UserName,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
                     }
+                    //**Email End**
                 }
-                //**Email End**
+               
             }
             return ReturnFormattedResponse(result);
         }
@@ -1989,40 +1989,38 @@ namespace POS.API.Controllers.Expense
                 //**Email Start**
                 if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
                 {
-                    var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
-                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
-                string email = this._configuration.GetSection("AppSettings")["Email"];
-                if (email == "Yes")
-                {
-                    var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
-                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
-
-                    using (StreamReader sr = new StreamReader(filePath))
+                    
+                    string email = this._configuration.GetSection("AppSettings")["Email"];
+                    if (email == "Yes")
                     {
-                        string templateBody = sr.ReadToEnd();
-                        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
-                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                        templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
-                        templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
-                        templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
-                        templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
-                        EmailHelper.SendEmail(new SendEmailSpecification
+                        var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                        using (StreamReader sr = new StreamReader(filePath))
                         {
-                            Body = templateBody,
-                            FromAddress = defaultSmtp.UserName,
-                            Host = defaultSmtp.Host,
-                            IsEnableSSL = defaultSmtp.IsEnableSSL,
-                            Password = defaultSmtp.Password,
-                            Port = defaultSmtp.Port,
-                            Subject = "Expense Reimburse Status",
-                            ToAddress = responseData.Result.CreatedByUser.UserName,
-                            CCAddress = userResult.UserName,
-                            UserName = defaultSmtp.UserName
-                        });
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
+                            templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
+                            templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
+                            templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Expense Reimburse Status",
+                                ToAddress = responseData.Result.CreatedByUser.UserName,
+                                CCAddress = userResult.UserName,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
                     }
                 }
                 //**Email End**
