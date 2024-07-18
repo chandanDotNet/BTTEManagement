@@ -314,6 +314,11 @@ namespace POS.Domain
             modelBuilder.Entity<CarBikeLogBookExpense>()
  .HasQueryFilter(p => !p.IsDeleted);
 
+            modelBuilder.Entity<TripHotelBooking>()
+.HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<TripItinerary>()
+.HasQueryFilter(p => !p.IsDeleted);
+
         }
     }
 }

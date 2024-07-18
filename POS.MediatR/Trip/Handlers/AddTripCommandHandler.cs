@@ -41,13 +41,15 @@ namespace BTTEM.MediatR.Trip.Handlers
         public async Task<ServiceResponse<TripDto>> Handle(AddTripCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<BTTEM.Data.Trip>(request);
+            //entity.TripStarts = request.TripStarts.Date;
+            //entity.TripEnds = request.TripEnds.Date;
 
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
 
                 var id = Guid.NewGuid();
                 entity.Id = id;
-                entity.Status = "YET TO SUBMIT";
+               
                 //if(entity.Status=="APPLIED")
                 //{
                 //    entity.Status = "APPLIED";
@@ -56,8 +58,17 @@ namespace BTTEM.MediatR.Trip.Handlers
                 //{
                 //    entity.Status = "YET TO SUBMIT";  //CONFIRMED
                 //}
-
-                entity.Approval = "PENDING";
+                if(request.IsPostTrip==true)
+                {
+                    entity.Status = "COMPLETED";
+                    entity.Approval = "APPROVED";
+                }
+                else
+                {
+                    entity.Approval = "PENDING";
+                    entity.Status = "YET TO SUBMIT";
+                }
+                
                 entity.RollbackCount = 0;
 
                 entity.GroupTrips.ForEach(item =>

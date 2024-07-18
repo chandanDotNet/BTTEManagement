@@ -41,6 +41,7 @@ namespace BTTEM.MediatR.CommandAndQuery
         public string? VendorCode { get; set; }
         public bool? IsGroupTrip { get; set; }
         public string? NoOfPerson { get; set; }
+        public bool IsPostTrip { get; set; }=false;
         public List<GroupTripDto> GroupTrips { get; set; }
     }
 }

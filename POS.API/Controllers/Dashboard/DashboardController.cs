@@ -218,6 +218,7 @@ namespace POS.API.Controllers.Dashboard
         public async Task<IActionResult> GetDashboardStatisticsReportForApp(DashboardStaticaticsQueryCommand dashboardStaticaticsQueryCommand)
         {
             DashboardReportData dashboardReportData=new DashboardReportData();
+            dashboardStaticaticsQueryCommand.IsMy = true;
              var result = await _mediator.Send(dashboardStaticaticsQueryCommand);
             if(result != null)
             {

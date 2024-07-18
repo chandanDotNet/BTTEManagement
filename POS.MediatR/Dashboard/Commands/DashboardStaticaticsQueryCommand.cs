@@ -14,5 +14,6 @@ namespace BTTEM.MediatR.Dashboard.Commands
         public int Year { get; set; } = 0;
         public int Month { get; set; } = 0;
         public Guid? CompanyAccountId { get; set; }
+        public bool IsMy { get; set; }= false;
     }
 }
