@@ -35,6 +35,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.Json.Nodes;
 using POS.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Collections;
 
 namespace POS.API.Controllers.Expense
 {
@@ -52,6 +54,7 @@ namespace POS.API.Controllers.Expense
         private readonly ITripRepository _tripRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailSMTPSettingRepository _emailSMTPSettingRepository;
+        private IConfiguration _configuration;
         /// <summary>
         /// 
         /// </summary>
@@ -61,7 +64,8 @@ namespace POS.API.Controllers.Expense
             IMediator mediator, UserInfoToken userInfoToken, IExpenseRepository expenseRepository,
             IMasterExpenseRepository masterExpenseRepository, IUserRepository userRepository, IExpenseCategoryRepository expenseCategoryRepository, ITripRepository tripRepository,
             IWebHostEnvironment webHostEnvironment,
-            IEmailSMTPSettingRepository emailSMTPSettingRepository)
+            IEmailSMTPSettingRepository emailSMTPSettingRepository,
+            IConfiguration configuration)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -72,6 +76,7 @@ namespace POS.API.Controllers.Expense
             _tripRepository = tripRepository;
             _webHostEnvironment = webHostEnvironment;
             _emailSMTPSettingRepository = emailSMTPSettingRepository;
+            _configuration = configuration;
         }
         /// <summary>
         /// Add Expenses
@@ -802,6 +807,12 @@ namespace POS.API.Controllers.Expense
                     var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
                     var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                     var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
+                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
                     using (StreamReader sr = new StreamReader(filePath))
                     {
@@ -1319,6 +1330,42 @@ namespace POS.API.Controllers.Expense
                 //    //};
                 //    //var response = await _mediator.Send(addExpenseTrackingCommand);
                 //}
+
+
+                //**Email Start**
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+                    if (updateMasterExpenseCommand.Status == "APPLIED")
+                    {
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString(updateMasterExpenseCommand.Status));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Expense Status",
+                                ToAddress = reportingHead.UserName,
+                                CCAddress = userResult.UserName,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
+                    }
+                }
+                //**Email End**
+
             }
             return ReturnFormattedResponse(result);
         }
@@ -1455,30 +1502,34 @@ namespace POS.API.Controllers.Expense
 
 
                 //**Email Start**
-                //var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
-                //var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                //var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
-                //using (StreamReader sr = new StreamReader(filePath))
-                //{
-                //    string templateBody = sr.ReadToEnd();
-                //    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
-                //    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                //    templateBody = templateBody.Replace("{STATUS}", Convert.ToString(StatusMessage));
-                //    //EmailHelper.SendEmail(new SendEmailSpecification
-                //    //{
-                //    //    Body = templateBody,
-                //    //    FromAddress = defaultSmtp.UserName,
-                //    //    Host = defaultSmtp.Host,
-                //    //    IsEnableSSL = defaultSmtp.IsEnableSSL,
-                //    //    Password = defaultSmtp.Password,
-                //    //    Port = defaultSmtp.Port,
-                //    //    Subject = "Expense Status",
-                //    //    ToAddress = responseData.Result.CreatedByUser.UserName,
-                //    //    CCAddress = userResult.UserName,
-                //    //    UserName = defaultSmtp.UserName
-                //    //});
-                //}
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        string templateBody = sr.ReadToEnd();
+                        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                        templateBody = templateBody.Replace("{STATUS}", Convert.ToString(StatusMessage));
+                        EmailHelper.SendEmail(new SendEmailSpecification
+                        {
+                            Body = templateBody,
+                            FromAddress = defaultSmtp.UserName,
+                            Host = defaultSmtp.Host,
+                            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                            Password = defaultSmtp.Password,
+                            Port = defaultSmtp.Port,
+                            Subject = "Expense Status",
+                            ToAddress = responseData.Result.CreatedByUser.UserName,
+                            CCAddress = userResult.UserName,
+                            UserName = defaultSmtp.UserName
+                        });
+                    }
+                }
                 //**Email End**
             }
             return ReturnFormattedResponse(result);
@@ -1942,6 +1993,13 @@ namespace POS.API.Controllers.Expense
                     var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
                     var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                     var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+                    var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
                     using (StreamReader sr = new StreamReader(filePath))
                     {
@@ -1967,7 +2025,9 @@ namespace POS.API.Controllers.Expense
                         });
                     }
                 }
-               
+                //**Email End**
+
+
             }
             return ReturnFormattedResponse(result);
         }
@@ -2449,45 +2509,50 @@ namespace POS.API.Controllers.Expense
         {
             var zipQuery = new DownloadZipFileCommand { ExpenseId = expenseId };
             var result = await _mediator.Send(zipQuery);
-            using (var memoryStream = new MemoryStream())
+            bool exists = result.Any(x => string.IsNullOrEmpty(x.ReceiptPath));
+            if (exists)
             {
-                using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                using (var memoryStream = new MemoryStream())
                 {
-                    foreach (var file in result)
+                    using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                     {
-
-                        var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
-
-                        if (files.Length == 0)
-                            return NotFound("No files found to download.");
-
-                        var fileInfo = new System.IO.FileInfo(file.ReceiptPath);
-                        var entry = zipArcheive.CreateEntry(fileInfo.Name);
-                        using (var entryStream = entry.Open())
-                        using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
+                        foreach (var file in result)
                         {
-                            fileStream.CopyTo(entryStream);
+                            var files = Directory.GetFiles(file.ReceiptPath.Substring(0, file.ReceiptPath.LastIndexOf('\\')));
+
+                            if (files.Length == 0)
+                                return NotFound("No files found to download.");
+
+                            var fileInfo = new System.IO.FileInfo(file.ReceiptPath);
+                            var entry = zipArcheive.CreateEntry(fileInfo.Name);
+                            using (var entryStream = entry.Open())
+                            using (var fileStream = new FileStream(file.ReceiptPath, FileMode.Open, FileAccess.Read))
+                            {
+                                fileStream.CopyTo(entryStream);
+                            }
                         }
                     }
+                    string fileName = DateTime.Now.Year.ToString() + "" +
+                                                  DateTime.Now.Month.ToString() + "" +
+                                                  DateTime.Now.Day.ToString() + "" +
+                                                  DateTime.Now.Hour.ToString() + "" +
+                                                  DateTime.Now.Minute.ToString() + "" +
+                                                  DateTime.Now.Second.ToString();
+
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    //For Mobile App
+                    var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
+                    System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
+                    var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
+                    var jsonData = new { Download = filepath };
+                    return Ok(jsonData);
+                    //
+                    //return File(memoryStream.ToArray(), "application/zip", "ExpenseDocs_" + fileName + ".zip");
                 }
-                string fileName = DateTime.Now.Year.ToString() + "" +
-                                              DateTime.Now.Month.ToString() + "" +
-                                              DateTime.Now.Day.ToString() + "" +
-                                              DateTime.Now.Hour.ToString() + "" +
-                                              DateTime.Now.Minute.ToString() + "" +
-                                              DateTime.Now.Second.ToString();
-
-                memoryStream.Seek(0, SeekOrigin.Begin);
-
-                //For Mobile App
-                var pathToSave = result[0].ReceiptPath.Substring(0, result[0].ReceiptPath.LastIndexOf('\\'));
-                System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "ExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
-                var filepath = Path.Combine("Attachments", "ExpenseDocs_" + fileName + ".zip");
-                var jsonData = new { Download = filepath };
-                return Ok(jsonData);
-                //
-                //return File(memoryStream.ToArray(), "application/zip", "ExpenseDocs_" + fileName + ".zip");
             }
+
+            return NotFound("No files found to download.");
         }
 
         /// <summary>
@@ -2501,44 +2566,49 @@ namespace POS.API.Controllers.Expense
             var allZipQuery = new DownloadAllExpenseZipFileCommand { MasterExpenseId = masterExpenseId };
             var result = await _mediator.Send(allZipQuery);
 
-            //return Ok(result);
-            using (var memoryStream = new MemoryStream())
+            if (result.Count > 0)
             {
-                using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                //return Ok(result);
+                using (var memoryStream = new MemoryStream())
                 {
-                    foreach (var file in result)
+                    using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                     {
-                        var files = Directory.GetFiles(file.Substring(0, file.LastIndexOf('\\')));
-
-                        if (files.Length == 0)
-                            return NotFound("No files found to download.");
-
-                        var fileInfo = new System.IO.FileInfo(file);
-                        var entry = zipArcheive.CreateEntry(fileInfo.Name);
-                        using (var entryStream = entry.Open())
-                        using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                        foreach (var file in result)
                         {
-                            fileStream.CopyTo(entryStream);
+                            var files = Directory.GetFiles(file.Substring(0, file.LastIndexOf('\\')));
+
+                            if (files.Length == 0)
+                                return NotFound("No files found to download.");
+
+                            var fileInfo = new System.IO.FileInfo(file);
+                            var entry = zipArcheive.CreateEntry(fileInfo.Name);
+                            using (var entryStream = entry.Open())
+                            using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                            {
+                                fileStream.CopyTo(entryStream);
+                            }
                         }
                     }
+
+                    string fileName = DateTime.Now.Year.ToString() + "" +
+                                                  DateTime.Now.Month.ToString() + "" +
+                                                  DateTime.Now.Day.ToString() + "" +
+                                                  DateTime.Now.Hour.ToString() + "" +
+                                                  DateTime.Now.Minute.ToString() + "" +
+                                                  DateTime.Now.Second.ToString();
+
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    //For Mobile App
+                    var pathToSave = result[0].Substring(0, result[0].LastIndexOf('\\'));
+                    System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "AllExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
+                    var filepath = Path.Combine("Attachments", "AllExpenseDocs_" + fileName + ".zip");
+                    var jsonData = new { Download = filepath };
+                    return Ok(jsonData);
                 }
-
-                string fileName = DateTime.Now.Year.ToString() + "" +
-                                              DateTime.Now.Month.ToString() + "" +
-                                              DateTime.Now.Day.ToString() + "" +
-                                              DateTime.Now.Hour.ToString() + "" +
-                                              DateTime.Now.Minute.ToString() + "" +
-                                              DateTime.Now.Second.ToString();
-
-                memoryStream.Seek(0, SeekOrigin.Begin);
-
-                //For Mobile App
-                var pathToSave = result[0].Substring(0, result[0].LastIndexOf('\\'));
-                System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "AllExpenseDocs_" + fileName + ".zip"), memoryStream.ToArray());
-                var filepath = Path.Combine("Attachments", "AllExpenseDocs_" + fileName + ".zip");
-                var jsonData = new { Download = filepath };
-                return Ok(jsonData);
             }
+
+            return NotFound("No files found to download.");
         }
     }
 }
