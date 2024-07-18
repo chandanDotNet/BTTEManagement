@@ -128,7 +128,7 @@ namespace POS.API.Controllers.Expense
 
             responseData.message = "Data Updated Successfully";
 
-            return Ok(responseData);        
+            return Ok(responseData);
 
         }
 
@@ -158,13 +158,13 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateLocalConveyanceExpense(List<UpdateLocalConveyanceExpenseCommand> updateLocalConveyanceExpenseCommandList)
         {
-            ResponseData responseData= new ResponseData();
+            ResponseData responseData = new ResponseData();
             foreach (var item in updateLocalConveyanceExpenseCommandList)
             {
                 UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand = new UpdateLocalConveyanceExpenseCommand();
                 updateLocalConveyanceExpenseCommand = item;
                 var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
-                if(result.Success)
+                if (result.Success)
                 {
                     responseData.status = true;
                     responseData.StatusCode = 200;
@@ -172,7 +172,7 @@ namespace POS.API.Controllers.Expense
             }
 
             // var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
-           
+
             responseData.message = "Data Updated Successfully";
 
             return Ok(responseData);
@@ -266,7 +266,7 @@ namespace POS.API.Controllers.Expense
 
             return Ok(responseData);
 
-           
+
 
         }
 
@@ -458,11 +458,11 @@ namespace POS.API.Controllers.Expense
                 {
                     if (addMasterExpenseCommand.ExpenseDetails.Count > 0)
                     {
-                        var ExpenseDetailsList= addMasterExpenseCommand.ExpenseDetails.GroupBy(a => a.ExpenseDate).ToList();
+                        var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.GroupBy(a => a.ExpenseDate).ToList();
                         //var FirstDate = ExpenseDetailsList.First().ExpenseDate;
                         //var LastDate = ExpenseDetailsList.Last().ExpenseDate;
                         //noOfDays = (int)(LastDate - FirstDate).TotalDays+1;
-                        noOfDays= ExpenseDetailsList.Count();
+                        noOfDays = ExpenseDetailsList.Count();
                     }
                     else
                     {
@@ -475,10 +475,10 @@ namespace POS.API.Controllers.Expense
                     var tripDetails = _tripRepository.FindAsync(addMasterExpenseCommand.TripId.Value);
                     noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays + 1;
                 }
-                if(noOfDays>0)
+                if (noOfDays > 0)
                 {
-                                    
-                    
+
+
 
                     var expenseCategory = _expenseCategoryRepository.All.ToList();
                     if (expenseCategory.Count > 0)
@@ -501,7 +501,7 @@ namespace POS.API.Controllers.Expense
                             PoliciesDetailResource = policiesDetailResourceQuery
                         };
                         var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-                        if(resultPoliciesDetail==null)
+                        if (resultPoliciesDetail == null)
                         {
                             return NotFound("Policies not mapped with user");
                         }
@@ -1422,7 +1422,7 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 string StatusMessage = null, RemarksMessage = null;
-                var responseData = _masterExpenseRepository.FindAsync(id);
+                var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == id).FirstOrDefaultAsync();
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 if (updateMasterExpenseStatusCommand.Status == "ROLLBACK")
                 {
@@ -1448,8 +1448,6 @@ namespace POS.API.Controllers.Expense
                     ActionDate = DateTime.Now,
                 };
                 var response = await _mediator.Send(addExpenseTrackingCommand);
-
-
 
 
                 //**Email Start**
@@ -1934,12 +1932,36 @@ namespace POS.API.Controllers.Expense
                 }
 
                 //**Email Start**
-                //if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
-                //{
-                //    var responseData = _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
-                //    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
-                //    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                //    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                var responseData = _masterExpenseRepository.AllIncluding(u=>u.CreatedByUser).Where(x=>x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string templateBody = sr.ReadToEnd();
+                    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                    templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
+                    templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
+                    templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
+                    templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
+                    EmailHelper.SendEmail(new SendEmailSpecification
+                    {
+                        Body = templateBody,
+                        FromAddress = defaultSmtp.UserName,
+                        Host = defaultSmtp.Host,
+                        IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        Password = defaultSmtp.Password,
+                        Port = defaultSmtp.Port,
+                        Subject = "Expense Reimburse Status",
+                        ToAddress = responseData.Result.CreatedByUser.UserName,
+                        CCAddress = userResult.UserName,
+                        UserName = defaultSmtp.UserName
+                    });
+                }
+                //**Email End**
 
                 //    using (StreamReader sr = new StreamReader(filePath))
                 //    {
@@ -2189,7 +2211,7 @@ namespace POS.API.Controllers.Expense
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-            if(resultPoliciesDetail.Count==0)
+            if (resultPoliciesDetail.Count == 0)
             {
                 return NotFound("Policies not mapped with user.");
             }
@@ -2242,8 +2264,8 @@ namespace POS.API.Controllers.Expense
 
             int noOfDays = 1;
             if (masterExpensesDetails.ExpenseType == "Local Trip")
-            {               
-                var ExpenseDetailsList = _expenseRepository.All.Where(a=>a.MasterExpenseId== masterExpenseResourceGroupWise.MasterExpenseId).GroupBy(a=>a.ExpenseDate).ToList();
+            {
+                var ExpenseDetailsList = _expenseRepository.All.Where(a => a.MasterExpenseId == masterExpenseResourceGroupWise.MasterExpenseId).GroupBy(a => a.ExpenseDate).ToList();
                 if (ExpenseDetailsList.Count > 0)
                 {
                     //var FirstDate = ExpenseDetailsList.First().ExpenseDate;
@@ -2373,7 +2395,7 @@ namespace POS.API.Controllers.Expense
             .Where(x => x.Amount > 0 && x.Status == null || x.Status == string.Empty || x.Status == "PENDING").Count();
 
             responseData.MaseterExpense.NoOfPendingReimbursementAction = result.FirstOrDefault().Expenses
-            .Where(x =>  x.Amount > 0 && x.Status == "APPROVED" && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();
+            .Where(x => x.Amount > 0 && x.Status == "APPROVED" && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();
 
             var paginationMetadata = new
             {
