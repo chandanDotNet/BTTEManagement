@@ -426,7 +426,15 @@ namespace POS.API.Controllers.Expense
                     addExpenseCommand = item;
                     addExpenseCommand.MasterExpenseId = id;
                     addExpenseCommand.TripId = result.Data.TripId;
-                    addExpenseCommand.Status = "PENDING";
+                    if(addExpenseCommand.Amount>0)
+                    {
+                        addExpenseCommand.Status = "PENDING";
+                    }
+                    else
+                    {
+                        addExpenseCommand.Status = "APPROVED";
+                    }
+                   
                     var result2 = await _mediator.Send(addExpenseCommand);
                     result.Data.ExpenseId = result2.Data.Id;
 
@@ -872,6 +880,415 @@ namespace POS.API.Controllers.Expense
                     var response = await _mediator.Send(addMasterExpenseTrackingCommand);
                 }
 
+                //============================Approved Trip
+                int noOfDays = 1;
+                if (updateMasterExpenseCommand.ExpenseType == "Local Trip")
+                {
+                    if (updateMasterExpenseCommand.ExpenseDetails.Count > 0)
+                    {
+                        var ExpenseDetailsList = updateMasterExpenseCommand.ExpenseDetails.GroupBy(a => a.ExpenseDate).ToList();
+                        //var FirstDate = ExpenseDetailsList.First().ExpenseDate;
+                        //var LastDate = ExpenseDetailsList.Last().ExpenseDate;
+                        //noOfDays = (int)(LastDate - FirstDate).TotalDays+1;
+                        noOfDays = ExpenseDetailsList.Count();
+                    }
+                    else
+                    {
+                        noOfDays = 1;
+                    }
+
+                }
+                else
+                {
+                    var tripDetails = _tripRepository.FindAsync(updateMasterExpenseCommand.TripId.Value);
+                    noOfDays = (int)(tripDetails.Result.TripEnds - tripDetails.Result.TripStarts).TotalDays + 1;
+                }
+                if (noOfDays > 0)
+                {
+
+
+
+                    var expenseCategory = _expenseCategoryRepository.All.ToList();
+                    if (expenseCategory.Count > 0)
+                    {
+                        //===============================
+                        var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+                        {
+                            UserId = Guid.Parse(_userInfoToken.Id)//result.Data.CreatedByUser.Id,
+                        };
+                        var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+                        PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+                        {
+                            CompanyAccountId = resultUser.CompanyAccountId,
+                            GradeId = resultUser.GradeId,
+                        };
+
+                        //PoliciesDetail
+                        var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+                        {
+                            PoliciesDetailResource = policiesDetailResourceQuery
+                        };
+                        var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+                        if (resultPoliciesDetail == null)
+                        {
+                            return NotFound("Policies not mapped with user");
+                        }
+
+                        //Policies Lodging Fooding
+                        var getAllPoliciesLodgingFoodingCommand = new GetAllPoliciesLodgingFoodingCommand
+                        {
+                            Id = resultPoliciesDetail.FirstOrDefault().Id
+                        };
+                        var resultPoliciesLodgingFooding = await _mediator.Send(getAllPoliciesLodgingFoodingCommand);
+
+                        //Conveyance
+                        var getAllConveyanceCommand = new GetAllConveyanceCommand
+                        {
+                            Id = resultPoliciesDetail.FirstOrDefault().Id
+                        };
+                        var resultConveyance = await _mediator.Send(getAllConveyanceCommand);
+
+                        //PoliciesVehicleConveyance
+                        var getAlllPoliciesVehicleConveyanceCommand = new GetAllPoliciesVehicleConveyanceCommand
+                        {
+                            Id = resultPoliciesDetail.FirstOrDefault().Id
+                        };
+                        var resultlPoliciesVehicleConveyance = await _mediator.Send(getAlllPoliciesVehicleConveyanceCommand);
+
+                        //PoliciesSetting
+                        var getAllPoliciesSettingCommand = new GetAllPoliciesSettingCommand
+                        {
+                            Id = resultPoliciesDetail.FirstOrDefault().Id
+                        };
+                        var resultPoliciesSetting = await _mediator.Send(getAllPoliciesSettingCommand);
+                        //===============================
+
+                        bool IsDeviation = false;
+                        UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
+                        foreach (var item in expenseCategory)
+                        {
+                            var expenseAmount = _expenseRepository.All.Where(a => a.MasterExpenseId == masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId == item.Id).Sum(a => a.Amount);
+                            var expenseList = _expenseRepository.All.Where(a => a.MasterExpenseId == masterResponse.Data.MasterExpenseId && a.ExpenseCategoryId == item.Id).ToList();
+
+                            //--Fare
+                            if (item.Id == new Guid("DCAA05B6-5F1E-402F-835E-0704A3A1A455"))
+                            {
+
+                                if (expenseList.Count > 0)
+                                {
+                                    foreach (var expense in expenseList)
+                                    {
+                                        updateExpenseStatusCommand.Id = expense.Id;
+                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                        var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                    }
+                                }
+
+                            }
+
+                            //--Lodging (Metro City)
+                            if (item.Id == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
+                            {
+                                if (resultPoliciesLodgingFooding.IsMetroCities == true)
+                                {
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(noOfDays);
+                                    if (expenseAmount > PoliciesLodgingFooding)
+                                    {
+                                        IsDeviation = true;
+                                        if (expenseList.Count > 0)
+                                        {
+                                            foreach (var expense in expenseList)
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (expenseList.Count > 0)
+                                        {
+                                            foreach (var expense in expenseList)
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            //-- Lodging (Other City)
+                            if (item.Id == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D"))
+                            {
+                                if (resultPoliciesLodgingFooding.OtherCities == true)
+                                {
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(noOfDays);
+                                    if (expenseAmount > PoliciesLodgingFooding)
+                                    {
+                                        IsDeviation = true;
+                                        if (expenseList.Count > 0)
+                                        {
+                                            foreach (var expense in expenseList)
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (expenseList.Count > 0)
+                                        {
+                                            foreach (var expense in expenseList)
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            //--Conveyance (within a City)
+                            if (item.Id == new Guid("B1977DB3-D909-4936-A5DA-41BF84638963"))
+                            {
+                                var Conveyance = resultConveyance.Where(a => a.Name == "Conveyance (within a city)");
+                                if (Conveyance != null)
+                                {
+                                    var ConveyancesItemAll = Conveyance.Select(a => a.conveyancesItem).Where(b => b.Any(a => a.ConveyanceItemName == "Budget")).FirstOrDefault();
+                                    var ConveyancesItem = ConveyancesItemAll.Where(a => a.ConveyanceItemName == "Budget");
+                                    if (ConveyancesItem != null)
+                                    {
+                                        bool IsCheck = (bool)ConveyancesItem.FirstOrDefault().IsCheck;
+                                        if (IsCheck == true)
+                                        {
+                                            decimal ConveyancesAmount = 0;
+                                            if (ConveyancesItem.FirstOrDefault().Amount != null)
+                                            {
+                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount) * Convert.ToDecimal(noOfDays);
+                                            }
+                                            if (expenseAmount > ConveyancesAmount)
+                                            {
+                                                IsDeviation = true;
+                                                if (expenseList.Count > 0)
+                                                {
+                                                    foreach (var expense in expenseList)
+                                                    {
+                                                        updateExpenseStatusCommand.Id = expense.Id;
+                                                        updateExpenseStatusCommand.Status = "PENDING";
+                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                        var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (expenseList.Count > 0)
+                                                {
+                                                    foreach (var expense in expenseList)
+                                                    {
+                                                        updateExpenseStatusCommand.Id = expense.Id;
+                                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                        var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else //Actuals
+                                        {
+                                            if (expenseList.Count > 0)
+                                            {
+                                                foreach (var expense in expenseList)
+                                                {
+                                                    updateExpenseStatusCommand.Id = expense.Id;
+                                                    updateExpenseStatusCommand.Status = "APPROVED";
+                                                    updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                    var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            //--Conveyance (city to outer area)
+                            if (item.Id == new Guid("5278397A-C8DD-475A-A7A7-C05708B2BB06"))
+                            {
+                                var Conveyance = resultConveyance.Where(a => a.Name == "Conveyance (city to outer area)");
+                                if (Conveyance != null)
+                                {
+                                    var ConveyancesItemAll = Conveyance.Select(a => a.conveyancesItem).Where(b => b.Any(a => a.ConveyanceItemName == "Budget")).FirstOrDefault();
+                                    var ConveyancesItem = ConveyancesItemAll.Where(a => a.ConveyanceItemName == "Budget");
+                                    if (ConveyancesItem != null)
+                                    {
+                                        bool IsCheck = (bool)ConveyancesItem.FirstOrDefault().IsCheck;
+                                        if (IsCheck == true)
+                                        {
+                                            decimal ConveyancesAmount = 0;
+                                            if (ConveyancesItem.FirstOrDefault().Amount != null)
+                                            {
+                                                ConveyancesAmount = (decimal)(ConveyancesItem.FirstOrDefault().Amount) * Convert.ToDecimal(noOfDays);
+                                            }
+                                            if (expenseAmount > ConveyancesAmount)
+                                            {
+                                                IsDeviation = true;
+                                                if (expenseList.Count > 0)
+                                                {
+                                                    foreach (var expense in expenseList)
+                                                    {
+                                                        updateExpenseStatusCommand.Id = expense.Id;
+                                                        updateExpenseStatusCommand.Status = "PENDING";
+                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                        var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (expenseList.Count > 0)
+                                                {
+                                                    foreach (var expense in expenseList)
+                                                    {
+                                                        updateExpenseStatusCommand.Id = expense.Id;
+                                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                        var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else //Actuals
+                                        {
+                                            if (expenseList.Count > 0)
+                                            {
+                                                foreach (var expense in expenseList)
+                                                {
+                                                    updateExpenseStatusCommand.Id = expense.Id;
+                                                    updateExpenseStatusCommand.Status = "APPROVED";
+                                                    updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                    var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            //--MISC /DA
+                            if (item.Id == new Guid("ED69E9A0-2D54-4A91-A598-F79973B9FE99"))
+                            {
+                                decimal DA = 0;
+                                if (resultPoliciesDetail.FirstOrDefault().DailyAllowance != null)
+                                {
+                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
+                                }
+
+                                if (expenseAmount > DA)
+                                {
+                                    IsDeviation = true;
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "PENDING";
+                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
+                            }
+                            //--Fooding Allowance
+                            if (item.Id == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
+                            {
+                                if (resultPoliciesLodgingFooding.IsBudget == true)
+                                {
+                                    decimal PoliciesFooding = 0;
+                                    if (resultPoliciesLodgingFooding.BudgetAmount != null)
+                                    {
+                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(noOfDays);
+                                    }
+                                    if (expenseAmount > PoliciesFooding)
+                                    {
+                                        IsDeviation = true;
+                                        if (expenseList.Count > 0)
+                                        {
+                                            foreach (var expense in expenseList)
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (expenseList.Count > 0)
+                                        {
+                                            foreach (var expense in expenseList)
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                        //===============
+                        SyncMasterExpenseAmountCommand syncMasterExpenseAmountCommand = new SyncMasterExpenseAmountCommand();
+                        syncMasterExpenseAmountCommand.Id = updateMasterExpenseCommand.ExpenseDetails.FirstOrDefault().Id;
+                        var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
+
+                    }
+
+                }
+                //===============
+
+
                 //var exp = _expenseRepository.FindBy(c => c.MasterExpenseId == updateMasterExpenseCommand.Id).ToList();
                 //_expenseRepository.RemoveRange(exp);
 
@@ -983,6 +1400,10 @@ namespace POS.API.Controllers.Expense
                 };
                 var response = await _mediator.Send(addExpenseTrackingCommand);
             }
+            SyncMasterExpenseAmountCommand syncMasterExpenseAmountCommand = new SyncMasterExpenseAmountCommand();
+            syncMasterExpenseAmountCommand.Id= id;
+            var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
+
             return ReturnFormattedResponse(result);
         }
 
@@ -1032,30 +1453,30 @@ namespace POS.API.Controllers.Expense
 
 
                 //**Email Start**
-                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
-                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                //var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                //var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                //var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
-                using (StreamReader sr = new StreamReader(filePath))
-                {
-                    string templateBody = sr.ReadToEnd();
-                    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
-                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                    templateBody = templateBody.Replace("{STATUS}", Convert.ToString(StatusMessage));
-                    EmailHelper.SendEmail(new SendEmailSpecification
-                    {
-                        Body = templateBody,
-                        FromAddress = defaultSmtp.UserName,
-                        Host = defaultSmtp.Host,
-                        IsEnableSSL = defaultSmtp.IsEnableSSL,
-                        Password = defaultSmtp.Password,
-                        Port = defaultSmtp.Port,
-                        Subject = "Expense Status",
-                        ToAddress = responseData.Result.CreatedByUser.UserName,
-                        CCAddress = userResult.UserName,
-                        UserName = defaultSmtp.UserName
-                    });
-                }
+                //using (StreamReader sr = new StreamReader(filePath))
+                //{
+                //    string templateBody = sr.ReadToEnd();
+                //    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                //    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                //    templateBody = templateBody.Replace("{STATUS}", Convert.ToString(StatusMessage));
+                //    //EmailHelper.SendEmail(new SendEmailSpecification
+                //    //{
+                //    //    Body = templateBody,
+                //    //    FromAddress = defaultSmtp.UserName,
+                //    //    Host = defaultSmtp.Host,
+                //    //    IsEnableSSL = defaultSmtp.IsEnableSSL,
+                //    //    Password = defaultSmtp.Password,
+                //    //    Port = defaultSmtp.Port,
+                //    //    Subject = "Expense Status",
+                //    //    ToAddress = responseData.Result.CreatedByUser.UserName,
+                //    //    CCAddress = userResult.UserName,
+                //    //    UserName = defaultSmtp.UserName
+                //    //});
+                //}
                 //**Email End**
             }
             return ReturnFormattedResponse(result);
@@ -1214,6 +1635,36 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 var responseData = _masterExpenseRepository.FindAsync(id);
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                {
+                    MasterExpenseId = responseData.Result.Id,
+                    ExpenseTypeName = responseData.Result.Name,
+                    ActionType = "Activity",
+                    Remarks = responseData.Result.Name + " Master Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                    Status = "Master Expense Deleted By " + userResult.FirstName + " " + userResult.LastName,
+                    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    ActionDate = DateTime.Now,
+                };
+                var response = await _mediator.Send(addExpenseTrackingCommand);
+            }
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Deletes the Master Expense.
+        /// </summary>       
+        /// <returns></returns>
+        [HttpDelete("DeleteExpenseByDate")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteExpenseByDate(DeleteExpenseByDateCommand deleteExpenseByDateCommand)
+        {
+            
+            var result = await _mediator.Send(deleteExpenseByDateCommand);
+
+            if (result.Success)
+            {
+                var responseData = _masterExpenseRepository.FindAsync(deleteExpenseByDateCommand.Id);
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
@@ -1483,38 +1934,39 @@ namespace POS.API.Controllers.Expense
                 }
 
                 //**Email Start**
+                //if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
+                //{
+                //    var responseData = _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
+                //    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                //    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                //    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
-                var responseData = _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
-                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
-                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                //    using (StreamReader sr = new StreamReader(filePath))
+                //    {
+                //        string templateBody = sr.ReadToEnd();
+                //        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                //        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                //        templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
+                //        templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
+                //        templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
+                //        templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
+                //        EmailHelper.SendEmail(new SendEmailSpecification
+                //        {
+                //            Body = templateBody,
+                //            FromAddress = defaultSmtp.UserName,
+                //            Host = defaultSmtp.Host,
+                //            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                //            Password = defaultSmtp.Password,
+                //            Port = defaultSmtp.Port,
+                //            Subject = "Expense Reimburse Status",
+                //            ToAddress = responseData.Result.CreatedByUser.UserName,
+                //            CCAddress = userResult.UserName,
+                //            UserName = defaultSmtp.UserName
+                //        });
+                //    }
+                //    //**Email End**
 
-                using (StreamReader sr = new StreamReader(filePath))
-                {
-                    string templateBody = sr.ReadToEnd();
-                    templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
-                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                    templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
-                    templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
-                    templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
-                    templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
-                    EmailHelper.SendEmail(new SendEmailSpecification
-                    {
-                        Body = templateBody,
-                        FromAddress = defaultSmtp.UserName,
-                        Host = defaultSmtp.Host,
-                        IsEnableSSL = defaultSmtp.IsEnableSSL,
-                        Password = defaultSmtp.Password,
-                        Port = defaultSmtp.Port,
-                        Subject = "Expense Reimburse Status",
-                        ToAddress = responseData.Result.CreatedByUser.UserName,
-                        CCAddress = userResult.UserName,
-                        UserName = defaultSmtp.UserName
-                    });
-                }
-                //**Email End**
-
-
+                //}
             }
             return ReturnFormattedResponse(result);
         }
@@ -1918,7 +2370,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-            .Where(x => x.Status == null || x.Status == string.Empty || x.Status == "PENDING" && x.Amount > 0).Count();
+            .Where(x => x.Amount > 0 && x.Status == null || x.Status == string.Empty || x.Status == "PENDING").Count();
 
             responseData.MaseterExpense.NoOfPendingReimbursementAction = result.FirstOrDefault().Expenses
             .Where(x =>  x.Amount > 0 && x.Status == "APPROVED" && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();

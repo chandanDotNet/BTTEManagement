@@ -44,78 +44,91 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             foreach (var tv in request.tripHotelBooking)
             {
-                var entityExist = await _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
-                entityExist.TripId = tv.TripId;               
-                if (tv.CheckIn.HasValue)
+                if (tv.Id == Guid.Empty)
                 {
-                    entityExist.CheckIn = (DateTime)tv.CheckIn;
+                    var entity = _mapper.Map<Data.TripHotelBooking>(tv);
+                    entity.Id = Guid.NewGuid();
+                    entity.ApprovalStatus = "PENDING";
+
+                    _tripHotelBookingRepository.Add(entity);
                 }
-                if (!string.IsNullOrWhiteSpace(tv.BookTypeBy))
+                else
                 {
-                    entityExist.BookTypeBy = tv.BookTypeBy;
-                }
-                if (tv.CheckOut.HasValue)
-                {
-                    entityExist.CheckOut = (DateTime)tv.CheckOut;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.CheckInTime))
-                {
-                    entityExist.CheckInTime = tv.CheckInTime;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.CheckOutTime))
-                {
-                    entityExist.CheckOutTime = tv.CheckOutTime;
-                }
-                if (tv.CityId.HasValue)
-                {
-                    entityExist.CityId = tv.CityId;
-                }
-                if (tv.TentativeAmount>0)
-                {
-                    entityExist.TentativeAmount = tv.TentativeAmount;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.CityName))
-                {
-                    entityExist.CityName = tv.CityName;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.NearbyLocation))
-                {
-                    entityExist.NearbyLocation = tv.NearbyLocation;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.PreferredHotel))
-                {
-                    entityExist.PreferredHotel = tv.PreferredHotel;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.BookStatus))
-                {
-                    entityExist.BookStatus = tv.BookStatus;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.ApprovalStatus))
-                {
-                    entityExist.ApprovalStatus = tv.ApprovalStatus;
-                }
-                if ( tv.CancelationCharge>0)
-                {
-                    entityExist.CancelationCharge = tv.CancelationCharge;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.CancelationReason))
-                {
-                    entityExist.CancelationReason = tv.CancelationReason;
-                }
-                if (tv.CancelationDate.HasValue)
-                {
-                    entityExist.CancelationDate = tv.CancelationDate;
-                }
-                if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
-                {
-                    entityExist.NoOfRoom = tv.NoOfRoom;
-                }
+                    var entityExist = await _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
+                    entityExist.TripId = tv.TripId;
+                    if (tv.CheckIn.HasValue)
+                    {
+                        entityExist.CheckIn = (DateTime)tv.CheckIn;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.BookTypeBy))
+                    {
+                        entityExist.BookTypeBy = tv.BookTypeBy;
+                    }
+                    if (tv.CheckOut.HasValue)
+                    {
+                        entityExist.CheckOut = (DateTime)tv.CheckOut;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.CheckInTime))
+                    {
+                        entityExist.CheckInTime = tv.CheckInTime;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.CheckOutTime))
+                    {
+                        entityExist.CheckOutTime = tv.CheckOutTime;
+                    }
+                    if (tv.CityId.HasValue)
+                    {
+                        entityExist.CityId = tv.CityId;
+                    }
+                    if (tv.TentativeAmount > 0)
+                    {
+                        entityExist.TentativeAmount = tv.TentativeAmount;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.CityName))
+                    {
+                        entityExist.CityName = tv.CityName;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.NearbyLocation))
+                    {
+                        entityExist.NearbyLocation = tv.NearbyLocation;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.PreferredHotel))
+                    {
+                        entityExist.PreferredHotel = tv.PreferredHotel;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.BookStatus))
+                    {
+                        entityExist.BookStatus = tv.BookStatus;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.ApprovalStatus))
+                    {
+                        entityExist.ApprovalStatus = tv.ApprovalStatus;
+                    }
+                    if (tv.CancelationCharge > 0)
+                    {
+                        entityExist.CancelationCharge = tv.CancelationCharge;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.CancelationReason))
+                    {
+                        entityExist.CancelationReason = tv.CancelationReason;
+                    }
+                    if (tv.CancelationDate.HasValue)
+                    {
+                        entityExist.CancelationDate = tv.CancelationDate;
+                    }
+                    if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
+                    {
+                        entityExist.NoOfRoom = tv.NoOfRoom;
+                    }
+
+                    _tripHotelBookingRepository.Update(entityExist);
+                }           
                 
 
 
 
 
-                _tripHotelBookingRepository.Update(entityExist);
+               
             }
 
 

@@ -124,7 +124,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 if (appUser != null && appUser.IsPermanentAdvance == true)
                 {
                     amount = appUser.PermanentAdvance.Value;
-                    requestWallet.CurrentWalletBalance = (amount + request.ReimbursementAmount);
+                    requestWallet.CurrentWalletBalance = ((decimal)(amount + masterEntityExist.PayableAmount));
                     requestWallet.UserId = masterEntityExist.CreatedBy;
                     requestWallet.IsCredit = false;
                     requestWallet.PermanentAdvance = amount;

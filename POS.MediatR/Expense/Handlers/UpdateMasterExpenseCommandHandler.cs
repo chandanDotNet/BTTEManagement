@@ -83,6 +83,7 @@ namespace BTTEM.MediatR.Handlers
                 entityExist.AdvanceMoney = request.AdvanceMoney;
             }
             entityExist.NoOfBill = request.NoOfBill;
+            entityExist.PayableAmount = 0;
 
             _masterExpenseRepository.Update(entityExist);
 

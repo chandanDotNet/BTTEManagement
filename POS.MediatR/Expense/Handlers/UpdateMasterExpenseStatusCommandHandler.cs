@@ -8,6 +8,7 @@ using POS.Data.Dto;
 using POS.Data.Resources;
 using POS.Domain;
 using POS.Helper;
+using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,15 +24,21 @@ namespace BTTEM.MediatR.Expense.Handlers
         private readonly ILogger<UpdateMasterExpenseStatusCommandHandler> _logger;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly UserInfoToken _userInfoToken;
+        private readonly IUserRepository _userRepository;
+        private readonly IWalletRepository _walletRepository;
         public UpdateMasterExpenseStatusCommandHandler(IMasterExpenseRepository masterExpenseRepository,
             ILogger<UpdateMasterExpenseStatusCommandHandler> logger,
             IUnitOfWork<POSDbContext> uow,
-            UserInfoToken userInfoToken)
+            UserInfoToken userInfoToken,
+            IUserRepository userRepository,
+            IWalletRepository walletRepository)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _logger = logger;
             _uow = uow;
             _userInfoToken = userInfoToken;
+            _userRepository = userRepository;
+            _walletRepository = walletRepository;
         }
         public async Task<ServiceResponse<bool>> Handle(UpdateMasterExpenseStatusCommand request, CancellationToken cancellationToken)
         {
@@ -52,6 +59,32 @@ namespace BTTEM.MediatR.Expense.Handlers
                 entityExist.ApprovalStage = request.ApprovalStage;
                 entityExist.ApprovalStageBy = LoginUserId;
                 entityExist.ApprovalStageDate = DateTime.Now;
+
+                if(request.ApprovalStage == "APPROVED")
+                {
+                    //=================
+                    AddWalletCommand requestWallet = new AddWalletCommand();
+                    decimal amount = 0;
+                    var appUser = await _userRepository.FindAsync(entityExist.CreatedBy);
+                    if (appUser != null && appUser.IsPermanentAdvance == true)
+                    {
+                        amount = appUser.PermanentAdvance.Value;
+
+                        requestWallet.CurrentWalletBalance = ((decimal)(amount - entityExist.PayableAmount));
+                        requestWallet.UserId = entityExist.CreatedBy;
+                        requestWallet.IsCredit = false;
+                        requestWallet.PermanentAdvance = amount;
+                        requestWallet.ExpenseAmount = (decimal)entityExist.PayableAmount;
+                        //var entity = _mapper.Map<Wallet>(request);
+                        //_walletRepository.Add(entity);
+                        appUser.PermanentAdvance = requestWallet.CurrentWalletBalance;
+                        _userRepository.Update(appUser);
+                    }
+                    else
+                    {
+
+                    }
+                }
             }
 
             if (request.Status == "ROLLBACK" && entityExist.RollbackCount <= 3)
