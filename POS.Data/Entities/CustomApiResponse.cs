@@ -157,6 +157,7 @@ namespace BTTEM.Data.Entities
         public bool status { get; set; }
         public int StatusCode { get; set; }
         public string message { get; set; }
+        public bool IsExpenseExist { get; set; }
         public MasterExpense Data { get; set; }
     }
 

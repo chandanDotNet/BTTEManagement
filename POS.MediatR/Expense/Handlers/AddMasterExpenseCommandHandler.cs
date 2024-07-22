@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BTTEM.Data;
 using BTTEM.Data.Resources;
+using BTTEM.MediatR.PoliciesTravel.Commands;
 using BTTEM.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,7 @@ namespace BTTEM.MediatR.CommandAndQuery
         private readonly ILogger<AddMasterExpenseCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
+        private IMediator _mediator;
 
         public AddMasterExpenseCommandHandler(
             IMasterExpenseRepository masterExpenseRepository,
@@ -45,7 +47,8 @@ namespace BTTEM.MediatR.CommandAndQuery
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
             UserInfoToken userInfoToken,
-            IUserRoleRepository userRoleRepository)
+            IUserRoleRepository userRoleRepository,
+            IMediator mediator)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -55,6 +58,7 @@ namespace BTTEM.MediatR.CommandAndQuery
             _pathHelper = pathHelper;
             _userInfoToken = userInfoToken;
             _userRoleRepository = userRoleRepository;
+            _mediator = mediator;
         }
 
 
@@ -62,6 +66,32 @@ namespace BTTEM.MediatR.CommandAndQuery
         {
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
+
+            //================ Policies Check =================
+            var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
+            {
+                UserId = Guid.Parse(_userInfoToken.Id)//result.Data.CreatedByUser.Id,
+            };
+            var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
+            PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
+            {
+                CompanyAccountId = resultUser.CompanyAccountId,
+                GradeId = resultUser.GradeId,
+            };
+
+            //PoliciesDetail
+            var getAllPoliciesDetailCommand = new GetAllPoliciesDetailCommand
+            {
+                PoliciesDetailResource = policiesDetailResourceQuery
+            };
+            var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
+            if (resultPoliciesDetail.Count==0)
+            {
+                //return NotFound("Policies not mapped with user");
+                return ServiceResponse<MasterExpenseDto>.Return409("Policies not mapped with user.");
+            }
+
+            //=================================================
 
             if (request.TripId.HasValue && request.TripId.Value != new Guid("00000000-0000-0000-0000-000000000000"))
             {
