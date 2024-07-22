@@ -47,15 +47,15 @@ namespace POS.API.Controllers.Authentication
             if (result.Success)
             {
                 response.status = result.Success;
-                response.StatusCode = response.StatusCode;
+                response.StatusCode = result.StatusCode;
                 response.message = "Login Success";
                 response.Data = result.Data;
             }
             else
             {
                 response.status = false;
-                response.StatusCode = response.StatusCode;
-                response.message = "Login failed";
+                response.StatusCode = result.StatusCode;
+                response.message = "Login failed. Username/Password incorrect.";
                 response.Data = new UserAuthDto();
             }
             return Ok(response);
