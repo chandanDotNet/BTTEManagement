@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using POS.Data;
 using BTTEM.Repository;
 using BTTEM.Data.Entities.Expense;
+using Azure.Core;
+using System.Net.Http.Headers;
 
 namespace POS.MediatR.Handlers
 {
@@ -169,6 +171,47 @@ namespace POS.MediatR.Handlers
                         {
                             request.ExpenseDocument[index].ReceiptPath = null;
                             request.ExpenseDocument[index].ReceiptName = null;
+                        }
+
+                        if(item.FileDetails.Length>0)
+                        {
+
+                            try
+                            {
+                                var entityExpenseDocument1 = _mapper.Map<ExpenseDocument>(item);
+                                entityExpenseDocument1.ExpenseId = item.ExpenseId;
+                                entityExpenseDocument1.Id = Guid.NewGuid();
+
+                                var files = item.FileDetails;
+                                string contentRootPath = _webHostEnvironment.WebRootPath;
+                                var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                                if (!Directory.Exists(pathToSave))
+                                {
+                                    Directory.CreateDirectory(pathToSave);
+                                }
+
+                                var extension = Path.GetExtension(item.FileDetails.Name);
+                                var id = Guid.NewGuid();
+                                var path = $"{id}.{extension}";
+                                var documentPath = Path.Combine(pathToSave, path);
+
+
+                                var fileName = ContentDispositionHeaderValue.Parse(files.ContentDisposition).FileName.Trim('"');
+                                    var fullPath = Path.Combine(pathToSave, path);
+                                    //var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+                                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                                    {
+                                        files.CopyTo(stream);
+                                    }
+                                request.ExpenseDocument[index].ReceiptPath = path;
+
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError("Error while saving files", ex.Message);
+                            }
+
                         }
                        // _expenseDocumentRepository.Add(entityExpenseDocument);
                     }

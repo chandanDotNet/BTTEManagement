@@ -2498,6 +2498,33 @@ namespace POS.API.Controllers.Expense
         }
 
         /// <summary>
+        /// Gets All Expense By Trip  
+        /// </summary>
+        /// <param name="id">The trip identifier.</param>
+        /// <returns></returns>
+        [HttpGet("GetExistingExpenseByTripApp/{id}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetExistingExpenseByTripApp(Guid id)
+        {
+            ExistingExpenseByTripData existingExpenseByTripData = new ExistingExpenseByTripData();
+            var expense = _masterExpenseRepository.All.Where(a => a.TripId == id).FirstOrDefault();
+            if (expense != null)
+            {
+                existingExpenseByTripData.status = true;
+                existingExpenseByTripData.StatusCode = 200;
+                existingExpenseByTripData.IsExpenseExist = true;
+                existingExpenseByTripData.Data = expense;
+            }
+            else
+            {
+                existingExpenseByTripData.status = true;
+                existingExpenseByTripData.StatusCode = 200;
+                existingExpenseByTripData.IsExpenseExist = false;
+            }
+            return Ok(existingExpenseByTripData);
+        }
+
+        /// <summary>
         /// Download Expense Files
         /// </summary>
         /// <param name="expenseId">The Expanse.</param>

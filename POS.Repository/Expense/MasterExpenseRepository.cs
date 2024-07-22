@@ -198,7 +198,7 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.Trip.Name, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.TotalAmount.ToString(), $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.PayableAmount.ToString(), $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.JourneyNumber.ToString(), $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.JourneyNumber, $"%{searchQueryForWhereClause}%")
 
                     );
             }

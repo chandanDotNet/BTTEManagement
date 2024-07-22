@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,6 @@ namespace BTTEM.Data.Dto.Expense
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
         public bool IsReceiptChange { get; set; }
-
+        public IFormFile? FileDetails { get; set; }
     }
 }
