@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BTTEM.Data.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.Data.Dto;
@@ -29,6 +30,35 @@ namespace POS.API.Controllers.Authentication
             userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             var result = await _mediator.Send(userLoginCommand);
             return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// User Login For App
+        /// </summary>
+        /// <param name="userLoginCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AppLogin")]
+        [Produces("application/json", "application/xml", Type = typeof(UserAuthDto))]
+        public async Task<IActionResult> AppLogin(UserLoginCommand userLoginCommand)
+        {
+            userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var result = await _mediator.Send(userLoginCommand);
+            LoginResponse response = new LoginResponse();
+            if (result.Success)
+            {
+                response.status = result.Success;
+                response.StatusCode = result.StatusCode;
+                response.message = "Login Success";
+                response.Data = result.Data;
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = result.StatusCode;
+                response.message = "Login failed. Username/Password incorrect.";
+                response.Data = new UserAuthDto();
+            }
+            return Ok(response);
         }
     }
 }
