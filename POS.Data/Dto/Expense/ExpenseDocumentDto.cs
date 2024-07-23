@@ -15,6 +15,6 @@ namespace BTTEM.Data.Dto.Expense
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
         public bool IsReceiptChange { get; set; }
-        public IFormFile? FileDetails { get; set; }
+       // public IFormFile? FileDetails { get; set; }
     }
 }

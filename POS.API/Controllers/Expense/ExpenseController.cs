@@ -569,7 +569,14 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.IsMetroCities == true)
                                 {
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(noOfDays);
+                                    int localNoOfDays = 1;
+                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0 && a.ExpenseCategoryId== new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5")).GroupBy(a => a.ExpenseDate).ToList();
+                                    if (ExpenseDetailsList != null)
+                                    {
+                                        localNoOfDays = ExpenseDetailsList.Count();
+                                    }
+
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
                                     if (expenseAmount > PoliciesLodgingFooding)
                                     {
                                         IsDeviation = true;
@@ -595,7 +602,14 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.OtherCities == true)
                                 {
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(noOfDays);
+                                    int localNoOfDays = 1;
+                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a=>a.Amount>0 && a.ExpenseCategoryId == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D")).GroupBy(a => a.ExpenseDate).ToList();
+                                    if(ExpenseDetailsList!=null)
+                                    {
+                                        localNoOfDays = ExpenseDetailsList.Count();
+                                    }
+
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
                                     if (expenseAmount > PoliciesLodgingFooding)
                                     {
                                         IsDeviation = true;
@@ -755,9 +769,16 @@ namespace POS.API.Controllers.Expense
                                 if (resultPoliciesLodgingFooding.IsBudget == true)
                                 {
                                     decimal PoliciesFooding = 0;
+                                    int localNoOfDays = 1;
+                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0 && a.ExpenseCategoryId == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9")).GroupBy(a => a.ExpenseDate).ToList();
+                                    if (ExpenseDetailsList != null)
+                                    {
+                                        localNoOfDays = ExpenseDetailsList.Count();
+                                    }
+
                                     if (resultPoliciesLodgingFooding.BudgetAmount != null)
                                     {
-                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(noOfDays);
+                                        PoliciesFooding = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(localNoOfDays);
                                     }
                                     if (expenseAmount > PoliciesFooding)
                                     {
