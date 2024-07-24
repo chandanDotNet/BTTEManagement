@@ -84,6 +84,8 @@ namespace BTTEM.MediatR.Handlers
             }
             entityExist.NoOfBill = request.NoOfBill;
             entityExist.PayableAmount = 0;
+            entityExist.IsGroupExpense = request.IsGroupExpense;
+            entityExist.NoOfPerson = request.NoOfPerson;
 
             _masterExpenseRepository.Update(entityExist);
 

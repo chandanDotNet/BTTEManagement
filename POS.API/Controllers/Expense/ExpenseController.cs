@@ -802,9 +802,7 @@ namespace POS.API.Controllers.Expense
 
                 //**Email Start**
                 if (addMasterExpenseCommand.Status == "APPLIED")
-                {
-
-                   
+                {                   
                     string email = this._configuration.GetSection("AppSettings")["Email"];
                     if (email == "Yes")
                     {
