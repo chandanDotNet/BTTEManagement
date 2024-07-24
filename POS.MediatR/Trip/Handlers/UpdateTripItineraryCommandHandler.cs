@@ -42,43 +42,52 @@ namespace BTTEM.MediatR.Trip.Handlers
         {
             foreach (var tv in request.TripItinerary)
             {
-                if (tv.Id == Guid.Empty)
-                {
-                    tv.Id = Guid.NewGuid();
-                    var entity = _mapper.Map<Data.TripItinerary>(tv);
-                    entity.ApprovalStatus = "PENDING";
-                    _tripItineraryRepository.Add(entity);
-                }
-                else
-                {
-                    var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
-                    entityExist.TripId = tv.TripId;
-                    entityExist.TripBy = tv.TripBy;
-                    entityExist.BookTypeBy = tv.BookTypeBy;
-                    entityExist.TripWayType = tv.TripWayType;
-                    entityExist.DepartureCityId = tv.DepartureCityId;
-                    entityExist.ArrivalCityId = tv.ArrivalCityId;
-                    entityExist.DepartureDate = tv.DepartureDate;
-                    entityExist.TripPreference1 = tv.TripPreference1;
-                    entityExist.TripPreference2 = tv.TripPreference2;
-                    entityExist.TripPreferenceTime = tv.TripPreferenceTime;
-                    entityExist.TripReturnPreferenceTime = tv.TripReturnPreferenceTime;
-                    entityExist.TripPreferenceSeat = tv.TripPreferenceSeat;
-                    entityExist.ReturnDate = tv.ReturnDate;
-                    entityExist.TentativeAmount = tv.TentativeAmount;
-                    entityExist.BookStatus = tv.BookStatus;
-                    entityExist.ExpenseId = tv.ExpenseId;
+                tv.Id = Guid.NewGuid();
+                var entity = _mapper.Map<Data.TripItinerary>(tv);
+                entity.ApprovalStatus = "PENDING";
+                _tripItineraryRepository.Add(entity);
 
-                    entityExist.DepartureCityName = tv.DepartureCityName;
-                    entityExist.ArrivalCityName = tv.ArrivalCityName;
-                    entityExist.TrainClass = tv.TrainClass;
-                    entityExist.PreferredTrain = tv.PreferredTrain;
-                    entityExist.PickupTime = tv.PickupTime; 
-                    entityExist.BusType = tv.BusType;
-                    entityExist.CarType = tv.CarType;
-                    entityExist.NoOfTickets = tv.NoOfTickets; 
-                    _tripItineraryRepository.Update(entityExist);
-                }
+                //if (tv.Id == Guid.Empty)
+                //{
+                //    tv.Id = Guid.NewGuid();
+                //    var entity = _mapper.Map<Data.TripItinerary>(tv);
+                //    entity.ApprovalStatus = "PENDING";
+                //    _tripItineraryRepository.Add(entity);
+                //}
+                //else
+                //{
+                //    var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
+                //    if (entityExist != null)
+                //    {
+                //        entityExist.TripId = tv.TripId;
+                //        entityExist.TripBy = tv.TripBy;
+                //        entityExist.BookTypeBy = tv.BookTypeBy;
+                //        entityExist.TripWayType = tv.TripWayType;
+                //        entityExist.DepartureCityId = tv.DepartureCityId;
+                //        entityExist.ArrivalCityId = tv.ArrivalCityId;
+                //        entityExist.DepartureDate = tv.DepartureDate;
+                //        entityExist.TripPreference1 = tv.TripPreference1;
+                //        entityExist.TripPreference2 = tv.TripPreference2;
+                //        entityExist.TripPreferenceTime = tv.TripPreferenceTime;
+                //        entityExist.TripReturnPreferenceTime = tv.TripReturnPreferenceTime;
+                //        entityExist.TripPreferenceSeat = tv.TripPreferenceSeat;
+                //        entityExist.ReturnDate = tv.ReturnDate;
+                //        entityExist.TentativeAmount = tv.TentativeAmount;
+                //        entityExist.BookStatus = tv.BookStatus;
+                //        entityExist.ExpenseId = tv.ExpenseId;
+
+                //        entityExist.DepartureCityName = tv.DepartureCityName;
+                //        entityExist.ArrivalCityName = tv.ArrivalCityName;
+                //        entityExist.TrainClass = tv.TrainClass;
+                //        entityExist.PreferredTrain = tv.PreferredTrain;
+                //        entityExist.PickupTime = tv.PickupTime;
+                //        entityExist.BusType = tv.BusType;
+                //        entityExist.CarType = tv.CarType;
+                //        entityExist.NoOfTickets = tv.NoOfTickets;
+                //        _tripItineraryRepository.Update(entityExist);
+                //    }
+                    
+                //}
             }
             
             if (await _uow.SaveAsync() <= 0)

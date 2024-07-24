@@ -506,6 +506,11 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryCommand updateTripItineraryCommand)
         {
+            
+
+            var deleteTripItineraryCommand = new DeleteAllTripItineraryCommand { Id = updateTripItineraryCommand.TripItinerary.FirstOrDefault().TripId };
+            var resultDelete = await _mediator.Send(deleteTripItineraryCommand);
+
             var result = await _mediator.Send(updateTripItineraryCommand);
             if (result.Data == true)
             {
@@ -539,12 +544,15 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryBookStatusCommand updateTripItineraryBookStatusCommand)
         {
+            
+
             var result = await _mediator.Send(updateTripItineraryBookStatusCommand);
             if (result.Success)
             {
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 if (updateTripItineraryBookStatusCommand.IsItinerary == true)
                 {
+
                     var responseData = _tripItineraryRepository.FindAsync(updateTripItineraryBookStatusCommand.Id);
 
                     var addTripTrackingCommand = new AddTripTrackingCommand()
