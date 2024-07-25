@@ -483,8 +483,6 @@ namespace POS.API.Controllers.Expense
                 if (noOfDays > 0)
                 {
 
-
-
                     var expenseCategory = _expenseCategoryRepository.All.ToList();
                     if (expenseCategory.Count > 0)
                     {
@@ -570,7 +568,7 @@ namespace POS.API.Controllers.Expense
                                 if (resultPoliciesLodgingFooding.IsMetroCities == true)
                                 {
                                     int localNoOfDays = 1;
-                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0 && a.ExpenseCategoryId== new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5")).GroupBy(a => a.ExpenseDate).ToList();
+                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0 && a.ExpenseCategoryId == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5")).GroupBy(a => a.ExpenseDate).ToList();
                                     if (ExpenseDetailsList != null)
                                     {
                                         localNoOfDays = ExpenseDetailsList.Count();
@@ -603,8 +601,8 @@ namespace POS.API.Controllers.Expense
                                 if (resultPoliciesLodgingFooding.OtherCities == true)
                                 {
                                     int localNoOfDays = 1;
-                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a=>a.Amount>0 && a.ExpenseCategoryId == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D")).GroupBy(a => a.ExpenseDate).ToList();
-                                    if(ExpenseDetailsList!=null)
+                                    var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0 && a.ExpenseCategoryId == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D")).GroupBy(a => a.ExpenseDate).ToList();
+                                    if (ExpenseDetailsList != null)
                                     {
                                         localNoOfDays = ExpenseDetailsList.Count();
                                     }
@@ -823,7 +821,7 @@ namespace POS.API.Controllers.Expense
 
                 //**Email Start**
                 if (addMasterExpenseCommand.Status == "APPLIED")
-                {                   
+                {
                     string email = this._configuration.GetSection("AppSettings")["Email"];
                     if (email == "Yes")
                     {
@@ -836,7 +834,12 @@ namespace POS.API.Controllers.Expense
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{EXPENSE_NO}", Convert.ToString(addMasterExpenseCommand.ExpenseNo));
                             templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(addMasterExpenseCommand.TotalAmount));
+                            templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(addMasterExpenseCommand.ExpenseType));
+                            templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(addMasterExpenseCommand.NoOfBill));
+                            templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(addMasterExpenseCommand.IsGroupExpense == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(addMasterExpenseCommand.NoOfPerson == null ? "0" : addMasterExpenseCommand.NoOfPerson));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -845,7 +848,8 @@ namespace POS.API.Controllers.Expense
                                 IsEnableSSL = defaultSmtp.IsEnableSSL,
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
-                                Subject = "Expenses",
+                                Subject = "Expense - " + DateTime.Now.Date.ToString("dd-MM-yyyy"),
+                                //ToAddress = userResult.UserName,
                                 ToAddress = reportingHead.UserName,
                                 CCAddress = userResult.UserName,
                                 UserName = defaultSmtp.UserName
@@ -854,7 +858,7 @@ namespace POS.API.Controllers.Expense
                     }
                     //**Email End**
                 }
-               
+
             }
             return ReturnFormattedResponse(result);
         }
@@ -873,14 +877,14 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(updateMasterExpenseCommand);
             if (result.Success)
             {
-                var masterResponseData = _masterExpenseRepository.FindAsync(updateMasterExpenseCommand.Id);
+                var masterResponseData = await _masterExpenseRepository.FindAsync(updateMasterExpenseCommand.Id);
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 var addMasterExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = updateMasterExpenseCommand.Id,
-                    ExpenseTypeName = masterResponseData.Result.Name,
+                    ExpenseTypeName = masterResponseData.Name,
                     ActionType = "Activity",
-                    Remarks = masterResponseData.Result.Name + " Master Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    Remarks = masterResponseData.Name + " Master Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
                     Status = "Master Expense Updated By " + userResult.FirstName + " " + userResult.LastName,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -1366,7 +1370,8 @@ namespace POS.API.Controllers.Expense
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString(updateMasterExpenseCommand.Status));
+                            templateBody = templateBody.Replace("{EXPENSE_NO}", Convert.ToString(masterResponseData.ExpenseNo));
+                            templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(updateMasterExpenseCommand.Status));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1375,7 +1380,8 @@ namespace POS.API.Controllers.Expense
                                 IsEnableSSL = defaultSmtp.IsEnableSSL,
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
-                                Subject = "Expense Status",
+                                Subject = "Expense - " + DateTime.Now.Date.ToString("dd-MM-yyyy"),
+                                //ToAddress = userResult.UserName,
                                 ToAddress = reportingHead.UserName,
                                 CCAddress = userResult.UserName,
                                 UserName = defaultSmtp.UserName
@@ -1471,7 +1477,7 @@ namespace POS.API.Controllers.Expense
                 var response = await _mediator.Send(addExpenseTrackingCommand);
             }
             SyncMasterExpenseAmountCommand syncMasterExpenseAmountCommand = new SyncMasterExpenseAmountCommand();
-            syncMasterExpenseAmountCommand.Id= id;
+            syncMasterExpenseAmountCommand.Id = id;
             var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
 
             return ReturnFormattedResponse(result);
@@ -1492,24 +1498,24 @@ namespace POS.API.Controllers.Expense
             if (result.Success)
             {
                 string StatusMessage = null, RemarksMessage = null;
-                var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == id).FirstOrDefaultAsync();
+                var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == id).FirstOrDefaultAsync();
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
                 if (updateMasterExpenseStatusCommand.Status == "ROLLBACK")
                 {
                     StatusMessage = "Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
-                    RemarksMessage = responseData.Result.Name + " Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
+                    RemarksMessage = responseData.Name + " Master Expense Rollback Updated By " + userResult.FirstName + " " + userResult.LastName;
                 }
                 else
                 {
                     StatusMessage = "Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
-                    RemarksMessage = responseData.Result.Name + " Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
+                    RemarksMessage = responseData.Name + " Master Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName;
                 }
 
 
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
                     MasterExpenseId = id,
-                    ExpenseTypeName = responseData.Result.Name,
+                    ExpenseTypeName = responseData.Name,
                     //ActionType = "Tracker",
                     ActionType = "Activity",
                     Remarks = RemarksMessage,
@@ -1533,7 +1539,8 @@ namespace POS.API.Controllers.Expense
                         string templateBody = sr.ReadToEnd();
                         templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                         templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                        templateBody = templateBody.Replace("{STATUS}", Convert.ToString(StatusMessage));
+                        templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
+                        templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(StatusMessage));
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
@@ -1543,7 +1550,7 @@ namespace POS.API.Controllers.Expense
                             Password = defaultSmtp.Password,
                             Port = defaultSmtp.Port,
                             Subject = "Expense Status",
-                            ToAddress = responseData.Result.CreatedByUser.UserName,
+                            ToAddress = responseData.CreatedByUser.UserName,
                             CCAddress = userResult.UserName,
                             UserName = defaultSmtp.UserName
                         });
@@ -1731,7 +1738,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_DELETE_EXPENSE")]
         public async Task<IActionResult> DeleteExpenseByDate(DeleteExpenseByDateCommand deleteExpenseByDateCommand)
         {
-            
+
             var result = await _mediator.Send(deleteExpenseByDateCommand);
 
             if (result.Success)
@@ -1976,7 +1983,7 @@ namespace POS.API.Controllers.Expense
 
             if (result.Success)
             {
-                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
                 if (updateExpenseAndMasterExpenseCommand.ExpenseId.HasValue)
                 {
                     var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
@@ -2008,12 +2015,11 @@ namespace POS.API.Controllers.Expense
                 //**Email Start**
                 if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
                 {
-                    
                     string email = this._configuration.GetSection("AppSettings")["Email"];
                     if (email == "Yes")
                     {
-                        var responseData = _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
-                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                        var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseReimburse.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                         var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
@@ -2022,10 +2028,11 @@ namespace POS.API.Controllers.Expense
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("Expense REIMBURSED"));
-                            templateBody = templateBody.Replace("{AMOUNT}", Convert.ToString(responseData.Result.TotalAmount));
-                            templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.Result.PayableAmount));
-                            templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.Result.ReimbursementAmount));
+                            templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
+                            templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString("Expense REIMBURSED"));
+                            templateBody = templateBody.Replace("{TOTAL_AMOUNT}", Convert.ToString(responseData.TotalAmount));
+                            templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.PayableAmount));
+                            templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.ReimbursementAmount));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -2034,8 +2041,8 @@ namespace POS.API.Controllers.Expense
                                 IsEnableSSL = defaultSmtp.IsEnableSSL,
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
-                                Subject = "Expense Reimburse Status",
-                                ToAddress = responseData.Result.CreatedByUser.UserName,
+                                Subject = "Expense Reimbursed Status",
+                                ToAddress = responseData.CreatedByUser.UserName,
                                 CCAddress = userResult.UserName,
                                 UserName = defaultSmtp.UserName
                             });

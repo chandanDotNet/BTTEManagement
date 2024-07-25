@@ -171,6 +171,46 @@ namespace BTTEM.API.Controllers.Trip
                 };
                 var notificationResult = await _mediator.Send(addNotificationCommand);
 
+
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+                    if (addTripCommand.Status == "APPLIED")
+                    {
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddTrip.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(result.Data.TripNo));
+                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(result.Data.Status));
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(result.Data.DestinationCityName));
+                            templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(result.Data.TripType));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(result.Data.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(result.Data.SourceCityName));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(result.Data.DestinationCityName));
+                            templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(result.Data.PurposeFor));
+                            templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(result.Data.IsGroupTrip == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(result.Data.NoOfPerson == null ? "0" : result.Data.NoOfPerson));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "New Trip Request",
+                                ToAddress = reportingHead.UserName,
+                                CCAddress = userResult.UserName,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
+                    }
+                }
             }
 
             List<TripDto> tripDtoList = new List<TripDto>();
@@ -362,7 +402,8 @@ namespace BTTEM.API.Controllers.Trip
 
                 //**Email Start**
 
-                var tripDetails = await _tripRepository.AllIncluding(i => i.TripItinerarys, c => c.CreatedByUser).Where(x => x.Id == result.Data.TripItineraryId).FirstOrDefaultAsync();
+                var tripItineraryDetails = await _tripItineraryRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == result.Data.TripItineraryId).FirstOrDefaultAsync();
+                var tripDetails = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == tripItineraryDetails.TripId).FirstOrDefaultAsync();
 
                 string email = this._configuration.GetSection("AppSettings")["Email"];
                 if (email == "Yes")
@@ -373,13 +414,9 @@ namespace BTTEM.API.Controllers.Trip
                     using (StreamReader sr = new StreamReader(filePath))
                     {
                         string templateBody = sr.ReadToEnd();
-                        templateBody = templateBody.Replace("{NAME}", string.Concat(tripDetails.CreatedByUser.FirstName, " ", tripDetails.CreatedByUser.LastName));
-                        //templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.Result.DestinationCityName));
-                        //templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.Result.TripType));
-                        //templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.Result.TripStarts.ToString("dd MMMM yyyy")));
-                        //templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCityName));
-                        //templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCityName));
-                        //templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.Result.PurposeFor));
+                        templateBody = templateBody.Replace("{NAME}", string.Concat(tripItineraryDetails.CreatedByUser.FirstName, " ", tripItineraryDetails.CreatedByUser.LastName));
+                        templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripDetails.TripNo));
+                        templateBody = templateBody.Replace("{TICKET}", Path.Combine(_webHostEnvironment.WebRootPath, "TravelDeskAttachments", result.Data.TicketReceiptPath));
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
@@ -875,12 +912,16 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
+                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
+                            templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(responseData.IsGroupTrip == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -907,12 +948,16 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
+                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
+                            templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(responseData.IsGroupTrip == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
