@@ -93,7 +93,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                     userAllExpenseReportDetails.ReimbursementAmount = (decimal)rdr["ReimbursementAmount"];
                     userAllExpenseReportDetailsList.Add(userAllExpenseReportDetails);
                 }
-                con.Close();
+                con.Close(); 
             }
 
             //========= User Expense Report Details
