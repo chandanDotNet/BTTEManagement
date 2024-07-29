@@ -128,7 +128,7 @@ namespace BTTEM.API.Controllers.Trip
             //    //ss.Errors = false;
             //    // var sss= ReturnFormattedResponse(ss);
             //    //sss.ShapeData = 500;
-            //    //return Ok(sss);
+            //    //return Ok(sss); 
             //    // return (IActionResult)ServiceResponse<List<TripDto>>.Return500();
             //}
             //var trip2 = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripEnds && a.TripEnds >= addTripCommand.TripEnds && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
