@@ -67,8 +67,8 @@ namespace POS.API.Controllers.Authentication
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> Signup()
+        [HttpGet("GetSignupButtonStatus")]
+        public async Task<IActionResult> SignupStatus()
         {
             var result = this._configuration.GetSection("SignUpCheck")["Signup"];
             ResponseData response = new ResponseData();
