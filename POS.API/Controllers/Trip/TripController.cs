@@ -187,7 +187,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(result.Data.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(result.Data.Status));
-                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(result.Data.DestinationCityName));
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(result.Data.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(result.Data.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(result.Data.TripStarts.ToString("dd MMMM yyyy")));
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(result.Data.SourceCityName));
@@ -914,7 +914,7 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                        var reportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
 
                         using (StreamReader sr = new StreamReader(filePath))
                         {
@@ -922,7 +922,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
-                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DestinationCityName));
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
@@ -958,7 +958,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
-                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DestinationCityName));
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));

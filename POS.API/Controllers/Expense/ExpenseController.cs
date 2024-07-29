@@ -840,6 +840,7 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(addMasterExpenseCommand.NoOfBill));
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(addMasterExpenseCommand.IsGroupExpense == true ? "Yes" : "No"));
                             templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(addMasterExpenseCommand.NoOfPerson == null ? "0" : addMasterExpenseCommand.NoOfPerson));
+                            templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(addMasterExpenseCommand.Status));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1389,6 +1390,11 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{EXPENSE_NO}", Convert.ToString(masterResponseData.ExpenseNo));
+                            templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(masterResponseData.TotalAmount));
+                            templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(masterResponseData.ExpenseType));
+                            templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(masterResponseData.NoOfBill));
+                            templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(masterResponseData.IsGroupExpense == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(masterResponseData.NoOfPerson == null ? "0" : masterResponseData.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(updateMasterExpenseCommand.Status));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
@@ -1558,7 +1564,12 @@ namespace POS.API.Controllers.Expense
                         templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                         templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                         templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
-                        templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(StatusMessage));
+                        templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(responseData.TotalAmount));
+                        templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(responseData.ExpenseType));
+                        templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(responseData.NoOfBill));
+                        templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
+                        templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+                        templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));                       
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
@@ -2047,7 +2058,7 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
-                            templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString("Expense REIMBURSED"));
+                            templateBody = templateBody.Replace("{REIMBURMENT_STATUS}", Convert.ToString(responseData.ReimbursementStatus));
                             templateBody = templateBody.Replace("{TOTAL_AMOUNT}", Convert.ToString(responseData.TotalAmount));
                             templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.PayableAmount));
                             templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.ReimbursementAmount));
