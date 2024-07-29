@@ -1,7 +1,10 @@
-﻿using BTTEM.Data.Entities;
+﻿using Azure;
+using BTTEM.Data.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using POS.Data.Dto;
 using POS.MediatR.CommandAndQuery;
 using System.Threading.Tasks;
@@ -13,9 +16,11 @@ namespace POS.API.Controllers.Authentication
     public class AuthenticationController : BaseController
     {
         public IMediator _mediator;
-        public AuthenticationController(IMediator mediator)
+        private IConfiguration _configuration;
+        public AuthenticationController(IMediator mediator, IConfiguration configuration)
         {
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -57,6 +62,27 @@ namespace POS.API.Controllers.Authentication
                 response.StatusCode = result.StatusCode;
                 response.message = "Login failed. Username/Password incorrect.";
                 response.Data = new UserAuthDto();
+            }
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Signup()
+        {
+            var result = this._configuration.GetSection("SignUpCheck")["Signup"];
+            ResponseData response = new ResponseData();
+            if (result == "True")
+            {
+                response.status = true;
+                response.StatusCode = 200;
+                response.message = "Success";
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = 404;
+                response.message = "Failed";
             }
             return Ok(response);
         }
