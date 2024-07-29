@@ -137,6 +137,40 @@ namespace BTTEM.Data.Entities
 
     }
 
+
+    public class AllReportDetails
+    {
+        public UserExpenseReportDetails UserExpenseReportDetails { get; set; }
+        public IList<UserAllTripReportDetails> UserAllTripReportDetailsList { get; set; } = new List<UserAllTripReportDetails>();
+        public IList<UserAllExpenseReportDetails> UserAllExpenseReportDetailsList { get; set; } = new List<UserAllExpenseReportDetails>();
+    }
+    public class UserExpenseReportDetails
+    {
+        public int NoOfTrips { get; set; }
+        public int NoOfExpenses { get; set; }
+        public decimal ApplyAmount { get; set; }
+        public decimal PayableAmount { get; set; }
+        public decimal ReimbursementAmount { get; set; }
+    }
+    public class UserAllTripReportDetails
+    {
+        public Guid Id { get; set; }
+        public string TripNo { get; set; }
+        public string TripName { get; set; }
+        public string TripStarts { get; set; }
+        public string TripEnds { get; set; }
+        
+    }
+    public class UserAllExpenseReportDetails
+    {
+        public Guid Id { get; set; }
+        public string ExpenseNo { get; set; }
+        public string ExpenseType { get; set; }
+        public decimal ApplyAmount { get; set; }
+        public decimal PayableAmount { get; set; }
+        public decimal ReimbursementAmount { get; set; }
+    }
+
     public class YearlyExpenseReportList
     {
         public int Month { get; set; }

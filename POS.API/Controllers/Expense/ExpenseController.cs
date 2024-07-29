@@ -2543,6 +2543,21 @@ namespace POS.API.Controllers.Expense
 
         }
 
+        /// <summary>
+        /// Get All Report Data
+        /// </summary>       
+        /// <returns></returns>
+        [HttpPost("GetAllReportUserWise")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetAllReportUserWise(GetAllReportQuery getAllReportQuery)
+        {
+            
+            var result = await _mediator.Send(getAllReportQuery);           
+
+            return Ok(result);
+
+        }
+
 
         /// <summary>
         /// Gets All Expense By Trip  
