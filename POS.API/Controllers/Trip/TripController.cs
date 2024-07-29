@@ -126,7 +126,7 @@ namespace BTTEM.API.Controllers.Trip
             //    return Ok(tripDetailsData);
             //    //var ss= ServiceResponse<List<TripDto>>.ReturnResultWith402(trip10);               
             //    //ss.Errors = false;
-            //    // var sss= ReturnFormattedResponse(ss);
+            //    // var sss= ReturnFormattedResponse(ss); 
             //    //sss.ShapeData = 500;
             //    //return Ok(sss); 
             //    // return (IActionResult)ServiceResponse<List<TripDto>>.Return500();
