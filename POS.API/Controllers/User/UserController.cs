@@ -71,6 +71,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="addUserCommand"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [ClaimCheck("USR_ADD_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
