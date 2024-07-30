@@ -132,6 +132,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="userResource"></param> 
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetUsers")]
         //[ClaimCheck("USR_VIEW_USERS")]
         [Produces("application/json", "application/xml", Type = typeof(UserList))]

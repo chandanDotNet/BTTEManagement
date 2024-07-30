@@ -67,7 +67,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-
+        
         [HttpGet("{id}", Name = "GetRole")]
         //[ClaimCheck("ROLES_VIEW_ROLES")]
         [Produces("application/json", "application/xml", Type = typeof(RoleDto))]
@@ -82,6 +82,7 @@ namespace POS.API.Controllers
         /// Get All Roles
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet(Name = "GetRoles")]
         //[ClaimCheck("ROLES_VIEW_ROLES")]
         [Produces("application/json", "application/xml", Type = typeof(List<RoleDto>))]
