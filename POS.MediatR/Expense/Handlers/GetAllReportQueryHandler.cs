@@ -80,7 +80,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                 cmd.Parameters.AddWithValue("@ToDate", request.ToDate);
 
                 con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader(); 
+                SqlDataReader rdr = cmd.ExecuteReader();  
 
                 while (rdr.Read())
                 {
