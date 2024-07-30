@@ -19,7 +19,6 @@ namespace POS.API.Controllers.CompanyProfile
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CompanyProfileController : BaseController
     {
 
