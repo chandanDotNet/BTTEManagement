@@ -73,7 +73,7 @@ namespace POS.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [ClaimCheck("USR_ADD_USER")]
+        //[ClaimCheck("USR_ADD_USER")]
         [Produces("application/json", "application/xml", Type = typeof(UserDto))]
         public async Task<IActionResult> AddUser(AddUserCommand addUserCommand)
         {
