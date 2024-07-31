@@ -81,23 +81,6 @@ namespace BTTEM.API.Controllers.Branch
             return ReturnFormattedResponse(result);
         }
 
-        /// <summary>
-        ///  Create a new User
-        /// </summary>
-        /// <param name="addUserCommand"></param>
-        /// <returns></returns>
-        //[AllowAnonymous]
-        [HttpPost("CreateNewUsers")]
-        //[ClaimCheck("USR_ADD_USER")]
-        [Produces("application/json", "application/xml", Type = typeof(UserDto))]
-        public async Task<IActionResult> AddUser(AddUserCommand addUserCommand)
-        {
-            var result = await _mediator.Send(addUserCommand);
-            if (!result.Success)
-            {
-                return ReturnFormattedResponse(result);
-            }
-            return CreatedAtAction("GetUser", new { id = result.Data.Id }, result.Data);
-        }
+        
     }
 }
