@@ -13,7 +13,7 @@ namespace POS.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsDeleted { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public string ProfilePhoto { get; set; }
         public string Provider { get; set; }
         public string Address { get; set; }
