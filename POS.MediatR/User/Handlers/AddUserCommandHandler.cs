@@ -67,6 +67,15 @@ namespace POS.MediatR.Handlers
             entity.ModifiedDate = DateTime.Now;
             entity.Id = Guid.NewGuid();
 
+            if (entity.UserRoles == null || entity.UserRoles.Count == 0)
+            {
+                entity.UserRoles.Add(new UserRole()
+                {
+                    RoleId = new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4"),
+                    UserId = entity.Id                    
+                });
+            }
+
             if (!string.IsNullOrEmpty(request.ImgSrc))
             {
                 var imgageUrl = $"{Guid.NewGuid()}.png";
