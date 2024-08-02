@@ -71,7 +71,7 @@ namespace BTTEM.API.Controllers.Branch
         /// <summary>
         /// Delete Branch.
         /// </summary>
-        /// <param name="deleteBranchCommand"></param>
+        /// <param name="deleteBranchCommand"></param> 
         /// <returns></returns>
         [HttpDelete]
         [Produces("application/json", "application/xml", Type = typeof(BranchDto))]
