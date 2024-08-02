@@ -37,3 +37,4 @@ msbuild.wrn
 /POS.API/wwwroot/Attachments
 /POS.API/wwwroot/Users/
 /POS.API/wwwroot/TravelDeskAttachments
+/POS.API/Properties/PublishProfiles

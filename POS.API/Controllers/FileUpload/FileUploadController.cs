@@ -46,7 +46,7 @@ namespace POS.API.Controllers.FileUpload
         [AllowAnonymous]
         [HttpGet("APKAdnroid")]
         public IActionResult DownloadAndroid()
-        {   
+        {
             return Redirect("https://play.google.com/store/apps/details?id=com.travel.sfdesk");
         }
 
