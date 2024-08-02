@@ -574,24 +574,29 @@ namespace POS.API.Controllers.Expense
                                         localNoOfDays = ExpenseDetailsList.Count();
                                     }
 
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
-                                    if (expenseAmount > PoliciesLodgingFooding)
+                                    // decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
+                                    //if (expenseAmount > PoliciesLodgingFooding)
+                                    //{
+                                    //    IsDeviation = true;
+                                    //}
+                                    //else
+                                    //{
+                                    if (expenseList.Count > 0)
                                     {
-                                        IsDeviation = true;
-                                    }
-                                    else
-                                    {
-                                        if (expenseList.Count > 0)
+                                        foreach (var expense in expenseList)
                                         {
-                                            foreach (var expense in expenseList)
+                                            if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
+
                                         }
                                     }
+                                    //}
                                 }
 
                             }
@@ -607,16 +612,19 @@ namespace POS.API.Controllers.Expense
                                         localNoOfDays = ExpenseDetailsList.Count();
                                     }
 
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
-                                    if (expenseAmount > PoliciesLodgingFooding)
+                                    //decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
+                                    //if (expenseAmount > PoliciesLodgingFooding)
+                                    //{
+                                    //    IsDeviation = true;
+                                    //}
+                                    //else
+                                    //{
+                                    if (expenseList.Count > 0)
                                     {
-                                        IsDeviation = true;
-                                    }
-                                    else
-                                    {
-                                        if (expenseList.Count > 0)
+                                        foreach (var expense in expenseList)
                                         {
-                                            foreach (var expense in expenseList)
+                                            if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -625,6 +633,7 @@ namespace POS.API.Controllers.Expense
                                             }
                                         }
                                     }
+                                    //}
                                 }
 
                             }
@@ -1037,34 +1046,46 @@ namespace POS.API.Controllers.Expense
                                     {
                                         localNoOfDays = ExpenseDetailsList.Count();
                                     }
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
-                                    if (expenseAmount > PoliciesLodgingFooding)
+                                    // decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
+                                    //if (expenseAmount > PoliciesLodgingFooding)
+                                    //{
+                                    //    IsDeviation = true;
+                                    //    if (expenseList.Count > 0)
+                                    //    {
+                                    //        foreach (var expense in expenseList)
+                                    //        {
+                                    //            updateExpenseStatusCommand.Id = expense.Id;
+                                    //            updateExpenseStatusCommand.Status = "PENDING";
+                                    //            updateExpenseStatusCommand.PayableAmount = 0;
+                                    //            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                    //        }
+                                    //    }
+                                    //}
+                                    //else
+                                    //{
+                                    if (expenseList.Count > 0)
                                     {
-                                        IsDeviation = true;
-                                        if (expenseList.Count > 0)
+                                        foreach (var expense in expenseList)
                                         {
-                                            foreach (var expense in expenseList)
-                                            {
-                                                updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.Status = "PENDING";
-                                                updateExpenseStatusCommand.PayableAmount = 0;
-                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (expenseList.Count > 0)
-                                        {
-                                            foreach (var expense in expenseList)
+                                            if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+
                                         }
                                     }
+                                    //}
                                 }
 
                             }
@@ -1079,34 +1100,46 @@ namespace POS.API.Controllers.Expense
                                     {
                                         localNoOfDays = ExpenseDetailsList.Count();
                                     }
-                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
-                                    if (expenseAmount > PoliciesLodgingFooding)
+                                    //decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
+                                    decimal PoliciesLodgingFooding = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
+                                    //if (expenseAmount > PoliciesLodgingFooding)
+                                    //{
+                                    //    IsDeviation = true;
+                                    //    if (expenseList.Count > 0)
+                                    //    {
+                                    //        foreach (var expense in expenseList)
+                                    //        {
+                                    //            updateExpenseStatusCommand.Id = expense.Id;
+                                    //            updateExpenseStatusCommand.Status = "PENDING";
+                                    //            updateExpenseStatusCommand.PayableAmount = 0;
+                                    //            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                    //        }
+                                    //    }
+                                    //}
+                                    //else
+                                    //{
+                                    if (expenseList.Count > 0)
                                     {
-                                        IsDeviation = true;
-                                        if (expenseList.Count > 0)
+                                        foreach (var expense in expenseList)
                                         {
-                                            foreach (var expense in expenseList)
-                                            {
-                                                updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.Status = "PENDING";
-                                                updateExpenseStatusCommand.PayableAmount = 0;
-                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (expenseList.Count > 0)
-                                        {
-                                            foreach (var expense in expenseList)
+                                            if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Id = expense.Id;
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                                var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                            }
+
                                         }
                                     }
+                                    //}
                                 }
 
                             }
@@ -1569,7 +1602,7 @@ namespace POS.API.Controllers.Expense
                         templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(responseData.NoOfBill));
                         templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
                         templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
-                        templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));                       
+                        templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
@@ -2502,7 +2535,7 @@ namespace POS.API.Controllers.Expense
             }
 
             responseData.MaseterExpense.NoOfPendingAction = result.FirstOrDefault().Expenses
-            .Where(x => x.Amount > 0 && x.Status == "PENDING"|| x.Status == null || x.Status == string.Empty).Count();
+            .Where(x => x.Amount > 0 && x.Status == "PENDING" || x.Status == null || x.Status == string.Empty).Count();
 
             responseData.MaseterExpense.NoOfPendingReimbursementAction = result.FirstOrDefault().Expenses
             .Where(x => x.Amount > 0 && x.Status == "APPROVED" && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();
@@ -2551,8 +2584,8 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetAllReportUserWise(GetAllReportQuery getAllReportQuery)
         {
-            
-            var result = await _mediator.Send(getAllReportQuery);           
+
+            var result = await _mediator.Send(getAllReportQuery);
 
             return Ok(result);
 
