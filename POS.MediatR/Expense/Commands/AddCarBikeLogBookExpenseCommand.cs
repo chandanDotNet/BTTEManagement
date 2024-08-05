@@ -14,7 +14,10 @@ namespace BTTEM.MediatR.CommandAndQuery
     {
 
         public Guid MasterExpenseId { get; set; }
-        public DateTime ExpenseDate { get; set; }
+        public string ExpenseType { get; set; }
+        public string FuelType { get; set; }
+        public DateTime ExpenseDateFrom { get; set; }
+        public DateTime ExpenseDateTo { get; set; }
         public string From { get; set; }
         public string To { get; set; }
         public string PlaceOfVisitDepartment { get; set; }
@@ -23,9 +26,12 @@ namespace BTTEM.MediatR.CommandAndQuery
         public decimal ConsumptionKMS { get; set; } = 0;
         public decimal RefillingLiters { get; set; } = 0;
         public decimal RefillingAmount { get; set; } = 0;
+        public string RefillingDocument { get; set; }
         public string FuelBillNo { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
+        public string TollParking { get; set; }
+        public string TollParkingDocument { get; set; }
         public List<CarBikeLogBookExpenseDocumentDto> Documents { get; set; }
     }
 }

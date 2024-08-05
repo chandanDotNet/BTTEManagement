@@ -28,6 +28,24 @@ namespace POS.Helper
             }
         }
 
+        public string TollParkingDocumnentPath
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:TollParkingDocument"];
+            }
+        }
+
+        public string RefillingDocumnentPath
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:RefillingDocumnent"];
+            }
+        }
+
+
+
         public string ProductImagePath
         {
             get

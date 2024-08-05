@@ -1,4 +1,5 @@
 ﻿using BTTEM.Data;
+using BTTEM.Data.Resources;
 using POS.Common.GenericRepository;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,6 @@ namespace BTTEM.Repository
 {
     public interface IVendorRepository : IGenericRepository<Vendor>
     {
+        Task<VendorList> GetVendors(VendorResource vendorResource);
     }
 }

@@ -386,6 +386,12 @@ namespace POS.Repository
                 { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" },true ) }
      };
 
+        private Dictionary<string, PropertyMappingValue> _vendorPropertyMapping =
+      new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+      {
+                { "VendorName", new PropertyMappingValue(new List<string>() { "VendorName" },true ) }
+      };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -422,6 +428,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<HelpSupportDto, HelpSupport>(_helpSupportPropertyMapping));
             propertyMappings.Add(new PropertyMapping<LocalConveyanceExpenseDto, LocalConveyanceExpense>(_localConveyanceExpensePropertyMapping));
             propertyMappings.Add(new PropertyMapping<CarBikeLogBookExpenseDto, CarBikeLogBookExpense>(_carBikeLogBookExpensePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<VendorDto, Vendor>(_vendorPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

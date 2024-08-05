@@ -1,5 +1,8 @@
 ﻿using BTTEM.Data.Dto;
+using BTTEM.Data.Resources;
+using BTTEM.MediatR.Branch.Command;
 using BTTEM.MediatR.Command;
+using BTTEM.MediatR.Vendor.Command;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -90,14 +93,33 @@ namespace BTTEM.API.Controllers.Vendor
         /// Get Vendors.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Vendors")]
+        [HttpGet("GetAllVendors")]
         [Produces("application/json", "application/xml", Type = typeof(List<VendorDto>))]
-        public async Task<IActionResult> GetVendors()
+        public async Task<IActionResult> GetAllVendors()
         {
             var getAllVendorCommand = new GetAllVendorCommand { };
             var result = await _mediator.Send(getAllVendorCommand);
             return Ok(result);
         }
 
+        [HttpGet("GetVendors")]
+        public async Task<IActionResult> GetVendors([FromQuery] VendorResource vendorResource)
+        {
+            var getAllVendorQueryCommand = new GetAllVendorQueryCommand()
+            {
+                VendorResource = vendorResource
+            };
+            var result = await _mediator.Send(getAllVendorQueryCommand);
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
     }
 }

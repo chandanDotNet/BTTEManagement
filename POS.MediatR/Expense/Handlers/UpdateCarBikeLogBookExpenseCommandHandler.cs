@@ -74,7 +74,10 @@ namespace BTTEM.MediatR.Handlers
                     return ServiceResponse<bool>.Return409("Expense does not exists.");
                 }
 
-                entityExist.ExpenseDate = request.ExpenseDate;
+                entityExist.ExpenseDateFrom = request.ExpenseDateFrom;
+                entityExist.ExpenseDateTo = request.ExpenseDateTo;
+                entityExist.ExpenseType = request.ExpenseType;
+                entityExist.FuelType = request.FuelType;
 
                 if (!string.IsNullOrEmpty(request.Status))
                 {
@@ -122,7 +125,15 @@ namespace BTTEM.MediatR.Handlers
                     entityExist.Remarks = request.Remarks;
                 }
 
+                if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+                {
+                    entityExist.RefillingUrl = Guid.NewGuid().ToString() + ".png";
+                }
 
+                if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+                {
+                    entityExist.TollParkingUrl = Guid.NewGuid().ToString() + ".png";
+                }
 
                 foreach (var item in request.Documents)
                 {
@@ -162,6 +173,27 @@ namespace BTTEM.MediatR.Handlers
                     _carBikeLogBookExpenseDocumentRepository.Add(entityExpenseDocument);
                 }
                 _carBikeLogBookExpenseRepository.Update(entityExist);
+
+
+                if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+                {
+                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.RefillingDocumnentPath);
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+                    await FileData.SaveFile(Path.Combine(pathToSave, entityExist.RefillingUrl), request.RefillingDocument);
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+                {
+                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TollParkingDocumnentPath);
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+                    await FileData.SaveFile(Path.Combine(pathToSave, entityExist.RefillingUrl), request.TollParkingDocument);
+                }
             }
             else
             {
@@ -205,14 +237,30 @@ namespace BTTEM.MediatR.Handlers
                         }
                     }
                     index++;
-
                 }
 
-
                 _carBikeLogBookExpenseRepository.Add(entity);
-            }
 
-            
+                if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+                {
+                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.RefillingDocumnentPath);
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+                    await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.RefillingDocument);
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+                {
+                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TollParkingDocumnentPath);
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+                    await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.TollParkingDocument);
+                }
+            }            
 
             if (await _uow.SaveAsync() <= 0)
             {

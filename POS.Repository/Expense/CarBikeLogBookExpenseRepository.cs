@@ -8,6 +8,7 @@ using POS.Common.GenericRepository;
 using POS.Common.UnitOfWork;
 using POS.Data.Dto;
 using POS.Domain;
+using POS.Helper;
 using POS.Repository;
 using System;
 using System.Collections.Generic;
@@ -25,18 +26,21 @@ namespace BTTEM.Repository
         private readonly IMapper _mapper;
         private readonly UserInfoToken _userInfoToken;
         private readonly IUserRoleRepository _userRoleRepository;
+        private readonly PathHelper _pathHelper;
         public CarBikeLogBookExpenseRepository(
             IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
             IMapper mapper,
              UserInfoToken userInfoToken,
-              IUserRoleRepository userRoleRepository
+              IUserRoleRepository userRoleRepository,
+              PathHelper pathHelper
             ) : base(uow)
         {
             _propertyMappingService = propertyMappingService;
             _mapper = mapper;
             _userInfoToken = userInfoToken;
             _userRoleRepository = userRoleRepository;
+            _pathHelper = pathHelper;
         }
 
         public async Task<CarBikeLogBookExpenseList> GetAllCarBikeLogBookExpense(CarBikeLogBookExpenseResource expenseResource)
@@ -104,12 +108,12 @@ namespace BTTEM.Repository
             if (expenseResource.FromDate.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.ExpenseDate >= new DateTime(expenseResource.FromDate.Value.Year, expenseResource.FromDate.Value.Month, expenseResource.FromDate.Value.Day, 0, 0, 1));
+                    .Where(a => a.ExpenseDateFrom >= new DateTime(expenseResource.FromDate.Value.Year, expenseResource.FromDate.Value.Month, expenseResource.FromDate.Value.Day, 0, 0, 1));
             }
             if (expenseResource.ToDate.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.ExpenseDate <= new DateTime(expenseResource.ToDate.Value.Year, expenseResource.ToDate.Value.Month, expenseResource.ToDate.Value.Day, 23, 59, 59));
+                    .Where(a => a.ExpenseDateTo <= new DateTime(expenseResource.ToDate.Value.Year, expenseResource.ToDate.Value.Month, expenseResource.ToDate.Value.Day, 23, 59, 59));
             }
 
             if (!string.IsNullOrEmpty(expenseResource.SearchQuery))
@@ -130,7 +134,7 @@ namespace BTTEM.Repository
                     );
             }
 
-            return await new CarBikeLogBookExpenseList(_mapper).Create(collectionBeforePaging,
+            return await new CarBikeLogBookExpenseList(_mapper,_pathHelper).Create(collectionBeforePaging,
               expenseResource.Skip,
               expenseResource.PageSize);
 

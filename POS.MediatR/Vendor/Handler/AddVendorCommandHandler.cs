@@ -44,7 +44,7 @@ namespace BTTEM.MediatR.Handler
                 return ServiceResponse<VendorDto>.Return409("Vendor already exist.");
             }
             request.Id = Guid.NewGuid();
-            var entity = _mapper.Map<Vendor>(request);
+            var entity = _mapper.Map<Data.Vendor>(request);
             _vendorRepository.Add(entity);
             if (await _uow.SaveAsync() <= 0)
             {

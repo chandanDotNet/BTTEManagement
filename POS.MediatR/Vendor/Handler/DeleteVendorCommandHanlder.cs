@@ -40,7 +40,7 @@ namespace BTTEM.MediatR.Handler
                 _logger.LogError("Vendor not exist.");
                 return ServiceResponse<bool>.Return409("Vendor not exist.");
             }
-            var entity = _mapper.Map<Vendor>(entityExist);
+            var entity = _mapper.Map<Data.Vendor>(entityExist);
             _vendorRepository.Delete(entity);
             if (await _uow.SaveAsync() <= 0)
             {
