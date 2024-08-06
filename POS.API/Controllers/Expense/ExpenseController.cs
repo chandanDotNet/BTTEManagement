@@ -138,6 +138,34 @@ namespace POS.API.Controllers.Expense
         }
 
         /// <summary>
+        /// Add Local Con Expenses for App
+        /// </summary>
+        /// <param name="addLocalConveyanceExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddLocalConveyanceExpenseForApp")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddLocalConveyanceExpenseForApp(AddLocalConveyanceExpenseForAppCommand addLocalConveyanceExpenseForAppCommand)
+        {
+            ResponseData responseData = new ResponseData();
+            foreach (var item in addLocalConveyanceExpenseForAppCommand.addLocalConveyanceExpenseData)
+            {
+                AddLocalConveyanceExpenseCommand addLocalConveyanceExpenseCommand = new AddLocalConveyanceExpenseCommand();
+                addLocalConveyanceExpenseCommand = item;
+                var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+            }
+
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
+
+        }
+
+        /// <summary>
         /// Add Local Conveyance Expense Document
         /// </summary>
         /// <param name="addLocalConveyanceExpenseDocumentCommand"></param>
@@ -165,6 +193,36 @@ namespace POS.API.Controllers.Expense
         {
             ResponseData responseData = new ResponseData();
             foreach (var item in updateLocalConveyanceExpenseCommandList)
+            {
+                UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand = new UpdateLocalConveyanceExpenseCommand();
+                updateLocalConveyanceExpenseCommand = item;
+                var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+            }
+
+            // var result = await _mediator.Send(updateLocalConveyanceExpenseCommand);
+
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
+
+        }
+
+        // <summary>
+        /// Update Local Conveyance Expenses
+        /// </summary>
+        /// <param name="updateMasterExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateLocalConveyanceExpenseForApp")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateLocalConveyanceExpenseForApp(UpdateLocalConveyanceExpenseForAppCommand updateLocalConveyanceExpenseForAppCommand)
+        {
+            ResponseData responseData = new ResponseData();
+            foreach (var item in updateLocalConveyanceExpenseForAppCommand.updateLocalConveyanceExpenseData)
             {
                 UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand = new UpdateLocalConveyanceExpenseCommand();
                 updateLocalConveyanceExpenseCommand = item;
@@ -548,7 +606,6 @@ namespace POS.API.Controllers.Expense
                             //--Fare
                             if (item.Id == new Guid("DCAA05B6-5F1E-402F-835E-0704A3A1A455"))
                             {
-
                                 if (expenseList.Count > 0)
                                 {
                                     foreach (var expense in expenseList)
@@ -559,7 +616,6 @@ namespace POS.API.Controllers.Expense
                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                     }
                                 }
-
                             }
 
                             //--Lodging (Metro City)
@@ -593,7 +649,6 @@ namespace POS.API.Controllers.Expense
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
-
                                         }
                                     }
                                     //}
@@ -749,26 +804,37 @@ namespace POS.API.Controllers.Expense
                                 decimal DA = 0;
                                 if (resultPoliciesDetail.FirstOrDefault().DailyAllowance != null)
                                 {
-                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
+                                    //DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
+                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance;
                                 }
 
-                                if (expenseAmount > DA)
+                                //if (expenseAmount > DA)
+                                //{
+                                //    IsDeviation = true;
+                                //}
+                                //else
+                                //{
+                                if (expenseList.Count > 0)
                                 {
-                                    IsDeviation = true;
-                                }
-                                else
-                                {
-                                    if (expenseList.Count > 0)
+                                    foreach (var expense in expenseList)
                                     {
-                                        foreach (var expense in expenseList)
+                                        if (expense.Amount <= DA)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
+                                        else
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "PENDING";
+                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
                                     }
                                 }
+                                //}
                             }
                             //--Fooding Allowance
                             if (item.Id == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
@@ -1275,36 +1341,48 @@ namespace POS.API.Controllers.Expense
                                 decimal DA = 0;
                                 if (resultPoliciesDetail.FirstOrDefault().DailyAllowance != null)
                                 {
-                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
+                                    //DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
+                                    DA = (decimal)resultPoliciesDetail.FirstOrDefault().DailyAllowance;
                                 }
 
-                                if (expenseAmount > DA)
+                                //if (expenseAmount > DA)
+                                //{
+                                IsDeviation = true;
+                                if (expenseList.Count > 0)
                                 {
-                                    IsDeviation = true;
-                                    if (expenseList.Count > 0)
+                                    foreach (var expense in expenseList)
                                     {
-                                        foreach (var expense in expenseList)
-                                        {
-                                            updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = "PENDING";
-                                            updateExpenseStatusCommand.PayableAmount = 0;
-                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (expenseList.Count > 0)
-                                    {
-                                        foreach (var expense in expenseList)
+                                        if (expense.Amount <= DA)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
+                                        else
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "PENDING";
+                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+
                                     }
                                 }
+                                //}
+                                //else
+                                //{
+                                //    if (expenseList.Count > 0)
+                                //    {
+                                //        foreach (var expense in expenseList)
+                                //        {
+                                //            updateExpenseStatusCommand.Id = expense.Id;
+                                //            updateExpenseStatusCommand.Status = "APPROVED";
+                                //            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                //            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                //        }
+                                //    }
+                                //}
                             }
                             //--Fooding Allowance
                             if (item.Id == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
@@ -2431,6 +2509,18 @@ namespace POS.API.Controllers.Expense
                             localNoOfDays = ExpenseDetailsList.Count();
                         }
                         item.AllowedAmount = resultPoliciesLodgingFooding.MetroCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
+                        item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                        decimal DeviationAmount = 0;
+                        foreach (var itm in expenseData)
+                        {
+                            decimal LoclDeviationAmount = 0;
+                            if (itm.Amount > resultPoliciesLodgingFooding.MetroCitiesUptoAmount)
+                            {
+                                LoclDeviationAmount = (itm.Amount - resultPoliciesLodgingFooding.MetroCitiesUptoAmount);
+                                DeviationAmount = DeviationAmount + LoclDeviationAmount;
+                            }
+                        }
+                        item.DeviationAmount = DeviationAmount;
                     }
                     //-- Lodging (Other City)
                     if (item.ExpenseCategoryId == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D"))
@@ -2442,11 +2532,35 @@ namespace POS.API.Controllers.Expense
                             localNoOfDays = ExpenseDetailsList.Count();
                         }
                         item.AllowedAmount = resultPoliciesLodgingFooding.OtherCitiesUptoAmount * Convert.ToDecimal(localNoOfDays);
+                        item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                        decimal DeviationAmount = 0;
+                        foreach (var itm in expenseData)
+                        {
+                            decimal LoclDeviationAmount = 0;
+                            if (itm.Amount > resultPoliciesLodgingFooding.OtherCitiesUptoAmount)
+                            {
+                                LoclDeviationAmount = (itm.Amount - resultPoliciesLodgingFooding.OtherCitiesUptoAmount);
+                                DeviationAmount = DeviationAmount + LoclDeviationAmount;
+                            }
+                        }
+                        item.DeviationAmount = DeviationAmount;
                     }
                     //--MISC /DA
                     if (item.ExpenseCategoryId == new Guid("ED69E9A0-2D54-4A91-A598-F79973B9FE99"))
                     {
                         item.AllowedAmount = resultPoliciesDetail.FirstOrDefault().DailyAllowance * Convert.ToDecimal(noOfDays);
+                        item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                        decimal DeviationAmount = 0;
+                        foreach (var itm in expenseData)
+                        {
+                            decimal LoclDeviationAmount = 0;
+                            if (itm.Amount > resultPoliciesDetail.FirstOrDefault().DailyAllowance)
+                            {
+                                LoclDeviationAmount = (itm.Amount - resultPoliciesDetail.FirstOrDefault().DailyAllowance);
+                                DeviationAmount = DeviationAmount + LoclDeviationAmount;
+                            }
+                        }
+                        item.DeviationAmount = DeviationAmount;
                     }
                     //--Fooding Allowance
                     if (item.ExpenseCategoryId == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
@@ -2458,6 +2572,11 @@ namespace POS.API.Controllers.Expense
                             localNoOfDays = ExpenseDetailsList.Count();
                         }
                         item.AllowedAmount = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(localNoOfDays);
+                        item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                        if (item.ExpenseAmount >= item.AllowedAmount)
+                        {
+                            item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
+                        }
                     }
                     //--Conveyance (within a City)
                     if (item.ExpenseCategoryId == new Guid("B1977DB3-D909-4936-A5DA-41BF84638963"))
@@ -2480,6 +2599,12 @@ namespace POS.API.Controllers.Expense
                                 else
                                 {
                                     item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                                }
+
+                                item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                                if (item.ExpenseAmount >= item.AllowedAmount)
+                                {
+                                    item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                                 }
                             }
 
@@ -2509,6 +2634,12 @@ namespace POS.API.Controllers.Expense
                                 }
                             }
 
+                            item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                            if (item.ExpenseAmount >= item.AllowedAmount)
+                            {
+                                item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
+                            }
+
                         }
                     }
 
@@ -2516,20 +2647,42 @@ namespace POS.API.Controllers.Expense
                     if (item.ExpenseCategoryId == new Guid("DCAA05B6-5F1E-402F-835E-0704A3A1A455"))
                     {
                         item.AllowedAmount = expenseData.Sum(x => x.Amount);
-                    }
-                    //--Others
-                    if (item.ExpenseCategoryId == new Guid("6C3EB31C-DF53-495A-B871-E2EB3CEF74D2"))
-                    {
-                        item.AllowedAmount = expenseData.Sum(x => x.Amount);
-                    }
-                    if (expenseData != null)
-                    {
                         item.ExpenseAmount = expenseData.Sum(x => x.Amount);
                         if (item.ExpenseAmount >= item.AllowedAmount)
                         {
                             item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                         }
+                    }
+                    //--Others
+                    if (item.ExpenseCategoryId == new Guid("6C3EB31C-DF53-495A-B871-E2EB3CEF74D2"))
+                    {
+                        item.AllowedAmount = expenseData.Sum(x => x.Amount);
+                        item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                        if (item.ExpenseAmount >= item.AllowedAmount)
+                        {
+                            item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
+                        }
+                    }
+                    if (expenseData != null)
+                    {
+                        //decimal DeviationAmount = 0;
+                        //item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+                        //if (item.ExpenseAmount >= item.AllowedAmount)
+                        //{
+                        //    item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
+                        //}
                         item.ExpenseDtos.AddRange(expenseData);
+                        //foreach (var itm in expenseData)
+                        //{
+                        //    decimal LoclDeviationAmount = 0;
+                        //    if (itm.Amount > resultPoliciesLodgingFooding.MetroCitiesUptoAmount)
+                        //    {
+                        //        LoclDeviationAmount = (itm.Amount - resultPoliciesLodgingFooding.MetroCitiesUptoAmount);
+                        //        DeviationAmount = DeviationAmount + LoclDeviationAmount;
+                        //    }
+
+                        //}
+                        //item.DeviationAmount = DeviationAmount;
                     }
                 }
             }
