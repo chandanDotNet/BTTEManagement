@@ -114,6 +114,7 @@ namespace POS.Domain
         public DbSet<LocalConveyanceExpenseDocument> LocalConveyanceExpenseDocuments { get; set; }
         public DbSet<CarBikeLogBookExpense> CarBikeLogBookExpenses { get; set; }
         public DbSet<CarBikeLogBookExpenseDocument> CarBikeLogBookExpenseDocuments { get; set; }
+        public DbSet<Vendor> Vendors { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -610,6 +611,14 @@ namespace POS.Domain
             });
 
             builder.Entity<HelpSupport>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<Vendor>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()

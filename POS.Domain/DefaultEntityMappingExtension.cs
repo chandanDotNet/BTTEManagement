@@ -120,8 +120,8 @@ namespace POS.Domain
         .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<CompanyGST>()
-     .Property(b => b.ModifiedDate)
-     .HasDefaultValueSql("GETUTCDATE()");
+             .Property(b => b.ModifiedDate)
+             .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<State>()
      .Property(b => b.ModifiedDate)
@@ -155,7 +155,9 @@ namespace POS.Domain
 .Property(b => b.ModifiedDate)
 .HasDefaultValueSql("GETUTCDATE()");
 
-
+            modelBuilder.Entity<Vendor>()
+.Property(b => b.ModifiedDate)
+.HasDefaultValueSql("GETUTCDATE()");
         }
 
         public static void DefalutDeleteValueFilter(this ModelBuilder modelBuilder)
@@ -317,6 +319,9 @@ namespace POS.Domain
             modelBuilder.Entity<TripHotelBooking>()
 .HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<TripItinerary>()
+.HasQueryFilter(p => !p.IsDeleted);
+
+            modelBuilder.Entity<Vendor>()
 .HasQueryFilter(p => !p.IsDeleted);
 
         }

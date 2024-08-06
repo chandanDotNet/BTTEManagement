@@ -328,9 +328,33 @@ namespace POS.API.Controllers.Expense
             responseData.message = "Data Added Successfully";
 
             return Ok(responseData);
+        }
 
 
+        /// <summary>
+        /// Add Car Bike LogBook Expense For App 
+        /// </summary>
+        /// <param name="addCarBikeLogBookExpenseCommandForApp"></param>
+        /// <returns></returns>
+        [HttpPost("AddCarBikeLogBookExpenseForApp")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddCarBikeLogBookExpenseForApp(AddCarBikeLogBookExpenseCommandForApp addCarBikeLogBookExpenseCommandForApp)
+        {
+            ResponseData responseData = new ResponseData();
+            foreach (var item in addCarBikeLogBookExpenseCommandForApp.addCarBikeLogBookExpenseCommandList)
+            {
+                AddCarBikeLogBookExpenseCommand addLocalConveyanceExpenseCommand = new AddCarBikeLogBookExpenseCommand();
+                addLocalConveyanceExpenseCommand = item;
+                var result = await _mediator.Send(addLocalConveyanceExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+            }
+            responseData.message = "Data Added Successfully";
 
+            return Ok(responseData);
         }
 
         /// <summary>
@@ -360,6 +384,35 @@ namespace POS.API.Controllers.Expense
         {
             ResponseData responseData = new ResponseData();
             foreach (var item in updateCarBikeLogBookExpenseCommandList)
+            {
+                UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand = new UpdateCarBikeLogBookExpenseCommand();
+                updateCarBikeLogBookExpenseCommand = item;
+                var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+
+            }
+            //var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
+        }
+
+
+        /// <summary>
+        /// Update CarBike LogBook Expense For App
+        /// </summary>
+        /// <param name="updateCarBikeLogBookExpenseCommandForApp"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateCarBikeLogBookExpenseForApp")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateCarBikeLogBookExpenseForApp(UpdateCarBikeLogBookExpenseCommandForApp updateCarBikeLogBookExpenseCommandForApp)
+        {
+            ResponseData responseData = new ResponseData();
+            foreach (var item in updateCarBikeLogBookExpenseCommandForApp.updateCarBikeLogBookExpenseCommandList)
             {
                 UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand = new UpdateCarBikeLogBookExpenseCommand();
                 updateCarBikeLogBookExpenseCommand = item;

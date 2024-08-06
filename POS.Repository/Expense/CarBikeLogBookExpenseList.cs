@@ -3,8 +3,10 @@ using BTTEM.Data;
 using BTTEM.Data.Dto;
 using Microsoft.EntityFrameworkCore;
 using POS.Data.Dto;
+using POS.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +17,11 @@ namespace BTTEM.Repository.Expense
     {
 
         IMapper _mapper;
-        public CarBikeLogBookExpenseList(IMapper mapper)
+        private readonly PathHelper _pathHelper;
+        public CarBikeLogBookExpenseList(IMapper mapper, PathHelper pathHelper)
         {
             _mapper = mapper;
+            _pathHelper = pathHelper;
         }
 
         public int Skip { get; private set; }
@@ -64,8 +68,11 @@ namespace BTTEM.Repository.Expense
                     .AsNoTracking()
                     .Select(cs => new CarBikeLogBookExpenseDto
                     {
-                        Id = cs.Id,                        
-                        ExpenseDate = cs.ExpenseDate,
+                        Id = cs.Id,
+                        ExpenseType = cs.ExpenseType,
+                        FuelType = cs.FuelType,                        
+                        ExpenseDateFrom = cs.ExpenseDateFrom,
+                        ExpenseDateTo = cs.ExpenseDateTo,
                         From = cs.From,
                         To = cs.To,
                         ConsumptionKMS = cs.ConsumptionKMS,
@@ -73,10 +80,13 @@ namespace BTTEM.Repository.Expense
                         FuelBillNo = cs.FuelBillNo,
                         PlaceOfVisitDepartment = cs.PlaceOfVisitDepartment,
                         RefillingAmount = cs.RefillingAmount,
+                        RefillingUrl= !string.IsNullOrWhiteSpace(cs.RefillingUrl) ? Path.Combine(_pathHelper.RefillingDocumnentPath, cs.RefillingUrl) : "",
                         RefillingLiters = cs.RefillingLiters,
                         StartingKMS=cs.StartingKMS,                       
                         CreatedDate = cs.CreatedDate,
                         MasterExpenseId = cs.MasterExpenseId,
+                        TollParking = cs.TollParking,
+                        TollParkingUrl= !string.IsNullOrWhiteSpace(cs.TollParkingUrl) ? Path.Combine(_pathHelper.TollParkingDocumnentPath, cs.TollParkingUrl) : "",
                         Documents = _mapper.Map<List<CarBikeLogBookExpenseDocumentDto>>(cs.Documents).ToList(),
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -93,7 +103,10 @@ namespace BTTEM.Repository.Expense
              .Select(cs => new CarBikeLogBookExpenseDto
              {
                  Id = cs.Id,
-                 ExpenseDate = cs.ExpenseDate,
+                 ExpenseType = cs.ExpenseType,
+                 FuelType = cs.FuelType,
+                 ExpenseDateFrom = cs.ExpenseDateFrom,
+                 ExpenseDateTo = cs.ExpenseDateTo,
                  From = cs.From,
                  To = cs.To,
                  ConsumptionKMS = cs.ConsumptionKMS,
@@ -101,10 +114,13 @@ namespace BTTEM.Repository.Expense
                  FuelBillNo = cs.FuelBillNo,
                  PlaceOfVisitDepartment = cs.PlaceOfVisitDepartment,
                  RefillingAmount = cs.RefillingAmount,
+                 RefillingUrl= cs.RefillingUrl,
                  RefillingLiters = cs.RefillingLiters,
                  StartingKMS = cs.StartingKMS,
                  CreatedDate = cs.CreatedDate,
                  MasterExpenseId = cs.MasterExpenseId,
+                 TollParking = cs.TollParking,
+                 TollParkingUrl = cs.TollParkingUrl,
                  Documents = _mapper.Map<List<CarBikeLogBookExpenseDocumentDto>>(cs.Documents).ToList(),
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })//.OrderByDescending(x => x.CreatedDate)

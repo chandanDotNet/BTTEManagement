@@ -67,6 +67,44 @@ namespace BTTEM.MediatR.Handlers
             var entity = _mapper.Map<CarBikeLogBookExpense>(request);
             entity.Id = Guid.NewGuid();
 
+            if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+            {
+                entity.RefillingUrl = Guid.NewGuid().ToString() + ".png";
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+            {
+                entity.TollParkingUrl = Guid.NewGuid().ToString() + ".png";
+            }           
+
+            _carBikeLogBookExpenseRepository.Add(entity);
+
+            if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+            {
+                var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.RefillingDocumnentPath);
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+                await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.RefillingDocument);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+            {
+                var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TollParkingDocumnentPath);
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+                await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.TollParkingDocument);
+            }
+
+            if (await _uow.SaveAsync() <= 0)
+            {
+                _logger.LogError("Error while saving Master Expense");
+                return ServiceResponse<CarBikeLogBookExpenseDto>.Return500();
+            }
+
             int index = 0;
             foreach (var item in entity.Documents)
             {
@@ -104,19 +142,19 @@ namespace BTTEM.MediatR.Handlers
                     }
                 }
                 index++;
-
-            }
-
-
-            _carBikeLogBookExpenseRepository.Add(entity);
-
-            if (await _uow.SaveAsync() <= 0)
-            {
-                _logger.LogError("Error while saving Master Expense");
-                return ServiceResponse<CarBikeLogBookExpenseDto>.Return500();
             }
 
             var industrydto = _mapper.Map<CarBikeLogBookExpenseDto>(entity);
+
+            if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+            {
+                industrydto.RefillingUrl = Path.Combine(_pathHelper.BrandImagePath, industrydto.RefillingUrl);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+            {
+                industrydto.TollParkingUrl = Path.Combine(_pathHelper.BrandImagePath, industrydto.TollParkingUrl);
+            }
             return ServiceResponse<CarBikeLogBookExpenseDto>.ReturnResultWith200(industrydto);
 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Linq;
@@ -37,6 +38,26 @@ namespace POS.API.Controllers.FileUpload
             // Don't rely on or trust the FileName property without validation.
 
             return Ok(new { count = files.Count, size, filePath });
+        }
+
+        /// <summary>
+        /// Download Android APK File.
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("APKAdnroid")]
+        public IActionResult DownloadAndroid()
+        {
+            return Redirect("https://play.google.com/store/apps/details?id=com.travel.sfdesk");
+        }
+
+        /// <summary>
+        /// Download iOS APK File.
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("APKiOS")]
+        public IActionResult DownloadiOS()
+        {
+            return Redirect("https://apps.apple.com/in/app/sftravel-desk/id6593685111");
         }
     }
 }

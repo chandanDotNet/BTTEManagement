@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Repository
 {
-    public interface IBranchRepository : IGenericRepository<Branch>
+    public interface IVendorRepository : IGenericRepository<Vendor>
     {
-        Task<BranchList> GetBranches(BranchResource branchResource);
+        Task<VendorList> GetVendors(VendorResource vendorResource);
     }
 }

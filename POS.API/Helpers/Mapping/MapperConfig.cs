@@ -80,6 +80,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new HelpSupportProfile());
                 mc.AddProfile(new LocalConveyanceExpenseProfile());
                 mc.AddProfile(new CarBikeLogBookExpenseProfile());
+                mc.AddProfile(new VendorProfile());
             });
             return mappingConfig.CreateMapper();
         }
