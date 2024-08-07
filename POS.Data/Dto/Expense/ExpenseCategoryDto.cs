@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BTTEM.Data.Dto;
+using System;
+using System.Collections.Generic;
 
 namespace POS.Data.Dto
 {
@@ -8,5 +10,6 @@ namespace POS.Data.Dto
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
+        public List<ExpenseCategoryTaxDto> ExpenseCategoryTaxes { get; set; }
     }
 }

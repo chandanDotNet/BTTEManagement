@@ -65,39 +65,9 @@ namespace BTTEM.MediatR.Handlers
             // Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
 
             var entity = _mapper.Map<CarBikeLogBookExpense>(request);
-            entity.Id = Guid.NewGuid();
+            entity.Id = Guid.NewGuid();                  
 
-            if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
-            {
-                entity.RefillingUrl = Guid.NewGuid().ToString() + ".png";
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
-            {
-                entity.TollParkingUrl = Guid.NewGuid().ToString() + ".png";
-            }           
-
-            _carBikeLogBookExpenseRepository.Add(entity);
-
-            if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
-            {
-                var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.RefillingDocumnentPath);
-                if (!Directory.Exists(pathToSave))
-                {
-                    Directory.CreateDirectory(pathToSave);
-                }
-                await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.RefillingDocument);
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
-            {
-                var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TollParkingDocumnentPath);
-                if (!Directory.Exists(pathToSave))
-                {
-                    Directory.CreateDirectory(pathToSave);
-                }
-                await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.TollParkingDocument);
-            }
+            _carBikeLogBookExpenseRepository.Add(entity);           
 
             if (await _uow.SaveAsync() <= 0)
             {
@@ -144,21 +114,90 @@ namespace BTTEM.MediatR.Handlers
                 index++;
             }
 
+            //Refilling Documents
+            int ref_idx = 0;
+            foreach (var item in entity.RefillingDocuments)
+            {
+                var entityExpenseRefillingDocument = _mapper.Map<CarBikeLogBookExpenseRefillingDocument>(item);
+                entityExpenseRefillingDocument.CarBikeLogBookExpenseId = entity.Id;
+                entityExpenseRefillingDocument.Id = Guid.NewGuid();
+
+                if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                {
+                    string contentRootPath = _webHostEnvironment.WebRootPath;
+                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+
+                    var extension = Path.GetExtension(item.ReceiptName);
+                    var id = Guid.NewGuid();
+                    var path = $"{id}.{extension}";
+                    var documentPath = Path.Combine(pathToSave, path);
+                    string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                    if (!string.IsNullOrWhiteSpace(base64))
+                    {
+                        byte[] bytes = Convert.FromBase64String(base64);
+                        try
+                        {
+                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                            entity.RefillingDocuments[ref_idx].ReceiptPath = path;
+                        }
+                        catch
+                        {
+                            _logger.LogError("Error while saving files", entity);
+                        }
+                    }
+                }
+                ref_idx++;
+            }
+
+
+            //Toll Parking Documents
+            int tf_idx = 0;
+            foreach (var item in entity.TollParkingDocuments)
+            {
+                var entityExpenseTollParkingDocument = _mapper.Map<CarBikeLogBookExpenseTollParkingDocument>(item);
+                entityExpenseTollParkingDocument.CarBikeLogBookExpenseId = entity.Id;
+                entityExpenseTollParkingDocument.Id = Guid.NewGuid();
+
+                if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                {
+                    string contentRootPath = _webHostEnvironment.WebRootPath;
+                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+
+                    var extension = Path.GetExtension(item.ReceiptName);
+                    var id = Guid.NewGuid();
+                    var path = $"{id}.{extension}";
+                    var documentPath = Path.Combine(pathToSave, path);
+                    string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                    if (!string.IsNullOrWhiteSpace(base64))
+                    {
+                        byte[] bytes = Convert.FromBase64String(base64);
+                        try
+                        {
+                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                            entity.TollParkingDocuments[tf_idx].ReceiptPath = path;
+                        }
+                        catch
+                        {
+                            _logger.LogError("Error while saving files", entity);
+                        }
+                    }
+                }
+                tf_idx++;
+            }
+
             var industrydto = _mapper.Map<CarBikeLogBookExpenseDto>(entity);
-
-            if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
-            {
-                industrydto.RefillingUrl = Path.Combine(_pathHelper.BrandImagePath, industrydto.RefillingUrl);
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
-            {
-                industrydto.TollParkingUrl = Path.Combine(_pathHelper.BrandImagePath, industrydto.TollParkingUrl);
-            }
+            
             return ServiceResponse<CarBikeLogBookExpenseDto>.ReturnResultWith200(industrydto);
-
-
         }
-
     }
 }

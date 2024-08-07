@@ -36,6 +36,8 @@ namespace BTTEM.MediatR.Handlers
         private readonly ILocalConveyanceExpenseRepository _localConveyanceExpenseRepository;
         private readonly ICarBikeLogBookExpenseRepository _carBikeLogBookExpenseRepository;
         private readonly ICarBikeLogBookExpenseDocumentRepository _carBikeLogBookExpenseDocumentRepository;
+        private readonly ICarBikeLogBookExpenseRefillingDocumentRepository _carBikeLogBookExpenseRefillingDocumentRepository;
+        private readonly ICarBikeLogBookExpenseTollParkingDocumentRepository _carBikeLogBookExpenseTollParkingDocumentRepository;
 
         public UpdateCarBikeLogBookExpenseCommandHandler(
             IMasterExpenseRepository masterExpenseRepository,
@@ -48,7 +50,10 @@ namespace BTTEM.MediatR.Handlers
             IUserRoleRepository userRoleRepository,
             ILocalConveyanceExpenseRepository localConveyanceExpenseRepository,
             ICarBikeLogBookExpenseRepository carBikeLogBookExpenseRepository,
-            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository)
+            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository,
+            ICarBikeLogBookExpenseRefillingDocumentRepository carBikeLogBookExpenseRefillingDocumentRepository,
+            ICarBikeLogBookExpenseTollParkingDocumentRepository carBikeLogBookExpenseTollParkingDocumentRepository
+            )
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -61,6 +66,8 @@ namespace BTTEM.MediatR.Handlers
             _localConveyanceExpenseRepository = localConveyanceExpenseRepository;
             _carBikeLogBookExpenseRepository = carBikeLogBookExpenseRepository;
             _carBikeLogBookExpenseDocumentRepository = carBikeLogBookExpenseDocumentRepository;
+            _carBikeLogBookExpenseRefillingDocumentRepository = carBikeLogBookExpenseRefillingDocumentRepository;
+            _carBikeLogBookExpenseTollParkingDocumentRepository = carBikeLogBookExpenseTollParkingDocumentRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateCarBikeLogBookExpenseCommand request, CancellationToken cancellationToken)
@@ -123,17 +130,7 @@ namespace BTTEM.MediatR.Handlers
                 if (!string.IsNullOrEmpty(request.Remarks))
                 {
                     entityExist.Remarks = request.Remarks;
-                }
-
-                if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
-                {
-                    entityExist.RefillingUrl = Guid.NewGuid().ToString() + ".png";
-                }
-
-                if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
-                {
-                    entityExist.TollParkingUrl = Guid.NewGuid().ToString() + ".png";
-                }
+                }                
 
                 foreach (var item in request.Documents)
                 {
@@ -172,28 +169,89 @@ namespace BTTEM.MediatR.Handlers
                     }
                     _carBikeLogBookExpenseDocumentRepository.Add(entityExpenseDocument);
                 }
+
+
+                //Refilling
+                foreach (var item in request.RefillingDocuments)
+                {
+                    var entityExpenseRefillingDocument = _mapper.Map<CarBikeLogBookExpenseRefillingDocument>(item);
+                    entityExpenseRefillingDocument.CarBikeLogBookExpenseId = entityExist.Id;
+                    entityExpenseRefillingDocument.Id = Guid.NewGuid();
+
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                    {
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                entityExpenseRefillingDocument.ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", entityExpenseRefillingDocument);
+                            }
+                        }
+                    }
+                    _carBikeLogBookExpenseRefillingDocumentRepository.Add(entityExpenseRefillingDocument);
+                }
+
+
+                //Toll Parking
+                foreach (var item in request.TollParkingDocuments)
+                {
+                    var entityExpenseTollParkingDocument = _mapper.Map<CarBikeLogBookExpenseTollParkingDocument>(item);
+                    entityExpenseTollParkingDocument.CarBikeLogBookExpenseId = entityExist.Id;
+                    entityExpenseTollParkingDocument.Id = Guid.NewGuid();
+
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
+                    {
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                entityExpenseTollParkingDocument.ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", entityExpenseTollParkingDocument);
+                            }
+                        }
+                    }
+                    _carBikeLogBookExpenseTollParkingDocumentRepository.Add(entityExpenseTollParkingDocument);
+                }
+
                 _carBikeLogBookExpenseRepository.Update(entityExist);
-
-
-                if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
-                {
-                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.RefillingDocumnentPath);
-                    if (!Directory.Exists(pathToSave))
-                    {
-                        Directory.CreateDirectory(pathToSave);
-                    }
-                    await FileData.SaveFile(Path.Combine(pathToSave, entityExist.RefillingUrl), request.RefillingDocument);
-                }
-
-                if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
-                {
-                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TollParkingDocumnentPath);
-                    if (!Directory.Exists(pathToSave))
-                    {
-                        Directory.CreateDirectory(pathToSave);
-                    }
-                    await FileData.SaveFile(Path.Combine(pathToSave, entityExist.RefillingUrl), request.TollParkingDocument);
-                }
+               
             }
             else
             {
@@ -239,27 +297,90 @@ namespace BTTEM.MediatR.Handlers
                     index++;
                 }
 
-                _carBikeLogBookExpenseRepository.Add(entity);
-
-                if (!string.IsNullOrWhiteSpace(request.RefillingDocument))
+                //Refilling
+                int ref_idx = 0;
+                foreach (var item in entity.RefillingDocuments)
                 {
-                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.RefillingDocumnentPath);
-                    if (!Directory.Exists(pathToSave))
+                    var entityExpenseRefillingDocument = _mapper.Map<CarBikeLogBookExpenseRefillingDocument>(item);
+                    entityExpenseRefillingDocument.CarBikeLogBookExpenseId = entity.Id;
+                    entityExpenseRefillingDocument.Id = Guid.NewGuid();
+
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
                     {
-                        Directory.CreateDirectory(pathToSave);
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                entity.RefillingDocuments[ref_idx].ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", entity);
+                            }
+                        }
                     }
-                    await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.RefillingDocument);
+                    ref_idx++;
                 }
 
-                if (!string.IsNullOrWhiteSpace(request.TollParkingDocument))
+
+                //Toll Parking
+
+                //Refilling
+                int tp_idx = 0;
+                foreach (var item in entity.TollParkingDocuments)
                 {
-                    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TollParkingDocumnentPath);
-                    if (!Directory.Exists(pathToSave))
+                    var entityExpenseTollParkingDocument = _mapper.Map<CarBikeLogBookExpenseTollParkingDocument>(item);
+                    entityExpenseTollParkingDocument.CarBikeLogBookExpenseId = entity.Id;
+                    entityExpenseTollParkingDocument.Id = Guid.NewGuid();
+
+                    if (!string.IsNullOrWhiteSpace(item.ReceiptName) && !string.IsNullOrWhiteSpace(item.ReceiptPath))
                     {
-                        Directory.CreateDirectory(pathToSave);
+                        string contentRootPath = _webHostEnvironment.WebRootPath;
+                        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                        if (!Directory.Exists(pathToSave))
+                        {
+                            Directory.CreateDirectory(pathToSave);
+                        }
+
+                        var extension = Path.GetExtension(item.ReceiptName);
+                        var id = Guid.NewGuid();
+                        var path = $"{id}.{extension}";
+                        var documentPath = Path.Combine(pathToSave, path);
+                        string base64 = item.ReceiptPath.Split(',').LastOrDefault();
+                        if (!string.IsNullOrWhiteSpace(base64))
+                        {
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            try
+                            {
+                                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                entity.TollParkingDocuments[tp_idx].ReceiptPath = path;
+                            }
+                            catch
+                            {
+                                _logger.LogError("Error while saving files", entity);
+                            }
+                        }
                     }
-                    await FileData.SaveFile(Path.Combine(pathToSave, entity.RefillingUrl), request.TollParkingDocument);
+                    tp_idx++;
                 }
+
+                _carBikeLogBookExpenseRepository.Add(entity);               
             }            
 
             if (await _uow.SaveAsync() <= 0)

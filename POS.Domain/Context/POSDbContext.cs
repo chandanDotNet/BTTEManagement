@@ -52,6 +52,7 @@ namespace POS.Domain
         public DbSet<CompanyProfile> CompanyProfiles { get; set; }
         public DbSet<CompanyAccount> CompanyAccounts { get; set; }
         public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+        public DbSet<ExpenseCategoryTax> ExpenseCategoryTaxes { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Currency> Currencies { get; set; }
@@ -114,6 +115,8 @@ namespace POS.Domain
         public DbSet<LocalConveyanceExpenseDocument> LocalConveyanceExpenseDocuments { get; set; }
         public DbSet<CarBikeLogBookExpense> CarBikeLogBookExpenses { get; set; }
         public DbSet<CarBikeLogBookExpenseDocument> CarBikeLogBookExpenseDocuments { get; set; }
+        public DbSet<CarBikeLogBookExpenseTollParkingDocument> CarBikeLogBookExpenseTollParkingDocuments { get; set; }
+        public DbSet<CarBikeLogBookExpenseRefillingDocument> CarBikeLogBookExpenseRefillingDocuments { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -346,6 +349,19 @@ namespace POS.Domain
             });
 
             builder.Entity<ExpenseCategory>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ExpenseCategoryTax>(b =>
+            {
+                b.HasKey(c => new { c.ExpenseCategoryId, c.TaxId });
+            });
+
+            builder.Entity<ExpenseCategoryTax>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()
@@ -660,6 +676,8 @@ namespace POS.Domain
             builder.Entity<LocalConveyanceExpenseDocument>().ToTable("LocalConveyanceExpenseDocuments");
             builder.Entity<CarBikeLogBookExpense>().ToTable("CarBikeLogBookExpenses");
             builder.Entity<CarBikeLogBookExpenseDocument>().ToTable("CarBikeLogBookExpenseDocuments");
+            builder.Entity<CarBikeLogBookExpenseRefillingDocument>().ToTable("CarBikeLogBookExpenseRefillingDocuments");
+            builder.Entity<CarBikeLogBookExpenseTollParkingDocument>().ToTable("CarBikeLogBookExpenseTollParkingDocuments");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }

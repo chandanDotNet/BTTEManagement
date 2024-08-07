@@ -15,6 +15,7 @@ namespace POS.API.Helpers.Mapping
         public ExpenseProfile()
         {
             CreateMap<ExpenseCategory, ExpenseCategoryDto>().ReverseMap();
+            CreateMap<ExpenseCategoryTax, ExpenseCategoryTaxDto>().ReverseMap();
             CreateMap<Expense, ExpenseDto>().ReverseMap();
             CreateMap<ExpenseDocument, ExpenseDocumentDto>().ReverseMap();
             CreateMap<MasterExpense, MasterExpenseDto>().ReverseMap();

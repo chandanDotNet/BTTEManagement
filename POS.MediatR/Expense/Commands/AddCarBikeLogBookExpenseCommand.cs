@@ -12,7 +12,6 @@ namespace BTTEM.MediatR.CommandAndQuery
 {
     public class AddCarBikeLogBookExpenseCommand : IRequest<ServiceResponse<CarBikeLogBookExpenseDto>>
     {
-
         public Guid MasterExpenseId { get; set; }
         public string ExpenseType { get; set; }
         public string FuelType { get; set; }
@@ -26,12 +25,12 @@ namespace BTTEM.MediatR.CommandAndQuery
         public decimal ConsumptionKMS { get; set; } = 0;
         public decimal RefillingLiters { get; set; } = 0;
         public decimal RefillingAmount { get; set; } = 0;
-        public string RefillingDocument { get; set; }
+        public List<CarBikeLogBookExpenseRefillingDocumentDto> RefillingDocuments { get; set; }
         public string FuelBillNo { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
-        public string TollParking { get; set; }
-        public string TollParkingDocument { get; set; }
+        public string TollParking { get; set; }      
+        public List<CarBikeLogBookExpenseTollParkingDocumentDto> TollParkingDocuments { get; set; }
         public List<CarBikeLogBookExpenseDocumentDto> Documents { get; set; }
     }
 }

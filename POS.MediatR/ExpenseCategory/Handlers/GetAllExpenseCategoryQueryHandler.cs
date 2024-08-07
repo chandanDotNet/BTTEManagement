@@ -30,7 +30,7 @@ namespace POS.MediatR.Handlers
 
         public async Task<List<ExpenseCategoryDto>> Handle(GetAllExpenseCategoryQuery request, CancellationToken cancellationToken)
         {
-            var entities = await _expenseCategoryRepository.All.ToListAsync();
+            var entities = await _expenseCategoryRepository.All.Include(e => e.ExpenseCategoryTaxes).ThenInclude(t => t.Tax).ToListAsync();
             var dtoEntities = _mapper.Map<List<ExpenseCategoryDto>>(entities);
             return dtoEntities;
         }

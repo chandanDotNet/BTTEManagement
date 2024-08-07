@@ -25,12 +25,12 @@ namespace BTTEM.Data
         public decimal ConsumptionKMS { get; set; } = 0;
         public decimal RefillingLiters { get; set; } = 0;
         public decimal RefillingAmount { get; set; } = 0;
-        public string RefillingUrl { get; set; }
+        public List<CarBikeLogBookExpenseRefillingDocument> RefillingDocuments { get; set; }
         public string FuelBillNo { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
         public string TollParking { get; set; }
-        public string TollParkingUrl { get; set; }
+        public List<CarBikeLogBookExpenseTollParkingDocument> TollParkingDocuments { get; set; }
         public List<CarBikeLogBookExpenseDocument> Documents { get; set; }
 
     }

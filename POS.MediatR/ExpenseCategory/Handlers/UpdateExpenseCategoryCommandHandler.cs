@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BTTEM.Repository;
+using BTTEM.Data;
 
 namespace POS.MediatR.Handlers
 {
@@ -21,6 +23,7 @@ namespace POS.MediatR.Handlers
         : IRequestHandler<UpdateExpenseCategoryCommand, ServiceResponse<bool>>
     {
         private readonly IExpenseCategoryRepository _expenseCategoryRepository;
+        private readonly IExpenseCategoryTaxRepository _expenseCategoryTaxRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly ILogger<UpdateExpenseCategoryCommandHandler> _logger;
         private readonly IMapper _mapper;
@@ -28,13 +31,15 @@ namespace POS.MediatR.Handlers
            IExpenseCategoryRepository expenseCategoryRepository,
             IUnitOfWork<POSDbContext> uow,
             ILogger<UpdateExpenseCategoryCommandHandler> logger,
-            IMapper mapper
+            IMapper mapper, IExpenseCategoryTaxRepository expenseCategoryTaxRepository
+
             )
         {
             _expenseCategoryRepository = expenseCategoryRepository;
             _uow = uow;
             _logger = logger;
             _mapper = mapper;
+            _expenseCategoryTaxRepository = expenseCategoryTaxRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateExpenseCategoryCommand request, CancellationToken cancellationToken)
@@ -52,6 +57,13 @@ namespace POS.MediatR.Handlers
                 _logger.LogError("Expense Category does not Exists.");
                 return ServiceResponse<bool>.Return409("Expense Category does not Exists.");
             }
+
+            var expenseCategoryTaxes = _expenseCategoryTaxRepository.All.Where(c => c.ExpenseCategoryId == request.Id).ToList();
+            var expenseCategoryToAdd = request.ExpenseCategoryTaxes.Where(c => !expenseCategoryTaxes.Select(c => c.TaxId).Contains(c.TaxId)).ToList();
+            _expenseCategoryTaxRepository.AddRange(_mapper.Map<List<ExpenseCategoryTax>>(expenseCategoryToAdd));
+            var expenseCategoryTaxToDelete = expenseCategoryTaxes.Where(c => !request.ExpenseCategoryTaxes.Select(cs => cs.TaxId).Contains(c.TaxId)).ToList();
+            _expenseCategoryTaxRepository.RemoveRange(expenseCategoryTaxToDelete);
+
             existingEntity.Name = request.Name;
             existingEntity.Description = request.Description;
             existingEntity.IsActive = request.IsActive;
