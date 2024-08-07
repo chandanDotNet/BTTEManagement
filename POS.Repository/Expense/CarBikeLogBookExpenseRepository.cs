@@ -80,11 +80,10 @@ namespace BTTEM.Repository
                 }
             }
 
-
-
-            var collectionBeforePaging = All.Include(t => t.CreatedByUser).Include(a=>a.Documents).ApplySort(expenseResource.OrderBy,
+            var collectionBeforePaging = All.Include(t => t.CreatedByUser).Include(a => a.Documents).Include(r => r.RefillingDocuments)
+                .Include(t => t.TollParkingDocuments).ApplySort(expenseResource.OrderBy,
               _propertyMappingService.GetPropertyMapping<CarBikeLogBookExpenseDto, CarBikeLogBookExpense>());
-            
+
             if (expenseResource.Id.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
@@ -130,11 +129,11 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.Status, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.StartingKMS.ToString(), $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.PlaceOfVisitDepartment, $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.FuelBillNo, $"%{searchQueryForWhereClause}%")                           
+                    || EF.Functions.Like(a.FuelBillNo, $"%{searchQueryForWhereClause}%")
                     );
             }
 
-            return await new CarBikeLogBookExpenseList(_mapper,_pathHelper).Create(collectionBeforePaging,
+            return await new CarBikeLogBookExpenseList(_mapper, _pathHelper).Create(collectionBeforePaging,
               expenseResource.Skip,
               expenseResource.PageSize);
 

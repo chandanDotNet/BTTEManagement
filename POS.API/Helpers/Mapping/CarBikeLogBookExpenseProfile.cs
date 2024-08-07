@@ -14,6 +14,8 @@ namespace BTTEM.API.Helpers.Mapping
         {
             CreateMap<CarBikeLogBookExpense, CarBikeLogBookExpenseDto>().ReverseMap();
             CreateMap<CarBikeLogBookExpenseDocument, CarBikeLogBookExpenseDocumentDto>().ReverseMap();
+            CreateMap<CarBikeLogBookExpenseRefillingDocument, CarBikeLogBookExpenseRefillingDocumentDto>().ReverseMap();
+            CreateMap<CarBikeLogBookExpenseTollParkingDocument, CarBikeLogBookExpenseTollParkingDocumentDto>().ReverseMap();
             CreateMap<AddCarBikeLogBookExpenseCommand, CarBikeLogBookExpense>();
             CreateMap<UpdateCarBikeLogBookExpenseCommand, CarBikeLogBookExpense>();
             CreateMap<AddCarBikeLogBookExpenseDocumentCommand, CarBikeLogBookExpenseDocument>();

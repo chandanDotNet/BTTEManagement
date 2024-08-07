@@ -25,12 +25,12 @@ namespace BTTEM.MediatR.Commands
         public decimal ConsumptionKMS { get; set; } = 0;
         public decimal RefillingLiters { get; set; } = 0;
         public decimal RefillingAmount { get; set; } = 0;
-        public string RefillingDocument { get; set; }
+        public List<CarBikeLogBookExpenseRefillingDocumentDto> RefillingDocuments { get; set; }
         public string FuelBillNo { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
         public string TollParking { get; set; }
-        public string TollParkingDocument { get; set; }
+        public List<CarBikeLogBookExpenseTollParkingDocumentDto> TollParkingDocuments { get; set; }
         public List<CarBikeLogBookExpenseDocumentDto> Documents { get; set; }
     }
 }

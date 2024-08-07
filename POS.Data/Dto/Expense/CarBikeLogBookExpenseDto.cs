@@ -25,13 +25,13 @@ namespace BTTEM.Data.Dto
         public decimal RefillingLiters { get; set; } = 0;
         public decimal RefillingAmount { get; set; } = 0;
         public string FuelBillNo { get; set; }
-        public string RefillingUrl { get; set; }
+        public List<CarBikeLogBookExpenseRefillingDocumentDto> RefillingDocuments { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
         public DateTime CreatedDate { get; set; }
         public UserDto CreatedByUser { get; set; }
-        public string TollParking { get; set; }
-        public string TollParkingUrl { get; set; }
+        public string TollParking { get; set; }     
+        public List<CarBikeLogBookExpenseTollParkingDocumentDto> TollParkingDocuments { get; set; }
         public List<CarBikeLogBookExpenseDocumentDto> Documents { get; set; }
     }
 }

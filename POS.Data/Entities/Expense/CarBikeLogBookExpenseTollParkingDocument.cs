@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTTEM.Data.Entities
+namespace BTTEM.Data
 {
-    public class CarBikeLogBookExpenseDocument
+    public class CarBikeLogBookExpenseTollParkingDocument
     {
         public Guid Id { get; set; }
         public Guid CarBikeLogBookExpenseId { get; set; }
