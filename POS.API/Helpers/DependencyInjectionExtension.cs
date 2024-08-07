@@ -2,7 +2,7 @@
 using POS.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using BTTEM.Repository;
-
+using BTTEM.Repository.Expense;
 
 namespace POS.API.Helpers
 {
@@ -117,6 +117,7 @@ namespace POS.API.Helpers
             services.AddScoped<IExpenseCategoryTaxRepository, ExpenseCategoryTaxRepository>();
             services.AddScoped<ICarBikeLogBookExpenseRefillingDocumentRepository, CarBikeLogBookExpenseRefillingDocumentRepository>();
             services.AddScoped<ICarBikeLogBookExpenseTollParkingDocumentRepository, CarBikeLogBookExpenseTollParkingDocumentRepository>();
+            services.AddScoped<IExpenseDetailRepository, ExpenseDetailRepository>();
         }
     }
 }

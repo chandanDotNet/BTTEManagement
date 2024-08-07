@@ -6,6 +6,7 @@ using System;
 using BTTEM.Data;
 using BTTEM.Data.Entities.Expense;
 using BTTEM.Data.Entities;
+using BTTEM.Data.Dto;
 
 namespace POS.Domain
 {
@@ -118,6 +119,7 @@ namespace POS.Domain
         public DbSet<CarBikeLogBookExpenseTollParkingDocument> CarBikeLogBookExpenseTollParkingDocuments { get; set; }
         public DbSet<CarBikeLogBookExpenseRefillingDocument> CarBikeLogBookExpenseRefillingDocuments { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<ExpenseDetail> ExpenseDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -676,6 +678,7 @@ namespace POS.Domain
             builder.Entity<LocalConveyanceExpenseDocument>().ToTable("LocalConveyanceExpenseDocuments");
             builder.Entity<CarBikeLogBookExpense>().ToTable("CarBikeLogBookExpenses");
             builder.Entity<CarBikeLogBookExpenseDocument>().ToTable("CarBikeLogBookExpenseDocuments");
+            builder.Entity<ExpenseDetail>().ToTable("ExpenseDetails");
             builder.Entity<CarBikeLogBookExpenseRefillingDocument>().ToTable("CarBikeLogBookExpenseRefillingDocuments");
             builder.Entity<CarBikeLogBookExpenseTollParkingDocument>().ToTable("CarBikeLogBookExpenseTollParkingDocuments");
             builder.DefalutMappingValue();

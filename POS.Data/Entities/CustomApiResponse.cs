@@ -271,4 +271,6 @@ namespace BTTEM.Data.Entities
         public string message { get; set; }
         public UserAuthDto Data { get; set; }
     }
+
+    
 }
