@@ -1,4 +1,5 @@
 ﻿
+using BTTEM.Data.Dto;
 using BTTEM.Data.Dto.Expense;
 using System;
 using System.Collections.Generic;
@@ -33,5 +34,6 @@ namespace POS.Data.Dto
         public string? RejectReason { get; set; }
         public decimal ReimbursementAmount { get; set; } = 0;
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
+        public List<ExpenseDetailDto> ExpenseDetail { get; set; }
     }
 }

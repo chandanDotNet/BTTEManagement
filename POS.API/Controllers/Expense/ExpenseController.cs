@@ -1599,6 +1599,82 @@ namespace POS.API.Controllers.Expense
             return ReturnFormattedResponse(result);
         }
 
+        /// <summary>
+        /// Deletes Expense Details
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteExpenseDetails")]
+        //[ClaimCheck("EXP_DELETE_EXPENSE")]
+        public async Task<IActionResult> DeleteExpenseDetails(DeleteExpenseDetailCommand command)
+        {
+            //var command = new DeleteExpenseDetailCommand() { Id = id };
+            var result = await _mediator.Send(command);
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Add Expense Details
+        /// </summary>
+        /// <param name="addExpenseDetailListCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddExpenseDetails")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> AddExpenseDetails(AddExpenseDetailListCommand addExpenseDetailListCommand)
+        {
+
+            ResponseData responseData = new ResponseData();
+            foreach (var item in addExpenseDetailListCommand.AddExpenseDetailList)
+            {
+                AddExpenseDetailCommand addExpenseDetailCommand = new AddExpenseDetailCommand();
+                addExpenseDetailCommand = item;
+                var result = await _mediator.Send(addExpenseDetailCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+
+            }
+            //var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
+
+        }
+
+        // <summary>
+        /// Update Expense Details
+        /// </summary>
+        /// <param name="updateExpenseDetailCommandList"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateExpenseDetails")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateExpenseDetails(UpdateExpenseDetailListCommand updateExpenseDetailCommandList)
+        {
+            ResponseData responseData = new ResponseData();
+
+            var command = new DeleteExpenseDetailCommand() { ExpenseId = updateExpenseDetailCommandList.UpdateExpenseDetailList.FirstOrDefault().ExpenseId };
+            var result1 = await _mediator.Send(command);
+
+            foreach (var item in updateExpenseDetailCommandList.UpdateExpenseDetailList)
+            {
+                UpdateExpenseDetailCommand updateExpenseDetailCommand = new UpdateExpenseDetailCommand();
+                updateExpenseDetailCommand = item;
+                var result = await _mediator.Send(updateExpenseDetailCommand);
+                if (result.Success)
+                {
+                    responseData.status = true;
+                    responseData.StatusCode = 200;
+                }
+
+            }
+            //var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
+            responseData.message = "Data Updated Successfully";
+
+            return Ok(responseData);
+        }
 
         /// <summary>
         /// Update Expense.

@@ -82,7 +82,7 @@ namespace BTTEM.Repository
 
             var collectionBeforePaging = All.Include(t => t.Trip).ThenInclude(g => g.GroupTrips)
                 .Include(g => g.GroupExpenses).ThenInclude(u => u.User).Include(c => c.CreatedByUser).
-                ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).
+                ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).Include(a => a.Expenses).ThenInclude(f=>f.ExpenseDetail).
                 Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory).ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 

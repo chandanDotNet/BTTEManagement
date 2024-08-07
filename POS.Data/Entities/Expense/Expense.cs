@@ -1,4 +1,5 @@
 ﻿using BTTEM.Data;
+using BTTEM.Data.Dto;
 using BTTEM.Data.Dto.Expense;
 using BTTEM.Data.Entities.Expense;
 using System;
@@ -41,5 +42,6 @@ namespace POS.Data
         public string? RejectReason { get; set; }
         public decimal ReimbursementAmount { get; set; } = 0;
         public List<ExpenseDocument> ExpenseDocument { get; set; }
+        public List<ExpenseDetail> ExpenseDetail { get; set; }
     }
 }

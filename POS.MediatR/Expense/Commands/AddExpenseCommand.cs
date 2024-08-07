@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BTTEM.Data.Dto.Expense;
+using BTTEM.Data.Dto;
 
 namespace POS.MediatR.CommandAndQuery
 {
@@ -28,5 +29,6 @@ namespace POS.MediatR.CommandAndQuery
         public string DocumentData { get; set; }
         public string Status { get; set; }
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
+        public List<ExpenseDetailDto> ExpenseDetail { get; set; }
     }
 }
