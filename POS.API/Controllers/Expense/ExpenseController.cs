@@ -1635,7 +1635,6 @@ namespace POS.API.Controllers.Expense
                     responseData.status = true;
                     responseData.StatusCode = 200;
                 }
-
             }
             //var result = await _mediator.Send(updateCarBikeLogBookExpenseCommand);
             responseData.message = "Data Updated Successfully";
