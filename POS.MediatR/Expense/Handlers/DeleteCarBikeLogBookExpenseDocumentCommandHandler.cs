@@ -33,7 +33,8 @@ namespace BTTEM.MediatR.Handlers
         private readonly ILocalConveyanceExpenseRepository _localConveyanceExpenseRepository;
         private readonly ILocalConveyanceExpenseDocumentRepository _localConveyanceExpenseDocumentRepository;
         private readonly ICarBikeLogBookExpenseDocumentRepository _carBikeLogBookExpenseDocumentRepository;
-
+        private readonly ICarBikeLogBookExpenseTollParkingDocumentRepository _carBikeLogBookExpenseTollParkingDocumentRepository;
+        private readonly ICarBikeLogBookExpenseRefillingDocumentRepository _carBikeLogBookExpenseRefillingDocumentRepository;
 
         public DeleteCarBikeLogBookExpenseDocumentCommandHandler(
             IMasterExpenseRepository masterExpenseRepository,
@@ -46,7 +47,9 @@ namespace BTTEM.MediatR.Handlers
             IUserRoleRepository userRoleRepository,
             ILocalConveyanceExpenseRepository localConveyanceExpenseRepository,
             ILocalConveyanceExpenseDocumentRepository localConveyanceExpenseDocumentRepository,
-            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository)
+            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository,
+            ICarBikeLogBookExpenseTollParkingDocumentRepository carBikeLogBookExpenseTollParkingDocumentRepository,
+            ICarBikeLogBookExpenseRefillingDocumentRepository carBikeLogBookExpenseRefillingDocumentRepository)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -59,18 +62,34 @@ namespace BTTEM.MediatR.Handlers
             _localConveyanceExpenseRepository = localConveyanceExpenseRepository;
             _localConveyanceExpenseDocumentRepository = localConveyanceExpenseDocumentRepository;
             _carBikeLogBookExpenseDocumentRepository = carBikeLogBookExpenseDocumentRepository;
+            _carBikeLogBookExpenseTollParkingDocumentRepository = carBikeLogBookExpenseTollParkingDocumentRepository;
+            _carBikeLogBookExpenseRefillingDocumentRepository = carBikeLogBookExpenseRefillingDocumentRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(DeleteCarBikeLogBookExpenseDocumentCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _carBikeLogBookExpenseDocumentRepository.FindAsync(request.Id);
-            if (entityExist == null)
+            var entityDocumentExist = await _carBikeLogBookExpenseDocumentRepository.FindAsync(request.Id);            
+            var entityRefillingExist = await _carBikeLogBookExpenseRefillingDocumentRepository.FindAsync(request.Id);
+            var entityTollParkingExist = await _carBikeLogBookExpenseTollParkingDocumentRepository.FindAsync(request.Id);
+
+            if (entityDocumentExist == null && entityTollParkingExist == null && entityRefillingExist == null)
             {
                 _logger.LogError("Expense does not exists.");
                 return ServiceResponse<bool>.Return409("Expense does not exists.");
             }
 
-            _carBikeLogBookExpenseDocumentRepository.Remove(entityExist);
+            if (entityDocumentExist != null)
+            {
+                _carBikeLogBookExpenseDocumentRepository.Remove(entityDocumentExist);                
+            }
+            if (entityRefillingExist != null)
+            {
+                _carBikeLogBookExpenseRefillingDocumentRepository.Remove(entityRefillingExist);
+            }
+            if (entityTollParkingExist != null)
+            {
+                _carBikeLogBookExpenseTollParkingDocumentRepository.Remove(entityTollParkingExist);
+            }
 
             if (await _uow.SaveAsync() <= 0)
             {
@@ -79,8 +98,6 @@ namespace BTTEM.MediatR.Handlers
             }
 
             return ServiceResponse<bool>.ReturnResultWith200(true);
-
         }
-
     }
 }
