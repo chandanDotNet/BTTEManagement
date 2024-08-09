@@ -56,6 +56,16 @@ namespace BTTEM.MediatR.Expense.Handlers
                 }
                 _expenseDetailRepository.RemoveRange(entityExist);
             }
+            if (request.MasterExpenseId.HasValue)
+            {
+                var entityExist = _expenseDetailRepository.FindBy(a => a.MasterExpenseId == request.MasterExpenseId);
+                if (entityExist == null)
+                {
+                    _logger.LogError("Expense does not exists.");
+                    return ServiceResponse<bool>.Return404();
+                }
+                _expenseDetailRepository.RemoveRange(entityExist);
+            }
 
 
 

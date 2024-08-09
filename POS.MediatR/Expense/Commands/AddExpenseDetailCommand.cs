@@ -14,6 +14,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     {
 
         public Guid ExpenseId { get; set; }
+        public Guid? MasterExpenseId { get; set; }
         public Guid? VendorId { get; set; }
         public string? VendorName { get; set; }
         public Guid? SubVendorId { get; set; }
@@ -25,5 +26,9 @@ namespace BTTEM.MediatR.CommandAndQuery
         public string? TaxInvoiceNumber { get; set; }
         public bool? IsIRN { get; set; }
         public bool? IsTaxable { get; set; }
+        public string? GSTType { get; set; }
+        public decimal? CGST { get; set; }
+        public decimal? SGST { get; set; }
+        public decimal? IGST { get; set; }
     }
 }
