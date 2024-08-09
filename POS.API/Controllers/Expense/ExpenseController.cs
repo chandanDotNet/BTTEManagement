@@ -1020,11 +1020,13 @@ namespace POS.API.Controllers.Expense
                 };
                 var masterResponse = await _mediator.Send(addMasterExpenseTrackingCommand);
 
+                var command = new DeleteExpenseDetailCommand() { MasterExpenseId = updateMasterExpenseCommand.Id };
+                var resultDel = await _mediator.Send(command);
+
                 // Guid id = result.Data.Id;
                 foreach (var item in updateMasterExpenseCommand.ExpenseDetails)
                 {
-                    var command = new DeleteExpenseDetailCommand() { ExpenseId = item.Id };
-                    var result1 = await _mediator.Send(command);
+                   
                     UpdateExpenseCommand updateExpenseCommand = new UpdateExpenseCommand();
                     if (item.Id == null || item.Id == Guid.Empty)
                     {
