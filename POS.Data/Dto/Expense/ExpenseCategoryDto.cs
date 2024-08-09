@@ -11,8 +11,8 @@ namespace POS.Data.Dto
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public decimal CGST { get; set; }
-        public bool SGST { get; set; }
-        public bool IGST { get; set; }
+        public decimal SGST { get; set; }
+        public decimal IGST { get; set; }
         public List<ExpenseCategoryTaxDto> ExpenseCategoryTaxes { get; set; }
     }
 }
