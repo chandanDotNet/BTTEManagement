@@ -67,6 +67,9 @@ namespace POS.MediatR.Handlers
             existingEntity.Name = request.Name;
             existingEntity.Description = request.Description;
             existingEntity.IsActive = request.IsActive;
+            existingEntity.CGST = request.CGST;
+            existingEntity.SGST = request.SGST;
+            existingEntity.IGST = request.IGST;
             _expenseCategoryRepository.Update(existingEntity);
             if (await _uow.SaveAsync() <= 0)
             {
