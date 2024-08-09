@@ -1023,6 +1023,8 @@ namespace POS.API.Controllers.Expense
                 // Guid id = result.Data.Id;
                 foreach (var item in updateMasterExpenseCommand.ExpenseDetails)
                 {
+                    var command = new DeleteExpenseDetailCommand() { ExpenseId = item.Id };
+                    var result1 = await _mediator.Send(command);
                     UpdateExpenseCommand updateExpenseCommand = new UpdateExpenseCommand();
                     if (item.Id == null || item.Id == Guid.Empty)
                     {
