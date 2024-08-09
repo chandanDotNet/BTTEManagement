@@ -89,6 +89,7 @@ namespace BTTEM.Repository.Expense
                         TollParkingDocuments = _mapper.Map<List<CarBikeLogBookExpenseTollParkingDocumentDto>>(cs.TollParkingDocuments).ToList(),
                         Documents = _mapper.Map<List<CarBikeLogBookExpenseDocumentDto>>(cs.Documents).ToList(),
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+                        Remarks = cs.Remarks
 
                     })//.OrderByDescending(x => x.CreatedDate) 
                     .ToListAsync();
@@ -123,6 +124,7 @@ namespace BTTEM.Repository.Expense
                  TollParkingDocuments = _mapper.Map<List<CarBikeLogBookExpenseTollParkingDocumentDto>>(cs.TollParkingDocuments).ToList(),
                  Documents = _mapper.Map<List<CarBikeLogBookExpenseDocumentDto>>(cs.Documents).ToList(),
                  CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+                 Remarks = cs.Remarks
              })//.OrderByDescending(x => x.CreatedDate)
              .ToListAsync();
                 return entities;
