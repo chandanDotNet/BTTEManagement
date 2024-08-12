@@ -1376,7 +1376,7 @@ namespace POS.API.Controllers.Expense
                                                 }
                                             }
                                         }
-                                        else //Actuals
+                                        else //Actuals 
                                         {
                                             if (expenseList.Count > 0)
                                             {
