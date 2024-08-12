@@ -66,6 +66,7 @@ namespace BTTEM.MediatR.Handlers
             if(request.IsTaxable==true)
             {
                 var expense = await _expenseRepository.FindAsync(request.ExpenseId.Value);
+                expense.BillType = "GST";
                 _expenseRepository.Update(expense);
             }
 
