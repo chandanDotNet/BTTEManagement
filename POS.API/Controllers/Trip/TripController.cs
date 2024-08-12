@@ -950,7 +950,7 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                        var reportingHead = _userRepository.FindAsync(responseData.CreatedByUser.ReportingTo.Value).Result;
 
                         using (StreamReader sr = new StreamReader(filePath))
                         {
@@ -975,8 +975,8 @@ namespace BTTEM.API.Controllers.Trip
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
                                 Subject = "Journey Request Updated",
-                                ToAddress = responseData.CreatedByUser.UserName,
-                                CCAddress = reportingHead.UserName,
+                                ToAddress = reportingHead.UserName,
+                                CCAddress = responseData.CreatedByUser.UserName,
                                 UserName = defaultSmtp.UserName
                             });
                         }
