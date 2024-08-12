@@ -59,10 +59,13 @@ namespace POS.MediatR.Handlers
             }
 
             var expenseCategoryTaxes = _expenseCategoryTaxRepository.All.Where(c => c.ExpenseCategoryId == request.Id).ToList();
-            var expenseCategoryToAdd = request.ExpenseCategoryTaxes.Where(c => !expenseCategoryTaxes.Select(c => c.TaxId).Contains(c.TaxId)).ToList();
-            _expenseCategoryTaxRepository.AddRange(_mapper.Map<List<ExpenseCategoryTax>>(expenseCategoryToAdd));
-            var expenseCategoryTaxToDelete = expenseCategoryTaxes.Where(c => !request.ExpenseCategoryTaxes.Select(cs => cs.TaxId).Contains(c.TaxId)).ToList();
-            _expenseCategoryTaxRepository.RemoveRange(expenseCategoryTaxToDelete);
+            if (request.ExpenseCategoryTaxes != null)
+            {
+                var expenseCategoryToAdd = request.ExpenseCategoryTaxes.Where(c => !expenseCategoryTaxes.Select(c => c.TaxId).Contains(c.TaxId)).ToList();
+                _expenseCategoryTaxRepository.AddRange(_mapper.Map<List<ExpenseCategoryTax>>(expenseCategoryToAdd));
+                var expenseCategoryTaxToDelete = expenseCategoryTaxes.Where(c => !request.ExpenseCategoryTaxes.Select(cs => cs.TaxId).Contains(c.TaxId)).ToList();
+                _expenseCategoryTaxRepository.RemoveRange(expenseCategoryTaxToDelete);
+            }
 
             existingEntity.Name = request.Name;
             existingEntity.Description = request.Description;
