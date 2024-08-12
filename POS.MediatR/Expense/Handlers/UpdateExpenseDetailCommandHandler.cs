@@ -63,6 +63,11 @@ namespace BTTEM.MediatR.Handlers
             entity.Id = Guid.NewGuid();
             _expenseDetailRepository.Add(entity);
 
+            if(request.IsTaxable==true)
+            {
+                var expense = await _expenseRepository.FindAsync(request.ExpenseId.Value);
+                _expenseRepository.Update(expense);
+            }
 
             if (await _uow.SaveAsync() <= 0)
             {
