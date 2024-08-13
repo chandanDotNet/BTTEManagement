@@ -27,6 +27,7 @@ using BTTEM.MediatR.CompanyProfile.Commands;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using BTTEM.MediatR;
+using Microsoft.VisualBasic.FileIO;
 
 namespace POS.API.Controllers
 {
@@ -561,6 +562,22 @@ namespace POS.API.Controllers
             var ReportQuery = new GetUserInfoDetailsQuery { UserId = id };
             var result = await _mediator.Send(ReportQuery);
 
+            if (result != null)
+            {
+                var policyDetails = await _policiesDetailRepository.All.
+                FirstOrDefaultAsync(x => x.CompanyAccountId == result.userInfoDetails.CompanyAccountId && x.GradeId == result.userInfoDetails.GradeId);
+
+                var conveyanceRates =
+                await _policiesVehicleConveyanceRepository.AllIncluding(v => v.VehicleManagement)
+                .Where(x => x.PoliciesDetailId == policyDetails.Id).ToListAsync();
+
+                //result.userInfoDetails.PoliciesVehicleConveyance = conveyanceRates;
+
+                result.userInfoDetails.CarDieselRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("14E55D56-4A18-4B6F-B8C0-8D7A8AC446D4")).RatePerKM;
+                result.userInfoDetails.CarPetrolRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("8CC7895B-2E0A-4070-B7F8-13AD36DF5C25")).RatePerKM;
+                result.userInfoDetails.BikeRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("1B496B46-46A5-4A65-B1BE-CA246073CF62")).RatePerKM;
+            }
+
             return Ok(result);
         }
 
@@ -618,7 +635,7 @@ namespace POS.API.Controllers
 
                 return Ok(conveyanceRates);
             }
-            
+
             //if (result.Success)
             //{
             //    response.status = true;

@@ -85,6 +85,7 @@ namespace BTTEM.MediatR.Handlers
                 entityExist.ExpenseDateTo = request.ExpenseDateTo;
                 entityExist.ExpenseType = request.ExpenseType;
                 entityExist.FuelType = request.FuelType;
+                entityExist.TollParking = request.TollParking;
 
                 if (!string.IsNullOrEmpty(request.Status))
                 {
