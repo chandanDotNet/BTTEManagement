@@ -592,7 +592,6 @@ namespace POS.API.Controllers
             //return ReturnFormattedResponse(result);
         }
 
-
         /// <summary>
         /// Get Rate Policy Conveyance
         /// </summary>
@@ -619,6 +618,7 @@ namespace POS.API.Controllers
 
                 return Ok(conveyanceRates);
             }
+            
             //if (result.Success)
             //{
             //    response.status = true;
