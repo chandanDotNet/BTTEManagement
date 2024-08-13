@@ -594,7 +594,7 @@ namespace POS.API.Controllers
 
 
         /// <summary>
-        /// Get Policy Conveyance
+        /// Get Rate Policy Conveyance
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="FuelType"></param>
