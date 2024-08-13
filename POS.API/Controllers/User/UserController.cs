@@ -42,8 +42,10 @@ namespace POS.API.Controllers
         public readonly UserInfoToken _userInfo;
         public readonly IUserRepository _userRepository;
         public readonly IDepartmentRepository _departmentRepository;
+        public readonly IPoliciesDetailRepository _policiesDetailRepository;
         public readonly IGradeRepository _gradeRepository;
         public readonly ICompanyAccountRepository _companyAccountRepository;
+        public readonly IPoliciesVehicleConveyanceRepository _policiesVehicleConveyanceRepository;
         private readonly IMapper _mapper;
         /// <summary>
         /// User
@@ -55,7 +57,9 @@ namespace POS.API.Controllers
             UserInfoToken userInfo, IUserRepository userRepository,
             IDepartmentRepository departmentRepository, IGradeRepository gradeRepository,
              ICompanyAccountRepository companyAccountRepository,
-             IMapper mapper
+             IMapper mapper,
+             IPoliciesVehicleConveyanceRepository policiesVehicleConveyanceRepository,
+             IPoliciesDetailRepository policiesDetailRepository
             )
         {
             _mediator = mediator;
@@ -65,6 +69,8 @@ namespace POS.API.Controllers
             _gradeRepository = gradeRepository;
             _companyAccountRepository = companyAccountRepository;
             _mapper = mapper;
+            _policiesVehicleConveyanceRepository = policiesVehicleConveyanceRepository;
+            _policiesDetailRepository = policiesDetailRepository;
         }
         /// <summary>
         ///  Create a User
@@ -584,6 +590,50 @@ namespace POS.API.Controllers
             }
             return Ok(response);
             //return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        /// Get Policy Conveyance
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="FuelType"></param>
+        /// <param name="VehicleType"></param>
+        /// <returns></returns>       
+        [HttpGet("GetPolicyConveyanceRates/{UserId},{VehicleType},{FuelType}")]
+        public async Task<IActionResult> GetPolicyConveyanceRates(Guid UserId, string VehicleType, string FuelType)
+        {
+            VehicleType = VehicleType == "Car" ? "4 Wheeler" : VehicleType == "Bike" ? "Two Wheeler" : "";
+
+            var userDetails = await _userRepository.FindAsync(UserId);
+
+            if (userDetails != null)
+            {
+                var policyDetails = await _policiesDetailRepository.All.
+                FirstOrDefaultAsync(x => x.CompanyAccountId == userDetails.CompanyAccountId && x.GradeId == userDetails.GradeId);
+
+                var conveyanceRates =
+                await _policiesVehicleConveyanceRepository.AllIncluding(v => v.VehicleManagement)
+                .Where(x => x.PoliciesDetailId == policyDetails.Id &&
+                 x.VehicleManagement.FuelType == FuelType && x.VehicleManagement.Name == VehicleType).ToListAsync();
+
+                return Ok(conveyanceRates);
+            }
+            //if (result.Success)
+            //{
+            //    response.status = true;
+            //    response.StatusCode = result.StatusCode;
+            //    response.message = "User Deleted Successfully";
+            //}
+            //else
+            //{
+            //    response.status = false;
+            //    response.StatusCode = result.StatusCode;
+            //    response.message = "User not exists";
+            //}
+            //return Ok(response);
+
+            return BadRequest();
         }
     }
 }
