@@ -232,66 +232,68 @@ namespace POS.MediatR.Handlers
                 _expenseRepository.Update(entityExist);
             }
 
-           
-                //if (request.IsReceiptChange)
-                //{
-                //    if (!string.IsNullOrWhiteSpace(request.DocumentData)
-                //        && !string.IsNullOrWhiteSpace(request.ReceiptName))
-                //    {
-                //        string contentRootPath = _webHostEnvironment.WebRootPath;
-                //        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
 
-                //        if (!Directory.Exists(pathToSave))
-                //        {
-                //            Directory.CreateDirectory(pathToSave);
-                //        }
+            //if (request.IsReceiptChange)
+            //{
+            //    if (!string.IsNullOrWhiteSpace(request.DocumentData)
+            //        && !string.IsNullOrWhiteSpace(request.ReceiptName))
+            //    {
+            //        string contentRootPath = _webHostEnvironment.WebRootPath;
+            //        var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
 
-                //        var extension = Path.GetExtension(request.ReceiptName);
-                //        var id = Guid.NewGuid();
-                //        var path = $"{id}.{extension}";
-                //        var documentPath = Path.Combine(pathToSave, path);
-                //        string base64 = request.DocumentData.Split(',').LastOrDefault();
-                //        if (!string.IsNullOrWhiteSpace(base64))
-                //        {
-                //            byte[] bytes = Convert.FromBase64String(base64);
-                //            try
-                //            {
-                //                await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                //                entityExist.ReceiptPath = path;
-                //            }
-                //            catch
-                //            {
-                //                _logger.LogError("Error while saving files", entityExist);
-                //            }
-                //        }
-                //    }
-                //    else
-                //    {
-                //        entityExist.ReceiptPath = null;
-                //        entityExist.ReceiptName = null;
-                //    }
-                //}
+            //        if (!Directory.Exists(pathToSave))
+            //        {
+            //            Directory.CreateDirectory(pathToSave);
+            //        }
+
+            //        var extension = Path.GetExtension(request.ReceiptName);
+            //        var id = Guid.NewGuid();
+            //        var path = $"{id}.{extension}";
+            //        var documentPath = Path.Combine(pathToSave, path);
+            //        string base64 = request.DocumentData.Split(',').LastOrDefault();
+            //        if (!string.IsNullOrWhiteSpace(base64))
+            //        {
+            //            byte[] bytes = Convert.FromBase64String(base64);
+            //            try
+            //            {
+            //                await File.WriteAllBytesAsync($"{documentPath}", bytes);
+            //                entityExist.ReceiptPath = path;
+            //            }
+            //            catch
+            //            {
+            //                _logger.LogError("Error while saving files", entityExist);
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        entityExist.ReceiptPath = null;
+            //        entityExist.ReceiptName = null;
+            //    }
+            //}
 
 
-                //var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
-                //if (entityMasterExist != null)
-                //{
-                //    decimal UpdatedExpenseAmount = 0;
-                //    //OldExpenseAmount = entityExist.Amount;
-                //    decimal NowExpenseAmount = request.Amount;
-                //    decimal TotalExpenseAmount = entityMasterExist.TotalAmount;
-                //    UpdatedExpenseAmount = (TotalExpenseAmount - OldExpenseAmount);
-                //    UpdatedExpenseAmount = UpdatedExpenseAmount + NowExpenseAmount;
-                //    entityMasterExist.TotalAmount = UpdatedExpenseAmount;
-                //    _masterExpenseRepository.Update(entityMasterExist);
+            //var entityMasterExist = await _masterExpenseRepository.FindAsync(entityExist.MasterExpenseId);
+            //if (entityMasterExist != null)
+            //{
+            //    decimal UpdatedExpenseAmount = 0;
+            //    //OldExpenseAmount = entityExist.Amount;
+            //    decimal NowExpenseAmount = request.Amount;
+            //    decimal TotalExpenseAmount = entityMasterExist.TotalAmount;
+            //    UpdatedExpenseAmount = (TotalExpenseAmount - OldExpenseAmount);
+            //    UpdatedExpenseAmount = UpdatedExpenseAmount + NowExpenseAmount;
+            //    entityMasterExist.TotalAmount = UpdatedExpenseAmount;
+            //    _masterExpenseRepository.Update(entityMasterExist);
 
-                //}
-                if (await _uow.SaveAsync() <= 0)
-                {
-                    _logger.LogError("Error while saving Expense.");
-                    return ServiceResponse<bool>.Return500();
-                }
-                return ServiceResponse<bool>.ReturnSuccess();
+            //}
+
+            //var aa = await _uow.SaveAsync();
+            if (await _uow.SaveAsync() <= 0)
+            {
+                _logger.LogError("Error while saving Expense.");
+                return ServiceResponse<bool>.Return500();
+            }
+            return ServiceResponse<bool>.ReturnSuccess();
             }
         }
     }

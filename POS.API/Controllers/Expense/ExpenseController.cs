@@ -539,6 +539,12 @@ namespace POS.API.Controllers.Expense
                 foreach (var item in addMasterExpenseCommand.ExpenseDetails)
                 {
                     AddExpenseCommand addExpenseCommand = new AddExpenseCommand();
+                    item.ExpenseDetail.ForEach(c => c.MasterExpenseId = id);
+                    //if (item.ExpenseDetail.Count>0)
+                    //{
+                    //    item.ExpenseDetail.ForEach(c => c.MasterExpenseId = id);
+                        
+                    //}
                     addExpenseCommand = item;
                     addExpenseCommand.MasterExpenseId = id;
                     addExpenseCommand.TripId = result.Data.TripId;
@@ -1032,8 +1038,11 @@ namespace POS.API.Controllers.Expense
                     {
                         item.Id = Guid.NewGuid();
                     }
+                    item.ExpenseDetail.ForEach(c => { c.MasterExpenseId = item.MasterExpenseId; c.ExpenseId = item.Id;c.Id = Guid.Empty; });
                     updateExpenseCommand = item;
                     var result2 = await _mediator.Send(updateExpenseCommand);
+
+
 
                     var responseData = _expenseRepository.FindAsync(item.Id);
 
@@ -1050,6 +1059,8 @@ namespace POS.API.Controllers.Expense
                     };
                     var response = await _mediator.Send(addMasterExpenseTrackingCommand);
                 }
+
+               
 
                 //============================Approved Trip
                 int noOfDays = 1;
