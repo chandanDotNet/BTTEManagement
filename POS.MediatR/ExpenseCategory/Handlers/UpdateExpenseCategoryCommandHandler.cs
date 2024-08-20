@@ -73,6 +73,7 @@ namespace POS.MediatR.Handlers
             existingEntity.CGST = request.CGST;
             existingEntity.SGST = request.SGST;
             existingEntity.IGST = request.IGST;
+            existingEntity.SSECode= request.SSECode;
             _expenseCategoryRepository.Update(existingEntity);
             if (await _uow.SaveAsync() <= 0)
             {

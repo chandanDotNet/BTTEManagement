@@ -3041,6 +3041,19 @@ namespace POS.API.Controllers.Expense
 
             return NotFound("No files found to download.");
         }
+
+        /// <summary>
+        /// Deletes Expense Misc
+        /// </summary>
+        /// <param name="masterExpenseId">The All Expense identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteExpenseMisc/{masterExpenseId}")]
+        public async Task<IActionResult> DeleteExpenseMisc(Guid masterExpenseId)
+        {
+            var command = new DeleteExpenseMiscCommand() { MasterExpenseId = masterExpenseId };
+            var result = await _mediator.Send(command);
+            return ReturnFormattedResponse(result);
+        }
     }
 }
 
