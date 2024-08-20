@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BTTEM.Data;
 using BTTEM.Data.Dto.Expense;
+using BTTEM.Data.Entities;
 using BTTEM.Data.Entities.Expense;
 using BTTEM.MediatR.Expense.Commands;
 using BTTEM.Repository;
@@ -28,6 +29,9 @@ namespace BTTEM.MediatR.Expense.Handlers
         private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly IExpenseRepository _expenseRepository;
         private readonly IExpenseDocumentRepository _expenseDocumentRepository;
+        private readonly ICarBikeLogBookExpenseDocumentRepository _carBikeLogBookExpenseDocumentRepository;
+        private readonly ICarBikeLogBookExpenseRefillingDocumentRepository _carBikeLogBookExpenseRefillingDocumentRepository;
+        private readonly ICarBikeLogBookExpenseTollParkingDocumentRepository _carBikeLogBookExpenseTollParkingDocumentRepository;
         private readonly ITripItineraryRepository _tripItineraryRepository;
         private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
         private readonly IItineraryTicketBookingRepository _itineraryTicketBookingRepository;
@@ -41,6 +45,9 @@ namespace BTTEM.MediatR.Expense.Handlers
             IMasterExpenseRepository masterExpenseRepository,
             IExpenseRepository expenseRepository,
             IExpenseDocumentRepository expenseDocumentRepository,
+            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository,
+            ICarBikeLogBookExpenseRefillingDocumentRepository carBikeLogBookExpenseRefillingDocumentRepository,
+            ICarBikeLogBookExpenseTollParkingDocumentRepository carBikeLogBookExpenseTollParkingDocumentRepository,
             ITripItineraryRepository tripItineraryRepository,
             ITripHotelBookingRepository tripHotelBookingRepository,
             IItineraryTicketBookingRepository itineraryTicketBookingRepository,
@@ -59,19 +66,35 @@ namespace BTTEM.MediatR.Expense.Handlers
             _webHostEnvironment = webHostEnvironment;
             _uow = uow;
             _pathHelper = pathHelper;
+            _carBikeLogBookExpenseDocumentRepository = carBikeLogBookExpenseDocumentRepository;
+            _carBikeLogBookExpenseRefillingDocumentRepository = carBikeLogBookExpenseRefillingDocumentRepository;
+            _carBikeLogBookExpenseTollParkingDocumentRepository = carBikeLogBookExpenseTollParkingDocumentRepository;
         }
         public async Task<List<string>> Handle(DownloadAllExpenseZipFileCommand request, CancellationToken cancellationToken)
         {
             List<string> result = new List<string>();
             List<ExpenseDocument> documents = new List<ExpenseDocument>();
+            List<CarBikeLogBookExpenseDocument> carBikeLogBookDocuments = new List<CarBikeLogBookExpenseDocument>();
+            List<CarBikeLogBookExpenseRefillingDocument> carBikeLogBookRefillingdocuments = new List<CarBikeLogBookExpenseRefillingDocument>();            
+            List<CarBikeLogBookExpenseTollParkingDocument> carBikeLogBookTollParkingDocument = new List<CarBikeLogBookExpenseTollParkingDocument>();
             List<TripHotelBooking> hotelBooking = new List<TripHotelBooking>();
             List<ItineraryTicketBooking> ticketBooking = new List<ItineraryTicketBooking>();
+            
             var masterExpense = await _masterExpenseRepository.FindAsync(request.MasterExpenseId);
             var expense = await _expenseRepository.All.Where(x => x.MasterExpenseId == request.MasterExpenseId).ToListAsync();
             foreach (var item in expense)
             {
                 var expenseDocuments = await _expenseDocumentRepository.All.Where(x => x.ExpenseId == item.Id).ToListAsync();
                 documents.AddRange(expenseDocuments);
+               
+                var carBikeLogBookExpenseDocuments = await _carBikeLogBookExpenseDocumentRepository.All.Where(x => x.CarBikeLogBookExpenseId == item.Id).ToListAsync();
+                carBikeLogBookDocuments.AddRange(carBikeLogBookExpenseDocuments);
+                
+                var carBikeLogBookExpenseRefillingDocuments = await _carBikeLogBookExpenseRefillingDocumentRepository.All.Where(x => x.CarBikeLogBookExpenseId == item.Id).ToListAsync();
+                carBikeLogBookRefillingdocuments.AddRange(carBikeLogBookExpenseRefillingDocuments);
+                
+                var carBikeLogBookExpenseTollParkingDocuments = await _carBikeLogBookExpenseTollParkingDocumentRepository.All.Where(x => x.CarBikeLogBookExpenseId == item.Id).ToListAsync();
+                carBikeLogBookTollParkingDocument.AddRange(carBikeLogBookExpenseTollParkingDocuments);
             }
             if (masterExpense.TripId.HasValue)
             {
@@ -92,6 +115,49 @@ namespace BTTEM.MediatR.Expense.Handlers
                     }
                 });
             }
+
+            if (carBikeLogBookDocuments.Count > 0)
+            {
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.Attachments);
+
+                carBikeLogBookDocuments.ForEach(item =>
+                {
+                    if (item.ReceiptPath != null)
+                    {
+                        item.ReceiptPath = Path.Combine(filePath, item.ReceiptPath);
+                        result.Add(item.ReceiptPath);
+                    }
+                });
+            }
+
+            if (carBikeLogBookRefillingdocuments.Count > 0)
+            {
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.Attachments);
+
+                carBikeLogBookRefillingdocuments.ForEach(item =>
+                {
+                    if (item.ReceiptPath != null)
+                    {
+                        item.ReceiptPath = Path.Combine(filePath, item.ReceiptPath);
+                        result.Add(item.ReceiptPath);
+                    }
+                });
+            }
+
+            if (carBikeLogBookTollParkingDocument.Count > 0)
+            {
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.Attachments);
+
+                carBikeLogBookTollParkingDocument.ForEach(item =>
+                {
+                    if (item.ReceiptPath != null)
+                    {
+                        item.ReceiptPath = Path.Combine(filePath, item.ReceiptPath);
+                        result.Add(item.ReceiptPath);
+                    }
+                });
+            }
+
             if (ticketBooking.Count > 0)
             {
                 var filePath = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.TravelDeskAttachments);

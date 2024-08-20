@@ -27,6 +27,7 @@ using BTTEM.MediatR.CompanyProfile.Commands;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using BTTEM.MediatR;
+using Microsoft.VisualBasic.FileIO;
 
 namespace POS.API.Controllers
 {
@@ -42,8 +43,10 @@ namespace POS.API.Controllers
         public readonly UserInfoToken _userInfo;
         public readonly IUserRepository _userRepository;
         public readonly IDepartmentRepository _departmentRepository;
+        public readonly IPoliciesDetailRepository _policiesDetailRepository;
         public readonly IGradeRepository _gradeRepository;
         public readonly ICompanyAccountRepository _companyAccountRepository;
+        public readonly IPoliciesVehicleConveyanceRepository _policiesVehicleConveyanceRepository;
         private readonly IMapper _mapper;
         /// <summary>
         /// User
@@ -55,7 +58,9 @@ namespace POS.API.Controllers
             UserInfoToken userInfo, IUserRepository userRepository,
             IDepartmentRepository departmentRepository, IGradeRepository gradeRepository,
              ICompanyAccountRepository companyAccountRepository,
-             IMapper mapper
+             IMapper mapper,
+             IPoliciesVehicleConveyanceRepository policiesVehicleConveyanceRepository,
+             IPoliciesDetailRepository policiesDetailRepository
             )
         {
             _mediator = mediator;
@@ -65,6 +70,8 @@ namespace POS.API.Controllers
             _gradeRepository = gradeRepository;
             _companyAccountRepository = companyAccountRepository;
             _mapper = mapper;
+            _policiesVehicleConveyanceRepository = policiesVehicleConveyanceRepository;
+            _policiesDetailRepository = policiesDetailRepository;
         }
         /// <summary>
         ///  Create a User
@@ -555,6 +562,22 @@ namespace POS.API.Controllers
             var ReportQuery = new GetUserInfoDetailsQuery { UserId = id };
             var result = await _mediator.Send(ReportQuery);
 
+            if (result != null)
+            {
+                var policyDetails = await _policiesDetailRepository.All.
+                FirstOrDefaultAsync(x => x.CompanyAccountId == result.userInfoDetails.CompanyAccountId && x.GradeId == result.userInfoDetails.GradeId);
+
+                var conveyanceRates =
+                await _policiesVehicleConveyanceRepository.AllIncluding(v => v.VehicleManagement)
+                .Where(x => x.PoliciesDetailId == policyDetails.Id).ToListAsync();
+
+                //result.userInfoDetails.PoliciesVehicleConveyance = conveyanceRates;
+
+                result.userInfoDetails.CarDieselRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("14E55D56-4A18-4B6F-B8C0-8D7A8AC446D4")).RatePerKM;
+                result.userInfoDetails.CarPetrolRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("8CC7895B-2E0A-4070-B7F8-13AD36DF5C25")).RatePerKM;
+                result.userInfoDetails.BikeRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("1B496B46-46A5-4A65-B1BE-CA246073CF62")).RatePerKM;
+            }
+
             return Ok(result);
         }
 
@@ -584,6 +607,50 @@ namespace POS.API.Controllers
             }
             return Ok(response);
             //return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get Rate Policy Conveyance
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="FuelType"></param>
+        /// <param name="VehicleType"></param>
+        /// <returns></returns>       
+        [HttpGet("GetPolicyConveyanceRates/{UserId},{VehicleType},{FuelType}")]
+        public async Task<IActionResult> GetPolicyConveyanceRates(Guid UserId, string VehicleType, string FuelType)
+        {
+            VehicleType = VehicleType == "Car" ? "4 Wheeler" : VehicleType == "Bike" ? "Two Wheeler" : "";
+
+            var userDetails = await _userRepository.FindAsync(UserId);
+
+            if (userDetails != null)
+            {
+                var policyDetails = await _policiesDetailRepository.All.
+                FirstOrDefaultAsync(x => x.CompanyAccountId == userDetails.CompanyAccountId && x.GradeId == userDetails.GradeId);
+
+                var conveyanceRates =
+                await _policiesVehicleConveyanceRepository.AllIncluding(v => v.VehicleManagement)
+                .Where(x => x.PoliciesDetailId == policyDetails.Id &&
+                 x.VehicleManagement.FuelType == FuelType && x.VehicleManagement.Name == VehicleType).ToListAsync();
+
+                return Ok(conveyanceRates);
+            }
+
+            //if (result.Success)
+            //{
+            //    response.status = true;
+            //    response.StatusCode = result.StatusCode;
+            //    response.message = "User Deleted Successfully";
+            //}
+            //else
+            //{
+            //    response.status = false;
+            //    response.StatusCode = result.StatusCode;
+            //    response.message = "User not exists";
+            //}
+            //return Ok(response);
+
+            return BadRequest();
         }
     }
 }

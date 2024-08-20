@@ -67,13 +67,7 @@ namespace BTTEM.MediatR.Handlers
             var entity = _mapper.Map<CarBikeLogBookExpense>(request);
             entity.Id = Guid.NewGuid();                  
 
-            _carBikeLogBookExpenseRepository.Add(entity);           
-
-            if (await _uow.SaveAsync() <= 0)
-            {
-                _logger.LogError("Error while saving Master Expense");
-                return ServiceResponse<CarBikeLogBookExpenseDto>.Return500();
-            }
+            _carBikeLogBookExpenseRepository.Add(entity); 
 
             int index = 0;
             foreach (var item in entity.Documents)
@@ -193,6 +187,12 @@ namespace BTTEM.MediatR.Handlers
                     }
                 }
                 tf_idx++;
+            }
+
+            if (await _uow.SaveAsync() <= 0)
+            {
+                _logger.LogError("Error while saving Master Expense");
+                return ServiceResponse<CarBikeLogBookExpenseDto>.Return500();
             }
 
             var industrydto = _mapper.Map<CarBikeLogBookExpenseDto>(entity);

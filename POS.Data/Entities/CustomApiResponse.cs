@@ -43,9 +43,7 @@ namespace BTTEM.Data.Entities
         public bool status { get; set; }
         public int StatusCode { get; set; }
         public string message { get; set; }
-
-        public UserInfoDetails userInfoDetails { get; set; }
-
+        public UserInfoDetails userInfoDetails { get; set; }        
     }
 
     public class UserInfoDetails
@@ -82,6 +80,10 @@ namespace BTTEM.Data.Entities
         public decimal? OtherCitiesUptoAmount { get; set; }
         public bool? IsFoodActuals { get; set; }
         public decimal? BudgetAmount { get; set; }
+        public decimal? CarDieselRate { get; set; }
+        public decimal? CarPetrolRate { get; set; }
+        public decimal? BikeRate { get; set; }
+        //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }
     public class TourTravelExpenseReport
