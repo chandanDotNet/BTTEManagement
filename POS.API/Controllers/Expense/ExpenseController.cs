@@ -560,18 +560,18 @@ namespace POS.API.Controllers.Expense
                     var result2 = await _mediator.Send(addExpenseCommand);
                     result.Data.ExpenseId = result2.Data.Id;
 
-                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
-                    {
-                        MasterExpenseId = id,
-                        ExpenseId = result.Data.ExpenseId,
-                        ExpenseTypeName = addExpenseCommand.Name,
-                        ActionType = "Activity",
-                        Remarks = addExpenseCommand.Name + " Expense Added By " + userResult.FirstName + " " + userResult.LastName,
-                        Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
-                        ActionBy = Guid.Parse(_userInfoToken.Id),
-                        ActionDate = DateTime.Now,
-                    };
-                    var response = await _mediator.Send(addExpenseTrackingCommand);
+                    //var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                    //{
+                    //    MasterExpenseId = id,
+                    //    ExpenseId = result.Data.ExpenseId,
+                    //    ExpenseTypeName = addExpenseCommand.Name,
+                    //    ActionType = "Activity",
+                    //    Remarks = addExpenseCommand.Name + " Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                    //    Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                    //    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    //    ActionDate = DateTime.Now,
+                    //};
+                    //var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
 
                 //============================Approved Trip
