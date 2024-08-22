@@ -566,5 +566,17 @@ namespace BTTEM.API.Controllers.PoliciesTravel
             var result = await _mediator.Send(getUserGradeAndAccountCommand);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get Group Wise Limit
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpPost("GetGroupLimit")]
+        public async Task<IActionResult> GetGroupLimit(GetGroupUserLimitCommand GroupUserLimitCommand)
+        {           
+            var result = await _mediator.Send(GroupUserLimitCommand);
+            return Ok(result);
+        }
     }
 }
