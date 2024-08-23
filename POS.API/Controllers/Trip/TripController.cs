@@ -185,6 +185,7 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(result.Data.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(result.Data.Status));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(result.Data.DepartmentName));
@@ -415,6 +416,7 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         string templateBody = sr.ReadToEnd();
                         templateBody = templateBody.Replace("{NAME}", string.Concat(tripItineraryDetails.CreatedByUser.FirstName, " ", tripItineraryDetails.CreatedByUser.LastName));
+                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                         templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripDetails.TripNo));
                         templateBody = templateBody.Replace("{TICKET}", Path.Combine(_webHostEnvironment.WebRootPath, "TravelDeskAttachments", result.Data.TicketReceiptPath));
                         EmailHelper.SendEmail(new SendEmailSpecification
@@ -920,6 +922,7 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
@@ -956,6 +959,7 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             string templateBody = sr.ReadToEnd();
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
