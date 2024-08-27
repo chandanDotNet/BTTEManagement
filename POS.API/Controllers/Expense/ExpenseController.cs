@@ -560,18 +560,18 @@ namespace POS.API.Controllers.Expense
                     var result2 = await _mediator.Send(addExpenseCommand);
                     result.Data.ExpenseId = result2.Data.Id;
 
-                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
-                    {
-                        MasterExpenseId = id,
-                        ExpenseId = result.Data.ExpenseId,
-                        ExpenseTypeName = addExpenseCommand.Name,
-                        ActionType = "Activity",
-                        Remarks = addExpenseCommand.Name + " Expense Added By " + userResult.FirstName + " " + userResult.LastName,
-                        Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
-                        ActionBy = Guid.Parse(_userInfoToken.Id),
-                        ActionDate = DateTime.Now,
-                    };
-                    var response = await _mediator.Send(addExpenseTrackingCommand);
+                    //var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                    //{
+                    //    MasterExpenseId = id,
+                    //    ExpenseId = result.Data.ExpenseId,
+                    //    ExpenseTypeName = addExpenseCommand.Name,
+                    //    ActionType = "Activity",
+                    //    Remarks = addExpenseCommand.Name + " Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                    //    Status = "Expense Added By " + userResult.FirstName + " " + userResult.LastName,
+                    //    ActionBy = Guid.Parse(_userInfoToken.Id),
+                    //    ActionDate = DateTime.Now,
+                    //};
+                    //var response = await _mediator.Send(addExpenseTrackingCommand);
                 }
 
                 //============================Approved Trip
@@ -3051,6 +3051,19 @@ namespace POS.API.Controllers.Expense
             }
 
             return NotFound("No files found to download.");
+        }
+
+        /// <summary>
+        /// Deletes Expense Misc
+        /// </summary>
+        /// <param name="masterExpenseId">The All Expense identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteExpenseMisc/{masterExpenseId}")]
+        public async Task<IActionResult> DeleteExpenseMisc(Guid masterExpenseId)
+        {
+            var command = new DeleteExpenseMiscCommand() { MasterExpenseId = masterExpenseId };
+            var result = await _mediator.Send(command);
+            return ReturnFormattedResponse(result);
         }
     }
 }
