@@ -1,4 +1,5 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +25,18 @@ namespace BTTEM.Data
         public string? Status { get; set; }
         public bool? IsAvail { get; set; }
         public Guid? ActionBy { get; set; }
+        public Guid? VendorId { get; set; }
+        public Vendor? Vendor { get; set; }
         public string? VendorName { get; set; }
         public string? BookingDate { get; set; }
         public string? BookingTime { get; set; }
+        public bool? IsReschedule { get; set; } = false;
+        public decimal? RescheduleCharge { get; set; } = 0;
+        public string? RescheduleBookingDate { get; set; }
+        public string? RescheduleBookingTime { get; set; }
+        public string? RescheduleTicketReceiptName { get; set; }
+        public string? RescheduleTicketReceiptPath { get; set; }
+        public string? RescheduleApprovalDocumentsReceiptName { get; set; }
+        public string? RescheduleApprovalDocumentsReceiptPath { get; set; }
     }
 }
