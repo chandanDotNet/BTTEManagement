@@ -26,6 +26,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? Status { get; set; }
         public bool? IsAvail { get; set; }
         public Guid? ActionBy { get; set; }
+        public Guid? VendorId { get; set; }
         public string? VendorName { get; set; }
         public string? BookingDate { get; set; }
         public string? BookingTime { get; set; }
