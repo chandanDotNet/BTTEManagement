@@ -13,7 +13,6 @@ namespace BTTEM.Repository
 {
     public class ItineraryTicketBookingRepository : GenericRepository<ItineraryTicketBooking, POSDbContext>, IItineraryTicketBookingRepository
     {
-
         public ItineraryTicketBookingRepository(IUnitOfWork<POSDbContext> uow)
      : base(uow)
         {

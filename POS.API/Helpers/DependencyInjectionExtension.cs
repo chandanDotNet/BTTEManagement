@@ -118,6 +118,7 @@ namespace POS.API.Helpers
             services.AddScoped<ICarBikeLogBookExpenseRefillingDocumentRepository, CarBikeLogBookExpenseRefillingDocumentRepository>();
             services.AddScoped<ICarBikeLogBookExpenseTollParkingDocumentRepository, CarBikeLogBookExpenseTollParkingDocumentRepository>();
             services.AddScoped<IExpenseDetailRepository, ExpenseDetailRepository>();
+            services.AddScoped<IItineraryTicketBookingQuotationRepository, ItineraryTicketBookingQuotationRepository>();
         }
     }
 }
