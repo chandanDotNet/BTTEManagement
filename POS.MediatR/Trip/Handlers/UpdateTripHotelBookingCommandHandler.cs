@@ -3,17 +3,21 @@ using BTTEM.Data;
 using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Domain;
 using POS.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PathHelper = POS.Helper.PathHelper;
 
 namespace BTTEM.MediatR.Trip.Handlers
 {
@@ -24,18 +28,24 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<UpdateTripHotelBookingCommandHandler> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly PathHelper _pathHelper;
 
         public UpdateTripHotelBookingCommandHandler(
            ITripHotelBookingRepository tripHotelBookingRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
-           ILogger<UpdateTripHotelBookingCommandHandler> logger
+           ILogger<UpdateTripHotelBookingCommandHandler> logger,
+            IWebHostEnvironment webHostEnvironment,
+            PathHelper pathHelper
           )
         {
             _tripHotelBookingRepository = tripHotelBookingRepository;
             _uow = uow;
             _mapper = mapper;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
+            _pathHelper = pathHelper;
 
         }
 
@@ -124,6 +134,103 @@ namespace BTTEM.MediatR.Trip.Handlers
                         {
                             entityExist.NoOfRoom = tv.NoOfRoom;
                         }
+                        entityExist.IsReschedule = tv.IsReschedule;
+                        if (!string.IsNullOrWhiteSpace(tv.RescheduleStatus))
+                        {
+                            entityExist.RescheduleStatus = tv.RescheduleStatus;
+                        }
+                        if (!string.IsNullOrWhiteSpace(tv.RescheduleReason))
+                        {
+                            entityExist.RescheduleReason = tv.RescheduleReason;
+                        }
+                        if (tv.RescheduleCharge>0)
+                        {
+                            entityExist.RescheduleCharge = tv.RescheduleCharge;
+                        }
+                        if (tv.RescheduleCheckIn.HasValue)
+                        {
+                            entityExist.RescheduleCheckIn = (DateTime)tv.RescheduleCheckIn;
+                        }
+                        if (tv.RescheduleCheckOut.HasValue)
+                        {
+                            entityExist.RescheduleCheckOut = (DateTime)tv.RescheduleCheckOut;
+                        }
+                        if (!string.IsNullOrWhiteSpace(tv.RescheduleCheckInTime))
+                        {
+                            entityExist.RescheduleCheckInTime = tv.RescheduleCheckInTime;
+                        }
+                        if (!string.IsNullOrWhiteSpace(tv.RescheduleCheckOutTime))
+                        {
+                            entityExist.RescheduleCheckOutTime = tv.RescheduleCheckOutTime;
+                        }
+
+                        //==================  Ticket Upload
+
+                        if (!string.IsNullOrWhiteSpace(tv.RescheduleBillReceiptName) && !string.IsNullOrWhiteSpace(tv.RescheduleBillReceiptPath))
+                        {
+                            string contentRootPath = _webHostEnvironment.WebRootPath;
+                            var pathToSave = Path.Combine(contentRootPath, _pathHelper.TravelDeskAttachments);
+
+                            if (!Directory.Exists(pathToSave))
+                            {
+                                Directory.CreateDirectory(pathToSave);
+                            }
+
+                            var extension = Path.GetExtension(tv.RescheduleBillReceiptName);
+                            var id = Guid.NewGuid();
+                            var path = $"{id}.{extension}";
+                            var documentPath = Path.Combine(pathToSave, path);
+                            string base64 = tv.RescheduleBillReceiptPath.Split(',').LastOrDefault();
+                            if (!string.IsNullOrWhiteSpace(base64))
+                            {
+                                byte[] bytes = Convert.FromBase64String(base64);
+                                try
+                                {
+                                    await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                    entityExist.RescheduleBillReceiptPath = path;
+                                    entityExist.RescheduleBillReceiptName = tv.RescheduleBillReceiptName;
+                                }
+                                catch
+                                {
+                                    _logger.LogError("Error while saving files", entityExist);
+                                }
+                            }
+                        }
+
+                        //==================  Approval Document Upload
+
+                        if (!string.IsNullOrWhiteSpace(tv.RescheduleApprovalDocumentsReceiptName) && !string.IsNullOrWhiteSpace(tv.RescheduleApprovalDocumentsReceiptPath))
+                        {
+                            string contentRootPath = _webHostEnvironment.WebRootPath;
+                            var pathToSave = Path.Combine(contentRootPath, _pathHelper.TravelDeskAttachments);
+
+                            if (!Directory.Exists(pathToSave))
+                            {
+                                Directory.CreateDirectory(pathToSave);
+                            }
+
+                            var extension = Path.GetExtension(tv.RescheduleApprovalDocumentsReceiptName);
+                            var id = Guid.NewGuid();
+                            var path = $"{id}.{extension}";
+                            var documentPath = Path.Combine(pathToSave, path);
+                            string base64 = tv.RescheduleApprovalDocumentsReceiptPath.Split(',').LastOrDefault();
+                            if (!string.IsNullOrWhiteSpace(base64))
+                            {
+                                byte[] bytes = Convert.FromBase64String(base64);
+                                try
+                                {
+                                    await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                                    entityExist.RescheduleApprovalDocumentsReceiptPath = path;
+                                    entityExist.RescheduleApprovalDocumentsReceiptName = tv.RescheduleApprovalDocumentsReceiptName;
+                                }
+                                catch
+                                {
+                                    _logger.LogError("Error while saving files", entityExist);
+                                }
+                            }
+                        }
+
+                        //=================
 
                         _tripHotelBookingRepository.Update(entityExist);
                     }

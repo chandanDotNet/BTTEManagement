@@ -39,5 +39,17 @@ namespace BTTEM.Data
         public string? CancelationReason { get; set; }
         public string? NoOfRoom { get; set; }
         public DateTime? CancelationDate { get; set; }
+        public bool? IsReschedule { get; set; } = false;
+        public string? RescheduleStatus { get; set; }
+        public string? RescheduleReason { get; set; }
+        public decimal? RescheduleCharge { get; set; } = 0;
+        public DateTime? RescheduleCheckIn { get; set; }
+        public DateTime? RescheduleCheckOut { get; set; }
+        public string? RescheduleCheckInTime { get; set; }
+        public string? RescheduleCheckOutTime { get; set; }
+        public string? RescheduleBillReceiptName { get; set; }
+        public string? RescheduleBillReceiptPath { get; set; }
+        public string? RescheduleApprovalDocumentsReceiptName { get; set; }
+        public string? RescheduleApprovalDocumentsReceiptPath { get; set; }
     }
 }

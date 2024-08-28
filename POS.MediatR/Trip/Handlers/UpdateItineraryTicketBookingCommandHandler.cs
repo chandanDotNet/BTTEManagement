@@ -102,6 +102,10 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
             entityExist.IsAvail=request.IsAvail;
             entityExist.IsReschedule=request.IsReschedule;
+            if (!string.IsNullOrWhiteSpace(request.RescheduleStatus))
+            {
+                entityExist.RescheduleStatus = request.RescheduleStatus;
+            }
             if (request.RescheduleCharge > 0)
             {
                 entityExist.RescheduleCharge = request.RescheduleCharge;
