@@ -132,6 +132,14 @@ namespace POS.Helper
             }
         }
 
+        public string ItineraryTicketBookingQuotationAttachments
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:ItineraryTicketBookingQuotationAttachments"];
+            }
+        }
+
         public string SiteMapPath
         {
             get

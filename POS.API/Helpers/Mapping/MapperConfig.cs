@@ -81,6 +81,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new LocalConveyanceExpenseProfile());
                 mc.AddProfile(new CarBikeLogBookExpenseProfile());
                 mc.AddProfile(new VendorProfile());
+                mc.AddProfile(new ItineraryTicketBookingQuotationProfile());
             });
             return mappingConfig.CreateMapper();
         }

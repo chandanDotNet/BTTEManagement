@@ -1118,5 +1118,57 @@ namespace BTTEM.API.Controllers.Trip
             var result = await _mediator.Send(deleteGroupTripCommand);
             return ReturnFormattedResponse(result);
         }
+
+        /// <summary>
+        ///  Create a Trip Itinerary Ticket Booking Quotaion
+        /// </summary>
+        /// <param name="addItineraryTicketBookingQuotationCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddItineraryTicketBookingQuotaion")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryTicketBookingQuotationDto))]
+        public async Task<IActionResult> AddItineraryTicketBookingQuotation(AddItineraryTicketBookingQuotationCommand addItineraryTicketBookingQuotationCommand)
+        {
+            var result = await _mediator.Send(addItineraryTicketBookingQuotationCommand);
+
+            if (result.Success)
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        ///  Update a Trip Itinerary Ticket Booking Quotaion
+        /// </summary>
+        /// <param name="updateItineraryTicketBookingQuotationCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateItineraryTicketBookingQuotaion")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryTicketBookingQuotationDto))]
+        public async Task<IActionResult> UpdateItineraryTicketBookingQuotation(UpdateItineraryTicketBookingQuotationCommand updateItineraryTicketBookingQuotationCommand)
+        {
+            var result = await _mediator.Send(updateItineraryTicketBookingQuotationCommand);
+
+            if (result.Success)
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Delete Itinerary Ticket Booking Quotation.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteItineraryTicketBookingQuotation/{Id}")]
+        public async Task<IActionResult> DeleteItineraryTicketBookingQuotation(Guid Id)
+        {
+            var deleteItineraryTicketBookingQuotationCommand = new DeleteItineraryTicketBookingQuotationCommand { Id = Id };
+            var result = await _mediator.Send(deleteItineraryTicketBookingQuotationCommand);
+            return ReturnFormattedResponse(result);
+        }
     }
 }

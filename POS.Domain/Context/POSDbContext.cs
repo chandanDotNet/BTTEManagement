@@ -120,6 +120,7 @@ namespace POS.Domain
         public DbSet<CarBikeLogBookExpenseRefillingDocument> CarBikeLogBookExpenseRefillingDocuments { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<ExpenseDetail> ExpenseDetails { get; set; }
+        public DbSet<ItineraryTicketBookingQuotation> ItineraryTicketBookingQuotations { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -637,6 +638,14 @@ namespace POS.Domain
             });
 
             builder.Entity<Vendor>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ItineraryTicketBookingQuotation>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()
