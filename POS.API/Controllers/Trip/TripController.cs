@@ -572,6 +572,34 @@ namespace BTTEM.API.Controllers.Trip
             return ReturnFormattedResponse(result);
         }
 
+        [HttpPut("RescheduleTripItineraryHotel")]
+        //[ClaimCheck("USR_ADD_USER")]
+        [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
+        public async Task<IActionResult> RescheduleTripItineraryHotel(RescheduleTripItineraryHotelCommand rescheduleTripItineraryHotelCommand)
+        {
+
+             var result = await _mediator.Send(rescheduleTripItineraryHotelCommand);
+            if (result.Data == true)
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                //var responseData = _tripItineraryRepository.FindAsync(rescheduleTripItineraryHotelCommand.Id);
+
+                //var addTripTrackingCommand = new AddTripTrackingCommand()
+                //{
+                //    TripId = updateTripItineraryCommand.TripItinerary.FirstOrDefault().Id,
+                //    TripItineraryId = Guid.Empty,
+                //    TripTypeName = responseData.Result.TripBy,
+                //    ActionType = "Activity",
+                //    Remarks = "Trip Itinerary status updated by - " + userResult.FirstName + " " + userResult.LastName,
+                //    ActionBy = Guid.Parse(_userInfoToken.Id),
+                //    ActionDate = DateTime.Now
+                //};
+                //var response = await _mediator.Send(addTripTrackingCommand);
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
 
         /// <summary>
         ///  Update a Trip Itinerary Book Status

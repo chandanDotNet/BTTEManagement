@@ -30,12 +30,12 @@ namespace BTTEM.MediatR.Trip.Handlers
             List<TripHotelBookingDto> result = new List<TripHotelBookingDto>(new List<TripHotelBookingDto>());
             if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
             {
-                result = await _tripHotelBookingRepository.AllIncluding(c => c.City).Where(a => a.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
+                result = await _tripHotelBookingRepository.All.Include(c => c.City).Include(a=>a.Vendor).Where(a => a.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
 
             }
             else
             {
-                result = await _tripHotelBookingRepository.AllIncluding(c => c.City).Where(t => t.TripId == request.Id && t.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
+                result = await _tripHotelBookingRepository.All.Include(c => c.City).Include(a => a.Vendor).Where(t => t.TripId == request.Id && t.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
             }
 
             return _mapper.Map<List<TripHotelBookingDto>>(result);

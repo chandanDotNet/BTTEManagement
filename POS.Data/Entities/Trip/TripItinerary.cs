@@ -55,6 +55,9 @@ namespace BTTEM.Data
         public string? BusType { get; set; }
         public string? CarType { get; set; }
         public string? NoOfTickets { get; set; }
+        public DateTime? RescheduleDepartureDate { get; set; }
+        public string? RescheduleReason { get; set; }
+        public bool? IsReschedule { get; set; }=false;
         public List<ItineraryTicketBooking> ItineraryTicketBooking { get; set; }
 
     }

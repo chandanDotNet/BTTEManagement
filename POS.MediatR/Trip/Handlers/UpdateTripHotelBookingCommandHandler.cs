@@ -69,7 +69,11 @@ namespace BTTEM.MediatR.Trip.Handlers
                     {
 
 
-                        entityExist.TripId = tv.TripId;
+                        
+                        if (tv.TripId.HasValue)
+                        {
+                            entityExist.TripId = (Guid)tv.TripId;
+                        }
                         if (tv.CheckIn.HasValue)
                         {
                             entityExist.CheckIn = (DateTime)tv.CheckIn;
@@ -162,6 +166,18 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (!string.IsNullOrWhiteSpace(tv.RescheduleCheckOutTime))
                         {
                             entityExist.RescheduleCheckOutTime = tv.RescheduleCheckOutTime;
+                        }
+                        if (tv.VendorId.HasValue)
+                        {
+                            entityExist.VendorId = (Guid)tv.VendorId;
+                        }
+                        if (tv.AgentCharge > 0)
+                        {
+                            entityExist.AgentCharge = tv.AgentCharge;
+                        }
+                        if (tv.BookingAmount > 0)
+                        {
+                            entityExist.BookingAmount = tv.BookingAmount;
                         }
 
                         //==================  Ticket Upload

@@ -32,6 +32,7 @@ namespace BTTEM.Data
         public string? BookingTime { get; set; }
         public bool? IsReschedule { get; set; } = false;
         public string? RescheduleStatus { get; set; }
+        public string? RescheduleReason { get; set; }
         public decimal? RescheduleCharge { get; set; } = 0;
         public string? RescheduleBookingDate { get; set; }
         public string? RescheduleBookingTime { get; set; }

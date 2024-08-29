@@ -1,4 +1,5 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,5 +52,9 @@ namespace BTTEM.Data
         public string? RescheduleBillReceiptPath { get; set; }
         public string? RescheduleApprovalDocumentsReceiptName { get; set; }
         public string? RescheduleApprovalDocumentsReceiptPath { get; set; }
+        public Guid? VendorId { get; set; }
+        public Vendor? Vendor { get; set; }
+        public decimal? AgentCharge { get; set; }
+        public decimal? BookingAmount { get; set; }
     }
 }
