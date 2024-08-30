@@ -56,6 +56,5 @@ namespace BTTEM.Data
         public string? CarType { get; set; }
         public string? NoOfTickets { get; set; }
         public List<ItineraryTicketBooking> ItineraryTicketBooking { get; set; }
-
     }
 }

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using POS.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTTEM.Data.Dto
+namespace BTTEM.Data
 {
-    public class ItineraryTicketBookingQuotationDto
+    public class ItineraryHotelBookingQuotation : BaseEntity
     {
         public Guid Id { get; set; }
         public Guid ItineraryId { get; set; }

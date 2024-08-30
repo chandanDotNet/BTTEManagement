@@ -1,4 +1,5 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
 using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,5 @@ namespace BTTEM.Data
         public string? CarType { get; set; }
         public string? NoOfTickets { get; set; }
         public List<ItineraryTicketBookingDto> ItineraryTicketBooking { get; set; }
-
     }
 }

@@ -121,6 +121,7 @@ namespace POS.Domain
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<ExpenseDetail> ExpenseDetails { get; set; }
         public DbSet<ItineraryTicketBookingQuotation> ItineraryTicketBookingQuotations { get; set; }
+        public DbSet<ItineraryHotelBookingQuotation> ItineraryHotelBookingQuotations { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -653,6 +654,14 @@ namespace POS.Domain
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            builder.Entity<ItineraryHotelBookingQuotation>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             builder.Entity<User>().ToTable("Users");
             builder.Entity<Role>().ToTable("Roles");
             builder.Entity<RoleClaim>().ToTable("RoleClaims");
@@ -674,6 +683,7 @@ namespace POS.Domain
             builder.Entity<GroupTrip>().ToTable("GroupTrips");
             builder.Entity<TripItinerary>().ToTable("TripItinerarys");
             builder.Entity<ItineraryTicketBooking>().ToTable("ItineraryTicketBookings");
+            builder.Entity<ItineraryTicketBookingQuotation>().ToTable("ItineraryTicketBookingQuotations");
             builder.Entity<TripHotelBooking>().ToTable("TripHotelBookings");
             builder.Entity<MasterExpense>().ToTable("MasterExpenses");
             builder.Entity<GroupExpense>().ToTable("GroupExpenses");
