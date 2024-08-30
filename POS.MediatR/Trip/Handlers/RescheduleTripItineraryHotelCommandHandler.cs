@@ -21,45 +21,80 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<RescheduleTripItineraryHotelCommandHandler> _logger;
+        private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
 
         public RescheduleTripItineraryHotelCommandHandler(
            ITripItineraryRepository tripItineraryRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
-           ILogger<RescheduleTripItineraryHotelCommandHandler> logger
+           ILogger<RescheduleTripItineraryHotelCommandHandler> logger,
+           ITripHotelBookingRepository tripHotelBookingRepository
           )
         {
             _tripItineraryRepository = tripItineraryRepository;
             _uow = uow;
             _mapper = mapper;
             _logger = logger;
+            _tripHotelBookingRepository = tripHotelBookingRepository;
 
         }
 
         public async Task<ServiceResponse<bool>> Handle(RescheduleTripItineraryHotelCommand request, CancellationToken cancellationToken)
         {
-
-            var entityExist =  _tripItineraryRepository.FindBy(v => v.Id == request.Id).FirstOrDefault();
-            if (entityExist != null)
+            if (request.IsItinerary == true)
             {
-               
-                if(request.RescheduleDepartureDate.HasValue)
+                var entityExist = _tripItineraryRepository.FindBy(v => v.Id == request.Id).FirstOrDefault();
+                if (entityExist != null)
                 {
-                    entityExist.RescheduleDepartureDate = request.RescheduleDepartureDate;
-                }
-                if (!string.IsNullOrWhiteSpace(request.RescheduleReason))
-                {
-                    entityExist.RescheduleReason = request.RescheduleReason;
-                }                
-                entityExist.IsReschedule = request.IsReschedule;
-                entityExist.ApprovalStatus = "PENDING";
-                entityExist.BookStatus = "RESCHEDULE";
-            }
-         
-            _tripItineraryRepository.Update(entityExist);
 
-               
-            
+                    if (request.ItineraryRescheduleDepartureDate.HasValue)
+                    {
+                        entityExist.RescheduleDepartureDate = request.ItineraryRescheduleDepartureDate;
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.RescheduleReason))
+                    {
+                        entityExist.RescheduleReason = request.RescheduleReason;
+                    }
+                    entityExist.IsReschedule = request.IsReschedule;
+                    entityExist.ApprovalStatus = "RESCHEDULE REQUEST";
+                    entityExist.BookStatus = "RESCHEDULE";
+                }
+
+                _tripItineraryRepository.Update(entityExist);
+
+            }
+            else
+            {
+                var entityExist = _tripHotelBookingRepository.FindBy(v => v.Id == request.Id).FirstOrDefault();
+                if (entityExist != null)
+                {
+                    if (request.RescheduleCheckIn.HasValue)
+                    {
+                        entityExist.RescheduleCheckIn = (DateTime)request.RescheduleCheckIn;
+                    }
+                    if (request.RescheduleCheckOut.HasValue)
+                    {
+                        entityExist.RescheduleCheckOut = (DateTime)request.RescheduleCheckOut;
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.RescheduleCheckInTime))
+                    {
+                        entityExist.RescheduleCheckInTime = request.RescheduleCheckInTime;
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.RescheduleCheckOutTime))
+                    {
+                        entityExist.RescheduleCheckOutTime = request.RescheduleCheckOutTime;
+                    }
+                    if (!string.IsNullOrWhiteSpace(request.RescheduleReason))
+                    {
+                        entityExist.RescheduleReason = request.RescheduleReason;
+                    }
+                    entityExist.IsReschedule = request.IsReschedule;
+                    entityExist.ApprovalStatus = "RESCHEDULE REQUEST";
+                    entityExist.BookStatus = "RESCHEDULE";
+                }
+                _tripHotelBookingRepository.Update(entityExist);
+            }
+
 
             if (await _uow.SaveAsync() <= 0)
             {
