@@ -79,7 +79,6 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.OtherCitiesUptoAmount = (decimal)rdr["OtherCitiesUptoAmount"];
                     userInfoDetails.IsFoodActuals = (bool)rdr["IsFoodActuals"];
                     userInfoDetails.BudgetAmount = (decimal)rdr["BudgetAmount"];
-                    userInfoDetails.FrequentFlyerNumber = Convert.ToString(rdr["FrequentFlyerNumber"]);
 
                     // expenseDataList.Add(expenseData);
                 }
