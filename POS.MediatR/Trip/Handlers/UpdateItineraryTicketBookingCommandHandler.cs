@@ -106,6 +106,10 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.RescheduleStatus = request.RescheduleStatus;
             }
+            if (!string.IsNullOrWhiteSpace(request.RescheduleReason))
+            {
+                entityExist.RescheduleReason = request.RescheduleReason;
+            }
             if (request.RescheduleCharge > 0)
             {
                 entityExist.RescheduleCharge = request.RescheduleCharge;

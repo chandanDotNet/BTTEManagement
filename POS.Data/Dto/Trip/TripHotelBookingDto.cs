@@ -1,4 +1,5 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace BTTEM.Data
     {
 
         public Guid Id { get; set; }
-        public Guid TripId { get; set; }
+        public Guid? TripId { get; set; }
         public string BookTypeBy { get; set; }
         public Guid? CityId { get; set; }
         public City City { get; set; }
@@ -51,5 +52,10 @@ namespace BTTEM.Data
         public string? RescheduleBillReceiptPath { get; set; }
         public string? RescheduleApprovalDocumentsReceiptName { get; set; }
         public string? RescheduleApprovalDocumentsReceiptPath { get; set; }
+        public Guid? VendorId { get; set; }
+        public VendorDto? Vendor { get; set; }
+        public decimal? AgentCharge { get; set; }
+        public decimal? BookingAmount { get; set; }
+
     }
 }
