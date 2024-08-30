@@ -40,5 +40,15 @@ namespace BTTEM.Data
         public string? RescheduleTicketReceiptPath { get; set; }
         public string? RescheduleApprovalDocumentsReceiptName { get; set; }
         public string? RescheduleApprovalDocumentsReceiptPath { get; set; }
+        public string ServiceChargeOne { get; set; }
+        public string ServiceChargeTwo { get; set; }
+        public string ServiceChargeThree { get; set; }
+        public string ServiceChargeFour { get; set; }
+        public string ServiceChargeFive { get; set; }
+        public string TaxAmountOne { get; set; }
+        public string TaxAmountTwo { get; set; }
+        public string TaxAmountThree { get; set; }
+        public string TaxAmountFour { get; set; }
+        public string TaxAmountFive { get; set; }
     }
 }

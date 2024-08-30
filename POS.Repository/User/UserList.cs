@@ -137,7 +137,8 @@ namespace POS.Repository
                     PermanentAdvance = c.PermanentAdvance,
                     DepartmentName=c.Departments.DepartmentName,
                     SapCode= c.SapCode,
-                    VendorCode = c.VendorCode
+                    VendorCode = c.VendorCode,
+                    FrequentFlyerNumber = c.FrequentFlyerNumber,
                 })
                 .ToListAsync();
             return entities;
