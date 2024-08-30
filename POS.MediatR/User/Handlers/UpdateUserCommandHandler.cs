@@ -66,52 +66,53 @@ namespace POS.MediatR.Handlers
             //}
             //else
             //{
-                appUser.FirstName = request.FirstName;
-                appUser.LastName = request.LastName;
-                appUser.PhoneNumber = request.PhoneNumber;
-                appUser.Address = request.Address;
-                appUser.IsActive = request.IsActive;
-                //appUser.ModifiedDate = DateTime.UtcNow;
-                appUser.ModifiedDate = DateTime.Now;
-                appUser.ModifiedBy = Guid.Parse(_userInfoToken.Id);
-                appUser.DateOfJoining = request.DateOfJoining;
-                appUser.DateOfBirth = request.DateOfBirth;
-                appUser.EmployeeCode = request.EmployeeCode;
-                appUser.AadhaarNo = request.AadhaarNo;
-                appUser.PanNo = request.PanNo;
-                appUser.Department = request.Department;
-                appUser.GradeId = request.GradeId;
-                appUser.EmpGradeId = request.EmpGradeId;
-                appUser.Designation = request.Designation;
+            appUser.FirstName = request.FirstName;
+            appUser.LastName = request.LastName;
+            appUser.PhoneNumber = request.PhoneNumber;
+            appUser.Address = request.Address;
+            appUser.IsActive = request.IsActive;
+            //appUser.ModifiedDate = DateTime.UtcNow;
+            appUser.ModifiedDate = DateTime.Now;
+            appUser.ModifiedBy = Guid.Parse(_userInfoToken.Id);
+            appUser.DateOfJoining = request.DateOfJoining;
+            appUser.DateOfBirth = request.DateOfBirth;
+            appUser.EmployeeCode = request.EmployeeCode;
+            appUser.AadhaarNo = request.AadhaarNo;
+            appUser.PanNo = request.PanNo;
+            appUser.Department = request.Department;
+            appUser.GradeId = request.GradeId;
+            appUser.EmpGradeId = request.EmpGradeId;
+            appUser.Designation = request.Designation;
 
-                appUser.BankName = request.BankName;
-                appUser.IFSC = request.IFSC;
-                appUser.BranchName = request.BranchName;
-                appUser.AccountType = request.AccountType;
-                appUser.AccountName = request.AccountName;
-                appUser.AccountNumber = request.AccountNumber;
-                appUser.SapCode = request.SapCode;
-                appUser.CompanyAccountId = request.CompanyAccountId;
-                appUser.CompanyAccountBranchId = request.CompanyAccountBranchId;
-                appUser.IsPermanentAdvance = request.IsPermanentAdvance;
-                appUser.PermanentAdvance = request.PermanentAdvance;
-                appUser.ReportingTo = request.ReportingTo;
-                appUser.ReportingToName = request.ReportingToName;
-                appUser.VendorCode = request.VendorCode;
+            appUser.BankName = request.BankName;
+            appUser.IFSC = request.IFSC;
+            appUser.BranchName = request.BranchName;
+            appUser.AccountType = request.AccountType;
+            appUser.AccountName = request.AccountName;
+            appUser.AccountNumber = request.AccountNumber;
+            appUser.SapCode = request.SapCode;
+            appUser.CompanyAccountId = request.CompanyAccountId;
+            appUser.CompanyAccountBranchId = request.CompanyAccountBranchId;
+            appUser.IsPermanentAdvance = request.IsPermanentAdvance;
+            appUser.PermanentAdvance = request.PermanentAdvance;
+            appUser.ReportingTo = request.ReportingTo;
+            appUser.ReportingToName = request.ReportingToName;
+            appUser.VendorCode = request.VendorCode;
+            appUser.FrequentFlyerNumber = request.FrequentFlyerNumber;
 
-                string oldProfilePhoto = appUser.ProfilePhoto;
-                //oldProfilePhoto = appUser.ProfilePhoto;
-                if (request.IsImageUpdate)
+            string oldProfilePhoto = appUser.ProfilePhoto;
+            //oldProfilePhoto = appUser.ProfilePhoto;
+            if (request.IsImageUpdate)
+            {
+                if (!string.IsNullOrEmpty(request.ImgSrc))
                 {
-                    if (!string.IsNullOrEmpty(request.ImgSrc))
-                    {
-                        appUser.ProfilePhoto = $"{Guid.NewGuid()}.png";
-                    }
-                    else
-                    {
-                        appUser.ProfilePhoto = null;
-                    }
+                    appUser.ProfilePhoto = $"{Guid.NewGuid()}.png";
                 }
+                else
+                {
+                    appUser.ProfilePhoto = null;
+                }
+            }
             //}
 
             IdentityResult result = await _userManager.UpdateAsync(appUser);

@@ -146,7 +146,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     try
                     {
                         await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                        entityExist.TicketReceiptPath = path;
+                        entityExist.RescheduleTicketReceiptPath = path;
                         entityExist.RescheduleTicketReceiptName = request.RescheduleTicketReceiptName;
                     }
                     catch
