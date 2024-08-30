@@ -57,7 +57,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     }
                     entityExist.IsReschedule = request.IsReschedule;
                     entityExist.ApprovalStatus = "RESCHEDULE REQUEST";
-                    entityExist.BookStatus = "RESCHEDULE";
+                   // entityExist.BookStatus = "RESCHEDULE";
                 }
 
                 _tripItineraryRepository.Update(entityExist);
@@ -90,7 +90,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     }
                     entityExist.IsReschedule = request.IsReschedule;
                     entityExist.ApprovalStatus = "RESCHEDULE REQUEST";
-                    entityExist.BookStatus = "RESCHEDULE";
+                    //entityExist.BookStatus = "RESCHEDULE";
                 }
                 _tripHotelBookingRepository.Update(entityExist);
             }
