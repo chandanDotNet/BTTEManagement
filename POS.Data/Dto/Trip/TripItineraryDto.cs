@@ -1,4 +1,5 @@
-﻿using POS.Data;
+﻿using BTTEM.Data.Dto;
+using POS.Data;
 using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,5 @@ namespace BTTEM.Data
         public string? RescheduleReason { get; set; }
         public bool? IsReschedule { get; set; }
         public List<ItineraryTicketBookingDto> ItineraryTicketBooking { get; set; }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BTTEM.Data;
 using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
 using MediatR;
@@ -19,22 +18,22 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Trip.Handlers
 {
-    public class UpdateItineraryTicketBookingQuotationCommandHandler : IRequestHandler<UpdateItineraryTicketBookingQuotationCommand, ServiceResponse<bool>>
+    internal class UpdateItineraryHotelBookingQuotationCommandHandler : IRequestHandler<UpdateItineraryHotelBookingQuotationCommand, ServiceResponse<bool>>
     {
-        private readonly IItineraryTicketBookingQuotationRepository _itineraryTicketBookingQuotationRepository;
+        private readonly IItineraryHotelBookingQuotationRepository _itineraryHotelBookingQuotationRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
-        private readonly ILogger<UpdateItineraryTicketBookingQuotationCommandHandler> _logger;
+        private readonly ILogger<UpdateItineraryHotelBookingQuotationCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
-        public UpdateItineraryTicketBookingQuotationCommandHandler(
-            IItineraryTicketBookingQuotationRepository itineraryTicketBookingQuotationRepository,
+        public UpdateItineraryHotelBookingQuotationCommandHandler(
+            IItineraryHotelBookingQuotationRepository itineraryHotelBookingQuotationRepository,
             IMapper mapper,
             IUnitOfWork<POSDbContext> uow,
-            ILogger<UpdateItineraryTicketBookingQuotationCommandHandler> logger,
+            ILogger<UpdateItineraryHotelBookingQuotationCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment, PathHelper pathHelper)
         {
-            _itineraryTicketBookingQuotationRepository = itineraryTicketBookingQuotationRepository;
+            _itineraryHotelBookingQuotationRepository = itineraryHotelBookingQuotationRepository;
             _mapper = mapper;
             _uow = uow;
             _logger = logger;
@@ -42,10 +41,10 @@ namespace BTTEM.MediatR.Trip.Handlers
             _pathHelper = pathHelper;
         }
 
-        public async Task<ServiceResponse<bool>> Handle(UpdateItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<bool>> Handle(UpdateItineraryHotelBookingQuotationCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _itineraryTicketBookingQuotationRepository
-                .All.Where(x => request.ItineraryTicketBookingQuotationList.Select(q => q.Id).Contains(x.Id))
+            var entityExist = await _itineraryHotelBookingQuotationRepository
+                .All.Where(x => request.ItineraryHotelBookingQuotationList.Select(q => q.Id).Contains(x.Id))
                 .ToListAsync();
 
             if (entityExist == null || entityExist.Count == 0)
@@ -56,22 +55,22 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             entityExist.ForEach(item =>
             {
-                if (!string.IsNullOrEmpty(request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).QuotationName))
+                if (!string.IsNullOrEmpty(request.ItineraryHotelBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).QuotationName))
                 {
-                    item.QuotationName = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).QuotationName;
+                    item.QuotationName = request.ItineraryHotelBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).QuotationName;
                 }
-                if (!string.IsNullOrEmpty(item.TravelDeskNotes = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).TravelDeskNotes))
+                if (!string.IsNullOrEmpty(item.TravelDeskNotes = request.ItineraryHotelBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).TravelDeskNotes))
                 {
-                    item.TravelDeskNotes = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).TravelDeskNotes;
+                    item.TravelDeskNotes = request.ItineraryHotelBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).TravelDeskNotes;
                 }
-                if (!string.IsNullOrEmpty(request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).RMNotes))
+                if (!string.IsNullOrEmpty(request.ItineraryHotelBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).RMNotes))
                 {
-                    item.RMNotes = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).RMNotes;
+                    item.RMNotes = request.ItineraryHotelBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).RMNotes;
                 }
             });
 
             int i = 0;
-            request.ItineraryTicketBookingQuotationList.ForEach(async item =>
+            request.ItineraryHotelBookingQuotationList.ForEach(async item =>
             {
                 if (!string.IsNullOrWhiteSpace(item.QuotationName) && !string.IsNullOrWhiteSpace(item.QuotationPath))
                 {
@@ -105,7 +104,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 }
             });
 
-            _itineraryTicketBookingQuotationRepository.UpdateRange(entityExist);
+            _itineraryHotelBookingQuotationRepository.UpdateRange(entityExist);
 
             if (await _uow.SaveAsync() <= 0)
             {

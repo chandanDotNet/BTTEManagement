@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Data.Dto
 {
-    public class ItineraryTicketBookingQuotationDto
+    public class ItineraryHotelBookingQuotationDto
     {
         public Guid Id { get; set; }
         public Guid ItineraryId { get; set; }

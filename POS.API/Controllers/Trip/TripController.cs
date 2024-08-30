@@ -1196,7 +1196,7 @@ namespace BTTEM.API.Controllers.Trip
 
 
         /// <summary>
-        ///  Update a Trip Itinerary Ticket Booking Quotaion
+        ///  Update a Trip Itinerary Ticket Booking Quotaion 
         /// </summary>
         /// <param name="updateItineraryTicketBookingQuotationCommand"></param>
         /// <returns></returns>
@@ -1224,6 +1224,59 @@ namespace BTTEM.API.Controllers.Trip
         {
             var deleteItineraryTicketBookingQuotationCommand = new DeleteItineraryTicketBookingQuotationCommand { Id = Id };
             var result = await _mediator.Send(deleteItineraryTicketBookingQuotationCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        ///  Create a Trip Itinerary Hotel Booking Quotaion
+        /// </summary>
+        /// <param name="addItineraryHotelBookingQuotationCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddItineraryHotelBookingQuotaion")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryHotelBookingQuotationDto))]
+        public async Task<IActionResult> AddItineraryHotelBookingQuotation(AddItineraryHotelBookingQuotationCommand addItineraryHotelBookingQuotationCommand)
+        {
+            var result = await _mediator.Send(addItineraryHotelBookingQuotationCommand);
+
+            if (result.Success)
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
+
+        /// <summary>
+        ///  Update a Trip Itinerary Hotel Booking Quotaion
+        /// </summary>
+        /// <param name="updateItineraryHotelBookingQuotationCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateItineraryHotelBookingQuotaion")]
+        [Produces("application/json", "application/xml", Type = typeof(ItineraryHotelBookingQuotationDto))]
+        public async Task<IActionResult> UpdateItineraryTicketBookingQuotation(UpdateItineraryHotelBookingQuotationCommand updateItineraryHotelBookingQuotationCommand)
+        {
+            var result = await _mediator.Send(updateItineraryHotelBookingQuotationCommand);
+
+            if (result.Success)
+            {
+                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            }
+
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Delete Itinerary Hotel Booking Quotation.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteItineraryHotelBookingQuotation/{Id}")]
+        public async Task<IActionResult> DeleteItineraryHotelBookingQuotation(Guid Id)
+        {
+            var deleteItineraryHotelBookingQuotationCommand = new DeleteItineraryHotelBookingQuotationCommand { Id = Id };
+            var result = await _mediator.Send(deleteItineraryHotelBookingQuotationCommand);
             return ReturnFormattedResponse(result);
         }
     }

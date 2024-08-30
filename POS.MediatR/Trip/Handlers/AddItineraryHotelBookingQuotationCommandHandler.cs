@@ -19,21 +19,21 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Trip.Handlers
 {
-    public class AddItineraryTicketBookingQuotationCommandHandler : IRequestHandler<AddItineraryTicketBookingQuotationCommand, ServiceResponse<List<ItineraryTicketBookingQuotationDto>>>
+    public class AddItineraryHotelBookingQuotationCommandHandler : IRequestHandler<AddItineraryHotelBookingQuotationCommand, ServiceResponse<List<ItineraryHotelBookingQuotationDto>>>
     {
-        private readonly IItineraryTicketBookingQuotationRepository _itineraryTicketBookingQuotationRepository;
+        private readonly IItineraryHotelBookingQuotationRepository _itineraryHotelBookingQuotationRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
-        private readonly ILogger<AddItineraryTicketBookingQuotationCommandHandler> _logger;
+        private readonly ILogger<AddItineraryHotelBookingQuotationCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
-        public AddItineraryTicketBookingQuotationCommandHandler(
+        public AddItineraryHotelBookingQuotationCommandHandler(
             IMapper mapper,
             IUnitOfWork<POSDbContext> uow,
-            ILogger<AddItineraryTicketBookingQuotationCommandHandler> logger,
+            ILogger<AddItineraryHotelBookingQuotationCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IItineraryTicketBookingQuotationRepository itineraryTicketBookingQuotationRepository
+            IItineraryHotelBookingQuotationRepository itineraryHotelBookingQuotationRepository
             )
         {
             _mapper = mapper;
@@ -41,11 +41,12 @@ namespace BTTEM.MediatR.Trip.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
-            _itineraryTicketBookingQuotationRepository = itineraryTicketBookingQuotationRepository;
+            _itineraryHotelBookingQuotationRepository = itineraryHotelBookingQuotationRepository;
         }
-        public async Task<ServiceResponse<List<ItineraryTicketBookingQuotationDto>>> Handle(AddItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
+
+        public async Task<ServiceResponse<List<ItineraryHotelBookingQuotationDto>>> Handle(AddItineraryHotelBookingQuotationCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<List<ItineraryTicketBookingQuotation>>(request.ItineraryTicketBookingQuotationList);
+            var entity = _mapper.Map<List<ItineraryHotelBookingQuotation>>(request.ItineraryHotelBookingQuotationList);
             entity.ForEach(item =>
             {
                 item.Id = Guid.NewGuid();
@@ -53,7 +54,7 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             //================== Quotation Upload
             int i = 0;
-            request.ItineraryTicketBookingQuotationList.ForEach(async item =>
+            request.ItineraryHotelBookingQuotationList.ForEach(async item =>
             {
                 if (!string.IsNullOrWhiteSpace(item.QuotationName) && !string.IsNullOrWhiteSpace(item.QuotationPath))
                 {
@@ -85,18 +86,18 @@ namespace BTTEM.MediatR.Trip.Handlers
                         }
                     }
                 }
-            });            
+            });
 
-            _itineraryTicketBookingQuotationRepository.AddRange(entity);
+            _itineraryHotelBookingQuotationRepository.AddRange(entity);
 
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Trip Itinerary");
-                return ServiceResponse<List<ItineraryTicketBookingQuotationDto>>.Return500();
+                return ServiceResponse<List<ItineraryHotelBookingQuotationDto>>.Return500();
             }
 
-            var tripItineraryQuotation = _mapper.Map<List<ItineraryTicketBookingQuotationDto>>(entity);
-            return ServiceResponse<List<ItineraryTicketBookingQuotationDto>>.ReturnResultWith200(tripItineraryQuotation);
+            var tripItineraryQuotation = _mapper.Map<List<ItineraryHotelBookingQuotationDto>>(entity);
+            return ServiceResponse<List<ItineraryHotelBookingQuotationDto>>.ReturnResultWith200(tripItineraryQuotation);
         }
     }
 }

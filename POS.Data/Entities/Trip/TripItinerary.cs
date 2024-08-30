@@ -59,6 +59,5 @@ namespace BTTEM.Data
         public string? RescheduleReason { get; set; }
         public bool? IsReschedule { get; set; }=false;
         public List<ItineraryTicketBooking> ItineraryTicketBooking { get; set; }
-
     }
 }

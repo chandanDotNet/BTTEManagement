@@ -11,8 +11,8 @@ namespace BTTEM.Data
     {
         public Guid Id { get; set; }
         public Guid ItineraryId { get; set; }
-        public string? QuotaionName { get; set; }
-        public string? QuotaionPath { get; set; }
+        public string? QuotationName { get; set; }
+        public string? QuotationPath { get; set; }
         public string? TravelDeskNotes { get; set; }
         public string? RMNotes { get; set; }
     }
