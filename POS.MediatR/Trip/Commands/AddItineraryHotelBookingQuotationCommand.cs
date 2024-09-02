@@ -12,7 +12,7 @@ namespace BTTEM.MediatR.Trip.Commands
     public class AddItineraryHotelBookingQuotationCommand : IRequest<ServiceResponse<ItineraryHotelBookingQuotationDto>>
     {
         public Guid Id { get; set; }
-        public Guid ItineraryHotelId { get; set; }
+        public Guid TripId { get; set; }
         public string? QuotationName { get; set; }
         public string? QuotationPath { get; set; }
         public string? TravelDeskNotes { get; set; }
