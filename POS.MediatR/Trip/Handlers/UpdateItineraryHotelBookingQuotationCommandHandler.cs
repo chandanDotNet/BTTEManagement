@@ -101,7 +101,7 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             var _tripHotelBooking = await _tripHotelBookingRepository.FindAsync(request.TripHotelBookingId);
 
-            _tripHotelBooking.IsQuotationUpload = request.IsQuotationUpload;
+            _tripHotelBooking.RMStatus = request.RMStatus;
 
             _tripHotelBookingRepository.Update(_tripHotelBooking);
 

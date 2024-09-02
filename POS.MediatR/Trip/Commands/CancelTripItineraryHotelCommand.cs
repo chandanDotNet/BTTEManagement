@@ -30,6 +30,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public Guid TripItineraryId { get; set; }
-        
+        public bool IsCancelrequest { get; set; }
+
     }
 }
