@@ -85,6 +85,16 @@ namespace BTTEM.MediatR.Trip.Handlers
                 }
 
             }
+            if (request.Type == "REJECT")
+            {
+                var entityExist = _tripRepository.FindBy(v => v.Id == request.TripId).FirstOrDefault();
+                if (entityExist != null)
+                {
+                    entityExist.IsGroupTripCancelRequest = false;
+                    _tripRepository.Update(entityExist);
+                }
+
+            }
 
             if (await _uow.SaveAsync() <= 0)
             {

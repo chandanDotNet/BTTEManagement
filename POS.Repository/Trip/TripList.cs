@@ -119,6 +119,7 @@ namespace BTTEM.Repository
                         IsGroupTrip = cs.IsGroupTrip,
                         NoOfPerson = cs.NoOfPerson,
                         Consent = cs.Consent,
+                        IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips)
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
@@ -187,6 +188,7 @@ namespace BTTEM.Repository
                  IsGroupTrip = cs.IsGroupTrip,
                  NoOfPerson = cs.NoOfPerson,
                  Consent = cs.Consent,
+                 IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips)
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
