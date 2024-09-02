@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Trip.Handlers
 {
-    public class AddItineraryTicketBookingQuotationCommandHandler : IRequestHandler<AddItineraryTicketBookingQuotationCommand, ServiceResponse<List<ItineraryTicketBookingQuotationDto>>>
+    public class AddItineraryTicketBookingQuotationCommandHandler : IRequestHandler<AddItineraryTicketBookingQuotationCommand, ServiceResponse<ItineraryTicketBookingQuotationDto>>
     {
         private readonly IItineraryTicketBookingQuotationRepository _itineraryTicketBookingQuotationRepository;
         private readonly IMapper _mapper;
@@ -43,60 +43,54 @@ namespace BTTEM.MediatR.Trip.Handlers
             _pathHelper = pathHelper;
             _itineraryTicketBookingQuotationRepository = itineraryTicketBookingQuotationRepository;
         }
-        public async Task<ServiceResponse<List<ItineraryTicketBookingQuotationDto>>> Handle(AddItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<ItineraryTicketBookingQuotationDto>> Handle(AddItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<List<ItineraryTicketBookingQuotation>>(request.ItineraryTicketBookingQuotationList);
-            entity.ForEach(item =>
-            {
-                item.Id = Guid.NewGuid();
-            });
+            var entity = _mapper.Map<ItineraryTicketBookingQuotation>(request);
+
+            entity.Id = Guid.NewGuid();
 
             //================== Quotation Upload
-            int i = 0;
-            request.ItineraryTicketBookingQuotationList.ForEach(async item =>
+
+            if (!string.IsNullOrWhiteSpace(entity.QuotationName) && !string.IsNullOrWhiteSpace(entity.QuotationPath))
             {
-                if (!string.IsNullOrWhiteSpace(item.QuotationName) && !string.IsNullOrWhiteSpace(item.QuotationPath))
+                string contentRootPath = _webHostEnvironment.WebRootPath;
+                var pathToSave = Path.Combine(contentRootPath, _pathHelper.ItineraryTicketBookingQuotationAttachments);
+
+                if (!Directory.Exists(pathToSave))
                 {
-                    string contentRootPath = _webHostEnvironment.WebRootPath;
-                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.ItineraryTicketBookingQuotationAttachments);
+                    Directory.CreateDirectory(pathToSave);
+                }
 
-                    if (!Directory.Exists(pathToSave))
+                var extension = Path.GetExtension(entity.QuotationName);
+                var id = Guid.NewGuid();
+                var path = $"{id}.{extension}";
+                var documentPath = Path.Combine(pathToSave, path);
+                string base64 = entity.QuotationPath.Split(',').LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(base64))
+                {
+                    byte[] bytes = Convert.FromBase64String(base64);
+                    try
                     {
-                        Directory.CreateDirectory(pathToSave);
+                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                        entity.QuotationPath = path;
                     }
-
-                    var extension = Path.GetExtension(item.QuotationName);
-                    var id = Guid.NewGuid();
-                    var path = $"{id}.{extension}";
-                    var documentPath = Path.Combine(pathToSave, path);
-                    string base64 = item.QuotationPath.Split(',').LastOrDefault();
-                    if (!string.IsNullOrWhiteSpace(base64))
+                    catch
                     {
-                        byte[] bytes = Convert.FromBase64String(base64);
-                        try
-                        {
-                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                            entity[i].QuotationPath = path;
-                            i++;
-                        }
-                        catch
-                        {
-                            _logger.LogError("Error while saving files", entity);
-                        }
+                        _logger.LogError("Error while saving files", entity);
                     }
                 }
-            });            
+            }
 
-            _itineraryTicketBookingQuotationRepository.AddRange(entity);
+            _itineraryTicketBookingQuotationRepository.Add(entity);
 
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Trip Itinerary");
-                return ServiceResponse<List<ItineraryTicketBookingQuotationDto>>.Return500();
+                return ServiceResponse<ItineraryTicketBookingQuotationDto>.Return500();
             }
 
-            var tripItineraryQuotation = _mapper.Map<List<ItineraryTicketBookingQuotationDto>>(entity);
-            return ServiceResponse<List<ItineraryTicketBookingQuotationDto>>.ReturnResultWith200(tripItineraryQuotation);
+            var tripItineraryQuotation = _mapper.Map<ItineraryTicketBookingQuotationDto>(entity);
+            return ServiceResponse<ItineraryTicketBookingQuotationDto>.ReturnResultWith200(tripItineraryQuotation);
         }
     }
 }

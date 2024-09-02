@@ -41,6 +41,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? VendorCode { get; set; }
         public bool IsGroupTrip { get; set; }=false;
         public string? NoOfPerson { get; set; }
+        public bool Consent { get; set; } = false;
         public List<GroupTripDto> GroupTrips { get; set; }
     }
 }

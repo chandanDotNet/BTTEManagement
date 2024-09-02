@@ -56,5 +56,6 @@ namespace BTTEM.Data
         public Vendor? Vendor { get; set; }
         public decimal? AgentCharge { get; set; }
         public decimal? BookingAmount { get; set; }
+        public bool? IsQuotationUpload { get; set; }
     }
 }

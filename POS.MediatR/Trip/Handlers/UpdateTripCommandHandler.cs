@@ -82,6 +82,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.VendorCode = request.VendorCode;
             entityExist.IsGroupTrip = request.IsGroupTrip;
             entityExist.NoOfPerson = request.NoOfPerson;
+            entityExist.Consent = request.Consent;
 
             _tripRepository.Update(entityExist);
 

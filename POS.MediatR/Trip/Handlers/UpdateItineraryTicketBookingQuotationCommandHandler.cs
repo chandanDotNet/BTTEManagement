@@ -22,6 +22,7 @@ namespace BTTEM.MediatR.Trip.Handlers
     public class UpdateItineraryTicketBookingQuotationCommandHandler : IRequestHandler<UpdateItineraryTicketBookingQuotationCommand, ServiceResponse<bool>>
     {
         private readonly IItineraryTicketBookingQuotationRepository _itineraryTicketBookingQuotationRepository;
+        private readonly ITripItineraryRepository _tripItineraryRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly ILogger<UpdateItineraryTicketBookingQuotationCommandHandler> _logger;
@@ -32,7 +33,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             IMapper mapper,
             IUnitOfWork<POSDbContext> uow,
             ILogger<UpdateItineraryTicketBookingQuotationCommandHandler> logger,
-            IWebHostEnvironment webHostEnvironment, PathHelper pathHelper)
+            IWebHostEnvironment webHostEnvironment, PathHelper pathHelper, ITripItineraryRepository tripItineraryRepository)
         {
             _itineraryTicketBookingQuotationRepository = itineraryTicketBookingQuotationRepository;
             _mapper = mapper;
@@ -40,72 +41,70 @@ namespace BTTEM.MediatR.Trip.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _tripItineraryRepository = tripItineraryRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
         {
-            var entityExist = await _itineraryTicketBookingQuotationRepository
-                .All.Where(x => request.ItineraryTicketBookingQuotationList.Select(q => q.Id).Contains(x.Id))
-                .ToListAsync();
+            var entityExist = await _itineraryTicketBookingQuotationRepository.FindAsync(request.Id);
 
-            if (entityExist == null || entityExist.Count == 0)
+            if (entityExist == null)
             {
                 _logger.LogError("Quotation does not exists");
                 return ServiceResponse<bool>.Return404("Quotation does not exists");
             }
-
-            entityExist.ForEach(item =>
+            if (!string.IsNullOrWhiteSpace(request.QuotationName))
             {
-                if (!string.IsNullOrEmpty(request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).QuotationName))
-                {
-                    item.QuotationName = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).QuotationName;
-                }
-                if (!string.IsNullOrEmpty(item.TravelDeskNotes = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).TravelDeskNotes))
-                {
-                    item.TravelDeskNotes = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).TravelDeskNotes;
-                }
-                if (!string.IsNullOrEmpty(request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).RMNotes))
-                {
-                    item.RMNotes = request.ItineraryTicketBookingQuotationList.FirstOrDefault(x => x.Id == item.Id).RMNotes;
-                }
-            });
-
-            int i = 0;
-            request.ItineraryTicketBookingQuotationList.ForEach(async item =>
+                entityExist.QuotationName = request.QuotationName;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TravelDeskNotes))
             {
-                if (!string.IsNullOrWhiteSpace(item.QuotationName) && !string.IsNullOrWhiteSpace(item.QuotationPath))
-                {
-                    string contentRootPath = _webHostEnvironment.WebRootPath;
-                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.ItineraryTicketBookingQuotationAttachments);
+                entityExist.TravelDeskNotes = request.TravelDeskNotes;
 
-                    if (!Directory.Exists(pathToSave))
+            }
+            if (!string.IsNullOrWhiteSpace(request.RMNotes))
+            {
+                entityExist.RMNotes = request.RMNotes;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.QuotationName) && !string.IsNullOrWhiteSpace(request.QuotationPath))
+            {
+                string contentRootPath = _webHostEnvironment.WebRootPath;
+                var pathToSave = Path.Combine(contentRootPath, _pathHelper.ItineraryTicketBookingQuotationAttachments);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                var extension = Path.GetExtension(request.QuotationName);
+                var id = Guid.NewGuid();
+                var path = $"{id}.{extension}";
+                var documentPath = Path.Combine(pathToSave, path);
+                string base64 = request.QuotationPath.Split(',').LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(base64))
+                {
+                    byte[] bytes = Convert.FromBase64String(base64);
+                    try
                     {
-                        Directory.CreateDirectory(pathToSave);
+                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                        entityExist.QuotationPath = path;
                     }
-
-                    var extension = Path.GetExtension(item.QuotationName);
-                    var id = Guid.NewGuid();
-                    var path = $"{id}.{extension}";
-                    var documentPath = Path.Combine(pathToSave, path);
-                    string base64 = item.QuotationPath.Split(',').LastOrDefault();
-                    if (!string.IsNullOrWhiteSpace(base64))
+                    catch
                     {
-                        byte[] bytes = Convert.FromBase64String(base64);
-                        try
-                        {
-                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                            entityExist[i].QuotationPath = path;
-                            i++;
-                        }
-                        catch
-                        {
-                            _logger.LogError("Error while saving files", entityExist);
-                        }
+                        _logger.LogError("Error while saving files", entityExist);
                     }
                 }
-            });
+            }
 
-            _itineraryTicketBookingQuotationRepository.UpdateRange(entityExist);
+
+            var tripItinerary = await _tripItineraryRepository.FindAsync(request.TripItineraryId);
+
+            tripItinerary.IsQuotationUpload = request.IsQuotationUpload;
+
+            _itineraryTicketBookingQuotationRepository.Update(entityExist);
+
+            _tripItineraryRepository.Update(tripItinerary);
 
             if (await _uow.SaveAsync() <= 0)
             {

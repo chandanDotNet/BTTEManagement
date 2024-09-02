@@ -71,5 +71,6 @@ namespace POS.Data
         public int? HrmsUser { get; set; }
         public int? HrmsDepartmentId { get; set; }
         public int? HrmsGradeId { get; set; }
+        public string FrequentFlyerNumber { get; set; }
     }
 }

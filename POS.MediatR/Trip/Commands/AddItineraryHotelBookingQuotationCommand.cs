@@ -9,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Trip.Commands
 {
-    public class AddItineraryHotelBookingQuotationCommand : IRequest<ServiceResponse<List<ItineraryHotelBookingQuotationDto>>>
+    public class AddItineraryHotelBookingQuotationCommand : IRequest<ServiceResponse<ItineraryHotelBookingQuotationDto>>
     {
-        public List<ItineraryHotelBookingQuotationDto> ItineraryHotelBookingQuotationList { get; set; }
+        public Guid Id { get; set; }
+        public Guid TripId { get; set; }
+        public string? QuotationName { get; set; }
+        public string? QuotationPath { get; set; }
+        public string? TravelDeskNotes { get; set; }
+        public string? RMNotes { get; set; }
     }
 }
 

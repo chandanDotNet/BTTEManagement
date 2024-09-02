@@ -122,7 +122,86 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.RescheduleBookingTime = request.RescheduleBookingTime;
             }
-
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeNameOne))
+            {
+                entityExist.ServiceChargeNameOne = request.ServiceChargeNameOne;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeOne))
+            {
+                entityExist.ServiceChargeOne = request.ServiceChargeOne;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeNameTwo))
+            {
+                entityExist.ServiceChargeNameTwo = request.ServiceChargeNameTwo;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeTwo))
+            {
+                entityExist.ServiceChargeTwo = request.ServiceChargeTwo;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeNameThree))
+            {
+                entityExist.ServiceChargeNameThree = request.ServiceChargeNameThree;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeThree))
+            {
+                entityExist.ServiceChargeThree = request.ServiceChargeThree;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeNameFour))
+            {
+                entityExist.ServiceChargeNameFour = request.ServiceChargeNameFour;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeFour))
+            {
+                entityExist.ServiceChargeFour = request.ServiceChargeFour;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeNameFive))
+            {
+                entityExist.ServiceChargeNameFive = request.ServiceChargeNameFive;
+            }
+            if (!string.IsNullOrWhiteSpace(request.ServiceChargeFive))
+            {
+                entityExist.ServiceChargeFive = request.ServiceChargeFive;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountNameOne))
+            {
+                entityExist.TaxAmountNameOne = request.TaxAmountNameOne;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountOne))
+            {
+                entityExist.TaxAmountOne = request.TaxAmountOne;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountNameTwo))
+            {
+                entityExist.TaxAmountNameTwo = request.TaxAmountNameTwo;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountTwo))
+            {
+                entityExist.TaxAmountTwo = request.TaxAmountTwo;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountNameThree))
+            {
+                entityExist.TaxAmountNameThree = request.TaxAmountNameThree;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountThree))
+            {
+                entityExist.TaxAmountThree = request.TaxAmountThree;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountNameFour))
+            {
+                entityExist.TaxAmountNameFour = request.TaxAmountNameFour;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountFour))
+            {
+                entityExist.TaxAmountFour = request.TaxAmountFour;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountNameFive))
+            {
+                entityExist.TaxAmountNameFive = request.TaxAmountNameFive;
+            }
+            if (!string.IsNullOrWhiteSpace(request.TaxAmountFive))
+            {
+                entityExist.TaxAmountFive = request.TaxAmountFive;
+            }
             //==================  Ticket Upload
 
             if (!string.IsNullOrWhiteSpace(request.RescheduleTicketReceiptName) && !string.IsNullOrWhiteSpace(request.RescheduleTicketDocumentData))
@@ -146,7 +225,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     try
                     {
                         await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                        entityExist.TicketReceiptPath = path;
+                        entityExist.RescheduleTicketReceiptPath = path;
                         entityExist.RescheduleTicketReceiptName = request.RescheduleTicketReceiptName;
                     }
                     catch

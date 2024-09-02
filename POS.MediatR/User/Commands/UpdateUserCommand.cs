@@ -43,6 +43,7 @@ namespace POS.MediatR.CommandAndQuery
         public int? HrmsReportingHeadCode { get; set; }
         public int? HrmsId { get; set; }
         public int? HrmsUser { get; set; }
+        public string FrequentFlyerNumber { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
     }
 }

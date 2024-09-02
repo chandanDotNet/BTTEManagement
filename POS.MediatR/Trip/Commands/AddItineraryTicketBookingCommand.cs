@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 namespace BTTEM.MediatR.Trip.Commands
 {
     public class AddItineraryTicketBookingCommand : IRequest<ServiceResponse<ItineraryTicketBookingDto>>
-    {
-
-        
+    {        
         public Guid TripItineraryId { get; set; }
         public decimal? BookingAmount { get; set; }
         public decimal? AgentCharge { get; set; }
@@ -30,5 +28,25 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? VendorName { get; set; }
         public string? BookingDate { get; set; }
         public string? BookingTime { get; set; }
+        public string ServiceChargeNameOne { get; set; }
+        public string ServiceChargeOne { get; set; }
+        public string ServiceChargeNameTwo { get; set; }
+        public string ServiceChargeTwo { get; set; }
+        public string ServiceChargeNameThree { get; set; }
+        public string ServiceChargeThree { get; set; }
+        public string ServiceChargeNameFour { get; set; }
+        public string ServiceChargeFour { get; set; }
+        public string ServiceChargeNameFive { get; set; }
+        public string ServiceChargeFive { get; set; }
+        public string TaxAmountNameOne { get; set; }
+        public string TaxAmountOne { get; set; }
+        public string TaxAmountNameTwo { get; set; }
+        public string TaxAmountTwo { get; set; }
+        public string TaxAmountNameThree { get; set; }
+        public string TaxAmountThree { get; set; }
+        public string TaxAmountNameFour { get; set; }
+        public string TaxAmountFour { get; set; }
+        public string TaxAmountNameFive { get; set; }
+        public string TaxAmountFive { get; set; }
     }
 }

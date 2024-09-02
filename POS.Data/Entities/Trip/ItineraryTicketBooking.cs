@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Data
 {
-    public class ItineraryTicketBooking:BaseEntity
+    public class ItineraryTicketBooking : BaseEntity
     {
 
         public Guid Id { get; set; }
@@ -40,5 +40,25 @@ namespace BTTEM.Data
         public string? RescheduleTicketReceiptPath { get; set; }
         public string? RescheduleApprovalDocumentsReceiptName { get; set; }
         public string? RescheduleApprovalDocumentsReceiptPath { get; set; }
+        public string ServiceChargeNameOne { get; set; }
+        public string ServiceChargeOne { get; set; }
+        public string ServiceChargeNameTwo { get; set; }
+        public string ServiceChargeTwo { get; set; }
+        public string ServiceChargeNameThree { get; set; }
+        public string ServiceChargeThree { get; set; }
+        public string ServiceChargeNameFour { get; set; }
+        public string ServiceChargeFour { get; set; }
+        public string ServiceChargeNameFive { get; set; }
+        public string ServiceChargeFive { get; set; }
+        public string TaxAmountNameOne { get; set; }
+        public string TaxAmountOne { get; set; }
+        public string TaxAmountNameTwo { get; set; }
+        public string TaxAmountTwo { get; set; }
+        public string TaxAmountNameThree { get; set; }
+        public string TaxAmountThree { get; set; }
+        public string TaxAmountNameFour { get; set; }
+        public string TaxAmountFour { get; set; }
+        public string TaxAmountNameFive { get; set; }
+        public string TaxAmountFive { get; set; }
     }
 }
