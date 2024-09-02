@@ -10,7 +10,6 @@ namespace BTTEM.Data
 {
     public class TripHotelBookingDto
     {
-
         public Guid Id { get; set; }
         public Guid? TripId { get; set; }
         public string BookTypeBy { get; set; }
@@ -56,6 +55,7 @@ namespace BTTEM.Data
         public VendorDto? Vendor { get; set; }
         public decimal? AgentCharge { get; set; }
         public decimal? BookingAmount { get; set; }
+        public bool? IsQuotationUpload { get; set; }
 
     }
 }

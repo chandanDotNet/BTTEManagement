@@ -9,7 +9,7 @@ namespace BTTEM.Data.Dto
     public class ItineraryTicketBookingQuotationDto
     {
         public Guid Id { get; set; }
-        public Guid ItineraryId { get; set; }
+        public Guid TripItineraryId { get; set; }
         public string? QuotationName { get; set; }
         public string? QuotationPath { get; set; }
         public string? TravelDeskNotes { get; set; }

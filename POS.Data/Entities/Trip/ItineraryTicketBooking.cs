@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Data
 {
-    public class ItineraryTicketBooking:BaseEntity
+    public class ItineraryTicketBooking : BaseEntity
     {
 
         public Guid Id { get; set; }
