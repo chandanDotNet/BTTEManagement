@@ -60,5 +60,6 @@ namespace BTTEM.Data
         public bool? IsReschedule { get; set; }=false;
         public bool? IsQuotationUpload { get; set; } = false;
         public List<ItineraryTicketBooking> ItineraryTicketBooking { get; set; }
+        public List<ItineraryTicketBookingQuotation> ItineraryTicketBookingQuotation { get; set; }
     }
 }
