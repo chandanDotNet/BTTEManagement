@@ -32,13 +32,19 @@ namespace BTTEM.MediatR.Trip.Handlers
             if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
             {
                 result = await _tripItineraryRepository.All.Include(c => c.ArrivalCity).Include(b => b.DepartureCity)
-                               .Include(e => e.ItineraryTicketBooking).ThenInclude(v => v.Vendor).Include(q => q.ItineraryTicketBookingQuotation).Where(a => a.IsDeleted == false).ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
+                               .Include(e => e.ItineraryTicketBooking).ThenInclude(v => v.Vendor)
+                               .Include(q => q.ItineraryTicketBookingQuotation)
+                               .Where(a => a.IsDeleted == false)
+                               .ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
 
             }
             else
             {
-                result = await _tripItineraryRepository.All.Include(c => c.ArrivalCity).Include(b => b.DepartureCity).Include(e => e.ItineraryTicketBooking)
-                    .ThenInclude(v => v.Vendor).Include(q => q.ItineraryTicketBookingQuotation).Where(t => t.TripId == request.Id && t.IsDeleted == false)
+                result = await _tripItineraryRepository.All.Include(c => c.ArrivalCity).Include(b => b.DepartureCity)
+                    .Include(e => e.ItineraryTicketBooking)
+                    .ThenInclude(v => v.Vendor)
+                    .Include(q => q.ItineraryTicketBookingQuotation)
+                    .Where(t => t.TripId == request.Id && t.IsDeleted == false)
                     .ProjectTo<TripItineraryDto>(_mapper.ConfigurationProvider).ToListAsync();
             }
 
