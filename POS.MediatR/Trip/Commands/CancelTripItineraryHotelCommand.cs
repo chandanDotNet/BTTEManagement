@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using POS.Data;
+using POS.Data.Dto;
 using POS.Helper;
 using System;
 using System.Collections.Generic;
@@ -20,5 +22,14 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? NoOfTickets { get; set; }
         public string? NoOfRoom { get; set; }
         public bool? IsItinerary { get; set; }
+        public List<CancelTripItineraryHotelUser> cancelTripItineraryHotelUsers { get; set; }
+       
+    }
+    public class CancelTripItineraryHotelUser
+    {
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public Guid TripItineraryId { get; set; }
+        
     }
 }

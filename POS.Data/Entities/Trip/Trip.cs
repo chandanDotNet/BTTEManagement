@@ -60,6 +60,7 @@ namespace BTTEM.Data
         public string JourneyNumber { get; set; }
         public bool? IsGroupTrip { get; set; }
         public string? NoOfPerson { get; set; }
+        public bool? IsGroupTripCancelRequest { get; set; }
         public List<GroupTrip> GroupTrips { get; set; }
     }
 }

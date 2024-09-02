@@ -15,6 +15,6 @@ namespace BTTEM.Data
         [ForeignKey("TripId")]
         public Guid UserId { get; set; }
         public User User { get; set; }
-
+        public Boolean? IsCancelRequest { get; set; } = false;
     }
 }
