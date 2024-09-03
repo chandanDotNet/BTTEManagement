@@ -57,6 +57,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (entityExist != null)
                         {
                             entityExist.ApprovalStatus = "CANCEL REQUEST";
+                            entityExist.IsCancel = true;
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfTickets))
                             //{
                             //    entityExist.NoOfTickets = tv.NoOfTickets;
@@ -87,14 +88,14 @@ namespace BTTEM.MediatR.Trip.Handlers
                     if (tv.Type == "APPROVE")
                     {
 
-                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelrequest==false).ToList();
+                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelRequest==false).ToList();
                         
                         var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
                         if (entityExist != null)
                         {
                             entityExist.ApprovalStatus = "CANCEL APPROVED";
                             entityExist.NoOfTickets = groupTripExist.Count.ToString();
-                            
+                            //entityExist.IsCancel = true;
 
                         }
 
@@ -103,12 +104,13 @@ namespace BTTEM.MediatR.Trip.Handlers
                     if (tv.Type == "REJECT")
                     {
 
-                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelrequest == false).ToList();
+                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelRequest == false).ToList();
 
                         var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
                         if (entityExist != null)
                         {
                             entityExist.ApprovalStatus = "CANCEL REJECTED";
+                            entityExist.IsCancel = false;
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfTickets))
                             //{
                             //    entityExist.NoOfTickets = groupTripExist.Count.ToString();
@@ -129,6 +131,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (entityExist != null)
                         {
                             entityExist.ApprovalStatus = "CANCEL REQUEST";
+                            entityExist.IsCancel = true;
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
                             //{
                             //    entityExist.NoOfRoom = tv.NoOfRoom;
@@ -166,7 +169,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         {
                             entityExist.ApprovalStatus = "CANCEL APPROVED";
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
-                            //{
+                            //{ 
                             //    entityExist.NoOfRoom = tv.NoOfRoom; 
                             //}
 
@@ -181,6 +184,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (entityExist != null)
                         {
                             entityExist.ApprovalStatus = "CANCEL REJECTED";
+                            entityExist.IsCancel = true;
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
                             //{
                             //    entityExist.NoOfRoom = tv.NoOfRoom;

@@ -15,7 +15,7 @@ namespace BTTEM.Data
         public User User { get; set; }
         public Guid? TripItineraryId { get; set; }
         public Guid? TripHotelBookingId { get; set; }
-        public bool IsCancelrequest { get; set; }
+        public bool IsCancelRequest { get; set; }
         public bool? IsHotel { get; set; } = false;
     }
 }
