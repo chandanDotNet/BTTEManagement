@@ -6,6 +6,7 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
 using POS.Domain;
 using POS.Helper;
@@ -89,7 +90,12 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             var _tripHotelBooking = await _tripHotelBookingRepository.FindAsync(request.TripHotelBookingId);
 
-            _tripHotelBooking.RMStatus = request.RMStatus;
+            _tripHotelBooking.IsQuotationUpload = request.IsQuotationUpload;
+
+            if (!string.IsNullOrEmpty(request.RMStatus))
+            {
+                _tripHotelBooking.RMStatus = request.RMStatus;
+            }
 
             _tripHotelBookingRepository.Update(_tripHotelBooking);
 
