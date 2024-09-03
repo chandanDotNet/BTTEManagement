@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using BTTEM.Data;
+using BTTEM.Data.Dto;
+using MediatR;
 using POS.Data;
 using POS.Data.Dto;
 using POS.Helper;
@@ -18,19 +20,20 @@ namespace BTTEM.MediatR.Trip.Commands
 
     public class CancelTripItineraryHotel
     {
+        public string Type { get; set; }
         public Guid Id { get; set; }
         public string? NoOfTickets { get; set; }
         public string? NoOfRoom { get; set; }
         public bool? IsItinerary { get; set; }
-        public List<CancelTripItineraryHotelUser> cancelTripItineraryHotelUsers { get; set; }
+        public List<CancelTripItineraryHotelUserDto> cancelTripItineraryHotelUsers { get; set; }
        
     }
-    public class CancelTripItineraryHotelUser
-    {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-        public Guid TripItineraryId { get; set; }
-        public bool IsCancelrequest { get; set; }
+    //public class CancelTripItineraryHotelUser
+    //{
+    //    public Guid Id { get; set; }
+    //    public Guid UserId { get; set; }
+    //    public Guid TripItineraryId { get; set; }
+    //    public bool IsCancelrequest { get; set; }
 
-    }
+    //}
 }

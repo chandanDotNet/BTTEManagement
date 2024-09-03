@@ -12,5 +12,6 @@ namespace BTTEM.Data.Dto
         public Guid UserId { get; set; }
         public Guid TripItineraryId { get; set; }
         public bool IsCancelrequest { get; set; }
+        public bool? IsHotel { get; set; } = false;
     }
 }
