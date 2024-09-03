@@ -88,7 +88,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     if (tv.Type == "APPROVE")
                     {
 
-                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelRequest==false).ToList();
+                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelRequest == false).ToList();
                         
                         var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
                         if (entityExist != null)
@@ -184,7 +184,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (entityExist != null)
                         {
                             entityExist.ApprovalStatus = "CANCEL REJECTED";
-                            entityExist.IsCancel = true;
+                             entityExist.IsCancel = true;
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
                             //{
                             //    entityExist.NoOfRoom = tv.NoOfRoom;
