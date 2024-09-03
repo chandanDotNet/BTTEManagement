@@ -101,9 +101,11 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             var _tripHotelBooking = await _tripHotelBookingRepository.FindAsync(request.TripHotelBookingId);
 
-            _tripHotelBooking.RMStatus = request.RMStatus;
-
-            _tripHotelBookingRepository.Update(_tripHotelBooking);
+            if (!string.IsNullOrEmpty(request.RMStatus))
+            {
+                _tripHotelBooking.RMStatus = request.RMStatus;
+                _tripHotelBookingRepository.Update(_tripHotelBooking);
+            }
 
             if (await _uow.SaveAsync() <= 0)
             {

@@ -106,9 +106,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 _tripItineraryRepository.Update(tripItinerary);
             }
 
-            _itineraryTicketBookingQuotationRepository.Update(entityExist);
-
-           
+            _itineraryTicketBookingQuotationRepository.Update(entityExist);           
 
             if (await _uow.SaveAsync() <= 0)
             {
