@@ -610,7 +610,7 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Data == true)
             {
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
-                //var responseData = _tripItineraryRepository.FindAsync(rescheduleTripItineraryHotelCommand.Id);
+                //var responseData = _tripItineraryRepository.FindAsync(rescheduleTripItineraryHotelCommand.Id); 
 
                 //var addTripTrackingCommand = new AddTripTrackingCommand()
                 //{
