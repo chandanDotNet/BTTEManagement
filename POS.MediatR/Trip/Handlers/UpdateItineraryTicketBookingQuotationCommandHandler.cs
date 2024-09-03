@@ -99,11 +99,16 @@ namespace BTTEM.MediatR.Trip.Handlers
 
             var tripItinerary = await _tripItineraryRepository.FindAsync(request.TripItineraryId);
 
-            tripItinerary.RMStatus = request.RMStatus;
+            if (!string.IsNullOrWhiteSpace(request.RMStatus))
+            {
+                tripItinerary.RMStatus = request.RMStatus;
+
+                _tripItineraryRepository.Update(tripItinerary);
+            }
 
             _itineraryTicketBookingQuotationRepository.Update(entityExist);
 
-            _tripItineraryRepository.Update(tripItinerary);
+           
 
             if (await _uow.SaveAsync() <= 0)
             {
