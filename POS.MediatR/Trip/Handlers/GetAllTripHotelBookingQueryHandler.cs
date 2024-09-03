@@ -39,7 +39,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             List<TripHotelBookingDto> result = new List<TripHotelBookingDto>(new List<TripHotelBookingDto>());
             if (!request.Id.HasValue || request.Id.Value == Guid.Empty)
             {
-                result = await _tripHotelBookingRepository.All.Include(c => c.City).Include(a=>a.Vendor).Where(a => a.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
+                result = await _tripHotelBookingRepository.All.Include(c => c.City).Include(a => a.Vendor).Where(a => a.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
 
             }
             else
@@ -52,7 +52,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var data = _mapper.Map<List<ItineraryHotelBookingQuotationDto>>(quotation);
                     item.ItineraryHotelQuotationBookingDto.AddRange(data);
 
-                    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
+                    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Include(x => x.User).Where(x => x.TripItineraryId == item.Id).ToListAsync();
                     var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
                     item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
                 }

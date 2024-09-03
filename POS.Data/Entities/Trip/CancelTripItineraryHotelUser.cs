@@ -1,4 +1,6 @@
-﻿using System;
+﻿using POS.Data;
+using POS.Data.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,7 @@ namespace BTTEM.Data
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
+        public User User { get; set; }
         public Guid? TripItineraryId { get; set; }
         public Guid? TripHotelBookingId { get; set; }
         public bool IsCancelrequest { get; set; }
