@@ -149,7 +149,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                             tv.cancelTripItineraryHotelUsers.ForEach(item =>
                             {
                                 //item.TripId = request.TripId;
-                                item.Id = Guid.NewGuid();
+                                item.Id = Guid.NewGuid(); 
                                 item.IsHotel = true;
                             });
 
