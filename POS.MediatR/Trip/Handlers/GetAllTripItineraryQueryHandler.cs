@@ -8,6 +8,7 @@ using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var data = _mapper.Map<List<ItineraryTicketBookingQuotationDto>>(quotation);
                     item.ItineraryTicketQuotationBookingDto.AddRange(data);
 
-                    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
+                    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Include(x => x.User).Where(x => x.TripItineraryId == item.Id).ToListAsync();
                     var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
                     item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
                 }
