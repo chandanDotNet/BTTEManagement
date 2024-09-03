@@ -167,7 +167,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                             entityExist.ApprovalStatus = "CANCEL APPROVED";
                             //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
                             //{
-                            //    entityExist.NoOfRoom = tv.NoOfRoom;
+                            //    entityExist.NoOfRoom = tv.NoOfRoom; 
                             //}
 
                         }
