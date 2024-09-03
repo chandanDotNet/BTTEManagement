@@ -25,6 +25,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? NoOfTickets { get; set; }
         public string? NoOfRoom { get; set; }
         public bool? IsItinerary { get; set; }
+        public bool? IsCancel { get; set; }
         public List<CancelTripItineraryHotelUserDto> cancelTripItineraryHotelUsers { get; set; }
        
     }
