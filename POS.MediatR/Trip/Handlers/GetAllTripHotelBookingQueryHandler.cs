@@ -58,6 +58,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
                     var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
                     item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
+
                 }
             }
 
