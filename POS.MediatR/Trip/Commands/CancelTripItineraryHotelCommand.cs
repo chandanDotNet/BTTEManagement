@@ -1,4 +1,5 @@
-﻿using BTTEM.Data.Dto;
+﻿using BTTEM.Data;
+using BTTEM.Data.Dto;
 using MediatR;
 using POS.Data;
 using POS.Data.Dto;
@@ -19,6 +20,7 @@ namespace BTTEM.MediatR.Trip.Commands
 
     public class CancelTripItineraryHotel
     {
+        public string Type { get; set; }
         public Guid Id { get; set; }
         public string? NoOfTickets { get; set; }
         public string? NoOfRoom { get; set; }

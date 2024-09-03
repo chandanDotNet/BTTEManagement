@@ -24,13 +24,15 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly IMapper _mapper;
         private readonly ILogger<CancelTripItineraryHotelCommandHandler> _logger;
         private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
+        private readonly ICancelTripItineraryHotelUserRepository _cancelTripItineraryHotelUserRepository;
 
         public CancelTripItineraryHotelCommandHandler(
            ITripItineraryRepository tripItineraryRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
            ILogger<CancelTripItineraryHotelCommandHandler> logger,
-           ITripHotelBookingRepository tripHotelBookingRepository
+           ITripHotelBookingRepository tripHotelBookingRepository,
+           ICancelTripItineraryHotelUserRepository cancelTripItineraryHotelUserRepository
           )
         {
             _tripItineraryRepository = tripItineraryRepository;
@@ -38,6 +40,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             _mapper = mapper;
             _logger = logger;
             _tripHotelBookingRepository = tripHotelBookingRepository;
+            _cancelTripItineraryHotelUserRepository = cancelTripItineraryHotelUserRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(CancelTripItineraryHotelCommand request, CancellationToken cancellationToken)
@@ -47,33 +50,149 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 if (tv.IsItinerary == true)
                 {
-                    var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
-                    if (entityExist != null)
+                    if (tv.Type == "REQUEST")
                     {
-                        entityExist.ApprovalStatus = "CANCEL REQUEST";
-                        if (!string.IsNullOrWhiteSpace(tv.NoOfTickets))
-                        {
-                            entityExist.NoOfTickets = tv.NoOfTickets;
-                        }                    
 
+                        var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
+                        if (entityExist != null)
+                        {
+                            entityExist.ApprovalStatus = "CANCEL REQUEST";
+                            //if (!string.IsNullOrWhiteSpace(tv.NoOfTickets))
+                            //{
+                            //    entityExist.NoOfTickets = tv.NoOfTickets;
+                            //}
+
+                        }
+
+                        _tripItineraryRepository.Update(entityExist);
+
+                        if (tv.cancelTripItineraryHotelUsers != null)
+                        {
+                            var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id).ToList();
+                            if (groupTripExist.Count > 0)
+                            {
+                                _cancelTripItineraryHotelUserRepository.RemoveRange(groupTripExist);
+                            }
+
+                            tv.cancelTripItineraryHotelUsers.ForEach(item =>
+                            {
+                                //item.TripId = request.TripId;
+                                item.Id = Guid.NewGuid();
+                            });
+
+                            var groupTrip = _mapper.Map<List<CancelTripItineraryHotelUser>>(tv.cancelTripItineraryHotelUsers);
+                            _cancelTripItineraryHotelUserRepository.AddRange(groupTrip);
+                        }
+                    }
+                    if (tv.Type == "APPROVE")
+                    {
+
+                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelrequest==false).ToList();
+                        
+                        var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
+                        if (entityExist != null)
+                        {
+                            entityExist.ApprovalStatus = "CANCEL APPROVED";
+                            entityExist.NoOfTickets = groupTripExist.Count.ToString();
+                            
+
+                        }
+
+                        _tripItineraryRepository.Update(entityExist);
+                    }
+                    if (tv.Type == "REJECT")
+                    {
+
+                        var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsCancelrequest == false).ToList();
+
+                        var entityExist = _tripItineraryRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
+                        if (entityExist != null)
+                        {
+                            entityExist.ApprovalStatus = "CANCEL REJECTED";
+                            //if (!string.IsNullOrWhiteSpace(tv.NoOfTickets))
+                            //{
+                            //    entityExist.NoOfTickets = groupTripExist.Count.ToString();
+                            //}
+
+                        }
+
+                        _tripItineraryRepository.Update(entityExist);
                     }
 
-                    _tripItineraryRepository.Update(entityExist);
+
                 }
                 else
                 {
-                    var entityExist = _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
-                    if (entityExist != null)
+                    if (tv.Type == "REQUEST")
                     {
-                        entityExist.ApprovalStatus = "CANCEL REQUEST";
-                        if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
+                        var entityExist = _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
+                        if (entityExist != null)
                         {
-                            entityExist.NoOfRoom = tv.NoOfRoom;
+                            entityExist.ApprovalStatus = "CANCEL REQUEST";
+                            //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
+                            //{
+                            //    entityExist.NoOfRoom = tv.NoOfRoom;
+                            //}
+
                         }
-                       
+
+                        _tripHotelBookingRepository.Update(entityExist);
+
+                        if (tv.cancelTripItineraryHotelUsers != null)
+                        {
+                            var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsHotel==true).ToList();
+                            if (groupTripExist.Count > 0)
+                            {
+                                _cancelTripItineraryHotelUserRepository.RemoveRange(groupTripExist);
+                            }
+
+                            tv.cancelTripItineraryHotelUsers.ForEach(item =>
+                            {
+                                //item.TripId = request.TripId;
+                                item.Id = Guid.NewGuid();
+                                item.IsHotel = true;
+                            });
+
+                            var groupTrip = _mapper.Map<List<CancelTripItineraryHotelUser>>(tv.cancelTripItineraryHotelUsers);
+                            _cancelTripItineraryHotelUserRepository.AddRange(groupTrip);
+                        }
+
+                    }
+                    if (tv.Type == "APPROVE")
+                    {
+
+                        var entityExist = _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
+                        if (entityExist != null)
+                        {
+                            entityExist.ApprovalStatus = "CANCEL APPROVED";
+                            //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
+                            //{
+                            //    entityExist.NoOfRoom = tv.NoOfRoom;
+                            //}
+
+                        }
+
+                        _tripHotelBookingRepository.Update(entityExist);
+                    }
+                    if (tv.Type == "REJECT")
+                    {
+
+                        var entityExist = _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefault();
+                        if (entityExist != null)
+                        {
+                            entityExist.ApprovalStatus = "CANCEL REJECTED";
+                            //if (!string.IsNullOrWhiteSpace(tv.NoOfRoom))
+                            //{
+                            //    entityExist.NoOfRoom = tv.NoOfRoom;
+                            //}
+
+                        }
+
+                        _tripHotelBookingRepository.Update(entityExist);
                     }
 
-                    _tripHotelBookingRepository.Update(entityExist);                  
+
+
                 }
             }
 
