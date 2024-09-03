@@ -11,6 +11,7 @@ namespace BTTEM.Data
     public class ItineraryTicketBooking : BaseEntity
     {
 
+
         public Guid Id { get; set; }
         public Guid TripItineraryId { get; set; }
         public decimal? BookingAmount { get; set; } = 0;

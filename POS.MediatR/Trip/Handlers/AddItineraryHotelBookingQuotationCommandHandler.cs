@@ -22,6 +22,7 @@ namespace BTTEM.MediatR.Trip.Handlers
     public class AddItineraryHotelBookingQuotationCommandHandler : IRequestHandler<AddItineraryHotelBookingQuotationCommand, ServiceResponse<ItineraryHotelBookingQuotationDto>>
     {
         private readonly IItineraryHotelBookingQuotationRepository _itineraryHotelBookingQuotationRepository;
+        private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly ILogger<AddItineraryHotelBookingQuotationCommandHandler> _logger;
@@ -33,7 +34,8 @@ namespace BTTEM.MediatR.Trip.Handlers
             ILogger<AddItineraryHotelBookingQuotationCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IItineraryHotelBookingQuotationRepository itineraryHotelBookingQuotationRepository
+            IItineraryHotelBookingQuotationRepository itineraryHotelBookingQuotationRepository,
+            ITripHotelBookingRepository tripHotelBookingRepository
             )
         {
             _mapper = mapper;
@@ -42,6 +44,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
             _itineraryHotelBookingQuotationRepository = itineraryHotelBookingQuotationRepository;
+            _tripHotelBookingRepository = tripHotelBookingRepository;
         }
 
         public async Task<ServiceResponse<ItineraryHotelBookingQuotationDto>> Handle(AddItineraryHotelBookingQuotationCommand request, CancellationToken cancellationToken)
@@ -83,6 +86,12 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
 
             _itineraryHotelBookingQuotationRepository.Add(entity);
+
+            var _tripHotelBooking = await _tripHotelBookingRepository.FindAsync(request.TripHotelBookingId);
+
+            _tripHotelBooking.RMStatus = request.RMStatus;
+
+            _tripHotelBookingRepository.Update(_tripHotelBooking);
 
             if (await _uow.SaveAsync() <= 0)
             {

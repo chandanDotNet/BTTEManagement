@@ -97,10 +97,9 @@ namespace BTTEM.MediatR.Trip.Handlers
                 }
             }
 
-
             var tripItinerary = await _tripItineraryRepository.FindAsync(request.TripItineraryId);
 
-            tripItinerary.IsQuotationUpload = request.IsQuotationUpload;
+            tripItinerary.RMStatus = request.RMStatus;
 
             _itineraryTicketBookingQuotationRepository.Update(entityExist);
 

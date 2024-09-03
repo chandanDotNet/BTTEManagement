@@ -21,6 +21,7 @@ namespace BTTEM.MediatR.Trip.Handlers
 {
     public class AddItineraryTicketBookingQuotationCommandHandler : IRequestHandler<AddItineraryTicketBookingQuotationCommand, ServiceResponse<ItineraryTicketBookingQuotationDto>>
     {
+        private readonly ITripItineraryRepository _tripItineraryRepository;
         private readonly IItineraryTicketBookingQuotationRepository _itineraryTicketBookingQuotationRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
@@ -33,7 +34,8 @@ namespace BTTEM.MediatR.Trip.Handlers
             ILogger<AddItineraryTicketBookingQuotationCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IItineraryTicketBookingQuotationRepository itineraryTicketBookingQuotationRepository
+            IItineraryTicketBookingQuotationRepository itineraryTicketBookingQuotationRepository,
+            ITripItineraryRepository tripItineraryRepository
             )
         {
             _mapper = mapper;
@@ -42,6 +44,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
             _itineraryTicketBookingQuotationRepository = itineraryTicketBookingQuotationRepository;
+            _tripItineraryRepository = tripItineraryRepository;
         }
         public async Task<ServiceResponse<ItineraryTicketBookingQuotationDto>> Handle(AddItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
         {
@@ -82,6 +85,12 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
 
             _itineraryTicketBookingQuotationRepository.Add(entity);
+
+            var tripItinerary = await _tripItineraryRepository.FindAsync(request.TripItineraryId);
+
+            tripItinerary.IsQuotationUpload = request.IsQuotationUpload;
+
+            _tripItineraryRepository.Update(tripItinerary);
 
             if (await _uow.SaveAsync() <= 0)
             {

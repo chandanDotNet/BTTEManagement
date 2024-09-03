@@ -122,6 +122,7 @@ namespace POS.Domain
         public DbSet<ExpenseDetail> ExpenseDetails { get; set; }
         public DbSet<ItineraryTicketBookingQuotation> ItineraryTicketBookingQuotations { get; set; }
         public DbSet<ItineraryHotelBookingQuotation> ItineraryHotelBookingQuotations { get; set; }
+        public DbSet<CancelTripItineraryHotelUser> CancelTripItineraryHotelUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -646,13 +647,13 @@ namespace POS.Domain
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            builder.Entity<ItineraryTicketBookingQuotation>(b =>
-            {
-                b.HasOne(e => e.CreatedByUser)
-                    .WithMany()
-                    .HasForeignKey(ur => ur.CreatedBy)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
+            //builder.Entity<ItineraryTicketBookingQuotation>(b =>
+            //{
+            //    b.HasOne(e => e.CreatedByUser)
+            //        .WithMany()
+            //        .HasForeignKey(ur => ur.CreatedBy)
+            //        .OnDelete(DeleteBehavior.Restrict);
+            //});
 
             builder.Entity<ItineraryHotelBookingQuotation>(b =>
             {
@@ -700,6 +701,7 @@ namespace POS.Domain
             builder.Entity<ExpenseDetail>().ToTable("ExpenseDetails");
             builder.Entity<CarBikeLogBookExpenseRefillingDocument>().ToTable("CarBikeLogBookExpenseRefillingDocuments");
             builder.Entity<CarBikeLogBookExpenseTollParkingDocument>().ToTable("CarBikeLogBookExpenseTollParkingDocuments");
+            builder.Entity<CancelTripItineraryHotelUser>().ToTable("CancelTripItineraryHotelUsers");
             builder.DefalutMappingValue();
             builder.DefalutDeleteValueFilter();
         }

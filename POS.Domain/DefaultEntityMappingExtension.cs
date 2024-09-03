@@ -282,6 +282,9 @@ namespace POS.Domain
 
          .HasQueryFilter(p => !p.IsDeleted);
 
+            modelBuilder.Entity<ItineraryTicketBookingQuotation>()
+.HasQueryFilter(p => !p.IsDeleted);
+
             modelBuilder.Entity<MasterExpense>()
                .HasQueryFilter(p => !p.IsDeleted);
 
@@ -332,8 +335,7 @@ namespace POS.Domain
             modelBuilder.Entity<Vendor>()
 .HasQueryFilter(p => !p.IsDeleted);
 
-            modelBuilder.Entity<ItineraryTicketBookingQuotation>()
-.HasQueryFilter(p => !p.IsDeleted);
+          
 
             modelBuilder.Entity<ItineraryHotelBookingQuotation>()
 .HasQueryFilter(p => !p.IsDeleted);

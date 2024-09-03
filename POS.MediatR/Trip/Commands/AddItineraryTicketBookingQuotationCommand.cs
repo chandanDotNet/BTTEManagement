@@ -17,5 +17,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? QuotationPath { get; set; }
         public string? TravelDeskNotes { get; set; }
         public string? RMNotes { get; set; }
+        public bool? IsQuotationUpload { get; set; }
+        public string? RMStatus { get; set; }
     }    
 }

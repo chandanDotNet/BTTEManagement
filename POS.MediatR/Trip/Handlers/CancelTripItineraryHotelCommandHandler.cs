@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BTTEM.Data;
 using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
 using MediatR;
@@ -37,7 +38,6 @@ namespace BTTEM.MediatR.Trip.Handlers
             _mapper = mapper;
             _logger = logger;
             _tripHotelBookingRepository = tripHotelBookingRepository;
-
         }
 
         public async Task<ServiceResponse<bool>> Handle(CancelTripItineraryHotelCommand request, CancellationToken cancellationToken)
@@ -73,8 +73,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                        
                     }
 
-                    _tripHotelBookingRepository.Update(entityExist);
-
+                    _tripHotelBookingRepository.Update(entityExist);                  
                 }
             }
 
