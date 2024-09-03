@@ -140,7 +140,7 @@ namespace BTTEM.MediatR.Trip.Handlers
 
                         if (tv.cancelTripItineraryHotelUsers != null)
                         {
-                            var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == tv.Id && v.IsHotel==true).ToList();
+                            var groupTripExist = _cancelTripItineraryHotelUserRepository.All.Where(v => v.TripItineraryId == entityExist.Id).ToList();
                             if (groupTripExist.Count > 0)
                             {
                                 _cancelTripItineraryHotelUserRepository.RemoveRange(groupTripExist);
