@@ -658,7 +658,7 @@ namespace BTTEM.API.Controllers.Trip
 
 
         /// <summary>
-        ///  Update a Trip Itinerary Book Status
+        ///  Update a Trip Itinerary Book Status 
         /// </summary>
         /// <param name="updateTripItineraryBookStatusCommand"></param>
         /// <returns></returns>
