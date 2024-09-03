@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BTTEM.Data;
+using BTTEM.Data.Dto;
 using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
 using MediatR;
@@ -18,11 +19,19 @@ namespace BTTEM.MediatR.Trip.Handlers
     {
 
         private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
+        private readonly IItineraryHotelBookingQuotationRepository _itineraryHotelBookingQuotationRepository;
+        private readonly ICancelTripItineraryHotelUserRepository _cancelTripItineraryHotelUserRepository;
         private readonly IMapper _mapper;
-        public GetAllTripHotelBookingQueryHandler(ITripHotelBookingRepository tripHotelBookingRepository, IMapper mapper)
+        public GetAllTripHotelBookingQueryHandler(ITripHotelBookingRepository tripHotelBookingRepository, IMapper mapper,
+            IItineraryHotelBookingQuotationRepository itineraryHotelBookingQuotationRepository,
+            ICancelTripItineraryHotelUserRepository cancelTripItineraryHotelUserRepository
+            )
         {
             _tripHotelBookingRepository = tripHotelBookingRepository;
             _mapper = mapper;
+            _cancelTripItineraryHotelUserRepository = cancelTripItineraryHotelUserRepository;
+            _itineraryHotelBookingQuotationRepository = itineraryHotelBookingQuotationRepository;
+
         }
 
         public async Task<List<TripHotelBookingDto>> Handle(GetAllTripHotelBookingQuery request, CancellationToken cancellationToken)
@@ -36,6 +45,20 @@ namespace BTTEM.MediatR.Trip.Handlers
             else
             {
                 result = await _tripHotelBookingRepository.All.Include(c => c.City).Include(a => a.Vendor).Where(t => t.TripId == request.Id && t.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
+
+                foreach (var item in result)
+                {
+                    var quotation = await _itineraryHotelBookingQuotationRepository.All.Where(x => x.TripHotelBookingId == item.Id).ToListAsync();
+                    var data = _mapper.Map<List<ItineraryHotelBookingQuotationDto>>(quotation);
+                    item.ItineraryHotelQuotationBooking.AddRange(data);
+                }
+
+                foreach (var item in result)
+                {
+                    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
+                    var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
+                    item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
+                }
             }
 
             return _mapper.Map<List<TripHotelBookingDto>>(result);
