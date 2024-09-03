@@ -52,10 +52,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var quotation = await _itineraryTicketBookingQuotationRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
                     var data = _mapper.Map<List<ItineraryTicketBookingQuotationDto>>(quotation);
                     item.ItineraryTicketQuotationBookingDto.AddRange(data);
-                }
 
-                foreach (var item in result)
-                {
                     var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
                     var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
                     item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
