@@ -46,19 +46,20 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 result = await _tripHotelBookingRepository.All.Include(c => c.City).Include(a => a.Vendor).Where(t => t.TripId == request.Id && t.IsDeleted == false).ProjectTo<TripHotelBookingDto>(_mapper.ConfigurationProvider).ToListAsync();
 
-                foreach (var item in result)
-                {
-                    var quotation = await _itineraryHotelBookingQuotationRepository.All.Where(x => x.TripHotelBookingId == item.Id).ToListAsync();
-                    var data = _mapper.Map<List<ItineraryHotelBookingQuotationDto>>(quotation);
-                    item.ItineraryHotelQuotationBooking.AddRange(data);
-                }
+                //foreach (var item in result)
+                //{
+                //    var quotation = await _itineraryHotelBookingQuotationRepository.All.Where(x => x.TripHotelBookingId == item.Id).ToListAsync();
+                //    var data = _mapper.Map<List<ItineraryHotelBookingQuotationDto>>(quotation);
+                //    item.ItineraryHotelQuotationBooking.AddRange(data);
+                //}
 
-                foreach (var item in result)
-                {
-                    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
-                    var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
-                    item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
-                }
+                //foreach (var item in result)
+                //{
+                //    var cancelUser = await _cancelTripItineraryHotelUserRepository.All.Where(x => x.TripItineraryId == item.Id).ToListAsync();
+                //    var cancelData = _mapper.Map<List<CancelTripItineraryHotelUserDto>>(cancelUser);
+                //    item.CancelTripItineraryHotelUserDto.AddRange(cancelData);
+
+                //}
             }
 
             return _mapper.Map<List<TripHotelBookingDto>>(result);
