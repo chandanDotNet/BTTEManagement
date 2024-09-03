@@ -57,7 +57,7 @@ namespace BTTEM.Data
         public decimal? BookingAmount { get; set; }
         public bool? IsQuotationUpload { get; set; }
         public string? RMStatus { get; set; }
-        public List<ItineraryHotelBookingQuotationDto> ItineraryHotelQuotationBooking { get; set; } = new List<ItineraryHotelBookingQuotationDto>();
-        public List<CancelTripItineraryHotelUserDto> CancelTripItineraryHotelUserDto { get; set; } = new List<CancelTripItineraryHotelUserDto>();
+        //public List<ItineraryHotelBookingQuotationDto> ItineraryHotelQuotationBooking { get; set; } = new List<ItineraryHotelBookingQuotationDto>();
+        //public List<CancelTripItineraryHotelUserDto> CancelTripItineraryHotelUserDto { get; set; } = new List<CancelTripItineraryHotelUserDto>();
     }
 }
