@@ -63,10 +63,22 @@ namespace BTTEM.MediatR.Trip.Handlers
             if (request.Status == "CANCELLED")
             {
                 entityExist.CancellationDateTime = DateTime.Now;
-                entityExist.CancellationConfirmation = request.CancellationConfirmation;
-                entityExist.CancellationReason = request.CancellationReason;
-                entityExist.TravelDeskName = request.TravelDeskName;
-                entityExist.TravelDeskId = request.TravelDeskId;
+                if (!string.IsNullOrEmpty(request.CancellationConfirmation))
+                {
+                    entityExist.CancellationConfirmation = request.CancellationConfirmation;
+                }
+                if (!string.IsNullOrEmpty(request.CancellationReason))
+                {
+                    entityExist.CancellationReason = request.CancellationReason;
+                }
+                if (!string.IsNullOrEmpty(request.TravelDeskName))
+                {
+                    entityExist.TravelDeskName = request.TravelDeskName;
+                }
+                if (request.TravelDeskId.HasValue)
+                {
+                    entityExist.TravelDeskId = request.TravelDeskId;
+                }                   
             }
 
             if (!string.IsNullOrEmpty(request.JourneyNumber))
