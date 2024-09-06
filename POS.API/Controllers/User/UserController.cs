@@ -443,7 +443,7 @@ namespace POS.API.Controllers
         /// <returns></returns>    
         [AllowAnonymous]
         [HttpGet("SyncEmployee")]
-        public async Task<IActionResult> EmployeeSync(string companyName)
+        public async Task<IActionResult> EmployeeSync(string companyName,string employeeCode)
         {
             var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
             var client = new HttpClient();
@@ -451,7 +451,10 @@ namespace POS.API.Controllers
             {
                 requestUri = requestUri + "&company_name=" + companyName;
             }
-
+            if (!string.IsNullOrEmpty(employeeCode))
+            {
+                requestUri = requestUri + "&employee_code=" + employeeCode;
+            }
             var request = new HttpRequestMessage(HttpMethod.Get,
                 requestUri);
             request.Headers.Add("api-key", "3d4da1b5-0124-48fd-bba3-257e309333db");

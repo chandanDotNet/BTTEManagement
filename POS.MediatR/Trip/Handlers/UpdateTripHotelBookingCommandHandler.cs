@@ -179,6 +179,10 @@ namespace BTTEM.MediatR.Trip.Handlers
                         {
                             entityExist.BookingAmount = tv.BookingAmount;
                         }
+                        if (!string.IsNullOrWhiteSpace(tv.BookingNumber))
+                        {
+                            entityExist.BookingNumber = tv.BookingNumber;
+                        }
 
                         //==================  Ticket Upload
 

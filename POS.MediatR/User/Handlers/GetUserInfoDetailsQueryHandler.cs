@@ -80,7 +80,7 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.IsFoodActuals = (bool)rdr["IsFoodActuals"];
                     userInfoDetails.BudgetAmount = (decimal)rdr["BudgetAmount"];
                     userInfoDetails.FrequentFlyerNumber = Convert.ToString(rdr["FrequentFlyerNumber"]);
-
+                    userInfoDetails.TravelClass = Convert.ToString(rdr["TravelClass"]);
                     // expenseDataList.Add(expenseData);
                 }
                 con.Close();

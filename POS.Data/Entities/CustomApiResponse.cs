@@ -84,6 +84,7 @@ namespace BTTEM.Data.Entities
         public decimal? CarPetrolRate { get; set; }
         public decimal? BikeRate { get; set; }
         public string FrequentFlyerNumber { get; set; }
+        public string TravelClass { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }

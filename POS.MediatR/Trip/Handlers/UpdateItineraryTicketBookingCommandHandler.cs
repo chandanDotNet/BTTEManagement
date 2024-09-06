@@ -202,6 +202,14 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.TaxAmountFive = request.TaxAmountFive;
             }
+            if (!string.IsNullOrWhiteSpace(request.PNRNumber))
+            {
+                entityExist.PNRNumber = request.PNRNumber;
+            }
+            if (request.IsRescheduleChargePlus.HasValue)
+            {
+                entityExist.IsRescheduleChargePlus = request.IsRescheduleChargePlus.Value;
+            }
             //==================  Ticket Upload
 
             if (!string.IsNullOrWhiteSpace(request.RescheduleTicketReceiptName) && !string.IsNullOrWhiteSpace(request.RescheduleTicketDocumentData))

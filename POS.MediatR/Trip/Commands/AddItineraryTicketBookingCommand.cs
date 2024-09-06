@@ -48,5 +48,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string TaxAmountFour { get; set; }
         public string TaxAmountNameFive { get; set; }
         public string TaxAmountFive { get; set; }
+        public string PNRNumber { get; set; }
+        public bool IsServiceChargePlus { get; set; }
     }
 }

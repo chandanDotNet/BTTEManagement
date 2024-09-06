@@ -20,5 +20,6 @@ namespace BTTEM.MediatR.Trip.Commands
         public DateTime? RescheduleCheckOut { get; set; }
         public string? RescheduleCheckInTime { get; set; }
         public string? RescheduleCheckOutTime { get; set; }
+        public bool? IsRescheduleChargePlus { get; set; }
     }
 }
