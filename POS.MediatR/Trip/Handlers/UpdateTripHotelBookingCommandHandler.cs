@@ -67,9 +67,6 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var entityExist = await _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
                     if (entityExist != null)
                     {
-
-
-                        
                         if (tv.TripId.HasValue)
                         {
                             entityExist.TripId = (Guid)tv.TripId;
@@ -147,7 +144,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         {
                             entityExist.RescheduleReason = tv.RescheduleReason;
                         }
-                        if (tv.RescheduleCharge>0)
+                        if (tv.RescheduleCharge > 0)
                         {
                             entityExist.RescheduleCharge = tv.RescheduleCharge;
                         }
@@ -182,6 +179,15 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (!string.IsNullOrWhiteSpace(tv.BookingNumber))
                         {
                             entityExist.BookingNumber = tv.BookingNumber;
+                        }
+
+                        if (tv.IsRescheduleChargePlus == true)
+                        {
+                            entityExist.TotalAmount = tv.AgentCharge + tv.BookingAmount + tv.CancelationCharge + tv.RescheduleCharge;
+                        }
+                        else
+                        {
+                            entityExist.TotalAmount = tv.AgentCharge + tv.BookingAmount + tv.CancelationCharge - tv.RescheduleCharge;
                         }
 
                         //==================  Ticket Upload
@@ -254,13 +260,13 @@ namespace BTTEM.MediatR.Trip.Handlers
 
                         _tripHotelBookingRepository.Update(entityExist);
                     }
-                } 
-                
+                }
 
 
 
 
-               
+
+
             }
 
 

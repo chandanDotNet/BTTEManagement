@@ -98,7 +98,14 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
             if (request.TotalAmount > 0)
             {
-                entityExist.TotalAmount = request.TotalAmount;
+                if (request.IsRescheduleChargePlus == true)
+                {
+                    entityExist.TotalAmount = request.TotalAmount + request.CancelationCharge;
+                }
+                else
+                {
+                    entityExist.TotalAmount = request.TotalAmount - request.CancelationCharge;
+                }               
             }
             entityExist.IsAvail=request.IsAvail;
             entityExist.IsReschedule=request.IsReschedule;

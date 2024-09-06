@@ -58,6 +58,7 @@ namespace BTTEM.Data
         public bool? IsCancel { get; set; } = false;
         public string? BookingNumber { get; set; }
         public bool? IsRescheduleChargePlus { get; set; } = false;
+        public decimal? TotalAmount { get; set; }
         public List<ItineraryHotelBookingQuotation> ItineraryHotelQuotationBooking { get; set; } = new List<ItineraryHotelBookingQuotation>();
         public List<CancelTripItineraryHotelUser> CancelTripItineraryHotelUser { get; set; } = new List<CancelTripItineraryHotelUser>();
     }
