@@ -112,6 +112,7 @@ namespace BTTEM.Repository.Expense
                         GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
                         IsGroupTrip = cs.Trip.IsGroupTrip.Value,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
+                        CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
                         //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                         //{
                         //    Id = c.Id,
@@ -177,6 +178,7 @@ namespace BTTEM.Repository.Expense
                  GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
                  IsGroupTrip = cs.Trip.IsGroupTrip.Value,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
+                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
                  //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                  //{
                  //    Id = c.Id,

@@ -32,7 +32,7 @@ namespace BTTEM.Repository
             TotalCount = count;
             PageSize = pageSize;
             Skip = skip;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);           
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             AddRange(items);
         }
 
@@ -41,7 +41,7 @@ namespace BTTEM.Repository
 
             var dtoList = await GetDtos(source, skip, pageSize);
             var count = pageSize == 0 || dtoList.Count() == 0 ? dtoList.Count() : await GetCount(source);
-            
+
             var dtoPageList = new TripList(dtoList, count, skip, pageSize);
             return dtoPageList;
         }
@@ -72,10 +72,10 @@ namespace BTTEM.Repository
                         Name = cs.Name,
                         TripStarts = cs.TripStarts,
                         TripEnds = cs.TripEnds,
-                        TotalDays=(cs.TripEnds - cs.TripStarts).Days,
+                        TotalDays = (cs.TripEnds - cs.TripStarts).Days,
                         TripType = cs.TripType,
                         //Purpose = _mapper.Map<PurposeDto>(cs.Purpose),
-                        PurposeId = cs.PurposeId,                      
+                        PurposeId = cs.PurposeId,
                         CreatedDate = cs.CreatedDate,
                         Approval = cs.Approval,
                         Status = cs.Status,
@@ -85,15 +85,15 @@ namespace BTTEM.Repository
                         AdvanceMoney = cs.AdvanceMoney,
                         IsRequestAdvanceMoney = cs.IsRequestAdvanceMoney,
                         ModeOfTrip = cs.ModeOfTrip,
-                        MultiCity= cs.MultiCity,
-                        RequestAdvanceMoneyDate= cs.RequestAdvanceMoneyDate,
-                        RequestAdvanceMoneyStatus=cs.RequestAdvanceMoneyStatus,
-                        AdvanceMoneyRemarks=cs.AdvanceMoneyRemarks,
+                        MultiCity = cs.MultiCity,
+                        RequestAdvanceMoneyDate = cs.RequestAdvanceMoneyDate,
+                        RequestAdvanceMoneyStatus = cs.RequestAdvanceMoneyStatus,
+                        AdvanceMoneyRemarks = cs.AdvanceMoneyRemarks,
                         //Department = _mapper.Map<DepartmentDto>(cs.Department),
                         //DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
                         //SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
-                        CreatedByUser=cs.CreatedByUser,
-                        TripItinerarys=cs.TripItinerarys,
+                        CreatedByUser = cs.CreatedByUser,
+                        TripItinerarys = cs.TripItinerarys,
                         GradeName = cs.CreatedByUser.Grades.GradeName,
                         BranchName = cs.CreatedByUser.CompanyAccountBranch.Name,
                         IsTripCompleted = cs.IsTripCompleted,
@@ -103,17 +103,17 @@ namespace BTTEM.Repository
                         DepartmentName = cs.DepartmentName,
                         PurposeFor = cs.PurposeFor,
                         VendorCode = cs.VendorCode,
-                        PendingItineraryApprove = cs.TripItinerarys.Where(a=>a.ApprovalStatus== "PENDING" && a.IsDeleted==false).Count(),
+                        PendingItineraryApprove = cs.TripItinerarys.Where(a => a.ApprovalStatus == "PENDING" && a.IsDeleted == false).Count(),
                         PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus == "PENDING" && a.IsDeleted == false).Count(),
                         TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
-                        TripHotelBookings=cs.TripHotelBookings,
-                        RequestAdvanceMoneyStatusBys=cs.RequestAdvanceMoneyStatusBys,
-                        RequestAdvanceMoneyStatusBy=cs.RequestAdvanceMoneyStatusBy,
+                        TripHotelBookings = cs.TripHotelBookings,
+                        RequestAdvanceMoneyStatusBys = cs.RequestAdvanceMoneyStatusBys,
+                        RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy,
                         RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                         CancellationDateTime = cs.CancellationDateTime,
                         CancellationConfirmation = cs.CancellationConfirmation,
                         CancellationReason = cs.CancellationReason,
-                        TravelDeskId=cs.TravelDeskId,
+                        TravelDeskId = cs.TravelDeskId,
                         TravelDeskName = cs.TravelDeskName,
                         JourneyNumber = cs.JourneyNumber,
                         IsGroupTrip = cs.IsGroupTrip,
@@ -121,7 +121,7 @@ namespace BTTEM.Repository
                         Consent = cs.Consent,
                         IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
-                        CompanyAccount = _mapper.Map <CompanyAccountDto>(cs.CompanyAccount)
+                        CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -147,7 +147,7 @@ namespace BTTEM.Repository
                  //Purpose = _mapper.Map<PurposeDto>(cs.Purpose),
                  PurposeId = cs.PurposeId,
                  CreatedDate = cs.CreatedDate,
-                 Approval=cs.Approval,
+                 Approval = cs.Approval,
                  Status = cs.Status,
                  DepartmentId = cs.DepartmentId,
                  SourceCityId = cs.SourceCityId,
@@ -171,15 +171,15 @@ namespace BTTEM.Repository
                  DestinationCityName = cs.DestinationCityName,
                  CompanyAccountId = cs.CompanyAccountId,
                  DepartmentName = cs.DepartmentName,
-                 PurposeFor= cs.PurposeFor,
+                 PurposeFor = cs.PurposeFor,
                  VendorCode = cs.VendorCode,
-                 PendingItineraryApprove = cs.TripItinerarys.Where(a => a.ApprovalStatus== "PENDING").Count(),
-                 PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus== "PENDING").Count(),
+                 PendingItineraryApprove = cs.TripItinerarys.Where(a => a.ApprovalStatus == "PENDING").Count(),
+                 PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus == "PENDING").Count(),
                  TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
                  TripHotelBookings = cs.TripHotelBookings,
                  RequestAdvanceMoneyStatusBys = cs.RequestAdvanceMoneyStatusBys,
                  RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy,
-                 RollbackCount=cs.RollbackCount !=null ? cs.RollbackCount : 0,
+                 RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                  CancellationDateTime = cs.CancellationDateTime,
                  CancellationConfirmation = cs.CancellationConfirmation,
                  CancellationReason = cs.CancellationReason,
@@ -191,7 +191,7 @@ namespace BTTEM.Repository
                  Consent = cs.Consent,
                  IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
-                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccount)
+                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();
