@@ -84,7 +84,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.BookingTime = request.BookingTime;
             }
-            if (request.BookingAmount>0)
+            if (request.BookingAmount > 0)
             {
                 entityExist.BookingAmount = request.BookingAmount;
             }
@@ -96,19 +96,19 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.CancelationCharge = request.CancelationCharge;
             }
-            if (request.TotalAmount > 0)
+            //if (request.TotalAmount > 0)
+            //{
+            if (request.IsRescheduleChargePlus == true)
             {
-                if (request.IsRescheduleChargePlus == true)
-                {
-                    entityExist.TotalAmount = request.TotalAmount + request.CancelationCharge;
-                }
-                else
-                {
-                    entityExist.TotalAmount = request.TotalAmount - request.CancelationCharge;
-                }               
+                entityExist.TotalAmount = request.AgentCharge + request.BookingAmount + request.CancelationCharge + request.RescheduleCharge;
             }
-            entityExist.IsAvail=request.IsAvail;
-            entityExist.IsReschedule=request.IsReschedule;
+            else
+            {
+                entityExist.TotalAmount = request.AgentCharge + request.BookingAmount + request.CancelationCharge - request.RescheduleCharge;
+            }
+            //}
+            entityExist.IsAvail = request.IsAvail;
+            entityExist.IsReschedule = request.IsReschedule;
             if (!string.IsNullOrWhiteSpace(request.RescheduleStatus))
             {
                 entityExist.RescheduleStatus = request.RescheduleStatus;
