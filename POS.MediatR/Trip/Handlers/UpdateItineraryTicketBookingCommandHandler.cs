@@ -102,14 +102,14 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.TotalAmount = (request.AgentCharge == null ? entityExist.AgentCharge : request.AgentCharge)
                                          + (request.BookingAmount == null ? entityExist.BookingAmount : request.BookingAmount)
-                                         + (request.CancelationCharge == null ? entityExist.CancelationCharge : request.CancelationCharge)
+                                         - (request.CancelationCharge == null ? entityExist.CancelationCharge : request.CancelationCharge)
                                          + (request.RescheduleCharge == null ? entityExist.RescheduleCharge : request.RescheduleCharge);
             }
             else
             {
                 entityExist.TotalAmount = (request.AgentCharge == null ? entityExist.AgentCharge : request.AgentCharge)
                                          + (request.BookingAmount == null ? entityExist.BookingAmount : request.BookingAmount)
-                                         + (request.CancelationCharge == null ? entityExist.CancelationCharge : request.CancelationCharge)
+                                         - (request.CancelationCharge == null ? entityExist.CancelationCharge : request.CancelationCharge)
                                          - (request.RescheduleCharge == null ? entityExist.RescheduleCharge : request.RescheduleCharge);
             }
             //}
