@@ -183,11 +183,17 @@ namespace BTTEM.MediatR.Trip.Handlers
 
                         if (tv.IsRescheduleChargePlus == true)
                         {
-                            entityExist.TotalAmount = tv.AgentCharge + tv.BookingAmount + tv.CancelationCharge + tv.RescheduleCharge;
+                            entityExist.TotalAmount = (tv.AgentCharge == null ? entityExist.AgentCharge : tv.AgentCharge)
+                                                     + (tv.BookingAmount == null ? entityExist.BookingAmount : tv.BookingAmount)
+                                                     + (tv.CancelationCharge == null ? entityExist.CancelationCharge : tv.CancelationCharge)
+                                                     + tv.RescheduleCharge;
                         }
                         else
                         {
-                            entityExist.TotalAmount = tv.AgentCharge + tv.BookingAmount + tv.CancelationCharge - tv.RescheduleCharge;
+                            entityExist.TotalAmount = (tv.AgentCharge == null ? entityExist.AgentCharge : tv.AgentCharge)
+                                                    + (tv.BookingAmount == null ? entityExist.BookingAmount : tv.BookingAmount)
+                                                    + (tv.CancelationCharge == null ? entityExist.CancelationCharge : tv.CancelationCharge)
+                                                    - tv.RescheduleCharge;
                         }
 
                         //==================  Ticket Upload
