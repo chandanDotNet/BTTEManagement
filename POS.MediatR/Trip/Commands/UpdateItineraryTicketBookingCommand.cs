@@ -24,7 +24,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? VendorName { get; set; }
         public string? BookingDate { get; set; }
         public string? BookingTime { get; set; }
-        public bool? IsReschedule { get; set; }
+        public bool? IsReschedule { get; set; } = false;
         public string? RescheduleStatus { get; set; }
         public string? RescheduleReason { get; set; }
         public decimal? RescheduleCharge { get; set; }

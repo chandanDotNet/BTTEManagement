@@ -60,6 +60,10 @@ namespace BTTEM.MediatR.Trip.Handlers
                 _logger.LogError("Trip Itinerary Ticket Does not exists");
                 return ServiceResponse<bool>.Return404("Trip Itinerary Ticket  Does not exists");
             }
+            if (request.IsReschedule.HasValue)
+            {
+                entityExist.IsReschedule = request.IsReschedule;
+            }
             if (!string.IsNullOrWhiteSpace(request.CancelationReason))
             {
                 entityExist.CancelationReason = request.CancelationReason;
