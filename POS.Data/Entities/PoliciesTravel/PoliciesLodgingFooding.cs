@@ -19,6 +19,7 @@ namespace BTTEM.Data
         public decimal BudgetAmount { get; set; }
         public bool IsBillRequired { get; set; }
         public decimal DeductionPercentage { get; set; }
+        public decimal? FoodAmountWithoutBill { get; set; }
         public bool IsDeleted { get; set; }
 
     }

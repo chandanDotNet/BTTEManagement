@@ -1,6 +1,7 @@
 ﻿using BTTEM.MediatR.Expense.Commands;
 using BTTEM.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Domain;
@@ -36,38 +37,33 @@ namespace BTTEM.MediatR.Expense.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(DeleteExpenseDetailCommand request, CancellationToken cancellationToken)
         {
-            if(request.Id.HasValue)
+            if (request.Id.HasValue)
             {
-                var entityExist =  _expenseDetailRepository.FindBy(a=>a.Id== request.Id).FirstOrDefault();
+                var entityExist = _expenseDetailRepository.FindBy(a => a.Id == request.Id).FirstOrDefault();
                 if (entityExist == null)
                 {
-                    _logger.LogError("Expense does not exists.");
-                    return ServiceResponse<bool>.Return404();
+                    return ServiceResponse<bool>.ReturnResultWith200(true);
                 }
                 _expenseDetailRepository.Remove(entityExist);
             }
             if (request.ExpenseId.HasValue)
             {
-                var entityExist = _expenseDetailRepository.FindBy(a => a.ExpenseId == request.ExpenseId);
-                if (entityExist == null)
+                var entityExist = await _expenseDetailRepository.FindBy(a => a.ExpenseId == request.ExpenseId).ToListAsync();
+                if (entityExist.Count() == 0)
                 {
-                    _logger.LogError("Expense does not exists.");
-                    return ServiceResponse<bool>.Return404();
+                    return ServiceResponse<bool>.ReturnResultWith200(true);
                 }
                 _expenseDetailRepository.RemoveRange(entityExist);
             }
             if (request.MasterExpenseId.HasValue)
             {
-                var entityExist = _expenseDetailRepository.FindBy(a => a.MasterExpenseId == request.MasterExpenseId);
-                if (entityExist == null)
+                var entityExist = await _expenseDetailRepository.FindBy(a => a.MasterExpenseId == request.MasterExpenseId).ToListAsync();
+                if (entityExist.Count() == 0)
                 {
-                    _logger.LogError("Expense does not exists.");
-                    return ServiceResponse<bool>.Return404();
+                    return ServiceResponse<bool>.ReturnResultWith200(true);
                 }
                 _expenseDetailRepository.RemoveRange(entityExist);
             }
-
-
 
             if (await _uow.SaveAsync() <= 0)
             {
