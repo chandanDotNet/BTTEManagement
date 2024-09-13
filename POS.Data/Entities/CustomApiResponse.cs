@@ -80,6 +80,7 @@ namespace BTTEM.Data.Entities
         public decimal? OtherCitiesUptoAmount { get; set; }
         public bool? IsFoodActuals { get; set; }
         public decimal? BudgetAmount { get; set; }
+        public decimal? FoodAmountWithoutBill { get; set; }
         public decimal? CarDieselRate { get; set; }
         public decimal? CarPetrolRate { get; set; }
         public decimal? BikeRate { get; set; }
