@@ -276,6 +276,12 @@ namespace BTTEM.Data.Entities
         public string message { get; set; }
         public UserAuthDto Data { get; set; }
     }
+    public class AppVersionUpdateResponseData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public IList<AppVersionUpdateDto> Data { get; set; }
+    }
 
-    
 }

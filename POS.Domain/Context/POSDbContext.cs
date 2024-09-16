@@ -123,6 +123,7 @@ namespace POS.Domain
         public DbSet<ItineraryTicketBookingQuotation> ItineraryTicketBookingQuotations { get; set; }
         public DbSet<ItineraryHotelBookingQuotation> ItineraryHotelBookingQuotations { get; set; }
         public DbSet<CancelTripItineraryHotelUser> CancelTripItineraryHotelUsers { get; set; }
+        public DbSet<AppVersionUpdate> AppVersions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -656,6 +657,14 @@ namespace POS.Domain
             //});
 
             builder.Entity<ItineraryHotelBookingQuotation>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<AppVersionUpdate>(b =>
             {
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()

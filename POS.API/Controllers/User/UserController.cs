@@ -28,6 +28,8 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using BTTEM.MediatR;
 using Microsoft.VisualBasic.FileIO;
+using BTTEM.Data.Dto;
+using BTTEM.MediatR.AppVersionUpdate.Command;
 
 namespace POS.API.Controllers
 {
@@ -654,6 +656,45 @@ namespace POS.API.Controllers
             //return Ok(response);
 
             return BadRequest();
+        }
+
+        /// <summary>
+        /// Force Update
+        /// </summary>        
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("AppVersionUpdate")]
+        [Produces("application/json", "application/xml", Type = typeof(List<AppVersionUpdateDto>))]
+        public async Task<IActionResult> AppVersionUpdate()
+        {
+            AppVersionUpdateResponseData response = new AppVersionUpdateResponseData();
+            try
+            {
+                var getAppVersionQuery = new GetAppVersionUpdateQuery { };
+                var result = await _mediator.Send(getAppVersionQuery);
+
+                if (result != null)
+                {
+                    response.status = true;
+                    response.StatusCode = 1;
+                    response.message = "Success";
+                    response.Data = result;
+                }
+                else
+                {
+                    response.status = false;
+                    response.StatusCode = 0;
+                    response.message = "Invalid";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = false;
+                response.StatusCode = 0;
+                response.message = ex.Message;
+            }
+
+            return Ok(response);
         }
     }
 }
