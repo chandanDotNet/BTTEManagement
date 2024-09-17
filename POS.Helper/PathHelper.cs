@@ -117,6 +117,13 @@ namespace POS.Helper
                 return _configuration["ImagePathSettings:Attachments"];
             }
         }
+        public string UserManualDoc
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:UserManualDoc"];
+            }
+        }
         public string TravelDocument
         {
             get
