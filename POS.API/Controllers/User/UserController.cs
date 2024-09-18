@@ -714,7 +714,7 @@ namespace POS.API.Controllers
         [AllowAnonymous]
         [HttpGet("DownloadUserManual")]
         public async Task<IActionResult> DownloadUserManual()
-        {
+        {   
             await using (var memoryStream = new MemoryStream())
             {
                 using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))

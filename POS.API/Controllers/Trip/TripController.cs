@@ -996,7 +996,7 @@ namespace BTTEM.API.Controllers.Trip
                 string email = this._configuration.GetSection("AppSettings")["Email"];
                 if (email == "Yes")
                 {
-                    if (updateTripStatusCommand.Status == "APPLIED")
+                    if (updateTripStatusCommand.Status == "APPLIED" && updateTripStatusCommand.Approval != "APPROVED")
                     {
                         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
