@@ -2313,7 +2313,7 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
                             templateBody = templateBody.Replace("{REIMBURMENT_STATUS}", Convert.ToString(responseData.ReimbursementStatus));
                             templateBody = templateBody.Replace("{TOTAL_AMOUNT}", Convert.ToString(responseData.TotalAmount));
-                            templateBody = templateBody.Replace("{APPROVAL_AMOUNT}", Convert.ToString(responseData.PayableAmount));
+                            templateBody = templateBody.Replace("{PAYABLE_AMOUNT}", Convert.ToString(responseData.PayableAmount));
                             templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.ReimbursementAmount));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
