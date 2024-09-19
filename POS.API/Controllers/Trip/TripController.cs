@@ -545,7 +545,7 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryCommand updateTripItineraryCommand)
         {
-            
+
 
             var deleteTripItineraryCommand = new DeleteAllTripItineraryCommand { Id = updateTripItineraryCommand.TripItinerary.FirstOrDefault().TripId };
             var resultDelete = await _mediator.Send(deleteTripItineraryCommand);
@@ -578,7 +578,7 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> RescheduleTripItineraryHotel(RescheduleTripItineraryHotelCommand rescheduleTripItineraryHotelCommand)
         {
 
-             var result = await _mediator.Send(rescheduleTripItineraryHotelCommand);
+            var result = await _mediator.Send(rescheduleTripItineraryHotelCommand);
             if (result.Data == true)
             {
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
@@ -667,7 +667,7 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryBookStatusCommand updateTripItineraryBookStatusCommand)
         {
-            
+
 
             var result = await _mediator.Send(updateTripItineraryBookStatusCommand);
             if (result.Success)
@@ -901,6 +901,7 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripDto))]
         public async Task<IActionResult> UpdateTripStatus(UpdateTripStatusCommand updateTripStatusCommand)
         {
+            bool TravelDesk = false;
             var result = await _mediator.Send(updateTripStatusCommand);
 
             if (result.Success)
@@ -954,7 +955,7 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         var requestUser = _userRepository.FindAsync(itinerary.FirstOrDefault().CreatedBy);
                         companyId = requestUser.Result.CompanyAccountId;
-
+                        TravelDesk = true;
                     }
                     if (hotel.Count > 0)
                     {
@@ -1064,7 +1065,10 @@ namespace BTTEM.API.Controllers.Trip
                                 Port = defaultSmtp.Port,
                                 Subject = "Journey Request Updated",
                                 ToAddress = reportingHead.UserName,
-                                CCAddress = responseData.CreatedByUser.UserName,
+                                CCAddress =
+                                TravelDesk == false ?
+                                responseData.CreatedByUser.UserName :
+                                responseData.CreatedByUser.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
                                 UserName = defaultSmtp.UserName
                             });
                         }
