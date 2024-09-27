@@ -57,6 +57,7 @@ namespace POS.API.Controllers
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
+        private readonly IEmailSMTPSettingRepository _emailSMTPSettingRepository;
         /// <summary>
         /// User
         /// </summary>
@@ -71,7 +72,8 @@ namespace POS.API.Controllers
              IPoliciesVehicleConveyanceRepository policiesVehicleConveyanceRepository,
              IPoliciesDetailRepository policiesDetailRepository,
              IWebHostEnvironment webHostEnvironment,
-             PathHelper pathHelper
+             PathHelper pathHelper,
+             IEmailSMTPSettingRepository emailSMTPSettingRepository
             )
         {
             _mediator = mediator;
@@ -85,6 +87,7 @@ namespace POS.API.Controllers
             _policiesDetailRepository = policiesDetailRepository;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _emailSMTPSettingRepository = emailSMTPSettingRepository;
         }
         /// <summary>
         ///  Create a User
@@ -260,10 +263,35 @@ namespace POS.API.Controllers
         /// <param name="resetPasswordCommand"></param>
         /// <returns></returns>
         [HttpPost("changepassword")]
-        [ClaimCheck("USR_RESET_PWD")]
+        //[ClaimCheck("USR_RESET_PWD")]
         public async Task<IActionResult> ChangePassword(ChangePasswordCommand resetPasswordCommand)
         {
             var result = await _mediator.Send(resetPasswordCommand);
+            if (result.Success)
+            {
+                var user = await _userRepository.All.Where(x => x.UserName == resetPasswordCommand.UserName).FirstOrDefaultAsync();
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ChangePassword.html");
+                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string templateBody = sr.ReadToEnd();
+                    templateBody = templateBody.Replace("{NAME}", string.Concat(user.FirstName, " ", user.LastName));
+                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                    EmailHelper.SendEmail(new SendEmailSpecification
+                    {
+                        Body = templateBody,
+                        FromAddress = defaultSmtp.UserName,
+                        Host = defaultSmtp.Host,
+                        IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        Password = defaultSmtp.Password,
+                        Port = defaultSmtp.Port,
+                        Subject = "Change Password",
+                        ToAddress = resetPasswordCommand.UserName,
+                        UserName = defaultSmtp.UserName
+                    });
+                }
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -714,7 +742,7 @@ namespace POS.API.Controllers
         [AllowAnonymous]
         [HttpGet("DownloadUserManual")]
         public async Task<IActionResult> DownloadUserManual()
-        {   
+        {
             await using (var memoryStream = new MemoryStream())
             {
                 using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
@@ -728,7 +756,7 @@ namespace POS.API.Controllers
                     var files = Directory.GetFiles(Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.UserManualDoc));
 
                     foreach (var file in files)
-                    {                        
+                    {
                         var fileInfo = new System.IO.FileInfo(file);
                         var entry = zipArcheive.CreateEntry(fileInfo.Name);
                         using (var entryStream = entry.Open())

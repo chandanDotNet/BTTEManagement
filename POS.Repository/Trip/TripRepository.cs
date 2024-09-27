@@ -25,23 +25,27 @@ namespace BTTEM.Repository
         private readonly IMapper _mapper;
         private readonly UserInfoToken _userInfoToken;
         private readonly IUserRoleRepository _userRoleRepository;
+        private readonly IUserRepository _userRepository;
         public TripRepository(IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
-            IMapper mapper,
-             UserInfoToken userInfoToken,
-              IUserRoleRepository userRoleRepository
+              IMapper mapper,
+              UserInfoToken userInfoToken,
+              IUserRoleRepository userRoleRepository,
+              IUserRepository userRepository
             ) : base(uow)
         {
             _propertyMappingService = propertyMappingService;
             _mapper = mapper;
             _userInfoToken = userInfoToken;
             _userRoleRepository = userRoleRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<TripList> GetAllTrips(TripResource tripResource)
         {
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
+            var companyAccountId = await _userRepository.FindAsync(LoginUserId);
 
             if (!tripResource.Id.HasValue)
             {
@@ -77,8 +81,37 @@ namespace BTTEM.Repository
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, ti => ti.TripItinerarys, t => t.TripHotelBookings, a => a.RequestAdvanceMoneyStatusBys).ApplySort(tripResource.OrderBy,
             //  _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
 
-            var collectionBeforePaging = All.Include(c => c.CreatedByUser).Include(ti => ti.TripItinerarys).Include(t => t.TripHotelBookings).Include(a => a.RequestAdvanceMoneyStatusBys).Include(e => e.GroupTrips).ThenInclude(c => c.User).Include(a => a.CreatedByUser.CompanyAccounts).ApplySort(tripResource.OrderBy,
+            var collectionBeforePaging = All.
+                 Include(c => c.CreatedByUser)
+                .Include(ti => ti.TripItinerarys)
+                .Include(t => t.TripHotelBookings)
+                .Include(a => a.RequestAdvanceMoneyStatusBys)
+                .Include(e => e.GroupTrips)
+                .ThenInclude(c => c.User)
+                .ThenInclude(g => g.Grades)
+                .Include(s => s.GroupTrips)
+                .ThenInclude(x => x.User)
+                .ThenInclude(c => c.CompanyAccounts)
+                .Include(g => g.CreatedByUser.Grades)
+                .Include(a => a.CreatedByUser.CompanyAccounts)
+                .ApplySort(tripResource.OrderBy,
                _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
+
+            //Filter For Infra Only
+
+            if (Role.Id == new Guid("241772cb-c907-4961-88cb-a0bf8004bbb2"))
+            {
+                if (companyAccountId.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                        .Where(t => t.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                }
+                else
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                        .Where(t => t.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                }
+            }
 
             if (tripResource.ReportingHeadId.HasValue)
             {

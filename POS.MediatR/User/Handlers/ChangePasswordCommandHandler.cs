@@ -30,14 +30,14 @@ namespace POS.MediatR.Handlers
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
-                return ServiceResponse<UserDto>.ReturnFailed(404, "UserName not found.");
+                return ServiceResponse<UserDto>.Return409("UserName not found.");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.OldPassword, false);
             if (!result.Succeeded)
             {
                 _logger.LogError("Old Password does not match.");
-                return ServiceResponse<UserDto>.ReturnFailed(422, "Old Password does not match.");
+                return ServiceResponse<UserDto>.Return409("Old Password does not match.");
             }
 
             var entity = await _userManager.FindByNameAsync(request.UserName);

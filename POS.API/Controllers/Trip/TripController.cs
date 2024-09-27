@@ -114,7 +114,6 @@ namespace BTTEM.API.Controllers.Trip
 
             //===================
 
-
             //var trip = _tripRepository.All.Where(a => a.TripStarts <= addTripCommand.TripStarts && a.TripEnds >= addTripCommand.TripStarts && a.CreatedBy == Guid.Parse(_userInfoToken.Id)).ToList();
             //if (trip.Count > 0)
             //{
@@ -545,7 +544,6 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryCommand updateTripItineraryCommand)
         {
-
 
             var deleteTripItineraryCommand = new DeleteAllTripItineraryCommand { Id = updateTripItineraryCommand.TripItinerary.FirstOrDefault().TripId };
             var resultDelete = await _mediator.Send(deleteTripItineraryCommand);
@@ -1095,16 +1093,16 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 //var userId = (this.User.Claims.First(i => i.Type == "Id").Value);
-                var responseData = _tripRepository.FindAsync(updateStatusTripRequestAdvanceMoneyCommand.Id);
-                var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                var responseData = await _tripRepository.FindAsync(updateStatusTripRequestAdvanceMoneyCommand.Id);
+                var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
-                    TripTypeName = responseData.Result.Name,
+                    TripTypeName = responseData.Name,
                     ActionType = "Activity",
                     Remarks = updateStatusTripRequestAdvanceMoneyCommand.Status == string.Empty ?
-                    responseData.Result.Name + " Requsted For Advance Money By " + userResult.FirstName + " " + userResult.LastName
-                    : responseData.Result.Name + " Requsted For Advance Money - Status Updated By " + userResult.FirstName + " " + userResult.LastName,
+                    responseData.Name + " Requsted For Advance Money By " + userResult.FirstName + " " + userResult.LastName
+                    : responseData.Name + " Requsted For Advance Money - Status Updated By " + userResult.FirstName + " " + userResult.LastName,
                     Status = updateStatusTripRequestAdvanceMoneyCommand.Status,
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now
@@ -1115,10 +1113,10 @@ namespace BTTEM.API.Controllers.Trip
                 var addNotificationCommand = new AddNotificationCommand()
                 {
                     TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
-                    TypeName = responseData.Result.Name,
+                    TypeName = responseData.Name,
                     SourceId = Guid.Parse(_userInfoToken.Id),
                     Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
-                    UserId = responseData.Result.CreatedBy,
+                    UserId = responseData.CreatedBy,
                 };
 
                 var notificationResult = await _mediator.Send(addNotificationCommand);
@@ -1129,7 +1127,7 @@ namespace BTTEM.API.Controllers.Trip
                          .AllIncluding(c => c.User)
                          .Where(c => c.RoleId == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")
                          && c.User.CompanyAccountId ==
-                         _userRepository.FindAsync(responseData.Result.CreatedBy).Result.CompanyAccountId)
+                         _userRepository.FindAsync(responseData.CreatedBy).Result.CompanyAccountId)
                          .Select(cs => new UserRoleDto
                          {
                              UserId = cs.UserId,
@@ -1142,13 +1140,52 @@ namespace BTTEM.API.Controllers.Trip
                     var accountManagerNotificationCommand = new AddNotificationCommand()
                     {
                         TripId = updateStatusTripRequestAdvanceMoneyCommand.Id,
-                        TypeName = responseData.Result.Name,
+                        TypeName = responseData.Name,
                         SourceId = Guid.Parse(_userInfoToken.Id),
                         Content = "Request For Advance Money " + updateStatusTripRequestAdvanceMoneyCommand.Status,
                         UserId = userRoles.FirstOrDefault().UserId.Value,
                     };
 
                     var accountManagerNotificationnotificationResult = await _mediator.Send(accountManagerNotificationCommand);
+                }
+
+                if (updateStatusTripRequestAdvanceMoneyCommand.Status == "APPROVED")
+                {
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
+                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                    var MoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
+                    var accountant = await _userRepository.All.Include(u => u.UserRoles)
+                        .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+                    accountant =
+                        accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                        .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                    var toAddress = string.Join(',', accountant.Select(x => x.UserName));
+
+                    var reportingHead = await _userRepository.FindAsync(responseData.CreatedBy);
+
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        string templateBody = sr.ReadToEnd();
+                        templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
+                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                        templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
+                        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
+                        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
+                        templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
+                        EmailHelper.SendEmail(new SendEmailSpecification
+                        {
+                            Body = templateBody,
+                            FromAddress = defaultSmtp.UserName,
+                            Host = defaultSmtp.Host,
+                            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                            Password = defaultSmtp.Password,
+                            Port = defaultSmtp.Port,
+                            Subject = "Advance Money Approved",
+                            ToAddress = toAddress,
+                            CCAddress = reportingHead.UserName,
+                            UserName = defaultSmtp.UserName
+                        });
+                    }
                 }
             }
 
