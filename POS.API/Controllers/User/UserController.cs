@@ -35,6 +35,7 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.Hosting;
 using POS.Helper;
 using Hangfire.Storage;
+using BTTEM.Data;
 
 namespace POS.API.Controllers
 {
@@ -334,7 +335,17 @@ namespace POS.API.Controllers
         public async Task<IActionResult> ForgetPasswordOTP(ForgetPasswordOTPCommand forgetPasswordOTPCommand)
         {
             var result = await _mediator.Send(forgetPasswordOTPCommand);
-            return ReturnFormattedResponse(result);
+            OtpResponseData data = new OtpResponseData()
+            {     
+                otp = result.Data,                
+                StatusCode = result.StatusCode,
+                status = result.Success,
+                message = "Otp sent Successfully",
+            };
+
+            var response = ServiceResponse<OtpResponseData>.ReturnResultWith200(data);
+
+            return ReturnFormattedResponse(response);
         }
 
         /// <summary>

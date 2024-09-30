@@ -284,4 +284,11 @@ namespace BTTEM.Data.Entities
         public IList<AppVersionUpdateDto> Data { get; set; }
     }
 
+    public class OtpResponseData
+    {
+        public string otp { get; set; }
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+    }
 }
