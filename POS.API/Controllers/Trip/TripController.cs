@@ -620,7 +620,7 @@ namespace BTTEM.API.Controllers.Trip
                 //    ActionBy = Guid.Parse(_userInfoToken.Id),
                 //    ActionDate = DateTime.Now
                 //};
-                //var response = await _mediator.Send(addTripTrackingCommand);
+                //var response = await _mediator.Send(addTripTrackingCommand); 
             }
 
             return ReturnFormattedResponse(result);
