@@ -52,7 +52,8 @@ namespace BTTEM.Data
         public string? SourceCityName { get; set; }
         public string? DestinationCityName { get; set; }
         public string? DepartmentName { get; set; }
-        public Guid? CompanyAccountId { get; set; }        
+        public Guid? CompanyAccountId { get; set; }
+        public CompanyAccountDto CompanyAccount { get; set; }
         public int PendingItineraryApprove { get; set; }        
         public int PendingHotelApprove { get; set; }
         public string? VendorCode { get; set; }

@@ -54,10 +54,8 @@ namespace BTTEM.MediatR.Handlers
 
         public async Task<ServiceResponse<bool>> Handle(UpdateTripItineraryBookStatusCommand request, CancellationToken cancellationToken)
         {
-
             if (request.IsItinerary == true)
             {
-
                 var entityExist = await _tripItineraryRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
                 if (!string.IsNullOrWhiteSpace(request.BookStatus))
                 {
@@ -181,7 +179,10 @@ namespace BTTEM.MediatR.Handlers
                 {
                     entityExist.Amount = request.Amount;
                 }
-
+                if (!string.IsNullOrWhiteSpace(request.BookingNumber))
+                {
+                    entityExist.BookingNumber = request.BookingNumber;
+                }
 
 
                 //==================  Ticket Upload

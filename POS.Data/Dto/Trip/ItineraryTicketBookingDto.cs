@@ -29,7 +29,7 @@ namespace BTTEM.Data
         public string? VendorName { get; set; }
         public string? BookingDate { get; set; }
         public string? BookingTime { get; set; }
-        public bool? IsReschedule { get; set; }
+        public bool? IsReschedule { get; set; } = false;
         public string? RescheduleStatus { get; set; }
         public string? RescheduleReason { get; set; }
         public decimal? RescheduleCharge { get; set; }
@@ -59,5 +59,7 @@ namespace BTTEM.Data
         public string TaxAmountFour { get; set; }
         public string TaxAmountNameFive { get; set; }
         public string TaxAmountFive { get; set; }
+        public string PNRNumber { get; set; }
+        public bool IsRescheduleChargePlus { get; set; }
     }
 }

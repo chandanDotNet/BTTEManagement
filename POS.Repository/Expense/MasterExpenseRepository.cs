@@ -44,9 +44,9 @@ namespace BTTEM.Repository
 
         public async Task<MasterExpenseList> GetAllExpenses(ExpenseResource expenseResource)
         {
-
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
+            var companyAccountId = await _userRepository.FindAsync(LoginUserId);
 
             if (!expenseResource.MasterExpenseId.HasValue)
             {
@@ -82,14 +82,34 @@ namespace BTTEM.Repository
 
             var collectionBeforePaging = All.Include(t => t.Trip).ThenInclude(g => g.GroupTrips)
                 .Include(g => g.GroupExpenses).ThenInclude(u => u.User).Include(c => c.CreatedByUser).
-                ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).Include(a => a.Expenses).ThenInclude(f=>f.ExpenseDetail).
-                Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory).ApplySort(expenseResource.OrderBy,
+                ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).Include(a => a.Expenses).ThenInclude(f => f.ExpenseDetail).
+                Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory)
+                .Include(a => a.CreatedByUser.CompanyAccounts)
+                .ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser, a => a.Expenses).ApplySort(expenseResource.OrderBy,
             //   _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
             //.ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
+
+
+            //Filter For Infra Only
+
+            if (Role.Id == new Guid("241772cb-c907-4961-88cb-a0bf8004bbb2"))
+            {
+                if (companyAccountId.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                        .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                }
+                else
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                        .Where(m => m.CreatedByUser.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                }
+            }
+
 
             if (expenseResource.ReportingHeadId.HasValue)
             {
@@ -202,12 +222,10 @@ namespace BTTEM.Repository
                     );
             }
 
-
             return await new MasterExpenseList(_mapper, _userRepository).Create(collectionBeforePaging,
                 expenseResource.Skip,
                 expenseResource.PageSize);
         }
-
 
         public async Task<List<RoleDto>> GetUserRole(Guid Id)
         {

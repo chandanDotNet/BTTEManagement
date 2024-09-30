@@ -25,6 +25,6 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? TicketDocumentData { get; set; }
         public string? ApprovalDocumentsReceiptName { get; set; }
         public string? ApprovalDocumentData { get; set; }
-
+        public string? BookingNumber { get; set; }
     }
 }

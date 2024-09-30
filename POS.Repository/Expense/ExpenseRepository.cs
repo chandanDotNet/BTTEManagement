@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace POS.Repository
 {
@@ -17,20 +18,29 @@ namespace POS.Repository
     {
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IMapper _mapper;
+        private readonly UserInfoToken _userInfoToken;
+        private readonly IUserRoleRepository _userRoleRepository;
         public ExpenseRepository(
             IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
+            UserInfoToken userInfoToken,
+            IUserRoleRepository userRoleRepository,
             IMapper mapper
             ) : base(uow)
         {
             _propertyMappingService = propertyMappingService;
             _mapper = mapper;
+            _userInfoToken = userInfoToken;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<ExpenseList> GetExpenses(ExpenseResource expenseResource)
         {
+            Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
+            var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
+
             var collectionBeforePaging = AllIncluding(c => c.ExpenseBy, cs => cs.ExpenseCategory).ApplySort(expenseResource.OrderBy,
-                _propertyMappingService.GetPropertyMapping<ExpenseDto, Expense>());
+                _propertyMappingService.GetPropertyMapping<ExpenseDto, Expense>());            
 
             if (!string.IsNullOrEmpty(expenseResource.Reference))
             {
@@ -84,7 +94,6 @@ namespace POS.Repository
                 expenseResource.PageSize);
         }
 
-
         public async Task<ExpenseList> GetExpensesReport(ExpenseResource expenseResource)
         {
             var collectionBeforePaging = AllIncluding(c => c.ExpenseBy, cs => cs.ExpenseCategory).ApplySort(expenseResource.OrderBy,
@@ -134,6 +143,22 @@ namespace POS.Repository
             return await new ExpenseList(_mapper).Create(collectionBeforePaging,
                 0,
                 0);
+        }
+        public async Task<List<RoleDto>> GetUserRole(Guid Id)
+        {
+            var rolesDetails = await _userRoleRepository.AllIncluding(c => c.Role).Where(d => d.UserId == Id)
+                .ToListAsync();
+
+            List<RoleDto> roleDto = new List<RoleDto>();
+            foreach (var role in rolesDetails)
+            {
+                RoleDto rd = new RoleDto();
+                rd.Id = role.Role.Id;
+                rd.Name = role.Role.Name;
+                roleDto.Add(rd);
+            }
+            // var roleClaims = await _roleClaimRepository.All.Where(c => rolesIds.Contains(c.RoleId)).Select(c => c.ClaimType).ToListAsync();
+            return roleDto;
         }
     }
 }

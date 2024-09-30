@@ -121,6 +121,7 @@ namespace POS.API.Helpers
             services.AddScoped<IItineraryTicketBookingQuotationRepository, ItineraryTicketBookingQuotationRepository>();
             services.AddScoped<IItineraryHotelBookingQuotationRepository, ItineraryHotelBookingQuotationRepository>();
             services.AddScoped<ICancelTripItineraryHotelUserRepository, CancelTripItineraryHotelUserRepository>();
+            services.AddScoped<IAppVersionUpdateRepository, AppVersionUpdateRepository>();
         }
     }
 }

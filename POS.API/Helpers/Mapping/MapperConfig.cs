@@ -84,6 +84,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new ItineraryTicketBookingQuotationProfile());
                 mc.AddProfile(new ItineraryHotelBookingQuotationProfile());
                 mc.AddProfile(new CancelTripItineraryHotelUserProfile());
+                mc.AddProfile(new AppVersionUpdateProfile());
             });
             return mappingConfig.CreateMapper();
         }

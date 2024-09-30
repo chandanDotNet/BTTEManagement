@@ -45,5 +45,7 @@ namespace BTTEM.Data
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public bool? IsGroupTrip { get; set; }
         public List<GroupTripDto>? GroupTrips { get; set; }
+        public CompanyAccountDto CompanyAccount { get; set; }
+
     }
 }

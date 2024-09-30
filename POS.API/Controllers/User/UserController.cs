@@ -28,6 +28,13 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using BTTEM.MediatR;
 using Microsoft.VisualBasic.FileIO;
+using BTTEM.Data.Dto;
+using BTTEM.MediatR.AppVersionUpdate.Command;
+using System.IO;
+using System.IO.Compression;
+using Microsoft.AspNetCore.Hosting;
+using POS.Helper;
+using Hangfire.Storage;
 
 namespace POS.API.Controllers
 {
@@ -48,6 +55,9 @@ namespace POS.API.Controllers
         public readonly ICompanyAccountRepository _companyAccountRepository;
         public readonly IPoliciesVehicleConveyanceRepository _policiesVehicleConveyanceRepository;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly PathHelper _pathHelper;
+        private readonly IEmailSMTPSettingRepository _emailSMTPSettingRepository;
         /// <summary>
         /// User
         /// </summary>
@@ -60,7 +70,10 @@ namespace POS.API.Controllers
              ICompanyAccountRepository companyAccountRepository,
              IMapper mapper,
              IPoliciesVehicleConveyanceRepository policiesVehicleConveyanceRepository,
-             IPoliciesDetailRepository policiesDetailRepository
+             IPoliciesDetailRepository policiesDetailRepository,
+             IWebHostEnvironment webHostEnvironment,
+             PathHelper pathHelper,
+             IEmailSMTPSettingRepository emailSMTPSettingRepository
             )
         {
             _mediator = mediator;
@@ -72,6 +85,9 @@ namespace POS.API.Controllers
             _mapper = mapper;
             _policiesVehicleConveyanceRepository = policiesVehicleConveyanceRepository;
             _policiesDetailRepository = policiesDetailRepository;
+            _webHostEnvironment = webHostEnvironment;
+            _pathHelper = pathHelper;
+            _emailSMTPSettingRepository = emailSMTPSettingRepository;
         }
         /// <summary>
         ///  Create a User
@@ -247,10 +263,35 @@ namespace POS.API.Controllers
         /// <param name="resetPasswordCommand"></param>
         /// <returns></returns>
         [HttpPost("changepassword")]
-        [ClaimCheck("USR_RESET_PWD")]
+        //[ClaimCheck("USR_RESET_PWD")]
         public async Task<IActionResult> ChangePassword(ChangePasswordCommand resetPasswordCommand)
         {
             var result = await _mediator.Send(resetPasswordCommand);
+            if (result.Success)
+            {
+                var user = await _userRepository.All.Where(x => x.UserName == resetPasswordCommand.UserName).FirstOrDefaultAsync();
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ChangePassword.html");
+                var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string templateBody = sr.ReadToEnd();
+                    templateBody = templateBody.Replace("{NAME}", string.Concat(user.FirstName, " ", user.LastName));
+                    templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                    EmailHelper.SendEmail(new SendEmailSpecification
+                    {
+                        Body = templateBody,
+                        FromAddress = defaultSmtp.UserName,
+                        Host = defaultSmtp.Host,
+                        IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        Password = defaultSmtp.Password,
+                        Port = defaultSmtp.Port,
+                        Subject = "Change Password",
+                        ToAddress = resetPasswordCommand.UserName,
+                        UserName = defaultSmtp.UserName
+                    });
+                }
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -443,7 +484,7 @@ namespace POS.API.Controllers
         /// <returns></returns>    
         [AllowAnonymous]
         [HttpGet("SyncEmployee")]
-        public async Task<IActionResult> EmployeeSync(string companyName)
+        public async Task<IActionResult> EmployeeSync(string companyName, string employeeCode)
         {
             var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
             var client = new HttpClient();
@@ -451,7 +492,10 @@ namespace POS.API.Controllers
             {
                 requestUri = requestUri + "&company_name=" + companyName;
             }
-
+            if (!string.IsNullOrEmpty(employeeCode))
+            {
+                requestUri = requestUri + "&employee_code=" + employeeCode;
+            }
             var request = new HttpRequestMessage(HttpMethod.Get,
                 requestUri);
             request.Headers.Add("api-key", "3d4da1b5-0124-48fd-bba3-257e309333db");
@@ -651,6 +695,85 @@ namespace POS.API.Controllers
             //return Ok(response);
 
             return BadRequest();
+        }
+
+        /// <summary>
+        /// Force Update
+        /// </summary>        
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("AppVersionUpdate")]
+        [Produces("application/json", "application/xml", Type = typeof(List<AppVersionUpdateDto>))]
+        public async Task<IActionResult> AppVersionUpdate()
+        {
+            AppVersionUpdateResponseData response = new AppVersionUpdateResponseData();
+            try
+            {
+                var getAppVersionQuery = new GetAppVersionUpdateQuery { };
+                var result = await _mediator.Send(getAppVersionQuery);
+
+                if (result != null)
+                {
+                    response.status = true;
+                    response.StatusCode = 1;
+                    response.message = "Success";
+                    response.Data = result;
+                }
+                else
+                {
+                    response.status = false;
+                    response.StatusCode = 0;
+                    response.message = "Invalid";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = false;
+                response.StatusCode = 0;
+                response.message = ex.Message;
+            }
+
+            return Ok(response);
+        }
+        /// <summary>
+        /// Download User Manual
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("DownloadUserManual")]
+        public async Task<IActionResult> DownloadUserManual()
+        {
+            await using (var memoryStream = new MemoryStream())
+            {
+                using (var zipArcheive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    var filePath = Path.Combine(Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.UserManualDoc), "UserManual.zip");
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+
+                    var files = Directory.GetFiles(Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.UserManualDoc));
+
+                    foreach (var file in files)
+                    {
+                        var fileInfo = new System.IO.FileInfo(file);
+                        var entry = zipArcheive.CreateEntry(fileInfo.Name);
+                        using (var entryStream = entry.Open())
+                        using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                        {
+                            fileStream.CopyTo(entryStream);
+                        }
+                    }
+                }
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.UserManualDoc);
+                System.IO.File.WriteAllBytes(Path.Combine(pathToSave, "UserManual.zip"), memoryStream.ToArray());
+                var filepath = Path.Combine("UserManualDoc", "UserManual.zip");
+                var jsonData = new { Download = filepath };
+                return Ok(jsonData);
+            }
         }
     }
 }

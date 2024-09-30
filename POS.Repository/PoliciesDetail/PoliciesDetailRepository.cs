@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Repository
 {
-    public class PoliciesDetailRepository  : GenericRepository<PoliciesDetail, POSDbContext>, IPoliciesDetailRepository
+    public class PoliciesDetailRepository : GenericRepository<PoliciesDetail, POSDbContext>, IPoliciesDetailRepository
     {
 
         private readonly IPropertyMappingService _propertyMappingService;
@@ -46,7 +46,7 @@ namespace BTTEM.Repository
         public async Task<PoliciesDetailList> GetPoliciesDetails(PoliciesDetailResource policiesDetailResource)
         {
             var collectionBeforePaging =
-                AllIncluding(c => c.Grade).Where(c=>c.IsDeleted==false);
+                AllIncluding(c => c.Grade).Where(c => c.IsDeleted == false);
 
             if (!string.IsNullOrWhiteSpace(policiesDetailResource.Name))
             {
@@ -60,6 +60,23 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => EF.Functions.Like(a.Name, $"{encodingName}%"));
             }
+
+            if (!string.IsNullOrWhiteSpace(policiesDetailResource.SearchQuery))
+            {
+                // trim & ignore casing
+                var genreForWhereClause = policiesDetailResource.SearchQuery
+                    .Trim().ToLowerInvariant();
+                var name = Uri.UnescapeDataString(genreForWhereClause);
+                var encodingName = WebUtility.UrlDecode(name);
+                var ecapestring = Regex.Unescape(encodingName);
+                encodingName = encodingName.Replace(@"\", @"\\").Replace("%", @"\%").Replace("_", @"\_").Replace("[", @"\[").Replace(" ", "%");
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => EF.Functions.Like(a.Name, $"%{encodingName}%") ||
+                    EF.Functions.Like(a.Grade.GradeName, $"%{encodingName}%") ||
+                    EF.Functions.Like(a.Grade.Description, $"%{encodingName}%")
+                    );
+            }
+
             if (policiesDetailResource.Id.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
@@ -75,7 +92,7 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CompanyAccountId == policiesDetailResource.CompanyAccountId);
             }
-            var products = new PoliciesDetailList(_mapper, _pathHelper,_userRepository);
+            var products = new PoliciesDetailList(_mapper, _pathHelper, _userRepository);
             return await products.Create(collectionBeforePaging, policiesDetailResource.Skip, policiesDetailResource.PageSize);
         }
     }

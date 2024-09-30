@@ -58,6 +58,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
             LodgingFoodingExit.IsFoodActuals = lodgingFoodingExitUpdate.IsFoodActuals;
             LodgingFoodingExit.PoliciesDetailId = lodgingFoodingExitUpdate.PoliciesDetailId;
             LodgingFoodingExit.IsBillRequired = lodgingFoodingExitUpdate.IsBillRequired;
+            LodgingFoodingExit.FoodAmountWithoutBill = lodgingFoodingExitUpdate.FoodAmountWithoutBill;
             LodgingFoodingExit.DeductionPercentage = lodgingFoodingExitUpdate.DeductionPercentage;
 
             _policiesLodgingFoodingRepository.Update(LodgingFoodingExit);

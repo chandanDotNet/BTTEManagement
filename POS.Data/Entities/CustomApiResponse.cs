@@ -80,10 +80,12 @@ namespace BTTEM.Data.Entities
         public decimal? OtherCitiesUptoAmount { get; set; }
         public bool? IsFoodActuals { get; set; }
         public decimal? BudgetAmount { get; set; }
+        public decimal? FoodAmountWithoutBill { get; set; }
         public decimal? CarDieselRate { get; set; }
         public decimal? CarPetrolRate { get; set; }
         public decimal? BikeRate { get; set; }
         public string FrequentFlyerNumber { get; set; }
+        public string TravelClass { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }
@@ -274,6 +276,12 @@ namespace BTTEM.Data.Entities
         public string message { get; set; }
         public UserAuthDto Data { get; set; }
     }
+    public class AppVersionUpdateResponseData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public IList<AppVersionUpdateDto> Data { get; set; }
+    }
 
-    
 }

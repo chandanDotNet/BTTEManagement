@@ -44,41 +44,40 @@ namespace BTTEM.MediatR.Trip.Handlers
             //entity.TripStarts = request.TripStarts.Date;
             //entity.TripEnds = request.TripEnds.Date;
 
-            if (!string.IsNullOrWhiteSpace(request.Name))
+            var id = Guid.NewGuid();
+            entity.Id = id;
+
+            //if(entity.Status=="APPLIED")
+            //{
+            //    entity.Status = "APPLIED";
+            //}
+            //else
+            //{
+            //    entity.Status = "YET TO SUBMIT";  //CONFIRMED
+            //}
+
+            if (request.IsPostTrip == true)
             {
-
-                var id = Guid.NewGuid();
-                entity.Id = id;
-               
-                //if(entity.Status=="APPLIED")
-                //{
-                //    entity.Status = "APPLIED";
-                //}
-                //else
-                //{
-                //    entity.Status = "YET TO SUBMIT";  //CONFIRMED
-                //}
-                if(request.IsPostTrip==true)
-                {
-                    entity.Status = "COMPLETED";
-                    entity.Approval = "APPROVED";
-                }
-                else
-                {
-                    entity.Approval = "PENDING";
-                    entity.Status = "YET TO SUBMIT";
-                }
-                
-                entity.RollbackCount = 0;
-
-                entity.GroupTrips.ForEach(item =>
-                {
-                    item.TripId = id;
-                    item.Id = Guid.NewGuid();
-                });
+                entity.Status = "COMPLETED";
+                entity.Approval = "APPROVED";
+            }
+            else
+            {
+                entity.Approval = "PENDING";
+                entity.Status = "YET TO SUBMIT";
             }
 
+            entity.RollbackCount = 0;
+
+            entity.GroupTrips.ForEach(item =>
+            {
+                item.TripId = id;
+                item.Id = Guid.NewGuid();
+            });
+
+
             _tripRepository.Add(entity);
+
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Trip");

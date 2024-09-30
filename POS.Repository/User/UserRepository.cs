@@ -130,7 +130,7 @@ namespace POS.Repository
                     || EF.Functions.Like(a.FirstName+" "+a.LastName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Grades.GradeName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Departments.DepartmentName, $"%{searchQueryForWhereClause}%")
-                    || EF.Functions.Like(a.ReportingToName, $"%{searchQueryForWhereClause}%")
+                    //|| EF.Functions.Like(a.ReportingToName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Email, $"{searchQueryForWhereClause}%")
                     || (a.PhoneNumber != null && EF.Functions.Like(a.PhoneNumber, $"{searchQueryForWhereClause}%"))
                     || EF.Functions.Like(a.PhoneNumber, $"{searchQueryForWhereClause}%"

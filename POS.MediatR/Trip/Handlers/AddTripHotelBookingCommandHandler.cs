@@ -48,7 +48,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 var entity = _mapper.Map<Data.TripHotelBooking>(tv);
                 entity.Id = Guid.NewGuid();
                 entity.ApprovalStatus = "PENDING";
-
+                entity.TotalAmount = (tv.Amount == null ? 0 : tv.Amount) + (tv.AgentCharge == null ? 0 : tv.AgentCharge) + (tv.BookingAmount == null ? 0 : tv.BookingAmount);
                 _tripHotelBookingRepository.Add(entity);
             }
 

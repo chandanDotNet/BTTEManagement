@@ -54,7 +54,5 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
             return ServiceResponse<bool>.ReturnResultWith200(true);
         }
-
-
     }
 }

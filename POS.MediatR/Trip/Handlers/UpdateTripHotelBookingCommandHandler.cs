@@ -67,9 +67,6 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var entityExist = await _tripHotelBookingRepository.FindBy(v => v.Id == tv.Id).FirstOrDefaultAsync();
                     if (entityExist != null)
                     {
-
-
-                        
                         if (tv.TripId.HasValue)
                         {
                             entityExist.TripId = (Guid)tv.TripId;
@@ -147,7 +144,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         {
                             entityExist.RescheduleReason = tv.RescheduleReason;
                         }
-                        if (tv.RescheduleCharge>0)
+                        if (tv.RescheduleCharge > 0)
                         {
                             entityExist.RescheduleCharge = tv.RescheduleCharge;
                         }
@@ -178,6 +175,25 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (tv.BookingAmount > 0)
                         {
                             entityExist.BookingAmount = tv.BookingAmount;
+                        }
+                        if (!string.IsNullOrWhiteSpace(tv.BookingNumber))
+                        {
+                            entityExist.BookingNumber = tv.BookingNumber;
+                        }
+
+                        if (tv.IsRescheduleChargePlus == true)
+                        {
+                            entityExist.TotalAmount = (tv.AgentCharge == null ? entityExist.AgentCharge : tv.AgentCharge)
+                                                     + (tv.BookingAmount == null ? entityExist.BookingAmount : tv.BookingAmount)
+                                                     - (tv.CancelationCharge == null ? entityExist.CancelationCharge : tv.CancelationCharge)
+                                                     + (tv.RescheduleCharge == null ? entityExist.RescheduleCharge : tv.RescheduleCharge);
+                        }
+                        else
+                        {
+                            entityExist.TotalAmount = (tv.AgentCharge == null ? entityExist.AgentCharge : tv.AgentCharge)
+                                                    + (tv.BookingAmount == null ? entityExist.BookingAmount : tv.BookingAmount)
+                                                    - (tv.CancelationCharge == null ? entityExist.CancelationCharge : tv.CancelationCharge)
+                                                    - (tv.RescheduleCharge == null ? entityExist.RescheduleCharge : tv.RescheduleCharge);
                         }
 
                         //==================  Ticket Upload
@@ -250,13 +266,13 @@ namespace BTTEM.MediatR.Trip.Handlers
 
                         _tripHotelBookingRepository.Update(entityExist);
                     }
-                } 
-                
+                }
 
 
 
 
-               
+
+
             }
 
 

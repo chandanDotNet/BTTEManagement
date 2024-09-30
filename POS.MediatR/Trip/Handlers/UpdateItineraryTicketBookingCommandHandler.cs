@@ -60,6 +60,10 @@ namespace BTTEM.MediatR.Trip.Handlers
                 _logger.LogError("Trip Itinerary Ticket Does not exists");
                 return ServiceResponse<bool>.Return404("Trip Itinerary Ticket  Does not exists");
             }
+            if (request.IsReschedule.HasValue)
+            {
+                entityExist.IsReschedule = request.IsReschedule;
+            }
             if (!string.IsNullOrWhiteSpace(request.CancelationReason))
             {
                 entityExist.CancelationReason = request.CancelationReason;
@@ -84,7 +88,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.BookingTime = request.BookingTime;
             }
-            if (request.BookingAmount>0)
+            if (request.BookingAmount > 0)
             {
                 entityExist.BookingAmount = request.BookingAmount;
             }
@@ -96,12 +100,25 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.CancelationCharge = request.CancelationCharge;
             }
-            if (request.TotalAmount > 0)
+            //if (request.TotalAmount > 0)
+            //{
+            if (request.IsRescheduleChargePlus == true)
             {
-                entityExist.TotalAmount = request.TotalAmount;
+                entityExist.TotalAmount = (request.AgentCharge == null ? entityExist.AgentCharge : request.AgentCharge)
+                                         + (request.BookingAmount == null ? entityExist.BookingAmount : request.BookingAmount)
+                                         - (request.CancelationCharge == null ? entityExist.CancelationCharge : request.CancelationCharge)
+                                         + (request.RescheduleCharge == null ? entityExist.RescheduleCharge : request.RescheduleCharge);
             }
-            entityExist.IsAvail=request.IsAvail;
-            entityExist.IsReschedule=request.IsReschedule;
+            else
+            {
+                entityExist.TotalAmount = (request.AgentCharge == null ? entityExist.AgentCharge : request.AgentCharge)
+                                         + (request.BookingAmount == null ? entityExist.BookingAmount : request.BookingAmount)
+                                         - (request.CancelationCharge == null ? entityExist.CancelationCharge : request.CancelationCharge)
+                                         - (request.RescheduleCharge == null ? entityExist.RescheduleCharge : request.RescheduleCharge);
+            }
+            //}
+            entityExist.IsAvail = request.IsAvail;
+            entityExist.IsReschedule = request.IsReschedule;
             if (!string.IsNullOrWhiteSpace(request.RescheduleStatus))
             {
                 entityExist.RescheduleStatus = request.RescheduleStatus;
@@ -201,6 +218,14 @@ namespace BTTEM.MediatR.Trip.Handlers
             if (!string.IsNullOrWhiteSpace(request.TaxAmountFive))
             {
                 entityExist.TaxAmountFive = request.TaxAmountFive;
+            }
+            if (!string.IsNullOrWhiteSpace(request.PNRNumber))
+            {
+                entityExist.PNRNumber = request.PNRNumber;
+            }
+            if (request.IsRescheduleChargePlus.HasValue)
+            {
+                entityExist.IsRescheduleChargePlus = request.IsRescheduleChargePlus.Value;
             }
             //==================  Ticket Upload
 

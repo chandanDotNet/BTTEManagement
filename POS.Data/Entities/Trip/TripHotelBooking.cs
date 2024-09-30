@@ -10,7 +10,6 @@ namespace BTTEM.Data
 {
     public class TripHotelBooking : BaseEntity
     {
-
         public Guid Id { get; set; }
         public Guid TripId { get; set; }
         public string BookTypeBy { get; set; }
@@ -23,7 +22,6 @@ namespace BTTEM.Data
         public decimal? TentativeAmount { get; set; }
         public string? BookStatus { get; set; }
         public Guid? ExpenseId { get; set; }
-
         public string? ApprovalStatus { get; set; }
         public DateTime? ApprovalStatusDate { get; set; }
         public Guid? ApprovalStatusBy { get; set; }
@@ -32,7 +30,6 @@ namespace BTTEM.Data
         public string? BillReceiptPath { get; set; }
         public string? ApprovalDocumentsReceiptName { get; set; }
         public string? ApprovalDocumentsReceiptPath { get; set; }
-
         public string? CityName { get; set; }
         public string? NearbyLocation { get; set; }
         public string? PreferredHotel { get; set; }
@@ -59,6 +56,9 @@ namespace BTTEM.Data
         public bool? IsQuotationUpload { get; set; }
         public string? RMStatus { get; set; }
         public bool? IsCancel { get; set; } = false;
+        public string? BookingNumber { get; set; }
+        public bool? IsRescheduleChargePlus { get; set; } = false;
+        public decimal? TotalAmount { get; set; }
         public List<ItineraryHotelBookingQuotation> ItineraryHotelQuotationBooking { get; set; } = new List<ItineraryHotelBookingQuotation>();
         public List<CancelTripItineraryHotelUser> CancelTripItineraryHotelUser { get; set; } = new List<CancelTripItineraryHotelUser>();
     }
