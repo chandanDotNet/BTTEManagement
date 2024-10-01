@@ -19,6 +19,7 @@ namespace BTTEM.MediatR.Trip.Handlers
     public class DeleteItineraryTicketBookingQuotationCommandHandler : IRequestHandler<DeleteItineraryTicketBookingQuotationCommand,ServiceResponse<bool>>
     {
         private readonly IItineraryTicketBookingQuotationRepository _itineraryTicketBookingQuotationRepository;
+        private readonly ITripItineraryRepository _tripItineraryRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly ILogger<DeleteItineraryTicketBookingQuotationCommandHandler> _logger;
@@ -29,7 +30,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             IMapper mapper,
             IUnitOfWork<POSDbContext> uow,
             ILogger<DeleteItineraryTicketBookingQuotationCommandHandler> logger,
-            IWebHostEnvironment webHostEnvironment, PathHelper pathHelper)
+            IWebHostEnvironment webHostEnvironment, PathHelper pathHelper, ITripItineraryRepository tripItineraryRepository)
         {
             _itineraryTicketBookingQuotationRepository = itineraryTicketBookingQuotationRepository;
             _mapper = mapper;
@@ -37,6 +38,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _tripItineraryRepository = tripItineraryRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(DeleteItineraryTicketBookingQuotationCommand request, CancellationToken cancellationToken)
@@ -50,6 +52,14 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
 
             _itineraryTicketBookingQuotationRepository.Remove(entityExist);
+
+            var itinerary = await _tripItineraryRepository.FindAsync(entityExist.TripItineraryId);
+
+            if (itinerary != null)
+            {
+                itinerary.IsQuotationUpload= false;
+            }
+            _tripItineraryRepository.Update(itinerary);
 
             if (await _uow.SaveAsync() <= 0)
             {

@@ -19,6 +19,7 @@ namespace BTTEM.MediatR.Trip.Handlers
     public class DeleteItineraryHotelBookingQuotationCommandHandler : IRequestHandler<DeleteItineraryHotelBookingQuotationCommand, ServiceResponse<bool>>
     {
         private readonly IItineraryHotelBookingQuotationRepository _itineraryHotelBookingQuotationRepository;
+        private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly ILogger<DeleteItineraryHotelBookingQuotationCommandHandler> _logger;
@@ -29,7 +30,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             IMapper mapper,
             IUnitOfWork<POSDbContext> uow,
             ILogger<DeleteItineraryHotelBookingQuotationCommandHandler> logger,
-            IWebHostEnvironment webHostEnvironment, PathHelper pathHelper)
+            IWebHostEnvironment webHostEnvironment, PathHelper pathHelper, ITripHotelBookingRepository tripHotelBookingRepository)
         {
             _itineraryHotelBookingQuotationRepository = itineraryHotelBookingQuotationRepository;
             _mapper = mapper;
@@ -37,6 +38,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
+            _tripHotelBookingRepository = tripHotelBookingRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(DeleteItineraryHotelBookingQuotationCommand request, CancellationToken cancellationToken)
@@ -50,6 +52,15 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
 
             _itineraryHotelBookingQuotationRepository.Remove(entityExist);
+
+            var hotel = await _tripHotelBookingRepository.FindAsync(entityExist.TripHotelBookingId);
+
+            if (hotel != null)
+            {
+                hotel.IsQuotationUpload = false;
+            }
+
+            _tripHotelBookingRepository.Update(hotel);
 
             if (await _uow.SaveAsync() <= 0)
             {
