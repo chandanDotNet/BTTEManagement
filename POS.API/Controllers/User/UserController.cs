@@ -611,6 +611,7 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetUserInfoDetails/{id}")]
         public async Task<IActionResult> GetUserInfoDetails(Guid id)
         {

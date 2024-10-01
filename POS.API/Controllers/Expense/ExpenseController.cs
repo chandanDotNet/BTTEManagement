@@ -2859,6 +2859,7 @@ namespace POS.API.Controllers.Expense
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetExpensesDetailsReportDateWise/{id}")]
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
         public async Task<IActionResult> GetAllExpensesDetailsListDateWise(Guid id)
