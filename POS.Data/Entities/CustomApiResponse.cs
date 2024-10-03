@@ -291,4 +291,6 @@ namespace BTTEM.Data.Entities
         public int StatusCode { get; set; }
         public string message { get; set; }
     }
+
+   
 }
