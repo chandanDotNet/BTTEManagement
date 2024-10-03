@@ -170,7 +170,6 @@ namespace BTTEM.API.Controllers.Trip
                 };
                 var notificationResult = await _mediator.Send(addNotificationCommand);
 
-
                 string email = this._configuration.GetSection("AppSettings")["Email"];
                 if (email == "Yes")
                 {
@@ -205,7 +204,7 @@ namespace BTTEM.API.Controllers.Trip
                                 Port = defaultSmtp.Port,
                                 Subject = "New Trip Request",
                                 ToAddress = reportingHead.UserName,
-                                CCAddress = userResult.UserName,
+                                CCAddress = userResult.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
                                 UserName = defaultSmtp.UserName
                             });
                         }

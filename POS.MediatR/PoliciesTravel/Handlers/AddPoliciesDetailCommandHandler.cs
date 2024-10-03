@@ -3,7 +3,9 @@ using BTTEM.Data;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Data;
@@ -15,6 +17,7 @@ using POS.MediatR.Handlers;
 using POS.Repository;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -31,12 +34,16 @@ namespace BTTEM.MediatR.Handlers
         private readonly IMapper _mapper;
         private readonly UserInfoToken _userInfoToken;
         private readonly ILogger<AddPoliciesDetailCommandHandler> _logger;
+        private readonly POS.Helper.PathHelper _pathHelper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public AddPoliciesDetailCommandHandler(
            IPoliciesDetailRepository policiesDetailRepository,
             IMapper mapper,
             IUnitOfWork<POSDbContext> uow,
             UserInfoToken userInfoToken,
-            ILogger<AddPoliciesDetailCommandHandler> logger
+            ILogger<AddPoliciesDetailCommandHandler> logger,
+            POS.Helper.PathHelper pathHelper,
+            IWebHostEnvironment webHostEnvironment
             )
         {
             _policiesDetailRepository = policiesDetailRepository;
@@ -44,9 +51,9 @@ namespace BTTEM.MediatR.Handlers
             _uow = uow;
             _userInfoToken = userInfoToken;
             _logger = logger;
+            _pathHelper = pathHelper;
+            _webHostEnvironment = webHostEnvironment;
         }
-
-
 
         public async Task<ServiceResponse<PoliciesDetailDto>> Handle(AddPoliciesDetailCommand request, CancellationToken cancellationToken)
         {
@@ -64,12 +71,32 @@ namespace BTTEM.MediatR.Handlers
             entity.CreatedDate = DateTime.Now;
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
 
+            //if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            //{
+            //    entity.PolicyDocument = Guid.NewGuid().ToString() + ".png";
+            //}
+
             _policiesDetailRepository.Add(entity);
             if (await _uow.SaveAsync() <= 0)
             {
                 return ServiceResponse<PoliciesDetailDto>.Return500();
             }
+
+            //if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            //{
+            //    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.PolicyDocumentPath);
+            //    if (!Directory.Exists(pathToSave))
+            //    {
+            //        Directory.CreateDirectory(pathToSave);
+            //    }
+            //    await FileData.SaveFile(Path.Combine(pathToSave, entity.Document), request.PolicyDocument);
+            //}
             var entityDto = _mapper.Map<PoliciesDetailDto>(entity);
+            //if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            //{
+            //    entityDto.Document = Path.Combine(_pathHelper.PolicyDocumentPath, entityDto.Document);
+            //}
+
             return ServiceResponse<PoliciesDetailDto>.ReturnResultWith200(entityDto);
         }
     }

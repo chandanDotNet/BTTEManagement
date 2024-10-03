@@ -27,6 +27,13 @@ namespace POS.Helper
                 return _configuration["ImagePathSettings:BrandImages"];
             }
         }
+        public string PolicyDocumentPath
+        {
+            get
+            {
+                return _configuration["ImagePathSettings:PolicyDocument"];
+            }
+        }
 
         public string TollParkingDocumnentPath
         {
