@@ -1764,6 +1764,70 @@ namespace POS.API.Controllers.Expense
             return ReturnFormattedResponse(result);
         }
 
+
+        /// <summary>
+        /// Update Expense All Status.
+        /// </summary>       
+        /// <param name="updateExpenseStatusCommand"></param>
+        /// <returns></returns>
+        [HttpPut("AllUpdateExpenseStatus")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> AllUpdateExpenseStatus(AllUpdateExpenseStatusCommand allupdateExpenseStatusCommand)
+        {
+            DashboardReportData dashboardReportData = new DashboardReportData();
+            int Response = 0;
+            foreach (var item in allupdateExpenseStatusCommand.updateExpenseStatus)
+            {
+                UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
+                updateExpenseStatusCommand = item;
+                var result = await _mediator.Send(updateExpenseStatusCommand);
+                if (result.Success)
+                {
+                    Response = 1;
+                }
+            }
+
+
+            //if (result.Success)
+            //{
+            //    var responseData = _expenseRepository.FindAsync(id);
+            //    var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+            //    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+            //    {
+            //        ExpenseId = updateExpenseStatusCommand.Id,
+            //        ExpenseTypeName = responseData.Result.Name,
+            //        MasterExpenseId = responseData.Result.MasterExpenseId,
+            //        //ActionType = "Tracker",
+            //        ActionType = "Activity",
+            //        Remarks = updateExpenseStatusCommand.Status == "APPROVED" ? updateExpenseStatusCommand.Status : updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
+            //        Status = "Expense Status Updated By " + userResult.FirstName + " " + userResult.LastName,
+            //        ActionBy = Guid.Parse(_userInfoToken.Id),
+            //        ActionDate = DateTime.Now,
+            //    };
+            //    var response = await _mediator.Send(addExpenseTrackingCommand);
+            //}
+            //SyncMasterExpenseAmountCommand syncMasterExpenseAmountCommand = new SyncMasterExpenseAmountCommand();
+            //syncMasterExpenseAmountCommand.Id = id;
+            //var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
+            //return ReturnFormattedResponse(200);
+
+            if (Response>0)
+            {
+                dashboardReportData.status = true;
+                dashboardReportData.StatusCode = 200;
+                //dashboardReportData.Data = result;
+            }
+            else
+            {
+                dashboardReportData.status = false;
+                dashboardReportData.StatusCode = 500;
+                //dashboardReportData.Data = result;
+            }
+            return Ok(dashboardReportData);
+            
+        }
+
+
         /// <summary>
         /// Update Master Expense Status.
         /// </summary>
