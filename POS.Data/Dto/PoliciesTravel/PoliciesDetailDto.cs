@@ -14,6 +14,7 @@ namespace BTTEM.Data
         public Guid GradeId { get; set; }
         public string Description { get; set; }
         public decimal DailyAllowance { get; set; }
+        //public string PolicyDocument { get; set; }
         public string Document { get; set; }
         public string GradeName { get; set; }
         public GradeDto Grade { get; set; }
