@@ -269,13 +269,7 @@ namespace POS.API.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordCommand resetPasswordCommand)
         {
             var result = await _mediator.Send(resetPasswordCommand);
-            ResponseData data = new ResponseData()
-            {
-                StatusCode = result.StatusCode,
-                status = true,
-                message = "Password changed succesfully!"
-            };
-            var response = ServiceResponse<ResponseData>.ReturnResultWith200(data);
+            ResponseData data;
             if (result.Success)
             {
                 var user = await _userRepository.All.Where(x => x.UserName == resetPasswordCommand.UserName).FirstOrDefaultAsync();
@@ -301,7 +295,28 @@ namespace POS.API.Controllers
                     });
                 }
             }
-            return ReturnFormattedResponse(response);
+            if (result.Success)
+            {
+                data = new ResponseData()
+                {
+                    StatusCode = result.StatusCode,
+                    status = result.Success,
+                    message = "Password changed succesfully!"
+                };
+                var response = ServiceResponse<ResponseData>.ReturnResultWith200(data);
+                return ReturnFormattedResponse(response);
+            }
+            else
+            {
+                data = new ResponseData()
+                {
+                    StatusCode = result.StatusCode,
+                    status = result.Success,
+                    message = "Password change failed!"
+                };
+                var response = ServiceResponse<ResponseData>.ReturnResultWith200(data);
+                return ReturnFormattedResponse(response);
+            }            
         }
 
         /// <summary>
@@ -343,17 +358,33 @@ namespace POS.API.Controllers
         public async Task<IActionResult> ForgetPasswordOTP(ForgetPasswordOTPCommand forgetPasswordOTPCommand)
         {
             var result = await _mediator.Send(forgetPasswordOTPCommand);
-            OtpResponseData data = new OtpResponseData()
-            {     
-                otp = result.Data,                
-                StatusCode = result.StatusCode,
-                status = result.Success,
-                message = "Otp sent Successfully",
-            };
+            OtpResponseData data;
+            if (result.Success)
+            {
+                data = new OtpResponseData()
+                {
+                    otp = result.Data,
+                    StatusCode = result.StatusCode,
+                    status = result.Success,
+                    message = "Otp sent Successfully",
+                };
 
-            var response = ServiceResponse<OtpResponseData>.ReturnResultWith200(data);
+                var response = ServiceResponse<OtpResponseData>.ReturnResultWith200(data);
+                return ReturnFormattedResponse(response);
+            }
+            else
+            {
+                data = new OtpResponseData()
+                {
+                    otp = result.Data,
+                    StatusCode = result.StatusCode,
+                    status = result.Success,
+                    message = "Failed to send Otp.",
+                };
 
-            return ReturnFormattedResponse(response);
+                var response = ServiceResponse<OtpResponseData>.ReturnResultWith200(data);
+                return ReturnFormattedResponse(response);
+            }          
         }
 
         /// <summary>
