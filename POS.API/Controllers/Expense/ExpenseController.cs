@@ -182,7 +182,7 @@ namespace POS.API.Controllers.Expense
         }
 
 
-        // <summary>
+        /// <summary>
         /// Update Local Conveyance Expenses
         /// </summary>
         /// <param name="updateMasterExpenseCommand"></param>
@@ -1768,7 +1768,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Update Expense All Status.
         /// </summary>       
-        /// <param name="updateExpenseStatusCommand"></param>
+        /// <param name="allupdateExpenseStatusCommand"></param>
         /// <returns></returns>
         [HttpPut("AllUpdateExpenseStatus")]
         //[ClaimCheck("EXP_UPDATE_EXPENSE")]
@@ -2404,6 +2404,48 @@ namespace POS.API.Controllers.Expense
 
             }
             return ReturnFormattedResponse(result);
+        }
+
+
+
+        /// <summary>
+        /// All  Update Expense And Master Expense.
+        /// </summary>
+        /// <param name="allAccountUpdateExpenseAndMasterExpenseCommand"></param>
+        /// <returns></returns>
+        [HttpPut("AllAccountUpdateExpenseAndMasterExpense")]
+        //[ClaimCheck("EXP_MSTR_EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> AllAccountUpdateExpenseAndMasterExpense(AllAccountUpdateExpenseAndMasterExpenseCommand allAccountUpdateExpenseAndMasterExpenseCommand)
+        {
+            DashboardReportData dashboardReportData = new DashboardReportData();
+            int Response = 0;
+            foreach (var item in allAccountUpdateExpenseAndMasterExpenseCommand.AllUpdateExpenseAndMasterExpense)
+            {
+                UpdateExpenseAndMasterExpenseCommand updateExpenseAndMasterExpenseCommand= new UpdateExpenseAndMasterExpenseCommand();
+                updateExpenseAndMasterExpenseCommand = item;
+                var result = await _mediator.Send(updateExpenseAndMasterExpenseCommand);
+                if (result.Success)
+                {
+                    Response = 1;
+                }
+            }
+
+            if (Response > 0)
+            {
+                dashboardReportData.status = true;
+                dashboardReportData.StatusCode = 200;
+                //dashboardReportData.Data = result;
+            }
+            else
+            {
+                dashboardReportData.status = false;
+                dashboardReportData.StatusCode = 500;
+                //dashboardReportData.Data = result;
+            }
+            return Ok(dashboardReportData);
+
+
+            //return ReturnFormattedResponse(result);
         }
 
         /// <summary>
