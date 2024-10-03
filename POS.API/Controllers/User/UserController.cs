@@ -36,6 +36,7 @@ using Microsoft.AspNetCore.Hosting;
 using POS.Helper;
 using Hangfire.Storage;
 using BTTEM.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace POS.API.Controllers
 {
@@ -268,6 +269,13 @@ namespace POS.API.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordCommand resetPasswordCommand)
         {
             var result = await _mediator.Send(resetPasswordCommand);
+            ResponseData data = new ResponseData()
+            {
+                StatusCode = result.StatusCode,
+                status = true,
+                message = "Password changed succesfully!"
+            };
+            var response = ServiceResponse<ResponseData>.ReturnResultWith200(data);
             if (result.Success)
             {
                 var user = await _userRepository.All.Where(x => x.UserName == resetPasswordCommand.UserName).FirstOrDefaultAsync();
@@ -293,7 +301,7 @@ namespace POS.API.Controllers
                     });
                 }
             }
-            return ReturnFormattedResponse(result);
+            return ReturnFormattedResponse(response);
         }
 
         /// <summary>
