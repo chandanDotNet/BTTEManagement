@@ -15,6 +15,7 @@ using POS.MediatR.Handlers;
 using POS.Repository;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -96,6 +97,36 @@ namespace BTTEM.MediatR.Handlers
                 entityExist.AccountsCheckerThreeStatus = string.IsNullOrEmpty(request.AccountsCheckerThreeStatus) ? entityExist.AccountsCheckerThreeStatus : "PENDING";
                 entityExist.IsExpenseChecker = true;
                 entityExist.AccountsApprovalStage = request.AccountsApprovalStage == null ? entityExist.AccountsApprovalStage : 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.DocumentData))
+            {
+                string contentRootPath = _webHostEnvironment.WebRootPath;
+                var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                var extension = Path.GetExtension(request.ReceiptName);
+                var id = Guid.NewGuid();
+                var path = $"{id}.{extension}";
+                var documentPath = Path.Combine(pathToSave, path);
+                string base64 = request.DocumentData.Split(',').LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(base64))
+                {
+                    byte[] bytes = Convert.FromBase64String(base64);
+                    try
+                    {
+                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                        entityExist.ReceiptPath = path;
+                    }
+                    catch
+                    {
+                        _logger.LogError("Error while saving files", entityExist);
+                    }
+                }
             }
 
             _masterExpenseRepository.Update(entityExist);

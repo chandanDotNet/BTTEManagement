@@ -35,6 +35,8 @@ namespace BTTEM.MediatR.CommandAndQuery
         public string? AccountsCheckerThreeStatus { get; set; }
         public bool? IsExpenseChecker { get; set; } = false;
         public int? AccountsApprovalStage { get; set; } = 0;
+        public string ReceiptName { get; set; }
+        public string DocumentData { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public List<AddExpenseCommand> ExpenseDetails { get; set; }
     }

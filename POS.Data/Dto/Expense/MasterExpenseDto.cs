@@ -53,6 +53,8 @@ namespace BTTEM.Data
         public decimal FirstLevelReimbursementAmount { get; set; }
         public decimal SecondLevelReimbursementAmount { get; set; }
         public decimal ThirdLevelReimbursementAmount { get; set; }
+        public string ReceiptName { get; set; }
+        public string ReceiptPath { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public bool? IsGroupTrip { get; set; }
         public List<GroupTripDto>? GroupTrips { get; set; }

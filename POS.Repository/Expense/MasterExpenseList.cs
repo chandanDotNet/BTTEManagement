@@ -126,6 +126,8 @@ namespace BTTEM.Repository.Expense
                         AccountsCheckerThreeStatus = cs.AccountsCheckerThreeStatus,
                         CompanyAccountId = cs.CompanyAccountId,
                         BillingCompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccounts),
+                        ReceiptPath = cs.ReceiptPath,
+                        ReceiptName = cs.ReceiptName
                         //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                         //{
                         //    Id = c.Id,

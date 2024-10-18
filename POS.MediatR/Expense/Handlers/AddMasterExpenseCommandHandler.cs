@@ -149,6 +149,37 @@ namespace BTTEM.MediatR.CommandAndQuery
                 item.Id = Guid.NewGuid();
             });
 
+            if (!string.IsNullOrWhiteSpace(request.ReceiptName) && !string.IsNullOrWhiteSpace(request.DocumentData))
+            {
+                string contentRootPath = _webHostEnvironment.WebRootPath;
+                var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                var extension = Path.GetExtension(request.ReceiptName);
+                var id = Guid.NewGuid();
+                var path = $"{id}.{extension}";
+                var documentPath = Path.Combine(pathToSave, path);
+                string base64 = request.DocumentData.Split(',').LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(base64))
+                {
+                    byte[] bytes = Convert.FromBase64String(base64);
+                    try
+                    {
+                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                        entity.ReceiptPath = path;
+                    }
+                    catch
+                    {
+                        _logger.LogError("Error while saving files", entity);
+                    }
+                }
+            }
+
+
             _masterExpenseRepository.Add(entity);
 
             if (await _uow.SaveAsync() <= 0)
