@@ -16,19 +16,19 @@ using System.Threading.Tasks;
 
 namespace BTTEM.MediatR.Trip.Handlers
 {
-    public class UpdateTripRequestAdvanceMoneyCommandHandler : IRequestHandler<UpdateTripRequestAdvanceMoneyCommand, ServiceResponse<bool>>
+    public class UpdateApprovalTripRequestAdvanceMoneyCommandHandler : IRequestHandler<UpdateApprovalTripRequestAdvanceMoneyCommand, ServiceResponse<bool>>
     {
 
         private readonly ITripRepository _tripRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
-        private readonly ILogger<UpdateTripRequestAdvanceMoneyCommandHandler> _logger;
+        private readonly ILogger<UpdateApprovalTripRequestAdvanceMoneyCommandHandler> _logger;
 
-        public UpdateTripRequestAdvanceMoneyCommandHandler(
+        public UpdateApprovalTripRequestAdvanceMoneyCommandHandler(
            ITripRepository tripRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
-           ILogger<UpdateTripRequestAdvanceMoneyCommandHandler> logger
+           ILogger<UpdateApprovalTripRequestAdvanceMoneyCommandHandler> logger
           )
         {
             _tripRepository = tripRepository;
@@ -38,14 +38,13 @@ namespace BTTEM.MediatR.Trip.Handlers
 
         }
 
-        public async Task<ServiceResponse<bool>> Handle(UpdateTripRequestAdvanceMoneyCommand request, CancellationToken cancellationToken)
-        {                        
-            var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();           
-            entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
-            entityExist.AdvanceMoney = request.AdvanceMoney;
-            entityExist.RequestAdvanceMoneyStatus = "PENDING";
+        public async Task<ServiceResponse<bool>> Handle(UpdateApprovalTripRequestAdvanceMoneyCommand request, CancellationToken cancellationToken)
+        {
+            var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
+            entityExist.RequestAdvanceMoneyStatus = request.RequestAdvanceMoneyStatus;
             entityExist.AdvanceMoneyRemarks = request.AdvanceMoneyRemarks;
-            entityExist.RequestAdvanceMoneyDate = request.RequestAdvanceMoneyDate;
+            entityExist.AdvanceMoneyApprovedAmount = request.AdvanceMoneyApprovedAmount;
+            entityExist.RequestAdvanceMoneyStatusBy = request.StatusUpdatedBy;
 
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)
