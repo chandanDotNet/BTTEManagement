@@ -44,9 +44,9 @@ namespace BTTEM.Data
         public bool? IsExpenseChecker { get; set; } = false;
         public int? AccountsApprovalStage { get; set; }
         public Guid? CompanyAccountId { get; set; }
-        public decimal FirstLevelReimbursementAmount { get; set; }
-        public decimal SecondLevelReimbursementAmount { get; set; }
-        public decimal ThirdLevelReimbursementAmount { get; set; }
+        public decimal FirstLevelReimbursementAmount { get; set; } = 0;
+        public decimal SecondLevelReimbursementAmount { get; set; } = 0;
+        public decimal ThirdLevelReimbursementAmount { get; set; } = 0;
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
         public CompanyAccount CompanyAccounts { get; set; }

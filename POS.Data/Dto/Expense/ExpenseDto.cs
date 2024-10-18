@@ -34,21 +34,21 @@ namespace POS.Data.Dto
         public string? RejectReason { get; set; }
         public decimal ReimbursementAmount { get; set; } = 0;
         public Guid ApprovedByFirstLevel { get; set; }
-        public decimal ReimbursementAmountFirstLevel { get; set; }
+        public decimal ReimbursementAmountFirstLevel { get; set; } = 0;
         public string AccountStatusFirstLevel { get; set; }
         public string AccountStatusRemarksFirstLevel { get; set; }
         public string ReimbursementStatusFirstLevel { get; set; }
         public string ReimbursementRemarksFirstLevel { get; set; }
 
         public Guid ApprovedBySecondLevel { get; set; }
-        public decimal ReimbursementAmountSecondLevel { get; set; }
+        public decimal ReimbursementAmountSecondLevel { get; set; } = 0;
         public string AccountStatusSecondLevel { get; set; }
         public string AccountStatusRemarksSecondLevel { get; set; }
         public string ReimbursementStatusSecondLevel { get; set; }
         public string ReimbursementRemarksSecondLevel { get; set; }
 
         public Guid ApprovedByThirdLevel { get; set; }
-        public decimal ReimbursementAmountThirdLevel { get; set; }
+        public decimal ReimbursementAmountThirdLevel { get; set; } = 0;
         public string AccountStatusThirdLevel { get; set; }
         public string AccountStatusRemarksThirdLevel { get; set; }
         public string ReimbursementStatusThirdLevel { get; set; }
