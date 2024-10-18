@@ -35,6 +35,8 @@ namespace POS.Data.Dto
         public string SapCode { get; set; }
         public Guid CompanyAccountId { get; set; }
         public Guid? CompanyAccountBranchId { get; set; }
+        public string FrequentFlyerNumber { get; set; }
+        public int? ApprovalLevel { get; set; }
         public string BearerToken { get; set; }
         public List<RoleDto> UserRoles { get; set; } = new List<RoleDto>();
         public List<AppClaimDto> Claims { get; set; }

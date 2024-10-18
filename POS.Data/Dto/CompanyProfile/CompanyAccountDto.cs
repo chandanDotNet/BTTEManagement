@@ -16,5 +16,6 @@ namespace BTTEM.Data.Dto
         public int GSTCount { get; set; }
         public string? ReceiptName { get; set; }
         public string? ReceiptPath { get; set; }
+        public int? CompanyAccountsApprovalLevel { get; set; }
     }
 }

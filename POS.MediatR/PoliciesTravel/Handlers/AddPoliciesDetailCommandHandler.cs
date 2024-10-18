@@ -70,10 +70,42 @@ namespace BTTEM.MediatR.Handlers
             entity.CreatedDate = DateTime.Now;
             entity.ModifiedBy = Guid.Parse(_userInfoToken.Id);
 
-            if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+
+            if (!string.IsNullOrWhiteSpace(request.Document) && !string.IsNullOrWhiteSpace(request.Document))
             {
-                entity.Document = Guid.NewGuid().ToString() + ".png";
+                string contentRootPath = _webHostEnvironment.WebRootPath;
+                var pathToSave = Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                var extension = Path.GetExtension(request.Document);
+                var id = Guid.NewGuid();
+                var path = $"{id}.{extension}";
+                var documentPath = Path.Combine(pathToSave, path);
+                string base64 = request.PolicyDocument.Split(',').LastOrDefault();
+                if (!string.IsNullOrWhiteSpace(base64))
+                {
+                    byte[] bytes = Convert.FromBase64String(base64);
+                    try
+                    {
+                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                        entity.Document = path;
+                        await FileData.SaveFile(Path.Combine(pathToSave, entity.Document), request.PolicyDocument);
+                    }
+                    catch
+                    {
+                        _logger.LogError("Error while saving files", entity);
+                    }
+                }
             }
+
+            //if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            //{
+            //    entity.Document = Guid.NewGuid().ToString() + ".png";
+            //}
 
             _policiesDetailRepository.Add(entity);
             if (await _uow.SaveAsync() <= 0)
@@ -81,17 +113,19 @@ namespace BTTEM.MediatR.Handlers
                 return ServiceResponse<PoliciesDetailDto>.Return500();
             }
 
-            if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
-            {
-                var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.PolicyDocumentPath);
-                if (!Directory.Exists(pathToSave))
-                {
-                    Directory.CreateDirectory(pathToSave);
-                }
-                await FileData.SaveFile(Path.Combine(pathToSave, entity.Document), request.PolicyDocument);
-            }
+            //if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            //{
+            //    var pathToSave = Path.Combine(_webHostEnvironment.WebRootPath, _pathHelper.PolicyDocumentPath);
+            //    if (!Directory.Exists(pathToSave))
+            //    {
+            //        Directory.CreateDirectory(pathToSave);
+            //    }
+            //    await FileData.SaveFile(Path.Combine(pathToSave, entity.Document), request.PolicyDocument);
+            //}
+
+
             var entityDto = _mapper.Map<PoliciesDetailDto>(entity);
-            if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            if (!string.IsNullOrWhiteSpace(request.Document))
             {
                 entityDto.Document = Path.Combine(_pathHelper.PolicyDocumentPath, entityDto.Document);
             }

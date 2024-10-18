@@ -73,17 +73,20 @@ namespace BTTEM.Repository
                         }
                     }
                 }
-
             }
 
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
-            var collectionBeforePaging = All.Include(t => t.Trip).ThenInclude(g => g.GroupTrips)
-                .Include(g => g.GroupExpenses).ThenInclude(u => u.User).Include(c => c.CreatedByUser).
-                ThenInclude(e => e.Grades).Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument).Include(a => a.Expenses).ThenInclude(f => f.ExpenseDetail).
-                Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory)
+            var collectionBeforePaging = All
+                .Include(a => a.CompanyAccounts)
+                .Include(t => t.Trip).ThenInclude(g => g.GroupTrips)
+                .Include(g => g.GroupExpenses).ThenInclude(u => u.User)
+                .Include(c => c.CreatedByUser).ThenInclude(e => e.Grades)
+                .Include(a => a.Expenses).ThenInclude(e => e.ExpenseDocument)
+                .Include(a => a.Expenses).ThenInclude(f => f.ExpenseDetail)
+                .Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory)
                 .Include(a => a.CreatedByUser.CompanyAccounts)
                 .ApplySort(expenseResource.OrderBy,
                 _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
@@ -181,7 +184,7 @@ namespace BTTEM.Repository
             if (!string.IsNullOrEmpty(expenseResource.ExpenseStatus))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.Expenses.Any(c => c.Status == expenseResource.ExpenseStatus));
+                    .Where(a => a.Expenses.Any(c => c.Status.Trim() == expenseResource.ExpenseStatus));
             }
 
             if (!string.IsNullOrEmpty(expenseResource.BranchName))
@@ -221,6 +224,73 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.JourneyNumber, $"%{searchQueryForWhereClause}%")
                     );
             }
+
+
+            if (expenseResource.AccountApprovalStage == 1)
+            {
+                if (expenseResource.AccountApprovalStatus == "PENDING")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 0 && a.AccountsCheckerOneStatus == "PENDING");
+                }
+
+                if (expenseResource.AccountApprovalStatus == "APPROVED")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 1 && a.AccountsCheckerOneStatus == "APPROVED");
+                }
+
+                if (expenseResource.AccountApprovalStatus == "REJECTED")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 1 && a.AccountsCheckerOneStatus == "REJECTED");
+                }
+
+            }
+
+            if (expenseResource.AccountApprovalStage == 2)
+            {
+                if (expenseResource.AccountApprovalStatus == "PENDING")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 1 && a.AccountsCheckerTwoStatus == "PENDING");
+                }
+
+                if (expenseResource.AccountApprovalStatus == "APPROVED")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 2 && a.AccountsCheckerTwoStatus == "APPROVED");
+                }
+
+                if (expenseResource.AccountApprovalStatus == "REJECTED")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 2 && a.AccountsCheckerTwoStatus == "REJECTED");
+                }
+
+            }
+
+            if (expenseResource.AccountApprovalStage == 3)
+            {
+                if (expenseResource.AccountApprovalStatus == "PENDING")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 2 && a.AccountsCheckerThreeStatus == "PENDING");
+                }
+
+                if (expenseResource.AccountApprovalStatus == "APPROVED")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 3 && a.AccountsCheckerThreeStatus == "APPROVED");
+                }
+
+                if (expenseResource.AccountApprovalStatus == "REJECTED")
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                        .Where(a => a.AccountsApprovalStage >= 3 && a.AccountsCheckerThreeStatus == "REJECTED");
+                }
+            }
+
 
             return await new MasterExpenseList(_mapper, _userRepository).Create(collectionBeforePaging,
                 expenseResource.Skip,

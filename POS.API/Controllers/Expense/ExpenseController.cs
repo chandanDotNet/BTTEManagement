@@ -212,6 +212,28 @@ namespace POS.API.Controllers.Expense
 
         }
 
+
+        /// <summary>
+        /// Update Expense Approval Level
+        /// </summary>
+        /// <param name="updateExpenseApprovalLevelCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateExpenseApprovalLevel")]
+        //[ClaimCheck("EXP_ADD_EXPENSE")]
+        public async Task<IActionResult> UpdateExpenseApprovalLevel(UpdateExpenseApprovalLevelCommand updateExpenseApprovalLevelCommand)
+        {
+            ResponseData responseData = new ResponseData();
+            var result = await _mediator.Send(updateExpenseApprovalLevelCommand);
+            if (result.Success)
+            {
+                responseData.status = result.Success;
+                responseData.StatusCode = result.StatusCode;
+                responseData.message = "Data Updated Successfully";
+            }
+            return Ok(responseData);
+
+        }
+
         // <summary>
         /// Update Local Conveyance Expenses
         /// </summary>
@@ -1811,7 +1833,7 @@ namespace POS.API.Controllers.Expense
             //var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
             //return ReturnFormattedResponse(200);
 
-            if (Response>0)
+            if (Response > 0)
             {
                 dashboardReportData.status = true;
                 dashboardReportData.StatusCode = 200;
@@ -1824,7 +1846,7 @@ namespace POS.API.Controllers.Expense
                 //dashboardReportData.Data = result;
             }
             return Ok(dashboardReportData);
-            
+
         }
 
 
@@ -2406,6 +2428,53 @@ namespace POS.API.Controllers.Expense
             return ReturnFormattedResponse(result);
         }
 
+        /// <summary>
+        /// Update Expense And Master Expense.
+        /// </summary>
+        /// <param name="updateAllExpenseAndMasterExpenseApprovalLevelCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateAllExpenseAndMasterExpenseApprovalLevel")]
+        //[ClaimCheck("EXP_MSTR_EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> UpdateAllExpenseAndMasterExpenseApprovalLevel([FromBody] UpdateAllExpenseAndMasterExpenseApprovalLevelCommand updateAllExpenseAndMasterExpenseApprovalLevelCommand)
+        {
+            int approvalcheck = updateAllExpenseAndMasterExpenseApprovalLevelCommand.
+                AllExpenseAndMasterExpenseApprovalLevelCommand.Count(x => x.AccountStatus == "APPROVED");
+
+            string approvalCheck = approvalcheck > 0 ? "APPROVED" : "REJECTED";
+
+            decimal reimbursementAmount = updateAllExpenseAndMasterExpenseApprovalLevelCommand.
+                AllExpenseAndMasterExpenseApprovalLevelCommand.Sum(x => x.ReimbursementAmount);
+
+            ResponseData response = new ResponseData();
+            int Response = 0;
+            UpdateExpenseAndMasterExpenseApprovalLevelCommand updateExpenseAndMasterExpenseApprovalLevel = new UpdateExpenseAndMasterExpenseApprovalLevelCommand();
+            foreach (var expenseAndMasterExpenseApprovalLevel in updateAllExpenseAndMasterExpenseApprovalLevelCommand.AllExpenseAndMasterExpenseApprovalLevelCommand)
+            {
+                updateExpenseAndMasterExpenseApprovalLevel = expenseAndMasterExpenseApprovalLevel;
+                updateExpenseAndMasterExpenseApprovalLevel.LevelReimbursementAmount = reimbursementAmount;
+                updateExpenseAndMasterExpenseApprovalLevel.checkApproval = approvalCheck;
+                var result = await _mediator.Send(updateExpenseAndMasterExpenseApprovalLevel);
+                if (result.Success)
+                {
+                    Response = 1;
+                }
+            }
+            if (Response > 0)
+            {
+                response.status = true;
+                response.StatusCode = 200;
+                //dashboardReportData.Data = result;
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = 500;
+                //dashboardReportData.Data = result;
+            }
+            return Ok(response);
+            //return ReturnFormattedResponse(result);
+        }
+
 
 
         /// <summary>
@@ -2421,7 +2490,7 @@ namespace POS.API.Controllers.Expense
             int Response = 0;
             foreach (var item in allAccountUpdateExpenseAndMasterExpenseCommand.AllUpdateExpenseAndMasterExpense)
             {
-                UpdateExpenseAndMasterExpenseCommand updateExpenseAndMasterExpenseCommand= new UpdateExpenseAndMasterExpenseCommand();
+                UpdateExpenseAndMasterExpenseCommand updateExpenseAndMasterExpenseCommand = new UpdateExpenseAndMasterExpenseCommand();
                 updateExpenseAndMasterExpenseCommand = item;
                 var result = await _mediator.Send(updateExpenseAndMasterExpenseCommand);
                 if (result.Success)
@@ -2443,7 +2512,6 @@ namespace POS.API.Controllers.Expense
                 //dashboardReportData.Data = result;
             }
             return Ok(dashboardReportData);
-
 
             //return ReturnFormattedResponse(result);
         }
@@ -2720,7 +2788,7 @@ namespace POS.API.Controllers.Expense
             int noOfDays = 1;
             if (masterExpensesDetails.ExpenseType == "Local Trip")
             {
-                var ExpenseDetailsList = _expenseRepository.All.Where(a => a.MasterExpenseId == masterExpenseResourceGroupWise.MasterExpenseId).GroupBy(a => a.ExpenseDate).ToList();
+                var ExpenseDetailsList = _expenseRepository.All.Where(a => a.MasterExpenseId == masterExpenseResourceGroupWise.MasterExpenseId && a.Amount > 0).GroupBy(a => a.ExpenseDate).ToList();
                 if (ExpenseDetailsList.Count > 0)
                 {
                     //var FirstDate = ExpenseDetailsList.First().ExpenseDate;

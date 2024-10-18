@@ -11,7 +11,6 @@ namespace BTTEM.Data
 {
     public class MasterExpenseDto
     {
-
         public Guid Id { get; set; }
         public string ExpenseNo { get; set; }
         public Guid? TripId { get; set; }
@@ -42,10 +41,22 @@ namespace BTTEM.Data
         public string? ReimbursementRemarks { get; set; }
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
+        public Guid? AccountsCheckerOneId { get; set; }
+        public string? AccountsCheckerOneStatus { get; set; }
+        public Guid? AccountsCheckerTwoId { get; set; }
+        public string? AccountsCheckerTwoStatus { get; set; }
+        public Guid? AccountsCheckerThreeId { get; set; }
+        public string? AccountsCheckerThreeStatus { get; set; }
+        public bool? IsExpenseChecker { get; set; }
+        public int? AccountsApprovalStage { get; set; }
+        public Guid? CompanyAccountId { get; set; }
+        public decimal FirstLevelReimbursementAmount { get; set; }
+        public decimal SecondLevelReimbursementAmount { get; set; }
+        public decimal ThirdLevelReimbursementAmount { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public bool? IsGroupTrip { get; set; }
         public List<GroupTripDto>? GroupTrips { get; set; }
         public CompanyAccountDto CompanyAccount { get; set; }
-
+        public CompanyAccountDto BillingCompanyAccount { get; set; }
     }
 }

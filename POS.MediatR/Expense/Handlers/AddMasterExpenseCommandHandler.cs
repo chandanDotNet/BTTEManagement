@@ -85,7 +85,7 @@ namespace BTTEM.MediatR.CommandAndQuery
                 PoliciesDetailResource = policiesDetailResourceQuery
             };
             var resultPoliciesDetail = await _mediator.Send(getAllPoliciesDetailCommand);
-            if (resultPoliciesDetail.Count==0)
+            if (resultPoliciesDetail.Count == 0)
             {
                 //return NotFound("Policies not mapped with user");
                 return ServiceResponse<MasterExpenseDto>.Return409("Policies not mapped with user.");
@@ -126,6 +126,14 @@ namespace BTTEM.MediatR.CommandAndQuery
                     }
                     return ServiceResponse<MasterExpenseDto>.Return409("Expense Already Exist For This Trip.");
                 }
+            }
+
+            if (request.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+            {
+                request.AccountsCheckerOneStatus = "PENDING";
+                request.AccountsCheckerTwoStatus = "PENDING";
+                request.AccountsCheckerThreeStatus = "PENDING";
+                request.IsExpenseChecker = true;
             }
 
             var entity = _mapper.Map<MasterExpense>(request);

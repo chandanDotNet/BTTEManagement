@@ -1408,5 +1408,35 @@ namespace BTTEM.API.Controllers.Trip
             var result = await _mediator.Send(deleteItineraryHotelBookingQuotationCommand);
             return ReturnFormattedResponse(result);
         }
+
+
+        /// <summary>
+        /// Get Advance Money
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet("GetAdvanceMoney")]
+        //[ClaimCheck("TRP_VIEW_TRIP")]
+        public async Task<IActionResult> GetAdvanceMoney([FromQuery] AdvanceMoneyResource advanceMoneyResource)
+        {
+            var getAllAdvanceMoneyQuery = new GetAllAdvanceMoneyQuery
+            {
+                AdvanceMoneyResource = advanceMoneyResource
+            };
+
+            var result = await _mediator.Send(getAllAdvanceMoneyQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
+            return Ok(result);
+        }
+
     }
 }

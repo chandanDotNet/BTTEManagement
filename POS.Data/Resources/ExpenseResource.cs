@@ -27,6 +27,8 @@ namespace POS.Data.Resources
         public string? BranchName { get; set; }
         public Guid? BranchId { get; set; }
         public string? JourneyNumber { get; set; }
+        public int? AccountApprovalStage { get; set; }
+        public string? AccountApprovalStatus { get; set; }
 
     }
 }

@@ -303,8 +303,8 @@ namespace POS.API.Controllers
                     status = result.Success,
                     message = "Password changed succesfully!"
                 };
-                var response = ServiceResponse<ResponseData>.ReturnResultWith200(data);
-                return ReturnFormattedResponse(response);
+                //var response = ServiceResponse<ResponseData>.ReturnResultWith200(data);
+                return Ok(data);
             }
             else
             {
@@ -314,8 +314,8 @@ namespace POS.API.Controllers
                     status = result.Success,
                     message = "Password change failed!"
                 };
-                var response = ServiceResponse<ResponseData>.Return409("Password change failed!");
-                return ReturnFormattedResponse(response);
+                //var response = ServiceResponse<ResponseData>.Return409("Password change failed!");
+                return Ok(data);
             }            
         }
 
@@ -369,8 +369,8 @@ namespace POS.API.Controllers
                     message = "Otp sent Successfully",
                 };
 
-                var response = ServiceResponse<OtpResponseData>.ReturnResultWith200(data);
-                return ReturnFormattedResponse(response);
+                //var response = ServiceResponse<OtpResponseData>.ReturnResultWith200(data);
+                return Ok(data);
             }
             else
             {
@@ -382,8 +382,8 @@ namespace POS.API.Controllers
                     message = "Failed to send Otp.",
                 };
 
-                var response = ServiceResponse<OtpResponseData>.Return409("Failed to send Otp.");
-                return ReturnFormattedResponse(response);
+                //var response = ServiceResponse<OtpResponseData>.Return409("Failed to send Otp.");
+                return Ok(data);
             }          
         }
 

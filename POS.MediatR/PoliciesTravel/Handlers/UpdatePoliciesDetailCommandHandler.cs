@@ -59,17 +59,65 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
             policiesDetailExit.Name = policiesDetailUpdate.Name;
             policiesDetailExit.Description = policiesDetailUpdate.Description;
             policiesDetailExit.GradeId = policiesDetailUpdate.GradeId;
-            policiesDetailExit.Document = policiesDetailUpdate.Document;
+            
             policiesDetailExit.DailyAllowance = policiesDetailUpdate.DailyAllowance;
             policiesDetailExit.IsActive= policiesDetailUpdate.IsActive;
-            policiesDetailExit.CompanyAccountId= policiesDetailUpdate.CompanyAccountId;            
+            policiesDetailExit.CompanyAccountId= policiesDetailUpdate.CompanyAccountId;
 
-            if (!string.IsNullOrEmpty(request.PolicyDocument))
+            //if (!string.IsNullOrEmpty(request.PolicyDocument))
+            //{
+            //    if (!string.IsNullOrEmpty(request.PolicyDocument))
+            //    {
+            //        policiesDetailExit.Document = $"{Guid.NewGuid()}.png";
+            //    }               
+            //}
+
+            if (!string.IsNullOrEmpty(request.Document))
             {
-                if (!string.IsNullOrEmpty(request.PolicyDocument))
+                if (!string.IsNullOrWhiteSpace(request.Document) && !string.IsNullOrWhiteSpace(request.PolicyDocument))
                 {
-                    policiesDetailExit.Document = $"{Guid.NewGuid()}.png";
-                }               
+                    string contentRootPath = _webHostEnvironment.WebRootPath;
+
+                    if (!string.IsNullOrWhiteSpace(policiesDetailExit.Document)
+                    && File.Exists(Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath, policiesDetailExit.Document)))
+                    {
+                        FileData.DeleteFile(Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath, policiesDetailExit.Document));
+                    }
+                    if (!string.IsNullOrEmpty(policiesDetailUpdate.Document))
+                    {
+                        policiesDetailExit.Document = policiesDetailUpdate.Document;
+                    }
+                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath);
+
+                    if (!Directory.Exists(pathToSave))
+                    {
+                        Directory.CreateDirectory(pathToSave);
+                    }
+
+                    var extension = Path.GetExtension(request.Document);
+                    var id = Guid.NewGuid();
+                    var path = $"{id}.{extension}";
+                    var documentPath = Path.Combine(pathToSave, path);
+                    string base64 = request.PolicyDocument.Split(',').LastOrDefault();
+                    if (!string.IsNullOrWhiteSpace(base64))
+                    {
+                        byte[] bytes = Convert.FromBase64String(base64);
+                        try
+                        {
+                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                            policiesDetailExit.Document = path;
+                            await FileData.SaveFile(Path.Combine(pathToSave, policiesDetailExit.Document), request.PolicyDocument);
+                        }
+                        catch
+                        {
+                            _logger.LogError("Error while saving files", policiesDetailExit);
+                        }
+                    }
+                }
+                else
+                {
+                    policiesDetailExit.Document = null;
+                }
             }
 
             _policiesDetailRepository.Update(policiesDetailExit);
@@ -80,27 +128,27 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
                 return ServiceResponse<bool>.Return500();
             }
 
-            if (!string.IsNullOrEmpty(request.PolicyDocument))
-            {
-                string contentRootPath = _webHostEnvironment.WebRootPath;
-                // delete old file
-                if (!string.IsNullOrWhiteSpace(policiesDetailExit.Document)
-                    && File.Exists(Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath, policiesDetailExit.Document)))
-                {
-                    FileData.DeleteFile(Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath, policiesDetailExit.Document));
-                }
+            //if (!string.IsNullOrEmpty(request.PolicyDocument))
+            //{
+            //    string contentRootPath = _webHostEnvironment.WebRootPath;
+            //    // delete old file
+            //    if (!string.IsNullOrWhiteSpace(policiesDetailExit.Document)
+            //        && File.Exists(Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath, policiesDetailExit.Document)))
+            //    {
+            //        FileData.DeleteFile(Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath, policiesDetailExit.Document));
+            //    }
 
-                // save new file
-                if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
-                {
-                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath);
-                    if (!Directory.Exists(pathToSave))
-                    {
-                        Directory.CreateDirectory(pathToSave);
-                    }
-                    await FileData.SaveFile(Path.Combine(pathToSave, policiesDetailExit.Document), request.PolicyDocument);
-                }
-            }
+            //    // save new file
+            //    if (!string.IsNullOrWhiteSpace(request.PolicyDocument))
+            //    {
+            //        var pathToSave = Path.Combine(contentRootPath, _pathHelper.PolicyDocumentPath);
+            //        if (!Directory.Exists(pathToSave))
+            //        {
+            //            Directory.CreateDirectory(pathToSave);
+            //        }
+            //        await FileData.SaveFile(Path.Combine(pathToSave, policiesDetailExit.Document), request.PolicyDocument);
+            //    }
+            //}
 
             return ServiceResponse<bool>.ReturnResultWith201(true);
         }

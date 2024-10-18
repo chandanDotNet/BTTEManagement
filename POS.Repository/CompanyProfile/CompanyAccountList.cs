@@ -57,7 +57,8 @@ namespace BTTEM.Repository
                     GSTCount = c.CompanyGST.Count(),
                     ReceiptName = c.ReceiptName,
                     AccountCode = c.AccountCode,
-                    ReceiptPath = c.ReceiptPath
+                    ReceiptPath = c.ReceiptPath,
+                    CompanyAccountsApprovalLevel = c.CompanyAccountsApprovalLevel,
 
                 }).ToListAsync();
             return entities;

@@ -24,6 +24,12 @@ namespace BTTEM.MediatR.Commands
         public int NoOfBill { get; set; }
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
+        public Guid? CompanyAccountId { get; set; }
+        public string? AccountsCheckerOneStatus { get; set; }
+        public string? AccountsCheckerTwoStatus { get; set; }
+        public string? AccountsCheckerThreeStatus { get; set; }
+        public bool? IsExpenseChecker { get; set; }
+        public int? AccountsApprovalStage { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public List<UpdateExpenseCommand> ExpenseDetails { get; set; }
 
