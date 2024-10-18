@@ -101,6 +101,12 @@ namespace BTTEM.MediatR.Handlers
 
             if (!string.IsNullOrWhiteSpace(request.DocumentData))
             {
+
+                if (!string.IsNullOrWhiteSpace(request.ReceiptName))
+                {
+                    entityExist.ReceiptName = request.ReceiptName;
+                }
+                
                 string contentRootPath = _webHostEnvironment.WebRootPath;
                 var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
 
