@@ -70,6 +70,11 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.AdvanceMoney < amount && a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
             }
+            if (!string.IsNullOrEmpty(advanceMoneyResource.RequestAdvanceMoneyStatus))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.AdvanceMoney < amount && a.RequestAdvanceMoneyStatus == advanceMoneyResource.RequestAdvanceMoneyStatus);
+            }
 
             //Filter For Infra Only           
 

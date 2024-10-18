@@ -1438,5 +1438,41 @@ namespace BTTEM.API.Controllers.Trip
             return Ok(result);
         }
 
+        /// <summary>
+        ///  Trip Request Advance Money Approval
+        /// </summary>
+        /// <param name="approvalTripRequestAdvanceMoneyCommand"></param>
+        /// <returns></returns>
+        [HttpPut("TripRequestAdvanceMoneyApproval")]
+        [Produces("application/json", "application/xml", Type = typeof(TripDto))]
+        public async Task<IActionResult> TripRequestAdvanceMoneyApproval(ApprovalTripRequestAdvanceMoneyCommand approvalTripRequestAdvanceMoneyCommand)
+        {
+            int Response = 0;
+            ResponseData response = new ResponseData();
+            UpdateApprovalTripRequestAdvanceMoneyCommand updateApprovalTripRequestAdvanceMoneyCommand = new UpdateApprovalTripRequestAdvanceMoneyCommand();
+            foreach (var item in approvalTripRequestAdvanceMoneyCommand.UpdateApprovalTripRequestAdvanceMoneyCommand)
+            {
+                updateApprovalTripRequestAdvanceMoneyCommand = item;
+                var result = await _mediator.Send(updateApprovalTripRequestAdvanceMoneyCommand);
+                if (result.Success)
+                {
+                    Response = 1;
+                }
+            }
+            if (Response > 0)
+            {
+                response.status = true;
+                response.StatusCode = 200;
+                //dashboardReportData.Data = result;
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = 500;
+                //dashboardReportData.Data = result;
+            }
+            return Ok(response);
+        }
+
     }
 }

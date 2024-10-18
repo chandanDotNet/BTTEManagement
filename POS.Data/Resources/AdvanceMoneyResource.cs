@@ -34,6 +34,7 @@ namespace BTTEM.Data.Resources
         public string? DepartmentName { get; set; }
         public Guid? BillingCompanyAccountId { get; set; }
         public bool? IsMyRequest { get; set; }
+        public string RequestAdvanceMoneyStatus { get; set; }
 
     }
 }
