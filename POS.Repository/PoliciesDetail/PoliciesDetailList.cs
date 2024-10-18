@@ -70,9 +70,10 @@ namespace BTTEM.Repository
                     GradeName = c.Grade.GradeName,
                     Description = c.Description,
                     DailyAllowance = c.DailyAllowance,
-                    Document = c.Document,
+                    Document = !string.IsNullOrWhiteSpace(c.Document) ? Path.Combine(_pathHelper.PolicyDocumentPath, c.Document) : "",
                     IsActive = c.IsActive,
                     NoOfUsers = _userRepository.All.Where(u => u.GradeId == c.GradeId).Count(),
+                    
 
                 }).ToListAsync();
             return entities;

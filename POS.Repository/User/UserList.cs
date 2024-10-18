@@ -139,6 +139,7 @@ namespace POS.Repository
                     SapCode= c.SapCode,
                     VendorCode = c.VendorCode,
                     FrequentFlyerNumber = c.FrequentFlyerNumber,
+                    ApprovalLevel = c.ApprovalLevel
                 })
                 .ToListAsync();
             return entities;

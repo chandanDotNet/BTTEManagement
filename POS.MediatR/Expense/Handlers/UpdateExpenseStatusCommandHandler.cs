@@ -122,29 +122,36 @@ namespace BTTEM.MediatR.Expense.Handlers
 
             //======================
 
-            var payAmount = _expenseRepository.All.Where(a => a.MasterExpenseId == entityExist.MasterExpenseId).Sum(a => a.PayableAmount);
-            if (payAmount > 0)
-            {
-                entityMasterExist.PayableAmount = payAmount;
-                _masterExpenseRepository.Update(entityMasterExist);
-
-                //var materExp = _masterExpenseRepository.FindBy(a => a.Id == entityExist.MasterExpenseId).FirstOrDefault();
-                //if (materExp != null)
-                //{
-                //    materExp.PayableAmount = payAmount;
-                   
-
-
-                //}
-            }
-
             if (await _uow.SaveAsync() <= 0)
             {
                 _logger.LogError("Error while saving Expense.");
                 return ServiceResponse<bool>.Return500();
             }
 
+            var payAmount = _expenseRepository.All.Where(a => a.MasterExpenseId == entityExist.MasterExpenseId).Sum(a => a.PayableAmount);
 
+            if (payAmount > 0)
+            {
+                entityMasterExist.PayableAmount = payAmount;
+                _masterExpenseRepository.Update(entityMasterExist);
+
+
+                if (await _uow.SaveAsync() <= 0)
+                {
+                    _logger.LogError("Error while saving Expense.");
+                    return ServiceResponse<bool>.Return500();
+                }
+
+                //var materExp = _masterExpenseRepository.FindBy(a => a.Id == entityExist.MasterExpenseId).FirstOrDefault();
+                //if (materExp != null)
+                //{
+                //    materExp.PayableAmount = payAmount;
+                //}
+            }
+
+            //_masterExpenseRepository.Update(entityMasterExist);
+
+           
 
             return ServiceResponse<bool>.ReturnResultWith200(true);
         }

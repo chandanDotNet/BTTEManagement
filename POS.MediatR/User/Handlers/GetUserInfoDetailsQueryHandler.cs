@@ -40,13 +40,11 @@ namespace BTTEM.MediatR.User.Handlers
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ActionId", 4);
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
-
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
                  
                 while (rdr.Read())
                 {
-
                     userInfoDetails.UserId = (Guid)rdr["UserId"];
                     userInfoDetails.UserFullName = rdr["UserFullName"].ToString();
                     userInfoDetails.ProfilePhoto = rdr["ProfilePhoto"].ToString();
@@ -82,6 +80,7 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.FoodAmountWithoutBill = (decimal)rdr["FoodAmountWithoutBill"];
                     userInfoDetails.FrequentFlyerNumber = Convert.ToString(rdr["FrequentFlyerNumber"]);
                     userInfoDetails.TravelClass = Convert.ToString(rdr["TravelClass"]);
+                    userInfoDetails.ApprovalLevel = Convert.ToInt32(rdr["ApprovalLevel"]);
                     // expenseDataList.Add(expenseData);
                 }
                 con.Close();

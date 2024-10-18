@@ -35,6 +35,19 @@ namespace BTTEM.Data
         public string? ReimbursementRemarks { get; set; }
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
+        public Guid? AccountsCheckerOneId { get; set; }
+        public string? AccountsCheckerOneStatus { get; set; }
+        public Guid? AccountsCheckerTwoId { get; set; }
+        public string? AccountsCheckerTwoStatus { get; set; }
+        public Guid? AccountsCheckerThreeId { get; set; }
+        public string? AccountsCheckerThreeStatus { get; set; }
+        public bool? IsExpenseChecker { get; set; } = false;
+        public int? AccountsApprovalStage { get; set; }
+        public Guid? CompanyAccountId { get; set; }
+        public decimal FirstLevelReimbursementAmount { get; set; }
+        public decimal SecondLevelReimbursementAmount { get; set; }
+        public decimal ThirdLevelReimbursementAmount { get; set; }
+        public CompanyAccount CompanyAccounts { get; set; }
         public List<GroupExpense> GroupExpenses { get; set; }
     }
 }

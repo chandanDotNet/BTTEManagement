@@ -87,6 +87,17 @@ namespace BTTEM.MediatR.Handlers
             entityExist.IsGroupExpense = request.IsGroupExpense;
             entityExist.NoOfPerson = request.NoOfPerson;
 
+            entityExist.CompanyAccountId = request.CompanyAccountId;
+
+            if (request.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+            {               
+                entityExist.AccountsCheckerOneStatus = string.IsNullOrEmpty(request.AccountsCheckerOneStatus) ? entityExist.AccountsCheckerOneStatus : "PENDING";
+                entityExist.AccountsCheckerTwoStatus = string.IsNullOrEmpty(request.AccountsCheckerTwoStatus) ? entityExist.AccountsCheckerTwoStatus : "PENDING";
+                entityExist.AccountsCheckerThreeStatus = string.IsNullOrEmpty(request.AccountsCheckerThreeStatus) ? entityExist.AccountsCheckerThreeStatus : "PENDING";
+                entityExist.IsExpenseChecker = true;
+                entityExist.AccountsApprovalStage = request.AccountsApprovalStage == null ? entityExist.AccountsApprovalStage : 0;
+            }
+
             _masterExpenseRepository.Update(entityExist);
 
             var groupExpenseExist = await _groupExpenseRepository.All.Where(v => v.MasterExpenseId == request.Id).ToListAsync();

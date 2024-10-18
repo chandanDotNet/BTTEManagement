@@ -19,6 +19,7 @@ namespace BTTEM.Data
         public List<CompanyGST> CompanyGST { get; set; }
         public string? ReceiptName { get; set; }
         public string? ReceiptPath { get; set; }
+        public int? CompanyAccountsApprovalLevel { get; set; }
 
     }
 }

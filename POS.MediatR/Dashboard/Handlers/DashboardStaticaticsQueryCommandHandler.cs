@@ -120,6 +120,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 dashboardStatics.TotalPartialApprovedExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ReimbursementStatus == "PARTIAL").CountAsync();
                 dashboardStatics.TotalPendingExpense = await _masterExpenseRepository.All.Where(x => x.CreatedBy == request.UserId && x.CreatedDate.Month == request.Month && x.CreatedDate.Year == request.Year && x.ApprovalStage == "PENDING").CountAsync();
             }
+
             else if (RoleId == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
             {
                 if(request.IsMy==true)

@@ -44,6 +44,7 @@ namespace POS.MediatR.CommandAndQuery
         public int? HrmsId { get; set; }
         public int? HrmsUser { get; set; }
         public string FrequentFlyerNumber { get; set; }
+        public int ApprovalLevel { get; set; } = 0;
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
     }
 }

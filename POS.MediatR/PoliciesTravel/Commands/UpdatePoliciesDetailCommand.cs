@@ -18,6 +18,7 @@ namespace BTTEM.MediatR.PoliciesTravel.Commands
         public Guid GradeId { get; set; }
         public string Description { get; set; }
         public decimal DailyAllowance { get; set; }
+        public string PolicyDocument { get; set; }
         public string Document { get; set; }
         public bool IsActive { get; set; }
     }

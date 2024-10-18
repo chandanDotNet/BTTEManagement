@@ -178,6 +178,8 @@ namespace POS.Repository
             ret.SapCode = appUser.SapCode;
             ret.CompanyAccountId= appUser.CompanyAccountId;
             ret.CompanyAccountBranchId= appUser.CompanyAccountBranchId;
+            ret.FrequentFlyerNumber = appUser.FrequentFlyerNumber;
+            ret.ApprovalLevel = appUser.ApprovalLevel;
 
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);
