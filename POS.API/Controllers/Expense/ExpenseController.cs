@@ -505,7 +505,7 @@ namespace POS.API.Controllers.Expense
             addMasterExpenseCommand.TotalAmount = addMasterExpenseCommand.ExpenseDetails.Sum(a => a.Amount);
             if (addMasterExpenseCommand.TripId.HasValue)
             {
-                //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault();
+                //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault(); 
                 //if(exitExpense==null)
                 //{
                 //    return ReturnFormattedResponse("sss");
