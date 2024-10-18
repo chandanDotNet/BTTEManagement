@@ -34,6 +34,7 @@ namespace BTTEM.Data
         public string ModeOfTrip { get; set; }
         public bool IsRequestAdvanceMoney { get; set; }
         public decimal? AdvanceMoney { get; set; }
+        public decimal? AdvanceMoneyApprovedAmount { get; set; }
         public string? RequestAdvanceMoneyStatus { get; set; }
         public string? AdvanceMoneyRemarks { get; set; }
         public DateTime? RequestAdvanceMoneyDate { get; set; }
