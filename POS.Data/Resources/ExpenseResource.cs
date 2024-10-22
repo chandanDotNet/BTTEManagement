@@ -29,6 +29,9 @@ namespace POS.Data.Resources
         public string? JourneyNumber { get; set; }
         public int? AccountApprovalStage { get; set; }
         public string? AccountApprovalStatus { get; set; }
+        public Guid? CompanyAccountId { get; set; }
+        public int? Month { get; set; }
+        public int? Year { get; set; }
 
     }
 }

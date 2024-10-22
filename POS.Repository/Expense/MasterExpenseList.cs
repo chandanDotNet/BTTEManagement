@@ -8,6 +8,7 @@ using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -29,6 +30,7 @@ namespace BTTEM.Repository.Expense
         public int PageSize { get; private set; }
         public int TotalCount { get; private set; }
         public decimal TotalAmount { get; set; }
+        public string Filter { get; set; }
         public MasterExpenseList(List<MasterExpenseDto> items, int count, int skip, int pageSize, decimal totalAmount)
         {
             TotalCount = count;
@@ -39,10 +41,10 @@ namespace BTTEM.Repository.Expense
             AddRange(items);
         }
 
-        public async Task<MasterExpenseList> Create(IQueryable<MasterExpense> source, int skip, int pageSize)
+        public async Task<MasterExpenseList> Create(IQueryable<MasterExpense> source, int skip, int pageSize, string filter)
         {
 
-            var dtoList = await GetDtos(source, skip, pageSize);
+            var dtoList = await GetDtos(source, skip, pageSize, filter);
             var count = pageSize == 0 || dtoList.Count() == 0 ? dtoList.Count() : await GetCount(source);
             var totalAmount = await GetTotalAmount(source);
             var dtoPageList = new MasterExpenseList(dtoList, count, skip, pageSize, totalAmount);
@@ -73,7 +75,7 @@ namespace BTTEM.Repository.Expense
             }
         }
 
-        public async Task<List<MasterExpenseDto>> GetDtos(IQueryable<MasterExpense> source, int skip, int pageSize)
+        public async Task<List<MasterExpenseDto>> GetDtos(IQueryable<MasterExpense> source, int skip, int pageSize,string filter)
         {
             if (pageSize == 0)
             {
@@ -230,6 +232,20 @@ namespace BTTEM.Repository.Expense
                         }
                     }
                 }
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    var _lstExpense = entities.Select(s =>
+                                         s.Expenses.Where(x => x.Status == filter)).ToList();
+
+                    IEnumerable<ExpenseDto> flattened = _lstExpense.SelectMany(list => list);
+
+                    entities.ForEach(item =>
+                    {
+                        item.Expenses = flattened.ToList();
+                    });
+                }               
+
                 return entities;
             }
         }

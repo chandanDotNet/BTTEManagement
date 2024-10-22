@@ -35,6 +35,8 @@ namespace BTTEM.Data.Resources
         public string? DepartmentName { get; set; }
         public Guid? BillingCompanyAccountId { get; set; }
         public bool? IsMyRequest { get; set; }
+        public int? Month { get; set; }
+        public int? Year { get; set; }
 
         // public bool? TripCompleted { get; set; }
 

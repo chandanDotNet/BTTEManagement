@@ -240,6 +240,18 @@ namespace BTTEM.Repository
                     .Where(a => a.CreatedByUser.CompanyAccountBranchId == tripResource.BranchId);
             }
 
+            if (tripResource.Month.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.CreatedDate.Month == tripResource.Month);
+            }
+
+            if (tripResource.Year.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.CreatedDate.Year == tripResource.Year);
+            }
+
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {
                 var searchQueryForWhereClause = tripResource.SearchQuery
@@ -254,11 +266,22 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.SourceCityName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.DestinationCityName, $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.Approval, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.CreatedByUser.FirstName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.CreatedByUser.LastName, $"%{searchQueryForWhereClause}%")
                     //|| EF.Functions.Like(a.TripStarts.ToShortDateString(), $"%{searchQueryForWhereClause}%")                    
                     //|| EF.Functions.Like(a.TripEnds.ToShortDateString(), $"%{searchQueryForWhereClause}%")                    
                     );
             }
 
+            if (tripResource.IsMyRequest == false)
+            {
+
+                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT");
+                }
+            }
 
 
             return await new TripList(_mapper).Create(collectionBeforePaging,

@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BTTEM.Repository.Expense;
 using BTTEM.Data.Resources;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BTTEM.Repository
 {
@@ -106,13 +107,24 @@ namespace BTTEM.Repository
                     collectionBeforePaging = collectionBeforePaging
                                         .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
                 }
+                else if (companyAccountId.CompanyAccountId == new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"))
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                        .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"));
+                }
                 else
                 {
                     collectionBeforePaging = collectionBeforePaging
-                                        .Where(m => m.CreatedByUser.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                                        .Where(m => m.CreatedByUser.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91") 
+                                         && m.CreatedByUser.CompanyAccountId != new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"));
                 }
             }
 
+            if (expenseResource.CompanyAccountId.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CompanyAccountId == expenseResource.CompanyAccountId);
+            }
 
             if (expenseResource.ReportingHeadId.HasValue)
             {
@@ -181,11 +193,12 @@ namespace BTTEM.Repository
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.ExpenseByUser == expenseResource.ExpenseByUser);
             }
-            if (!string.IsNullOrEmpty(expenseResource.ExpenseStatus))
-            {
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.Expenses.Any(c => c.Status.Trim() == expenseResource.ExpenseStatus));
-            }
+
+            //if (!string.IsNullOrEmpty(expenseResource.ExpenseStatus))
+            //{
+            //    collectionBeforePaging = collectionBeforePaging
+            //        .Where(a => a.Expenses.Any(c => c.Status.Trim() == expenseResource.ExpenseStatus));
+            //}         
 
             if (!string.IsNullOrEmpty(expenseResource.BranchName))
             {
@@ -222,9 +235,22 @@ namespace BTTEM.Repository
                     || EF.Functions.Like(a.TotalAmount.ToString(), $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.PayableAmount.ToString(), $"%{searchQueryForWhereClause}%")
                     || EF.Functions.Like(a.JourneyNumber, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.CreatedByUser.FirstName, $"%{searchQueryForWhereClause}%")
+                    || EF.Functions.Like(a.CreatedByUser.LastName, $"%{searchQueryForWhereClause}%")
                     );
             }
 
+            if (expenseResource.Month.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.CreatedDate.Month == expenseResource.Month);
+            }
+
+            if (expenseResource.Year.HasValue)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.CreatedDate.Year == expenseResource.Year);
+            }
 
             if (expenseResource.AccountApprovalStage == 1)
             {
@@ -267,7 +293,6 @@ namespace BTTEM.Repository
                     collectionBeforePaging = collectionBeforePaging
                         .Where(a => a.AccountsApprovalStage >= 2 && a.AccountsCheckerTwoStatus == "REJECTED");
                 }
-
             }
 
             if (expenseResource.AccountApprovalStage == 3)
@@ -290,11 +315,19 @@ namespace BTTEM.Repository
                         .Where(a => a.AccountsApprovalStage >= 3 && a.AccountsCheckerThreeStatus == "REJECTED");
                 }
             }
+            if (expenseResource.IsMyRequest == false)
+            {
 
+                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT");
+                }
+            }
 
             return await new MasterExpenseList(_mapper, _userRepository).Create(collectionBeforePaging,
                 expenseResource.Skip,
-                expenseResource.PageSize);
+                expenseResource.PageSize, expenseResource.ExpenseStatus);
         }
 
         public async Task<List<RoleDto>> GetUserRole(Guid Id)
