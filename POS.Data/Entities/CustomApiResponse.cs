@@ -87,6 +87,8 @@ namespace BTTEM.Data.Entities
         public string FrequentFlyerNumber { get; set; }
         public string TravelClass { get; set; }
         public int ApprovalLevel { get; set; }
+        public bool IsCompanyVehicleUser { get; set; }
+        public string AlternateEmail { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }

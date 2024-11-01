@@ -1209,42 +1209,47 @@ namespace BTTEM.API.Controllers.Trip
                     var accountManagerNotificationnotificationResult = await _mediator.Send(accountManagerNotificationCommand);
                 }
 
-                if (updateStatusTripRequestAdvanceMoneyCommand.Status == "APPROVED")
+                //**Email Start**
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
                 {
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
-                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                    var MoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
-                    var accountant = await _userRepository.All.Include(u => u.UserRoles)
-                        .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
-                    accountant =
-                        accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                        .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
-                    var toAddress = string.Join(',', accountant.Select(x => x.UserName));
-
-                    var reportingHead = await _userRepository.FindAsync(responseData.CreatedBy);
-
-                    using (StreamReader sr = new StreamReader(filePath))
+                    if (updateStatusTripRequestAdvanceMoneyCommand.Status == "APPROVED")
                     {
-                        string templateBody = sr.ReadToEnd();
-                        templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
-                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                        templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
-                        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
-                        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
-                        templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
-                        EmailHelper.SendEmail(new SendEmailSpecification
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var MoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
+                        var accountant = await _userRepository.All.Include(u => u.UserRoles)
+                            .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+                        accountant =
+                            accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                            .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                        var toAddress = string.Join(',', accountant.Select(x => x.UserName));
+
+                        var reportingHead = await _userRepository.FindAsync(responseData.CreatedBy);
+
+                        using (StreamReader sr = new StreamReader(filePath))
                         {
-                            Body = templateBody,
-                            FromAddress = defaultSmtp.UserName,
-                            Host = defaultSmtp.Host,
-                            IsEnableSSL = defaultSmtp.IsEnableSSL,
-                            Password = defaultSmtp.Password,
-                            Port = defaultSmtp.Port,
-                            Subject = "Advance Money Approved",
-                            ToAddress = toAddress,
-                            CCAddress = reportingHead.UserName,
-                            UserName = defaultSmtp.UserName
-                        });
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
+                            templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Advance Money Approved",
+                                ToAddress = toAddress,
+                                CCAddress = reportingHead.UserName,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
                     }
                 }
             }

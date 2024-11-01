@@ -100,6 +100,8 @@ namespace POS.MediatR.Handlers
             appUser.VendorCode = request.VendorCode;
             appUser.FrequentFlyerNumber = request.FrequentFlyerNumber;
             appUser.ApprovalLevel = request.ApprovalLevel;
+            appUser.IsCompanyVehicleUser = request.IsCompanyVehicleUser;
+            appUser.AlternateEmail = request.AlternateEmail;
 
             string oldProfilePhoto = appUser.ProfilePhoto;
             //oldProfilePhoto = appUser.ProfilePhoto;

@@ -14,6 +14,8 @@ namespace BTTEM.Data
         public Guid PoliciesDetailId { get; set; }
         public decimal? RatePerKM { get; set; }
         public decimal? MaintenanceCharges { get; set; }
+        public decimal? CompanyVehicleRatePerKM { get; set; }
+        public bool IsCompanyVehicle { get; set; } = false;
         public bool IsDeleted { get; set; }
 
     }

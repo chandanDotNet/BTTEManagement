@@ -2,6 +2,7 @@
 using POS.Data.Dto;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,17 +37,23 @@ namespace BTTEM.Data
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
         public Guid? AccountsCheckerOneId { get; set; }
+        [ForeignKey("AccountsCheckerOneId")]
+        public User LevelOneUser { get; set; }
         public string? AccountsCheckerOneStatus { get; set; }
         public Guid? AccountsCheckerTwoId { get; set; }
+        [ForeignKey("AccountsCheckerTwoId")]
+        public User LevelTwoUser { get; set; }
         public string? AccountsCheckerTwoStatus { get; set; }
         public Guid? AccountsCheckerThreeId { get; set; }
+        [ForeignKey("AccountsCheckerThreeId")]
+        public User LevelThreeUser { get; set; }
         public string? AccountsCheckerThreeStatus { get; set; }
         public bool? IsExpenseChecker { get; set; } = false;
         public int? AccountsApprovalStage { get; set; }
         public Guid? CompanyAccountId { get; set; }
-        public decimal FirstLevelReimbursementAmount { get; set; }
-        public decimal SecondLevelReimbursementAmount { get; set; }
-        public decimal ThirdLevelReimbursementAmount { get; set; }
+        public decimal FirstLevelReimbursementAmount { get; set; } = 0;
+        public decimal SecondLevelReimbursementAmount { get; set; } = 0;
+        public decimal ThirdLevelReimbursementAmount { get; set; } = 0;
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
         public CompanyAccount CompanyAccounts { get; set; }

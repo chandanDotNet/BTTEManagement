@@ -42,17 +42,20 @@ namespace BTTEM.Data
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
         public Guid? AccountsCheckerOneId { get; set; }
+        public string LevelOneUser { get; set; }
         public string? AccountsCheckerOneStatus { get; set; }
         public Guid? AccountsCheckerTwoId { get; set; }
+        public string LevelTwoUser { get; set; }
         public string? AccountsCheckerTwoStatus { get; set; }
         public Guid? AccountsCheckerThreeId { get; set; }
+        public string LevelThreeUser { get; set; }
         public string? AccountsCheckerThreeStatus { get; set; }
         public bool? IsExpenseChecker { get; set; }
         public int? AccountsApprovalStage { get; set; }
         public Guid? CompanyAccountId { get; set; }
-        public decimal FirstLevelReimbursementAmount { get; set; }
-        public decimal SecondLevelReimbursementAmount { get; set; }
-        public decimal ThirdLevelReimbursementAmount { get; set; }
+        public decimal FirstLevelReimbursementAmount { get; set; } = 0;
+        public decimal SecondLevelReimbursementAmount { get; set; } = 0;
+        public decimal ThirdLevelReimbursementAmount { get; set; } = 0;
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
