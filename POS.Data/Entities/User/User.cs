@@ -12,6 +12,7 @@ namespace POS.Data
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string AlternateEmail { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; } = true;
         public string ProfilePhoto { get; set; }
@@ -32,7 +33,6 @@ namespace POS.Data
         public Guid? Department { get; set; }
         [ForeignKey("Department")]
         public Department Departments { get; set; }
-
         public Guid? GradeId { get; set; }
         [ForeignKey("GradeId")]
         public Grade Grades { get; set; }
@@ -73,5 +73,6 @@ namespace POS.Data
         public int? HrmsGradeId { get; set; }
         public string? FrequentFlyerNumber { get; set; }
         public int? ApprovalLevel { get; set; }
+        public bool IsCompanyVehicleUser { get; set; }
     }
 }

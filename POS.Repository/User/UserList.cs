@@ -139,7 +139,9 @@ namespace POS.Repository
                     SapCode= c.SapCode,
                     VendorCode = c.VendorCode,
                     FrequentFlyerNumber = c.FrequentFlyerNumber,
-                    ApprovalLevel = c.ApprovalLevel
+                    ApprovalLevel = c.ApprovalLevel,
+                    IsCompanyVehicleUser = c.IsCompanyVehicleUser,
+                    AlternateEmail = c.AlternateEmail
                 })
                 .ToListAsync();
             return entities;

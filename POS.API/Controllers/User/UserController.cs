@@ -534,7 +534,8 @@ namespace POS.API.Controllers
         /// <returns></returns>    
         [AllowAnonymous]
         [HttpGet("SyncEmployee")]
-        public async Task<IActionResult> EmployeeSync(string companyName, string employeeCode)
+        public async Task<IActionResult> EmployeeSync(string companyName, string employeeCode, string joiningStartDate,
+            string joiningEndDate)
         {
             var requestUri = "https://shyamsteel.tech:8002/tour_and_travels_all_user_list/?all_data=true";
             var client = new HttpClient();
@@ -545,6 +546,10 @@ namespace POS.API.Controllers
             if (!string.IsNullOrEmpty(employeeCode))
             {
                 requestUri = requestUri + "&employee_code=" + employeeCode;
+            }
+            if (!string.IsNullOrEmpty(joiningStartDate))
+            {
+                requestUri = requestUri + "&joining_start_date=" + joiningStartDate + "&joining_end_date=" + joiningEndDate;
             }
             var request = new HttpRequestMessage(HttpMethod.Get,
                 requestUri);
@@ -670,9 +675,17 @@ namespace POS.API.Controllers
 
                     //result.userInfoDetails.PoliciesVehicleConveyance = conveyanceRates;
 
-                    result.userInfoDetails.CarDieselRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("14E55D56-4A18-4B6F-B8C0-8D7A8AC446D4")).RatePerKM;
-                    result.userInfoDetails.CarPetrolRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("8CC7895B-2E0A-4070-B7F8-13AD36DF5C25")).RatePerKM;
-                    result.userInfoDetails.BikeRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("1B496B46-46A5-4A65-B1BE-CA246073CF62")).RatePerKM;
+                    var cdr = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("14E55D56-4A18-4B6F-B8C0-8D7A8AC446D4"));
+                    var cpr = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("8CC7895B-2E0A-4070-B7F8-13AD36DF5C25"));
+                    var br = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("1B496B46-46A5-4A65-B1BE-CA246073CF62"));
+
+                    result.userInfoDetails.CarDieselRate = result.userInfoDetails.IsCompanyVehicleUser == true ? cdr.CompanyVehicleRatePerKM : cdr.RatePerKM;
+                    result.userInfoDetails.CarPetrolRate = result.userInfoDetails.IsCompanyVehicleUser == true ? cpr.CompanyVehicleRatePerKM : cpr.RatePerKM;
+                    result.userInfoDetails.BikeRate = result.userInfoDetails.IsCompanyVehicleUser == true ? br.CompanyVehicleRatePerKM : br.RatePerKM;
+
+                    //result.userInfoDetails.CarDieselRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("14E55D56-4A18-4B6F-B8C0-8D7A8AC446D4")).RatePerKM;
+                    //result.userInfoDetails.CarPetrolRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("8CC7895B-2E0A-4070-B7F8-13AD36DF5C25")).RatePerKM;
+                    //result.userInfoDetails.BikeRate = conveyanceRates.FirstOrDefault(x => x.VehicleId == new Guid("1B496B46-46A5-4A65-B1BE-CA246073CF62")).RatePerKM;
                 }
             }
 

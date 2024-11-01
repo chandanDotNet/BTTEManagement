@@ -180,7 +180,8 @@ namespace POS.Repository
             ret.CompanyAccountBranchId= appUser.CompanyAccountBranchId;
             ret.FrequentFlyerNumber = appUser.FrequentFlyerNumber;
             ret.ApprovalLevel = appUser.ApprovalLevel;
-
+            ret.IsCompanyVehicleUser = appUser.IsCompanyVehicleUser;
+            ret.AlternateEmail = appUser.AlternateEmail;
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);
             ret.Claims = appClaimDtos;

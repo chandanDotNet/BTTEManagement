@@ -56,7 +56,9 @@ namespace BTTEM.MediatR.PoliciesTravel.Handlers
                 travelsModeExit.VehicleId = travelsModeUpdate.VehicleId;
                 travelsModeExit.Id = travelsModeUpdate.Id;
                 travelsModeExit.VehicleName = travelsModeUpdate.VehicleName;
-                
+                travelsModeExit.IsCompanyVehicle = travelsModeUpdate.IsCompanyVehicle;
+                travelsModeExit.CompanyVehicleRatePerKM = travelsModeUpdate.CompanyVehicleRatePerKM;
+
                 _policiesVehicleConveyanceRepository.Update(travelsModeExit);
 
             }

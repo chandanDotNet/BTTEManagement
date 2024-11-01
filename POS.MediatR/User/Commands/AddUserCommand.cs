@@ -10,6 +10,7 @@ namespace POS.MediatR.CommandAndQuery
     {
         public string? UserName { get; set; }
         public string? Email { get; set; }
+        public string? AlternateEmail { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Password { get; set; }
@@ -46,6 +47,9 @@ namespace POS.MediatR.CommandAndQuery
         public int? HrmsUser { get; set; }
         public int? HrmsDepartmentId { get; set; }
         public int? HrmsGradeId { get; set; }
+        public string? FrequentFlyerNumber { get; set; }
+        public int? ApprovalLevel { get; set; }
+        public bool IsCompanyVehicleUser { get; set; }
         public List<UserRoleDto>? UserRoles { get; set; } = new List<UserRoleDto>();
 
     }

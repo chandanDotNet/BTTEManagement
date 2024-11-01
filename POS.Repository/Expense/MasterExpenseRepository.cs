@@ -89,7 +89,7 @@ namespace BTTEM.Repository
                 .Include(a => a.Expenses).ThenInclude(f => f.ExpenseDetail)
                 .Include(a => a.Expenses).ThenInclude(c => c.ExpenseCategory)
                 .Include(a => a.CreatedByUser.CompanyAccounts)
-                .Include(a=>a.LevelOneUser)
+                .Include(a => a.LevelOneUser)
                 .Include(a => a.LevelTwoUser)
                 .Include(a => a.LevelThreeUser)
                 .ApplySort(expenseResource.OrderBy,

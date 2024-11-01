@@ -81,6 +81,8 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.FrequentFlyerNumber = Convert.ToString(rdr["FrequentFlyerNumber"]);
                     userInfoDetails.TravelClass = Convert.ToString(rdr["TravelClass"]);
                     userInfoDetails.ApprovalLevel = Convert.ToInt32(rdr["ApprovalLevel"]);
+                    userInfoDetails.IsCompanyVehicleUser = Convert.ToBoolean(rdr["IsCompanyVehicleUser"]);
+                    userInfoDetails.AlternateEmail = Convert.ToString(rdr["AlternateEmail"]);
                     // expenseDataList.Add(expenseData);
                 }
                 con.Close();
