@@ -83,6 +83,7 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.ApprovalLevel = Convert.ToInt32(rdr["ApprovalLevel"]);
                     userInfoDetails.IsCompanyVehicleUser = Convert.ToBoolean(rdr["IsCompanyVehicleUser"]);
                     userInfoDetails.AlternateEmail = Convert.ToString(rdr["AlternateEmail"]);
+                    userInfoDetails.AccountTeam = Convert.ToString(rdr["AccountTeam"]);
                     // expenseDataList.Add(expenseData);
                 }
                 con.Close();

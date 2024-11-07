@@ -59,6 +59,7 @@ namespace BTTEM.Repository
                     AccountCode = c.AccountCode,
                     ReceiptPath = c.ReceiptPath,
                     CompanyAccountsApprovalLevel = c.CompanyAccountsApprovalLevel,
+                    AccountTeam = c.AccountTeam,
 
                 }).ToListAsync();
             return entities;

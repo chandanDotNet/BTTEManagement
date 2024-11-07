@@ -46,8 +46,10 @@ namespace BTTEM.Repository
         public async Task<MasterExpenseList> GetAllExpenses(ExpenseResource expenseResource)
         {
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
+            var aaa =(string)_userInfoToken.AccountTeam;
+            var aaad = _userInfoToken.CompanyAccountId;
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
-            var companyAccountId = await _userRepository.FindAsync(LoginUserId);
+            var userDetails = await _userRepository.FindAsync(LoginUserId);
 
             if (!expenseResource.MasterExpenseId.HasValue)
             {
@@ -105,22 +107,32 @@ namespace BTTEM.Repository
 
             if (Role.Id == new Guid("241772cb-c907-4961-88cb-a0bf8004bbb2"))
             {
-                if (companyAccountId.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                //if (companyAccountId.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                //{
+                //    collectionBeforePaging = collectionBeforePaging
+                //                        .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                //}
+                //else if (companyAccountId.CompanyAccountId == new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"))
+                //{
+                //    collectionBeforePaging = collectionBeforePaging
+                //                        .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"));
+                //}
+                //else
+                //{
+                //    collectionBeforePaging = collectionBeforePaging
+                //                        .Where(m => m.CreatedByUser.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91") 
+                //                         && m.CreatedByUser.CompanyAccountId != new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"));
+                //}
+                               
+                if(userDetails!=null)
                 {
-                    collectionBeforePaging = collectionBeforePaging
-                                        .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+                    if (!string.IsNullOrEmpty(userDetails.AccountTeamActionFor))
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                           .Where(a => a.AccountTeam == userDetails.AccountTeamActionFor);
+                    }
                 }
-                else if (companyAccountId.CompanyAccountId == new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"))
-                {
-                    collectionBeforePaging = collectionBeforePaging
-                                        .Where(m => m.CreatedByUser.CompanyAccountId == new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"));
-                }
-                else
-                {
-                    collectionBeforePaging = collectionBeforePaging
-                                        .Where(m => m.CreatedByUser.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91") 
-                                         && m.CreatedByUser.CompanyAccountId != new Guid("be97d8be-0a34-4546-ace8-7e9bebc5bd68"));
-                }
+                
             }
 
             if (expenseResource.CompanyAccountId.HasValue)

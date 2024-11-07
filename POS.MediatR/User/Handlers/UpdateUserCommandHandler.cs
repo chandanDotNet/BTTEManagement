@@ -102,6 +102,7 @@ namespace POS.MediatR.Handlers
             appUser.ApprovalLevel = request.ApprovalLevel;
             appUser.IsCompanyVehicleUser = request.IsCompanyVehicleUser;
             appUser.AlternateEmail = request.AlternateEmail;
+            appUser.AccountTeam = request.AccountTeam;
 
             string oldProfilePhoto = appUser.ProfilePhoto;
             //oldProfilePhoto = appUser.ProfilePhoto;

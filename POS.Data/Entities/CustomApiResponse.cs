@@ -89,6 +89,7 @@ namespace BTTEM.Data.Entities
         public int ApprovalLevel { get; set; }
         public bool IsCompanyVehicleUser { get; set; }
         public string AlternateEmail { get; set; }
+        public string AccountTeam { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }

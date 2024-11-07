@@ -32,6 +32,7 @@ namespace BTTEM.MediatR.Commands
         public int? AccountsApprovalStage { get; set; }
         public string ReceiptName { get; set; }
         public string DocumentData { get; set; }
+        public string? AccountTeam { get; set; }
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public List<UpdateExpenseCommand> ExpenseDetails { get; set; }
 

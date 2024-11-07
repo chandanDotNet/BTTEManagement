@@ -74,5 +74,7 @@ namespace POS.Data
         public string? FrequentFlyerNumber { get; set; }
         public int? ApprovalLevel { get; set; }
         public bool IsCompanyVehicleUser { get; set; }
+        public string? AccountTeam { get; set; }
+        public string? AccountTeamActionFor { get; set; }
     }
 }

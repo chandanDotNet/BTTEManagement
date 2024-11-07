@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
+using POS.Data.Dto;
 using POS.Domain;
 using POS.Helper;
 using POS.MediatR.CommandAndQuery;
@@ -33,7 +34,8 @@ namespace BTTEM.MediatR.Handlers
         private readonly ILogger<UpdateMasterExpenseCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
-
+        private readonly UserInfoToken _userInfoToken;
+        private ICompanyAccountRepository _companyAccountRepository;
         public UpdateMasterExpenseCommandHandler(
             IMasterExpenseRepository masterExpenseRepository,
             IUnitOfWork<POSDbContext> uow,
@@ -41,7 +43,9 @@ namespace BTTEM.MediatR.Handlers
             ILogger<UpdateMasterExpenseCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IGroupExpenseRepository groupExpenseRepository)
+            IGroupExpenseRepository groupExpenseRepository,
+            UserInfoToken userInfoToken,
+            ICompanyAccountRepository companyAccountRepository)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -50,6 +54,8 @@ namespace BTTEM.MediatR.Handlers
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
             _groupExpenseRepository = groupExpenseRepository;
+            _userInfoToken = userInfoToken;
+            _companyAccountRepository = companyAccountRepository;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateMasterExpenseCommand request, CancellationToken cancellationToken)
@@ -132,6 +138,19 @@ namespace BTTEM.MediatR.Handlers
                     {
                         _logger.LogError("Error while saving files", entityExist);
                     }
+                }
+            }
+
+            if (request.CompanyAccountId.HasValue && _userInfoToken.CompanyAccountId.HasValue)
+            {
+                if (request.CompanyAccountId == _userInfoToken.CompanyAccountId)
+                {
+                    request.AccountTeam = _userInfoToken.AccountTeam;
+                }
+                else
+                {
+                    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
+                    request.AccountTeam = company.AccountTeam;
                 }
             }
 

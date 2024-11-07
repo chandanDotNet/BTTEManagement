@@ -56,6 +56,7 @@ namespace BTTEM.Data
         public decimal ThirdLevelReimbursementAmount { get; set; } = 0;
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
+        public string? AccountTeam { get; set; }
         public CompanyAccount CompanyAccounts { get; set; }
         public List<GroupExpense> GroupExpenses { get; set; }
     }

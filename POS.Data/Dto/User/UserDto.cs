@@ -64,6 +64,8 @@ namespace POS.Data.Dto
         public string? FrequentFlyerNumber { get; set; }
         public int? ApprovalLevel { get; set; }
         public bool IsCompanyVehicleUser { get; set; }
+        public string? AccountTeam { get; set; }
+        public string? AccountTeamActionFor { get; set; }
         // public UserDto ReportingToDetails { get; set; }
 
     }
