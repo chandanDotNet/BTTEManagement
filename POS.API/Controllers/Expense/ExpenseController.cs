@@ -3243,6 +3243,41 @@ namespace POS.API.Controllers.Expense
             var result = await _mediator.Send(command);
             return ReturnFormattedResponse(result);
         }
+
+
+        /// <summary>
+        /// Change Expense Account Team.
+        /// </summary>      
+        /// <param name="changeExpenseAccountTeamCommand"></param>
+        /// <returns></returns>
+        [HttpPut("ChangeExpenseAccountTeam")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> ChangeExpenseAccountTeam([FromBody] ChangeExpenseAccountTeamCommand changeExpenseAccountTeamCommand)
+        {
+            ResponseData response = new ResponseData();
+            int Response = 0;
+            var result = await _mediator.Send(changeExpenseAccountTeamCommand);
+            if (result.Success)
+            {
+                Response = 1;
+
+            }
+            if (Response > 0)
+            {
+                response.status = true;
+                response.StatusCode = 200;
+                response.message = "Success";
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = 500;
+                response.message = "Error";
+            }
+            return Ok(response);
+            
+            //return ReturnFormattedResponse(result);
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using Azure;
 using BTTEM.Data.Entities;
+using BTTEM.MediatR.CommandAndQuery;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -47,6 +48,35 @@ namespace POS.API.Controllers.Authentication
         public async Task<IActionResult> AppLogin(UserLoginCommand userLoginCommand)
         {
             userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var result = await _mediator.Send(userLoginCommand);
+            LoginResponse response = new LoginResponse();
+            if (result.Success)
+            {
+                response.status = result.Success;
+                response.StatusCode = result.StatusCode;
+                response.message = "Login Success";
+                response.Data = result.Data;
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = result.StatusCode;
+                response.message = "Login failed. Username/Password incorrect.";
+                response.Data = new UserAuthDto();
+            }
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// User Login For App
+        /// </summary>
+        /// <param name="userLoginCommand"></param>
+        /// <returns></returns>
+        [HttpPost("HRMSLogin")]
+        [Produces("application/json", "application/xml", Type = typeof(UserAuthDto))]
+        public async Task<IActionResult> HRMSLogin(HRMSUserLoginCommand userLoginCommand)
+        {
+           // userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             var result = await _mediator.Send(userLoginCommand);
             LoginResponse response = new LoginResponse();
             if (result.Success)
