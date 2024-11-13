@@ -91,7 +91,9 @@ namespace POS.API.Controllers.Authentication
                 response.status = false;
                 response.StatusCode = result.StatusCode;
                 response.message = "Login failed. Username/Password incorrect.";
-                response.Data = new UserAuthDto();
+               // response.Data = new UserAuthDto();
+                
+                return StatusCode(401, response);
             }
             return Ok(response);
         }

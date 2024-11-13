@@ -132,7 +132,8 @@ namespace BTTEM.Repository.Expense
                         CompanyAccountId = cs.CompanyAccountId,
                         BillingCompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccounts),
                         ReceiptPath = cs.ReceiptPath,
-                        ReceiptName = cs.ReceiptName
+                        ReceiptName = cs.ReceiptName,
+                        AccountTeam= cs.AccountTeam
                         //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                         //{
                         //    Id = c.Id,
@@ -216,7 +217,8 @@ namespace BTTEM.Repository.Expense
                  CompanyAccountId = cs.CompanyAccountId,
                  BillingCompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccounts),
                  ReceiptPath = cs.ReceiptPath,
-                 ReceiptName = cs.ReceiptName
+                 ReceiptName = cs.ReceiptName,
+                 AccountTeam = cs.AccountTeam
                  //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                  //{
                  //    Id = c.Id,
