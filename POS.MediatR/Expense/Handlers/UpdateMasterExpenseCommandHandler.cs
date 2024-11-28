@@ -143,15 +143,17 @@ namespace BTTEM.MediatR.Handlers
 
             if (request.CompanyAccountId.HasValue && _userInfoToken.CompanyAccountId.HasValue)
             {
-                if (request.CompanyAccountId == _userInfoToken.CompanyAccountId)
-                {
-                    request.AccountTeam = _userInfoToken.AccountTeam;
-                }
-                else
-                {
-                    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
-                    request.AccountTeam = company.AccountTeam;
-                }
+                request.AccountTeam = _userInfoToken.AccountTeam;
+
+                //if (request.CompanyAccountId == _userInfoToken.CompanyAccountId)
+                //{
+                //    request.AccountTeam = _userInfoToken.AccountTeam;
+                //}
+                //else
+                //{
+                //    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
+                //    request.AccountTeam = company.AccountTeam;
+                //}
             }
 
             _masterExpenseRepository.Update(entityExist);

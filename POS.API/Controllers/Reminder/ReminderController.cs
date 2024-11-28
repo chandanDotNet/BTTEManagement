@@ -35,7 +35,7 @@ namespace POS.API.Controllers
         /// <param name="reminderResource">The reminder resource.</param>
         /// <returns></returns>
         [HttpGet("GetReminders")]
-        [ClaimCheck("REM_VIEW_REMINDERS")]
+        //[ClaimCheck("REM_VIEW_REMINDERS")]
         [Produces("application/json", "application/xml", Type = typeof(ReminderList))]
         public async Task<IActionResult> GetReminders([FromQuery] ReminderResource reminderResource)
         {

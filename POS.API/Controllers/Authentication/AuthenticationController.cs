@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using POS.Data.Dto;
 using POS.MediatR.CommandAndQuery;
+using System;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace POS.API.Controllers.Authentication
@@ -68,7 +72,7 @@ namespace POS.API.Controllers.Authentication
         }
 
         /// <summary>
-        /// User Login For App
+        /// User Login For HRMS
         /// </summary>
         /// <param name="userLoginCommand"></param>
         /// <returns></returns>
@@ -76,7 +80,48 @@ namespace POS.API.Controllers.Authentication
         [Produces("application/json", "application/xml", Type = typeof(UserAuthDto))]
         public async Task<IActionResult> HRMSLogin(HRMSUserLoginCommand userLoginCommand)
         {
-           // userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            // userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            //string Ukey = Guid.NewGuid().ToString().GetHashCode().ToString("X");
+            //var plainTextBytes = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Ukey));
+           
+            var result = await _mediator.Send(userLoginCommand);
+            HRMSLoginResponse response = new HRMSLoginResponse();
+            if (result.Success)
+            {
+                response.status = result.Success;
+                response.StatusCode = result.StatusCode;
+                response.message = "Login Success";
+                response.accesskey = result.Data.Accesskey;
+            }
+            else
+            {
+                response.status = false;
+                response.StatusCode = result.StatusCode;
+                response.message = "Login failed. Username/Password incorrect.";
+               // response.Data = new UserAuthDto();
+                
+                return StatusCode(401, response);
+            }
+            return Ok(response);
+        }
+
+
+        /// <summary>
+        /// User Login For HRMS Verify 
+        /// </summary>
+        /// <param name="userLoginCommand"></param>
+        /// <returns></returns>
+        [HttpGet("HRMSLoginVerify")]
+        [Produces("application/json", "application/xml", Type = typeof(UserAuthDto))]
+        public async Task<IActionResult> HRMSLoginVerify(string Accesskey)
+        {
+            HRMSUserLoginCommand userLoginCommand = new HRMSUserLoginCommand();
+            // userLoginCommand.RemoteIp = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            //string Ukey = Guid.NewGuid().ToString().GetHashCode().ToString("X");
+            //var plainTextBytes = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Ukey));
+            var base64EncodedBytes = System.Convert.FromBase64String(Accesskey);
+            string accesskey = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            userLoginCommand.Accesskey = accesskey;
             var result = await _mediator.Send(userLoginCommand);
             LoginResponse response = new LoginResponse();
             if (result.Success)
@@ -91,8 +136,8 @@ namespace POS.API.Controllers.Authentication
                 response.status = false;
                 response.StatusCode = result.StatusCode;
                 response.message = "Login failed. Username/Password incorrect.";
-               // response.Data = new UserAuthDto();
-                
+                // response.Data = new UserAuthDto();
+
                 return StatusCode(401, response);
             }
             return Ok(response);
@@ -118,5 +163,7 @@ namespace POS.API.Controllers.Authentication
             }
             return Ok(response);
         }
+
+        
     }
 }

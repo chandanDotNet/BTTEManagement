@@ -70,6 +70,8 @@ namespace BTTEM.MediatR.Expense.Handlers
                     expenseData.Others = (decimal)rdr["Others"];
                     expenseData.Total = (decimal)rdr["Total"];
                     expenseData.Remarks =rdr["Remarks"].ToString();
+                    expenseData.ExpenseNo = rdr["ExpenseNo"].ToString();
+                    expenseData.TripNo = rdr["TripNo"].ToString();
                     expenseDataList.Add(expenseData);
                 }
                 con.Close();
@@ -106,6 +108,8 @@ namespace BTTEM.MediatR.Expense.Handlers
                     expenseUserData.DuratioOfTravelFrom = rdr["DuratioOfTravelFrom"].ToString();
                     expenseUserData.DuratioOfTravelTo = rdr["DuratioOfTravelTo"].ToString();
                     expenseUserData.ApprovedBy = rdr["ApprovedBy"].ToString();
+                    expenseUserData.ExpenseNo = rdr["ExpenseNo"].ToString();
+                    expenseUserData.TripNo = rdr["TripNo"].ToString();
                    
                    // expenseDataList.Add(expenseData);
                 }
