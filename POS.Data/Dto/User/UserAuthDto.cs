@@ -40,6 +40,8 @@ namespace POS.Data.Dto
         public int? ApprovalLevel { get; set; }
         public bool IsCompanyVehicleUser { get; set; }
         public string BearerToken { get; set; }
+        public string? AccountTeam { get; set; }
+        public string? Accesskey { get; set; }
         public List<RoleDto> UserRoles { get; set; } = new List<RoleDto>();
         public List<AppClaimDto> Claims { get; set; }
         

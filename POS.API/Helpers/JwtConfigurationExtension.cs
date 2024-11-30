@@ -49,10 +49,13 @@ namespace POS.API.Helpers
                         {
                             var userName = accessToken.Claims.FirstOrDefault(a => a.Type == Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub)?.Value;
                             var email = accessToken.Claims.FirstOrDefault(a => a.Type == "Email")?.Value;
+                            var companyAccountId = accessToken.Claims.FirstOrDefault(a => a.Type == "CompanyAccountId")?.Value;
+                            var accountTeam = accessToken.Claims.FirstOrDefault(a => a.Type == "AccountTeam")?.Value;
                             context.HttpContext.Items["Id"] = userName;
                             var userInfoToken = context.HttpContext.RequestServices.GetRequiredService<UserInfoToken>();
                             userInfoToken.Id = userName;
-                            userInfoToken.Email = email;
+                            userInfoToken.CompanyAccountId = Guid.Parse(companyAccountId);
+                            userInfoToken.AccountTeam = accountTeam;
                         }
                         return Task.CompletedTask;
                     }

@@ -141,7 +141,8 @@ namespace POS.Repository
                     FrequentFlyerNumber = c.FrequentFlyerNumber,
                     ApprovalLevel = c.ApprovalLevel,
                     IsCompanyVehicleUser = c.IsCompanyVehicleUser,
-                    AlternateEmail = c.AlternateEmail
+                    AlternateEmail = c.AlternateEmail,
+                    AccountTeam = c.AccountTeam
                 })
                 .ToListAsync();
             return entities;

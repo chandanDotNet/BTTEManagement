@@ -47,6 +47,7 @@ namespace POS.MediatR.CommandAndQuery
         public string FrequentFlyerNumber { get; set; }
         public int ApprovalLevel { get; set; } = 0;
         public bool IsCompanyVehicleUser { get; set; }
+        public string? AccountTeam { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
     }
 }

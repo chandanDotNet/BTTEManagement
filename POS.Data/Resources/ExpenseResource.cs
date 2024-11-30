@@ -32,6 +32,6 @@ namespace POS.Data.Resources
         public Guid? CompanyAccountId { get; set; }
         public int? Month { get; set; }
         public int? Year { get; set; }
-
+        public string? AccountTeam { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace BTTEM.Data
         public string? ReceiptName { get; set; }
         public string? ReceiptPath { get; set; }
         public int? CompanyAccountsApprovalLevel { get; set; }
+        public string? AccountTeam { get; set; }
 
     }
 }

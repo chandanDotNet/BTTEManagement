@@ -89,6 +89,7 @@ namespace BTTEM.Data.Entities
         public int ApprovalLevel { get; set; }
         public bool IsCompanyVehicleUser { get; set; }
         public string AlternateEmail { get; set; }
+        public string AccountTeam { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }
@@ -115,6 +116,8 @@ namespace BTTEM.Data.Entities
         public string DuratioOfTravelFrom { get; set; }
         public string DuratioOfTravelTo { get; set; }
         public string ApprovedBy { get; set; }
+        public string ExpenseNo { get; set; }
+        public string TripNo { get; set; }
 
 
     }
@@ -130,6 +133,8 @@ namespace BTTEM.Data.Entities
         public decimal Others { get; set; }
         public decimal Total { get; set; }
         public string Remarks { get; set; }    
+        public string ExpenseNo { get; set; }    
+        public string TripNo { get; set; }    
 
 
     }
@@ -294,6 +299,12 @@ namespace BTTEM.Data.Entities
         public int StatusCode { get; set; }
         public string message { get; set; }
     }
+    public class HRMSLoginResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public string accesskey { get; set; }
+    }
 
-   
 }

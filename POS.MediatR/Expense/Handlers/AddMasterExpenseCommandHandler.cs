@@ -38,6 +38,8 @@ namespace BTTEM.MediatR.CommandAndQuery
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
         private IMediator _mediator;
+        private ICompanyAccountRepository _companyAccountRepository;
+
 
         public AddMasterExpenseCommandHandler(
             IMasterExpenseRepository masterExpenseRepository,
@@ -48,7 +50,8 @@ namespace BTTEM.MediatR.CommandAndQuery
             PathHelper pathHelper,
             UserInfoToken userInfoToken,
             IUserRoleRepository userRoleRepository,
-            IMediator mediator)
+            IMediator mediator,
+            ICompanyAccountRepository companyAccountRepository)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -59,6 +62,7 @@ namespace BTTEM.MediatR.CommandAndQuery
             _userInfoToken = userInfoToken;
             _userRoleRepository = userRoleRepository;
             _mediator = mediator;
+            _companyAccountRepository = companyAccountRepository;
         }
 
 
@@ -135,6 +139,21 @@ namespace BTTEM.MediatR.CommandAndQuery
                 request.AccountsCheckerThreeStatus = "PENDING";
                 request.IsExpenseChecker = true;
             }
+            if (request.CompanyAccountId.HasValue && _userInfoToken.CompanyAccountId.HasValue)
+            {
+                request.AccountTeam = _userInfoToken.AccountTeam;
+
+                //if(request.CompanyAccountId== _userInfoToken.CompanyAccountId)
+                //{
+                //    request.AccountTeam = _userInfoToken.AccountTeam;
+                //}
+                //else
+                //{
+                //    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
+                //    request.AccountTeam = company.AccountTeam;
+                //}
+            }
+            
 
             var entity = _mapper.Map<MasterExpense>(request);
             entity.Id = Guid.NewGuid();

@@ -659,7 +659,7 @@ namespace POS.API.Controllers
         [HttpGet("GetUserInfoDetails/{id}")]
         public async Task<IActionResult> GetUserInfoDetails(Guid id)
         {
-            var ReportQuery = new GetUserInfoDetailsQuery { UserId = id };
+            var ReportQuery = new GetUserInfoDetailsQuery { UserId = id }; 
             var result = await _mediator.Send(ReportQuery);
 
             if (result != null)

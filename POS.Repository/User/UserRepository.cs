@@ -182,6 +182,7 @@ namespace POS.Repository
             ret.ApprovalLevel = appUser.ApprovalLevel;
             ret.IsCompanyVehicleUser = appUser.IsCompanyVehicleUser;
             ret.AlternateEmail = appUser.AlternateEmail;
+            ret.AccountTeam = appUser.AccountTeam;
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);
             ret.Claims = appClaimDtos;
@@ -242,6 +243,9 @@ namespace POS.Repository
               Encoding.UTF8.GetBytes(_settings.Key));
             claims.Add(new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub.ToString(), Id.ToString()));
             claims.Add(new Claim("Email", authUser.Email));
+            claims.Add(new Claim("CompanyAccountId", authUser.CompanyAccountId.ToString()));
+            claims.Add(new Claim("AccountTeam", authUser.AccountTeam.IsNullOrEmpty()? "AC1": authUser.AccountTeam));
+            //string guid = authUser.CompanyAccountId.ToString();
             // Create the JwtSecurityToken object
             var token = new JwtSecurityToken(
               issuer: _settings.Issuer,
