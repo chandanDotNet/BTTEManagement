@@ -111,7 +111,7 @@ namespace BTTEM.MediatR.Expense.Handlers
                     expenseUserData.ExpenseNo = rdr["ExpenseNo"].ToString();
                     expenseUserData.TripNo = rdr["TripNo"].ToString();
                    
-                   // expenseDataList.Add(expenseData);
+                   // expenseDataList.Add(expenseData); 
                 }
                 con.Close();
             }
