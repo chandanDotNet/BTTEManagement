@@ -39,3 +39,4 @@ msbuild.wrn
 /POS.API/wwwroot/TravelDeskAttachments
 /POS.API/Properties/PublishProfiles
 /POS.API/appsettings.Development.json
+/POS.API/BTTEM.API.csproj
