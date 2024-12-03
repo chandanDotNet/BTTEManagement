@@ -2465,39 +2465,39 @@ namespace POS.API.Controllers.Expense
                 response.StatusCode = 200;
                 //dashboardReportData.Data = result;
 
-                string email = this._configuration.GetSection("AppSettings")["Email"];
-                if (email == "Yes")
-                {
-                    var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseReimburse.html");
-                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+                //string email = this._configuration.GetSection("AppSettings")["Email"];
+                //if (email == "Yes")
+                //{
+                //    var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateAllExpenseAndMasterExpenseApprovalLevelCommand.AllExpenseAndMasterExpenseApprovalLevelCommand.FirstOrDefault().MasterExpenseId).FirstOrDefaultAsync();
+                //    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseReimburse.html");
+                //    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                //    var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
-                    using (StreamReader sr = new StreamReader(filePath))
-                    {
-                        string templateBody = sr.ReadToEnd();
-                        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
-                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                        templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
-                        templateBody = templateBody.Replace("{REIMBURMENT_STATUS}", Convert.ToString(responseData.ReimbursementStatus));
-                        templateBody = templateBody.Replace("{TOTAL_AMOUNT}", Convert.ToString(responseData.TotalAmount));
-                        templateBody = templateBody.Replace("{PAYABLE_AMOUNT}", Convert.ToString(responseData.PayableAmount));
-                        templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.ReimbursementAmount));
-                        EmailHelper.SendEmail(new SendEmailSpecification
-                        {
-                            Body = templateBody,
-                            FromAddress = defaultSmtp.UserName,
-                            Host = defaultSmtp.Host,
-                            IsEnableSSL = defaultSmtp.IsEnableSSL,
-                            Password = defaultSmtp.Password,
-                            Port = defaultSmtp.Port,
-                            Subject = "Expense Reimbursed Status",
-                            ToAddress = responseData.CreatedByUser.UserName,
-                            CCAddress = userResult.UserName,
-                            UserName = defaultSmtp.UserName
-                        });
-                    }
-                }
+                //    using (StreamReader sr = new StreamReader(filePath))
+                //    {
+                //        string templateBody = sr.ReadToEnd();
+                //        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                //        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                //        templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
+                //        templateBody = templateBody.Replace("{REIMBURMENT_STATUS}", Convert.ToString(responseData.ReimbursementStatus));
+                //        templateBody = templateBody.Replace("{TOTAL_AMOUNT}", Convert.ToString(responseData.TotalAmount));
+                //        templateBody = templateBody.Replace("{PAYABLE_AMOUNT}", Convert.ToString(responseData.PayableAmount));
+                //        templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.ReimbursementAmount));
+                //        EmailHelper.SendEmail(new SendEmailSpecification
+                //        {
+                //            Body = templateBody,
+                //            FromAddress = defaultSmtp.UserName,
+                //            Host = defaultSmtp.Host,
+                //            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                //            Password = defaultSmtp.Password,
+                //            Port = defaultSmtp.Port,
+                //            Subject = "Expense Reimbursed Status",
+                //            ToAddress = responseData.CreatedByUser.UserName,
+                //            CCAddress = userResult.UserName,
+                //            UserName = defaultSmtp.UserName
+                //        });
+                //    }
+                //}
 
                 //**Email End**
 
