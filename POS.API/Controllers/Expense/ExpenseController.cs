@@ -530,7 +530,7 @@ namespace POS.API.Controllers.Expense
             if (addMasterExpenseCommand.TripId.HasValue)
             {
                 //var exitExpense = _masterExpenseRepository.All.Where(a => a.TripId == addMasterExpenseCommand.TripId).FirstOrDefault(); 
-                //if(exitExpense==null)
+                //if(exitExpense==null) 
                 //{
                 //    return ReturnFormattedResponse("sss");
                 //}
