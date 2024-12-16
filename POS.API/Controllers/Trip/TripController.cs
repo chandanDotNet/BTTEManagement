@@ -391,7 +391,7 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
-                //var addTripTrackingCommand = new AddTripTrackingCommand()
+                //var addTripTrackingCommand = new AddTripTrackingCommand() 
                 //{
                 //    TripId = result.Data.TripId,
                 //    TripItineraryId = result.Data.Id,

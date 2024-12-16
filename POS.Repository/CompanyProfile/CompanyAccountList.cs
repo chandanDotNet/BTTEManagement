@@ -46,9 +46,9 @@ namespace BTTEM.Repository
 
         public async Task<List<CompanyAccountDto>> GetDtos(IQueryable<CompanyAccount> source, int skip, int pageSize)
         {
-            var entities = await source
-                .Skip(skip)
-                .Take(pageSize)
+            if (pageSize == 0)
+            {
+                var entities = await source                          
                 .Select(c => new CompanyAccountDto
                 {
                     Id = c.Id,
@@ -62,7 +62,29 @@ namespace BTTEM.Repository
                     AccountTeam = c.AccountTeam,
 
                 }).ToListAsync();
-            return entities;
+                return entities;
+            }
+            else
+            {
+                var entities = await source
+               .Skip(skip)
+               .Take(pageSize)
+               .Select(c => new CompanyAccountDto
+               {
+                   Id = c.Id,
+                   AccountName = c.AccountName,
+                   CompanyProfileId = c.CompanyProfileId,
+                   GSTCount = c.CompanyGST.Count(),
+                   ReceiptName = c.ReceiptName,
+                   AccountCode = c.AccountCode,
+                   ReceiptPath = c.ReceiptPath,
+                   CompanyAccountsApprovalLevel = c.CompanyAccountsApprovalLevel,
+                   AccountTeam = c.AccountTeam,
+
+               }).ToListAsync();
+                return entities;
+            }
         }
+
     }
 }
