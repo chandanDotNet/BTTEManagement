@@ -28,13 +28,15 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly ILogger<AddTripHotelBookingCommandHandler> _logger;
         private readonly IUserRepository _userRepository;
         private readonly UserInfoToken _userInfoToken;
+        private readonly ITripRepository _tripRepository;
         public AddTripHotelBookingCommandHandler(
            ITripHotelBookingRepository tripHotelBookingRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
            ILogger<AddTripHotelBookingCommandHandler> logger,
            IUserRepository userRepository,
-           UserInfoToken userInfoToken
+           UserInfoToken userInfoToken,
+           ITripRepository tripRepository
           )
         {
             _tripHotelBookingRepository = tripHotelBookingRepository;
@@ -43,6 +45,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             _logger = logger;
             _userRepository = userRepository;
             _userInfoToken = userInfoToken;
+            _tripRepository = tripRepository;
         }
 
         public async Task<ServiceResponse<TripHotelBookingDto>> Handle(AddTripHotelBookingCommand request, CancellationToken cancellationToken)
@@ -63,6 +66,13 @@ namespace BTTEM.MediatR.Trip.Handlers
                 }
 
                 _tripHotelBookingRepository.Add(entity);
+            }
+
+            if (userDetails.UserRoles.FirstOrDefault().RoleId == Guid.Parse("F72616BE-260B-41BB-A4EE-89146622179A"))
+            {
+                var existEntity = await _tripRepository.FindAsync(request.tripHotelBooking.FirstOrDefault().TripId.Value);
+                existEntity.TripEnds = request.tripHotelBooking.FirstOrDefault().CheckOut.Value;
+                _tripRepository.Update(existEntity);
             }
 
             //var entity = _mapper.Map<BTTEM.Data.TripItinerary>(request);            
