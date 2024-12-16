@@ -30,6 +30,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     {
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly UserInfoToken _userInfoToken;
+        private readonly IUserRepository _userRepository;
 
         private readonly IMasterExpenseRepository _masterExpenseRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
@@ -51,7 +52,8 @@ namespace BTTEM.MediatR.CommandAndQuery
             UserInfoToken userInfoToken,
             IUserRoleRepository userRoleRepository,
             IMediator mediator,
-            ICompanyAccountRepository companyAccountRepository)
+            ICompanyAccountRepository companyAccountRepository,
+            IUserRepository userRepository)
         {
             _masterExpenseRepository = masterExpenseRepository;
             _uow = uow;
@@ -63,11 +65,14 @@ namespace BTTEM.MediatR.CommandAndQuery
             _userRoleRepository = userRoleRepository;
             _mediator = mediator;
             _companyAccountRepository = companyAccountRepository;
+            _userRepository = userRepository;
         }
 
 
         public async Task<ServiceResponse<MasterExpenseDto>> Handle(AddMasterExpenseCommand request, CancellationToken cancellationToken)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
             var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
 
@@ -152,8 +157,7 @@ namespace BTTEM.MediatR.CommandAndQuery
                 //    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
                 //    request.AccountTeam = company.AccountTeam;
                 //}
-            }
-            
+            }            
 
             var entity = _mapper.Map<MasterExpense>(request);
             entity.Id = Guid.NewGuid();
@@ -161,6 +165,12 @@ namespace BTTEM.MediatR.CommandAndQuery
             entity.ApprovalStage = "PENDING";
             entity.ReimbursementStatus = "PENDING";
             entity.RollbackCount = 0;
+
+            if (userDetails.IsDirector)
+            {
+                entity.ApprovalStage = "APPROVED";
+                entity.ReimbursementStatus = "APPROVED";
+            }
 
             entity.GroupExpenses.ForEach(item =>
             {

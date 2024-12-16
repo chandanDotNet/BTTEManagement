@@ -15,7 +15,7 @@ namespace BTTEM.API.Helpers.Mapping
             CreateMap<GroupTrip, GroupTripDto>().ReverseMap();
 
             CreateMap<AddTripCommand, Trip>();
-            CreateMap<UpdateTripCommand, Trip>();
+            CreateMap<UpdateTripCommand, Trip>().ReverseMap();
         }
     }
 }

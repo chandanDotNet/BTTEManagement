@@ -31,6 +31,8 @@ namespace POS.MediatR.Handlers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
         private readonly IExpenseDocumentRepository _expenseDocumentRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly UserInfoToken _userInfoToken;
 
         public AddExpenseCommandHandler(
             IExpenseRepository expenseRepository,
@@ -39,7 +41,9 @@ namespace POS.MediatR.Handlers
             ILogger<AddExpenseCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
             PathHelper pathHelper,
-            IExpenseDocumentRepository expenseDocumentRepository)
+            IExpenseDocumentRepository expenseDocumentRepository,
+            IUserRepository userRepository,
+           UserInfoToken userInfoToken)
         {
             _expenseRepository = expenseRepository;
             _uow = uow;
@@ -48,12 +52,20 @@ namespace POS.MediatR.Handlers
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
             _expenseDocumentRepository = expenseDocumentRepository;
+            _userRepository = userRepository;
+            _userInfoToken = userInfoToken;
         }
 
         public async Task<ServiceResponse<ExpenseDto>> Handle(AddExpenseCommand request, CancellationToken cancellationToken)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+
             var entity = _mapper.Map<Expense>(request);
 
+            if (userDetails.IsDirector == true)
+            {
+                entity.Status = "APPROVED";
+            }
 
             //if (!string.IsNullOrWhiteSpace(request.ReceiptName) && !string.IsNullOrWhiteSpace(request.DocumentData))
             //{

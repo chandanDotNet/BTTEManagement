@@ -51,6 +51,7 @@ namespace POS.MediatR.CommandAndQuery
         public int? ApprovalLevel { get; set; }
         public bool IsCompanyVehicleUser { get; set; }
         public string? AccountTeam { get; set; }
+        public bool IsDirector { get; set; }
         public List<UserRoleDto>? UserRoles { get; set; } = new List<UserRoleDto>();
 
     }

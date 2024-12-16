@@ -183,6 +183,9 @@ namespace POS.Repository
             ret.IsCompanyVehicleUser = appUser.IsCompanyVehicleUser;
             ret.AlternateEmail = appUser.AlternateEmail;
             ret.AccountTeam = appUser.AccountTeam;
+
+            ret.IsDirector = appUser.IsDirector;
+
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);
             ret.Claims = appClaimDtos;

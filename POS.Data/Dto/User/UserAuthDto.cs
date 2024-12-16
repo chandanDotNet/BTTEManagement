@@ -42,6 +42,7 @@ namespace POS.Data.Dto
         public string BearerToken { get; set; }
         public string? AccountTeam { get; set; }
         public string? Accesskey { get; set; }
+        public bool IsDirector { get; set; }
         public List<RoleDto> UserRoles { get; set; } = new List<RoleDto>();
         public List<AppClaimDto> Claims { get; set; }
         

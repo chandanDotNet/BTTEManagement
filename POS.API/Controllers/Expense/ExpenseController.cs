@@ -520,6 +520,8 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddMasterExpense([FromBody] AddMasterExpenseCommand addMasterExpenseCommand)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+
             GetNewExpenseNumberCommand getNewExpenseNumber = new GetNewExpenseNumberCommand();
             string ExpenseNo = await _mediator.Send(getNewExpenseNumber);
             addMasterExpenseCommand.ExpenseNo = ExpenseNo;
@@ -570,13 +572,20 @@ namespace POS.API.Controllers.Expense
                     addExpenseCommand = item;
                     addExpenseCommand.MasterExpenseId = id;
                     addExpenseCommand.TripId = result.Data.TripId;
-                    if (addExpenseCommand.Amount > 0)
+                    if (userDetails.IsDirector)
                     {
-                        addExpenseCommand.Status = "PENDING";
+                        addExpenseCommand.Status = "APPROVED";
                     }
                     else
                     {
-                        addExpenseCommand.Status = "APPROVED";
+                        if (addExpenseCommand.Amount > 0)
+                        {
+                            addExpenseCommand.Status = "PENDING";
+                        }
+                        else
+                        {
+                            addExpenseCommand.Status = "APPROVED";
+                        }
                     }
 
                     var result2 = await _mediator.Send(addExpenseCommand);
@@ -692,7 +701,14 @@ namespace POS.API.Controllers.Expense
                                     foreach (var expense in expenseList)
                                     {
                                         updateExpenseStatusCommand.Id = expense.Id;
-                                        updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                        if (userDetails.IsDirector)
+                                        {
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                        }
+                                        else
+                                        {
+                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                        }
                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                     }
@@ -723,6 +739,11 @@ namespace POS.API.Controllers.Expense
                                     {
                                         foreach (var expense in expenseList)
                                         {
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            }
                                             if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
@@ -734,7 +755,20 @@ namespace POS.API.Controllers.Expense
                                     }
                                     //}
                                 }
-
+                                //dddd
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
                             }
                             //-- Lodging (Other City)
                             if (item.Id == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D"))
@@ -760,6 +794,11 @@ namespace POS.API.Controllers.Expense
                                     {
                                         foreach (var expense in expenseList)
                                         {
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            }
                                             if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
@@ -772,6 +811,20 @@ namespace POS.API.Controllers.Expense
                                     //}
                                 }
 
+                                //dddd
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
                             }
 
                             //--Conveyance (within a City)
@@ -803,7 +856,14 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        if (userDetails.IsDirector)
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                                        }
+                                                        else
+                                                        {
+                                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        }
                                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
@@ -818,8 +878,17 @@ namespace POS.API.Controllers.Expense
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
                                                     //updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                    updateExpenseStatusCommand.Status = "PENDING";
-                                                    updateExpenseStatusCommand.PayableAmount = 0;
+                                                    if (userDetails.IsDirector)
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                    }
+                                                    else
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "PENDING";
+                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                    }
+
                                                     var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                 }
                                             }
@@ -857,7 +926,14 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        if (userDetails.IsDirector)
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                                        }
+                                                        else
+                                                        {
+                                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        }
                                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
@@ -872,8 +948,16 @@ namespace POS.API.Controllers.Expense
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
                                                     //updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                    updateExpenseStatusCommand.Status = "PENDING";
-                                                    updateExpenseStatusCommand.PayableAmount = 0;
+                                                    if (userDetails.IsDirector)
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                    }
+                                                    else
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "PENDING";
+                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                    }
                                                     var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                 }
                                             }
@@ -904,15 +988,30 @@ namespace POS.API.Controllers.Expense
                                         if (expense.Amount <= DA)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                            }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            }
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                         else
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = "PENDING";
-                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                            }
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -947,7 +1046,14 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                if (userDetails.IsDirector)
+                                                {
+                                                    updateExpenseStatusCommand.Status = "APPROVED";
+                                                }
+                                                else
+                                                {
+                                                    updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                }
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
@@ -962,12 +1068,54 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                            }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            }
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
                                 }
+
+                                //Is Director
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            //Others
+                            if (item.Id == new Guid("6C3EB31C-DF53-495A-B871-E2EB3CEF74D2"))
+                            {
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -1009,7 +1157,9 @@ namespace POS.API.Controllers.Expense
                                 Subject = "Expense - " + DateTime.Now.Date.ToString("dd-MM-yyyy"),
                                 //ToAddress = userResult.UserName,
                                 ToAddress = reportingHead.UserName,
-                                CCAddress = userResult.UserName,
+                                CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                userResult.UserName :
+                                userResult.UserName + "," + userResult.AlternateEmail,
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -1030,6 +1180,8 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateMasterExpense([FromBody] UpdateMasterExpenseCommand updateMasterExpenseCommand)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+
             updateMasterExpenseCommand.NoOfBill = updateMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0).Count();
             updateMasterExpenseCommand.TotalAmount = updateMasterExpenseCommand.ExpenseDetails.Sum(a => a.Amount);
             var result = await _mediator.Send(updateMasterExpenseCommand);
@@ -1184,14 +1336,20 @@ namespace POS.API.Controllers.Expense
                                     foreach (var expense in expenseList)
                                     {
                                         updateExpenseStatusCommand.Id = expense.Id;
-                                        updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                        if (userDetails.IsDirector)
+                                        {
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                        }
+                                        else
+                                        {
+                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                        }
                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                     }
                                 }
 
                             }
-
                             //--Lodging (Metro City)
                             if (item.Id == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
                             {
@@ -1225,6 +1383,11 @@ namespace POS.API.Controllers.Expense
                                     {
                                         foreach (var expense in expenseList)
                                         {
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            }
                                             if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
@@ -1243,6 +1406,20 @@ namespace POS.API.Controllers.Expense
                                         }
                                     }
                                     //}
+                                }
+
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
                                 }
 
                             }
@@ -1279,6 +1456,11 @@ namespace POS.API.Controllers.Expense
                                     {
                                         foreach (var expense in expenseList)
                                         {
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            }
                                             if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
@@ -1293,14 +1475,27 @@ namespace POS.API.Controllers.Expense
                                                 updateExpenseStatusCommand.PayableAmount = 0;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
-
                                         }
                                     }
                                     //}
                                 }
 
-                            }
+                                //dddd
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
 
+                            }
                             //--Conveyance (within a City)
                             if (item.Id == new Guid("B1977DB3-D909-4936-A5DA-41BF84638963"))
                             {
@@ -1327,8 +1522,17 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.Status = "PENDING";
-                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                        if (userDetails.IsDirector)
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                        }
+                                                        else
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "PENDING";
+                                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                                        }
+
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
                                                 }
@@ -1340,7 +1544,14 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        if (userDetails.IsDirector)
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                                        }
+                                                        else
+                                                        {
+                                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        }
                                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
@@ -1355,8 +1566,17 @@ namespace POS.API.Controllers.Expense
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
                                                     //updateExpenseStatusCommand.Status = "PENDING"; updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                    updateExpenseStatusCommand.Status = "PENDING";
-                                                    updateExpenseStatusCommand.PayableAmount = 0;
+                                                    if (userDetails.IsDirector)
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                    }
+                                                    else
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "PENDING";
+                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                    }
+
                                                     var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                 }
                                             }
@@ -1364,7 +1584,6 @@ namespace POS.API.Controllers.Expense
                                     }
                                 }
                             }
-
                             //--Conveyance (city to outer area)
                             if (item.Id == new Guid("5278397A-C8DD-475A-A7A7-C05708B2BB06"))
                             {
@@ -1391,8 +1610,17 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.Status = "PENDING";
-                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                        if (userDetails.IsDirector)
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                        }
+                                                        else
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "PENDING";
+                                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                                        }
+
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
                                                 }
@@ -1404,7 +1632,14 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        if (userDetails.IsDirector)
+                                                        {
+                                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                                        }
+                                                        else
+                                                        {
+                                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                        }
                                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
@@ -1419,8 +1654,17 @@ namespace POS.API.Controllers.Expense
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
                                                     //updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                    updateExpenseStatusCommand.Status = "PENDING";
-                                                    updateExpenseStatusCommand.PayableAmount = 0;
+                                                    if (userDetails.IsDirector)
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "APPROVED";
+                                                        updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                    }
+                                                    else
+                                                    {
+                                                        updateExpenseStatusCommand.Status = "PENDING";
+                                                        updateExpenseStatusCommand.PayableAmount = 0;
+                                                    }
+
                                                     var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                 }
                                             }
@@ -1448,15 +1692,31 @@ namespace POS.API.Controllers.Expense
                                         if (expense.Amount <= DA)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                            }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            }
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                         else
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = "PENDING";
-                                            updateExpenseStatusCommand.PayableAmount = 0;
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                                updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Status = "PENDING";
+                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                            }
+
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
 
@@ -1501,8 +1761,17 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.Status = "PENDING";
-                                                updateExpenseStatusCommand.PayableAmount = 0;
+                                                if (userDetails.IsDirector)
+                                                {
+                                                    updateExpenseStatusCommand.Status = "APPROVED";
+                                                    updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                                }
+                                                else
+                                                {
+                                                    updateExpenseStatusCommand.Status = "PENDING";
+                                                    updateExpenseStatusCommand.PayableAmount = 0;
+                                                }
+
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
                                         }
@@ -1514,13 +1783,19 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                if (userDetails.IsDirector)
+                                                {
+                                                    updateExpenseStatusCommand.Status = "APPROVED";
+                                                }
+                                                else
+                                                {
+                                                    updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                                }
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
                                         }
                                     }
-
                                 }
                                 else
                                 {
@@ -1529,23 +1804,60 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            if (userDetails.IsDirector)
+                                            {
+                                                updateExpenseStatusCommand.Status = "APPROVED";
+                                            }
+                                            else
+                                            {
+                                                updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
+                                            }
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
+
+                                //Is Director
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
                                 }
                             }
+                            //Others
+                            if (item.Id == new Guid("6C3EB31C-DF53-495A-B871-E2EB3CEF74D2"))
+                            {
+                                if (userDetails.IsDirector)
+                                {
+                                    if (expenseList.Count > 0)
+                                    {
+                                        foreach (var expense in expenseList)
+                                        {
+                                            updateExpenseStatusCommand.Id = expense.Id;
+                                            updateExpenseStatusCommand.Status = "APPROVED";
+                                            updateExpenseStatusCommand.PayableAmount = expense.Amount;
+                                            var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                        }
+                                    }
+                                }
 
+                            }
                         }
 
                         //===============
                         SyncMasterExpenseAmountCommand syncMasterExpenseAmountCommand = new SyncMasterExpenseAmountCommand();
                         syncMasterExpenseAmountCommand.Id = updateMasterExpenseCommand.ExpenseDetails.FirstOrDefault().Id;
                         var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
-
                     }
-
                 }
                 //===============
 
@@ -1611,7 +1923,9 @@ namespace POS.API.Controllers.Expense
                                 Subject = "Expense - " + DateTime.Now.Date.ToString("dd-MM-yyyy"),
                                 //ToAddress = userResult.UserName,
                                 ToAddress = reportingHead.UserName,
-                                CCAddress = userResult.UserName,
+                                CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                userResult.UserName :
+                                userResult.UserName + "," + userResult.AlternateEmail,
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -1923,7 +2237,9 @@ namespace POS.API.Controllers.Expense
                             Port = defaultSmtp.Port,
                             Subject = "Expense Status",
                             ToAddress = responseData.CreatedByUser.UserName,
-                            CCAddress = userResult.UserName,
+                            CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                userResult.UserName :
+                                userResult.UserName + "," + userResult.AlternateEmail,
                             UserName = defaultSmtp.UserName
                         });
                     }
@@ -2415,7 +2731,9 @@ namespace POS.API.Controllers.Expense
                                 Port = defaultSmtp.Port,
                                 Subject = "Expense Reimbursed Status",
                                 ToAddress = responseData.CreatedByUser.UserName,
-                                CCAddress = userResult.UserName,
+                                CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                userResult.UserName :
+                                userResult.UserName + "," + userResult.AlternateEmail,
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -3312,7 +3630,7 @@ namespace POS.API.Controllers.Expense
                 response.message = "Error";
             }
             return Ok(response);
-            
+
             //return ReturnFormattedResponse(result);
         }
     }

@@ -122,7 +122,8 @@ namespace BTTEM.Repository
                         Consent = cs.Consent,
                         IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
-                        CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
+                        CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
+                        BillingCompanyName = cs.CompanyAccount.AccountName
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -193,7 +194,8 @@ namespace BTTEM.Repository
                  Consent = cs.Consent,
                  IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
-                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
+                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
+                 BillingCompanyName = cs.CompanyAccount.AccountName
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
              })
              .ToListAsync();

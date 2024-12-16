@@ -90,6 +90,7 @@ namespace BTTEM.Data.Entities
         public bool IsCompanyVehicleUser { get; set; }
         public string AlternateEmail { get; set; }
         public string AccountTeam { get; set; }
+        public bool IsDirector { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }

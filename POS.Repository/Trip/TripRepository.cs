@@ -94,6 +94,7 @@ namespace BTTEM.Repository
                 .ThenInclude(c => c.CompanyAccounts)
                 .Include(g => g.CreatedByUser.Grades)
                 .Include(a => a.CreatedByUser.CompanyAccounts)
+                .Include(c => c.CompanyAccount)
                 .ApplySort(tripResource.OrderBy,
                _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
 

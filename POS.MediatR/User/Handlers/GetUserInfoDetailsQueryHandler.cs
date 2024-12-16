@@ -84,6 +84,7 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.IsCompanyVehicleUser = Convert.ToBoolean(rdr["IsCompanyVehicleUser"]);
                     userInfoDetails.AlternateEmail = Convert.ToString(rdr["AlternateEmail"]);
                     userInfoDetails.AccountTeam = Convert.ToString(rdr["AccountTeam"]);
+                    userInfoDetails.IsDirector = Convert.ToBoolean(rdr["IsDirector"]);
                     // expenseDataList.Add(expenseData);
                 }
                 con.Close();
