@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
+using POS.Data.Dto;
 using POS.Domain;
 using POS.Helper;
+using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +32,8 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly ILogger<UpdateTripHotelBookingCommandHandler> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PathHelper _pathHelper;
+        private readonly IUserRepository _userRepository;
+        private readonly UserInfoToken _userInfoToken;
 
         public UpdateTripHotelBookingCommandHandler(
            ITripHotelBookingRepository tripHotelBookingRepository,
@@ -37,7 +41,9 @@ namespace BTTEM.MediatR.Trip.Handlers
            IMapper mapper,
            ILogger<UpdateTripHotelBookingCommandHandler> logger,
             IWebHostEnvironment webHostEnvironment,
-            PathHelper pathHelper
+            PathHelper pathHelper,
+            IUserRepository userRepository,
+           UserInfoToken userInfoToken
           )
         {
             _tripHotelBookingRepository = tripHotelBookingRepository;
@@ -46,11 +52,13 @@ namespace BTTEM.MediatR.Trip.Handlers
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
             _pathHelper = pathHelper;
-
+            _userRepository = userRepository;
+            _userInfoToken = userInfoToken;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateTripHotelBookingCommand request, CancellationToken cancellationToken)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
 
             foreach (var tv in request.tripHotelBooking)
             {
@@ -59,6 +67,12 @@ namespace BTTEM.MediatR.Trip.Handlers
                     var entity = _mapper.Map<Data.TripHotelBooking>(tv);
                     entity.Id = Guid.NewGuid();
                     entity.ApprovalStatus = "PENDING";
+
+                    if (userDetails.IsDirector)
+                    {
+                        entity.ApprovalStatus = "APPROVED";
+                        entity.ApprovalStatusDate = DateTime.Now;
+                    }
 
                     _tripHotelBookingRepository.Add(entity);
                 }
@@ -117,7 +131,15 @@ namespace BTTEM.MediatR.Trip.Handlers
                         }
                         if (!string.IsNullOrWhiteSpace(tv.ApprovalStatus))
                         {
-                            entityExist.ApprovalStatus = tv.ApprovalStatus;
+                            if (userDetails.IsDirector)
+                            {
+                                entityExist.ApprovalStatus = "APPROVED";
+                                entityExist.ApprovalStatusDate = DateTime.Now;
+                            }
+                            else
+                            {
+                                entityExist.ApprovalStatus = tv.ApprovalStatus;
+                            }                            
                         }
                         if (tv.CancelationCharge > 0)
                         {

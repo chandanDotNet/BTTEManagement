@@ -7,8 +7,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
+using POS.Data.Dto;
 using POS.Domain;
 using POS.Helper;
+using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,28 +22,32 @@ namespace BTTEM.MediatR.Trip.Handlers
 {
     public class AddTripHotelBookingCommandHandler : IRequestHandler<AddTripHotelBookingCommand, ServiceResponse<TripHotelBookingDto>>
     {
-
         private readonly ITripHotelBookingRepository _tripHotelBookingRepository;
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<AddTripHotelBookingCommandHandler> _logger;
-
+        private readonly IUserRepository _userRepository;
+        private readonly UserInfoToken _userInfoToken;
         public AddTripHotelBookingCommandHandler(
            ITripHotelBookingRepository tripHotelBookingRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
-           ILogger<AddTripHotelBookingCommandHandler> logger
+           ILogger<AddTripHotelBookingCommandHandler> logger,
+           IUserRepository userRepository,
+           UserInfoToken userInfoToken
           )
         {
             _tripHotelBookingRepository = tripHotelBookingRepository;
             _uow = uow;
             _mapper = mapper;
             _logger = logger;
-
+            _userRepository = userRepository;
+            _userInfoToken = userInfoToken;
         }
 
         public async Task<ServiceResponse<TripHotelBookingDto>> Handle(AddTripHotelBookingCommand request, CancellationToken cancellationToken)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
 
             foreach (var tv in request.tripHotelBooking)
             {
@@ -49,6 +55,13 @@ namespace BTTEM.MediatR.Trip.Handlers
                 entity.Id = Guid.NewGuid();
                 entity.ApprovalStatus = "PENDING";
                 entity.TotalAmount = (tv.Amount == null ? 0 : tv.Amount) + (tv.AgentCharge == null ? 0 : tv.AgentCharge) + (tv.BookingAmount == null ? 0 : tv.BookingAmount);
+
+                if (userDetails.IsDirector)
+                {
+                    entity.ApprovalStatus = "APPROVED";
+                    entity.ApprovalStatusDate = DateTime.Now;
+                }
+
                 _tripHotelBookingRepository.Add(entity);
             }
 

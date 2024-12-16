@@ -142,7 +142,8 @@ namespace POS.Repository
                     ApprovalLevel = c.ApprovalLevel,
                     IsCompanyVehicleUser = c.IsCompanyVehicleUser,
                     AlternateEmail = c.AlternateEmail,
-                    AccountTeam = c.AccountTeam
+                    AccountTeam = c.AccountTeam,
+                    IsDirector = c.IsDirector,
                 })
                 .ToListAsync();
             return entities;

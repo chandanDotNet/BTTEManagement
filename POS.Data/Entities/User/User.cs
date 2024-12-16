@@ -76,5 +76,6 @@ namespace POS.Data
         public bool IsCompanyVehicleUser { get; set; }
         public string? AccountTeam { get; set; }
         public string? AccountTeamActionFor { get; set; }
+        public bool IsDirector { get; set; }
     }
 }

@@ -33,6 +33,8 @@ using BTTEM.MediatR.Commands;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Runtime.CompilerServices;
+using static System.Net.WebRequestMethods;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -52,9 +54,10 @@ namespace BTTEM.API.Controllers.Trip
         private IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailSMTPSettingRepository _emailSMTPSettingRepository;
+        private readonly ICompanyAccountRepository _companyAccountRepository;
         public TripController(IMediator mediator, UserInfoToken userInfoToken, ITripRepository tripRepository, ITripItineraryRepository tripItineraryRepository, ITripHotelBookingRepository tripHotelBookingRepository, IUserRepository userRepository, IUserRoleRepository userRoleRepository, IMapper mapper
             , IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IEmailSMTPSettingRepository emailSMTPSettingRepository,
-            IItineraryTicketBookingRepository itineraryTicketBookingRepository)
+            IItineraryTicketBookingRepository itineraryTicketBookingRepository, ICompanyAccountRepository companyAccountRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -68,6 +71,7 @@ namespace BTTEM.API.Controllers.Trip
             _webHostEnvironment = webHostEnvironment;
             _emailSMTPSettingRepository = emailSMTPSettingRepository;
             _itineraryTicketBookingRepository = itineraryTicketBookingRepository;
+            _companyAccountRepository = companyAccountRepository;
         }
 
         /// <summary>
@@ -204,7 +208,9 @@ namespace BTTEM.API.Controllers.Trip
                                 Port = defaultSmtp.Port,
                                 Subject = "New Trip Request",
                                 ToAddress = reportingHead.UserName,
-                                CCAddress = userResult.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
+                                CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                userResult.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com" :
+                                userResult.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com," + userResult.AlternateEmail,
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -427,7 +433,9 @@ namespace BTTEM.API.Controllers.Trip
                             Port = defaultSmtp.Port,
                             Subject = "Journey Tickets",
                             ToAddress = tripDetails.CreatedByUser.UserName,
-                            CCAddress = userResult.UserName,
+                            CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                        userResult.UserName :
+                                        userResult.UserName + "," + userResult.AlternateEmail,
                             UserName = defaultSmtp.UserName
                         });
                     }
@@ -543,7 +551,6 @@ namespace BTTEM.API.Controllers.Trip
         [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
         public async Task<IActionResult> UpdateTripItinerary(UpdateTripItineraryCommand updateTripItineraryCommand)
         {
-
             var deleteTripItineraryCommand = new DeleteAllTripItineraryCommand { Id = updateTripItineraryCommand.TripItinerary.FirstOrDefault().TripId };
             var resultDelete = await _mediator.Send(deleteTripItineraryCommand);
 
@@ -863,6 +870,10 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripHotelBooking(UpdateTripHotelBookingCommand updateTripHotelBookingCommand)
         {
             var result = await _mediator.Send(updateTripHotelBookingCommand);
+            if (result.Success)
+            {
+                DirectApproval(updateTripHotelBookingCommand.tripHotelBooking.FirstOrDefault().TripId.Value);
+            }
             return ReturnFormattedResponse(result);
         }
 
@@ -960,6 +971,13 @@ namespace BTTEM.API.Controllers.Trip
         public async Task<IActionResult> UpdateTripStatus(UpdateTripStatusCommand updateTripStatusCommand)
         {
             bool TravelDesk = false;
+
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+            if (userDetails.IsDirector)
+            {
+                updateTripStatusCommand.Approval = "APPROVED";
+                updateTripStatusCommand.Status = "APPLIED";
+            }
             var result = await _mediator.Send(updateTripStatusCommand);
 
             if (result.Success)
@@ -1076,6 +1094,10 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
                             templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(responseData.IsGroupTrip == true ? "Yes" : "No"));
                             templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+
+                            var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                            templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1085,8 +1107,12 @@ namespace BTTEM.API.Controllers.Trip
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
                                 Subject = "Journey Request Updated",
-                                ToAddress = responseData.CreatedByUser.UserName,
-                                CCAddress = reportingHead.UserName,
+                                ToAddress = string.IsNullOrEmpty(responseData.CreatedByUser.AlternateEmail) ?
+                                responseData.CreatedByUser.UserName :
+                                responseData.CreatedByUser.UserName + "," + responseData.CreatedByUser.AlternateEmail,
+                                CCAddress = TravelDesk == false ?
+                                reportingHead.UserName :
+                                reportingHead.UserName + ",mukesh.sharma@shyamsteel.com,travels@shyamsteel.com,bitan@shyamsteel.com",
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -1104,7 +1130,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
-                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
+                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString("Approved"));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
@@ -1113,6 +1139,14 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
                             templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(responseData.IsGroupTrip == true ? "Yes" : "No"));
                             templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+
+                            var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                            templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+
+                            var ccUser = string.IsNullOrEmpty(responseData.CreatedByUser.AlternateEmail) ?
+                                responseData.CreatedByUser.UserName :
+                                responseData.CreatedByUser.UserName + "," + responseData.CreatedByUser.AlternateEmail;
+
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1125,8 +1159,8 @@ namespace BTTEM.API.Controllers.Trip
                                 ToAddress = reportingHead.UserName,
                                 CCAddress =
                                 TravelDesk == false ?
-                                responseData.CreatedByUser.UserName :
-                                responseData.CreatedByUser.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
+                                ccUser :
+                                ccUser + ",mukesh.sharma@shyamsteel.com,travels@shyamsteel.com,bitan@shyamsteel.com",
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -1323,6 +1357,45 @@ namespace BTTEM.API.Controllers.Trip
             if (result.Success)
             {
                 var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+                var reportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
+
+                var tripItineraryDetails = await _tripItineraryRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == result.Data.TripItineraryId).FirstOrDefaultAsync();
+                var tripDetails = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == tripItineraryDetails.TripId).FirstOrDefaultAsync();
+
+                //**Email Start**
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "QuotationUpload.html");
+
+                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        string templateBody = sr.ReadToEnd();
+                        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                        templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripDetails.TripNo));
+                        templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(tripDetails.Status));
+                        templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripDetails.DepartmentName));
+                        templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(tripDetails.TripStarts.ToString("dd MMMM yyyy")));
+                        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(tripDetails.SourceCityName));
+                        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(tripDetails.DestinationCityName));
+                        templateBody = templateBody.Replace("{QUOTATION}", "Quotation has been uploaded");
+                        EmailHelper.SendEmail(new SendEmailSpecification
+                        {
+                            Body = templateBody,
+                            FromAddress = defaultSmtp.UserName,
+                            Host = defaultSmtp.Host,
+                            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                            Password = defaultSmtp.Password,
+                            Port = defaultSmtp.Port,
+                            Subject = "Quotation Upload",
+                            ToAddress = tripDetails.CreatedByUser.UserName,
+                            CCAddress = userResult.UserName + "," + reportingHead.UserName,
+                            UserName = defaultSmtp.UserName
+                        });
+                    }
+                }
             }
 
             return ReturnFormattedResponse(result);
@@ -1474,10 +1547,73 @@ namespace BTTEM.API.Controllers.Trip
             {
                 response.status = false;
                 response.StatusCode = 500;
-                //dashboardReportData.Data = result;
             }
             return Ok(response);
         }
 
+        /// <summary>
+        ///  Direct Approved
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
+        [NonAction]
+        public async void DirectApproval(Guid tripId)
+        {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+            if (userDetails.IsDirector)
+            {
+                //    UpdateTripStatusCommand updateTripStatusCommand = new UpdateTripStatusCommand()
+                //    {
+                //        Id = tripId,
+                //        Approval = "APPROVED",
+                //        Status = "APPLIED"
+                //    };
+                //    await UpdateTripStatus(updateTripStatusCommand);
+
+                var entityItinerary = await _tripItineraryRepository.All.Where(x => x.TripId == tripId).ToListAsync();
+                UpdateAllTripItineraryBookStatusCommand updateAllTripItineraryBookStatusCommand = new UpdateAllTripItineraryBookStatusCommand();
+
+                List<AllTripItineraryBookStatus> allTripItineraryBookStatusList = new List<AllTripItineraryBookStatus>();
+
+                if (entityItinerary.Count > 0 || entityItinerary != null)
+                {
+                    foreach (var item in entityItinerary)
+                    {
+                        allTripItineraryBookStatusList.Add(new AllTripItineraryBookStatus()
+                        {
+                            ApprovalStatus = "APPROVED",
+                            ApprovalStatusDate = DateTime.Now,
+                            Id = item.Id,
+                            TripId = item.TripId,
+                            IsItinerary = true
+                        });
+                    }
+                }
+
+                var entityHotel = await _tripHotelBookingRepository.All.Where(x => x.TripId == tripId).ToListAsync();
+                if (entityHotel.Count > 0 || entityHotel != null)
+                {
+                    foreach (var item in entityHotel)
+                    {
+                        allTripItineraryBookStatusList.Add(new AllTripItineraryBookStatus()
+                        {
+                            ApprovalStatus = "APPROVED",
+                            ApprovalStatusDate = DateTime.Now,
+                            Id = item.Id,
+                            TripId = item.TripId,
+                            IsItinerary = false
+                        });
+                    }
+                }
+
+                updateAllTripItineraryBookStatusCommand.AllTripItineraryBookStatusList = allTripItineraryBookStatusList;
+
+                if (entityItinerary.Count > 0 || entityItinerary != null || entityHotel.Count > 0 || entityHotel != null)
+                {
+                    await UpdateAllTripItinerary(updateAllTripItineraryBookStatusCommand);
+                }
+            }
+        }
     }
 }
+

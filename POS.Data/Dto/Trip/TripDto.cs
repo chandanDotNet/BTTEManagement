@@ -69,6 +69,7 @@ namespace BTTEM.Data
         public string? NoOfPerson { get; set; }
         public bool Consent { get; set; }
         public bool? IsGroupTripCancelRequest { get; set; }
+        public string BillingCompanyName { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
         public List<GroupTripDto> GroupTrips { get; set; }
 

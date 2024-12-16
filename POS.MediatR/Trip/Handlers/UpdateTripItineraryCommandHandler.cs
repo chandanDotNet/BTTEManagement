@@ -5,8 +5,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
+using POS.Data.Dto;
 using POS.Domain;
 using POS.Helper;
+using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,28 +25,41 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly IUnitOfWork<POSDbContext> _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<UpdateTripItineraryCommandHandler> _logger;
+        private readonly IUserRepository _userRepository;
+        private readonly UserInfoToken _userInfoToken;
 
         public UpdateTripItineraryCommandHandler(
            ITripItineraryRepository tripItineraryRepository,
            IUnitOfWork<POSDbContext> uow,
            IMapper mapper,
-           ILogger<UpdateTripItineraryCommandHandler> logger
+           ILogger<UpdateTripItineraryCommandHandler> logger,
+           IUserRepository userRepository,
+           UserInfoToken userInfoToken
           )
         {
             _tripItineraryRepository = tripItineraryRepository;
             _uow = uow;
             _mapper = mapper;
             _logger = logger;
-
+            _userRepository = userRepository;
+            _userInfoToken = userInfoToken;
         }
 
         public async Task<ServiceResponse<bool>> Handle(UpdateTripItineraryCommand request, CancellationToken cancellationToken)
         {
+            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
             foreach (var tv in request.TripItinerary)
             {
                 tv.Id = Guid.NewGuid();
                 var entity = _mapper.Map<Data.TripItinerary>(tv);
                 entity.ApprovalStatus = "PENDING";
+
+                if (userDetails.IsDirector)
+                {
+                    entity.ApprovalStatus = "APPROVED";
+                    entity.ApprovalStatusDate = DateTime.Now;
+                }
+
                 _tripItineraryRepository.Add(entity);
 
                 //if (tv.Id == Guid.Empty)
