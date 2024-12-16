@@ -7,6 +7,7 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.GenericRepository;
 using POS.Common.UnitOfWork;
 using POS.Domain;
@@ -56,44 +57,115 @@ namespace BTTEM.MediatR.Trip.Handlers
             //    return ServiceResponse<bool>.Return409("Grade Already Exist."); 
             //}
             var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
-            entityExist.TripNo = request.TripNo;
+            if (!string.IsNullOrEmpty(request.TripNo))
+            {
+                entityExist.TripNo = request.TripNo;
+            }
+            if (!string.IsNullOrEmpty(request.Description))
+            {
+                entityExist.Description = request.Description;
+            }
             // entityExist.TripNumber = request.Tripn;
-            entityExist.Description = request.Description;
-            entityExist.TripType = request.TripType;
-            entityExist.Name = request.Name;
-            entityExist.PurposeId = request.PurposeId;
-            entityExist.TripStarts = request.TripStarts;
-            entityExist.TripEnds = request.TripEnds;
+            if (!string.IsNullOrEmpty(request.TripType))
+            {
+                entityExist.TripType = request.TripType;
+            }
+            if (!string.IsNullOrEmpty(request.Name))
+            {
+                entityExist.Name = request.Name;
+            }
+            if(request.PurposeId.HasValue)
+            {
+                entityExist.PurposeId = request.PurposeId;
+            }
+            if (request.TripStarts.HasValue)
+            {
+                entityExist.TripStarts = request.TripStarts.Value;
+            }
+            if (request.TripEnds.HasValue)
+            {
+                entityExist.TripEnds = request.TripEnds.Value;
+            }
+            if (request.SourceCityId.HasValue)
+            {
+                entityExist.SourceCityId = request.SourceCityId;
+            }
+            if (request.DestinationCityId.HasValue)
+            {
+                entityExist.DestinationCityId = request.DestinationCityId;
+            }
+
+
             //entityExist.Status = request.Status;
             //entityExist.Approval = request.Approval;
-            entityExist.SourceCityId = request.SourceCityId;
-            entityExist.DestinationCityId = request.DestinationCityId;
-            entityExist.DepartmentId = request.DepartmentId;
-            entityExist.MultiCity = request.MultiCity;
-            entityExist.ModeOfTrip = request.ModeOfTrip;
-            //entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
-            //entityExist.AdvanceMoney = request.AdvanceMoney;
 
-            entityExist.DestinationCityName = request.DestinationCityName;
-            entityExist.SourceCityName = request.SourceCityName;
-            entityExist.PurposeFor = request.PurposeFor;
-            entityExist.DepartmentName = request.DepartmentName;
-            entityExist.CompanyAccountId = request.CompanyAccountId;
-            entityExist.VendorCode = request.VendorCode;
-            entityExist.IsGroupTrip = request.IsGroupTrip;
-            entityExist.NoOfPerson = request.NoOfPerson;
-            entityExist.Consent = request.Consent;
+            if (request.DepartmentId.HasValue)
+            {
+                entityExist.DepartmentId = request.DepartmentId;
+            }
+            if (!string.IsNullOrEmpty(request.MultiCity))
+            {
+                entityExist.MultiCity = request.MultiCity;
+            }
+            if (!string.IsNullOrEmpty(request.ModeOfTrip))
+            {
+                entityExist.ModeOfTrip = request.ModeOfTrip;
+            }
+            if (!string.IsNullOrEmpty(request.DestinationCityName))
+            {
+                entityExist.DestinationCityName = request.DestinationCityName;
+            }
+            if (!string.IsNullOrEmpty(request.SourceCityName))
+            {
+                entityExist.SourceCityName = request.SourceCityName;
+            }
+            if (!string.IsNullOrEmpty(request.PurposeFor))
+            {
+                entityExist.PurposeFor = request.PurposeFor;
+            }
+            if (!string.IsNullOrEmpty(request.DepartmentName))
+            {
+                entityExist.DepartmentName = request.DepartmentName;
+            }
+
+            if (request.CompanyAccountId.HasValue)
+            {
+                entityExist.CompanyAccountId = request.CompanyAccountId;
+            }
+            if (!string.IsNullOrEmpty(request.VendorCode))
+            {
+                entityExist.VendorCode = request.VendorCode;
+            }
+            if (request.IsGroupTrip == true)
+            {
+                entityExist.IsGroupTrip = request.IsGroupTrip;
+            }
+              
+            if (!string.IsNullOrEmpty(request.NoOfPerson))
+            {
+                entityExist.NoOfPerson = request.NoOfPerson;
+            }
+            if (request.Consent==true)
+            {
+                entityExist.Consent = request.Consent;
+            }
+                //entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
+                //entityExist.AdvanceMoney = request.AdvanceMoney;
+
+
 
             _tripRepository.Update(entityExist);
 
-            var groupTripExist = await _groupTripRepository.All.Where(v => v.TripId == request.Id).ToListAsync();
-            if (groupTripExist.Count > 0)
-            {
-                _groupTripRepository.RemoveRange(groupTripExist);
-            }
+           
 
             if (request.GroupTrips != null)
             {
+                var groupTripExist = await _groupTripRepository.All.Where(v => v.TripId == request.Id).ToListAsync();
+                if (groupTripExist.Count > 0)
+                {
+                    _groupTripRepository.RemoveRange(groupTripExist);
+                }
+
                 request.GroupTrips.ForEach(item =>
                 {
                     item.TripId = request.Id;

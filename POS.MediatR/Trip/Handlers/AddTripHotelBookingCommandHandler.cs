@@ -50,7 +50,7 @@ namespace BTTEM.MediatR.Trip.Handlers
 
         public async Task<ServiceResponse<TripHotelBookingDto>> Handle(AddTripHotelBookingCommand request, CancellationToken cancellationToken)
         {
-            var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+            var userDetails = await _userRepository.AllIncluding(x => x.UserRoles).Where(u => u.Id == Guid.Parse(_userInfoToken.Id)).FirstOrDefaultAsync();
 
             foreach (var tv in request.tripHotelBooking)
             {
