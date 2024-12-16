@@ -392,7 +392,7 @@ namespace BTTEM.API.Controllers.Trip
                 //    TripTypeName = result.Data.TripBy,
                 //    ActionType = "Activity",
                 //    Remarks = "Trip Itinerary Added For " + result.Data.TripBy + " By " + userResult.FirstName + " " + userResult.LastName,
-                //    Status = "Trip Itinerary Added By " + userResult.FirstName + " " + userResult.LastName,
+                //    Status = "Trip Itinerary Added By " + userResult.FirstName + " " + userResult.LastName, 
                 //    ActionBy = Guid.Parse(_userInfoToken.Id),
                 //    ActionDate = DateTime.Now,
                 //};
