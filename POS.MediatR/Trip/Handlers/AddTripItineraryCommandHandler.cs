@@ -80,7 +80,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             if (userDetails.UserRoles.FirstOrDefault().RoleId == Guid.Parse("F72616BE-260B-41BB-A4EE-89146622179A"))
             {
                 var existEntity = await _tripRepository.FindAsync(request.TripItinerary.FirstOrDefault().TripId);
-                existEntity.TripEnds = request.TripItinerary.FirstOrDefault().ReturnDate.Value;
+                existEntity.TripEnds = request.TripItinerary.FirstOrDefault().DepartureDate;
                 _tripRepository.Update(existEntity);
             }
 
