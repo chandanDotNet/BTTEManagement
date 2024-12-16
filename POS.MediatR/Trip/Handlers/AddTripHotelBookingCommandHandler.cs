@@ -65,6 +65,12 @@ namespace BTTEM.MediatR.Trip.Handlers
                     entity.ApprovalStatusDate = DateTime.Now;
                 }
 
+                if (userDetails.UserRoles.FirstOrDefault().RoleId == Guid.Parse("F72616BE-260B-41BB-A4EE-89146622179A"))
+                {
+                    entity.ApprovalStatus = "APPROVED";
+                    entity.ApprovalStatusDate = DateTime.Now;
+                }
+
                 _tripHotelBookingRepository.Add(entity);
             }
 
