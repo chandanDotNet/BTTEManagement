@@ -77,8 +77,14 @@ namespace BTTEM.MediatR.Trip.Handlers
             if (userDetails.UserRoles.FirstOrDefault().RoleId == Guid.Parse("F72616BE-260B-41BB-A4EE-89146622179A"))
             {
                 var existEntity = await _tripRepository.FindAsync(request.tripHotelBooking.FirstOrDefault().TripId.Value);
-                existEntity.TripEnds = request.tripHotelBooking.FirstOrDefault().CheckOut.Value;
-                _tripRepository.Update(existEntity);
+                if (request.tripHotelBooking.FirstOrDefault().CheckOut.HasValue)
+                {
+                    if (request.tripHotelBooking.FirstOrDefault().CheckOut.Value > existEntity.TripEnds)
+                    {
+                        existEntity.TripEnds = request.tripHotelBooking.FirstOrDefault().CheckOut.Value;
+                        _tripRepository.Update(existEntity);
+                    }
+                }
             }
 
             //var entity = _mapper.Map<BTTEM.Data.TripItinerary>(request);            
