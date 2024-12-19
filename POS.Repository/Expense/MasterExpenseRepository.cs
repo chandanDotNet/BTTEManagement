@@ -74,10 +74,14 @@ namespace BTTEM.Repository
                         {
                             expenseResource.CreatedBy = LoginUserId;
                         }
+
+                        else if (Role.Id == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")) //ACCOUNTS
+                        {
+                            expenseResource.OrderBy = "ApprovalStageDate desc";
+                        }
                     }
                 }
             }
-
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
