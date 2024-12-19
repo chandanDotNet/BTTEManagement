@@ -83,7 +83,6 @@ namespace BTTEM.Repository
                 }
             }
 
-
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
 
