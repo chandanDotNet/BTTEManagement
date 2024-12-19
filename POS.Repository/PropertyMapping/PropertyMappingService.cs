@@ -291,7 +291,9 @@ namespace POS.Repository
           new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
           {
                 { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
-                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" } ) }
+                { "CreatedDate", new PropertyMappingValue(new List<string>() { "CreatedDate" } ) },
+                { "ApprovalStageDate", new PropertyMappingValue(new List<string>() { "ApprovalStageDate" } ) }
+
           };
 
         private Dictionary<string, PropertyMappingValue> _tripPropertyMapping =
