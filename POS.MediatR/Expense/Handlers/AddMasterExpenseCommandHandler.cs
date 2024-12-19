@@ -148,6 +148,9 @@ namespace BTTEM.MediatR.CommandAndQuery
             {
                 request.AccountTeam = _userInfoToken.AccountTeam;
 
+                request.AccountsCheckerOneStatus = "PENDING";
+                request.AccountsCheckerTwoStatus = "PENDING";
+                request.AccountsCheckerThreeStatus = "PENDING";
                 //if(request.CompanyAccountId== _userInfoToken.CompanyAccountId)
                 //{
                 //    request.AccountTeam = _userInfoToken.AccountTeam;

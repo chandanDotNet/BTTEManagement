@@ -263,7 +263,7 @@ namespace BTTEM.API.Controllers.Trip
             else
             {
 
-                //tripDtoList.Add(result.Data);
+                //tripDtoList.Add(result.Data); 
                 tripDetailsData.Data = tripDtoList;
                 tripDetailsData.status = false;
                 tripDetailsData.StatusCode = 500;

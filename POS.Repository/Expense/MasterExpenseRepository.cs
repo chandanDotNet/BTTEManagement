@@ -61,7 +61,7 @@ namespace BTTEM.Repository
                 {
                     if (Role != null)
                     {
-                        if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
+                        if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager 
                         {
                             expenseResource.ReportingHeadId = LoginUserId;
                         }
