@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using POS.Data.Dto;
 
 namespace BTTEM.Repository
 {
@@ -103,9 +104,14 @@ namespace BTTEM.Repository
                         IsGroupTrip = cs.IsGroupTrip,
                         NoOfPerson = cs.NoOfPerson,
                         Consent = cs.Consent,
+                        ProjectType = cs.ProjectType,
+                        Remarks = cs.Remarks,
+                        AdvanceAccountApprovedBy = cs.AdvanceAccountApprovedBy,
+                        AdvanceAccountApprovedOn = cs.AdvanceAccountApprovedOn,
                         IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
-                        CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
+                        CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
+                        ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
                     })
                     .ToListAsync();
                 return entities;
@@ -158,9 +164,14 @@ namespace BTTEM.Repository
                  IsGroupTrip = cs.IsGroupTrip,
                  NoOfPerson = cs.NoOfPerson,
                  Consent = cs.Consent,
+                 ProjectType = cs.ProjectType,
+                 Remarks = cs.Remarks,
+                 AdvanceAccountApprovedBy = cs.AdvanceAccountApprovedBy,
+                 AdvanceAccountApprovedOn = cs.AdvanceAccountApprovedOn,
                  IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
-                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts)
+                 CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
+                 ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
              })
              .ToListAsync();
                 return entities;
