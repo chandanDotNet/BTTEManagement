@@ -2282,7 +2282,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Get All Master Expenses 
         /// </summary>
-        /// <param name="masterExpenseResource"></param>
+        /// <param name="masterExpenseResource"></param> 
         /// <returns></returns>
         [HttpGet("GetAllExpensesDetailsList")]
         //[ClaimCheck("EXP_VIEW_EXPENSES")]
