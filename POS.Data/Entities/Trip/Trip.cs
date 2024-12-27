@@ -64,6 +64,12 @@ namespace BTTEM.Data
         public string? NoOfPerson { get; set; }
         public bool Consent { get; set; }
         public bool? IsGroupTripCancelRequest { get; set; }
+        public string ProjectType { get; set; }
+        public string Remarks { get; set; }
+        public DateTime? AdvanceAccountApprovedOn { get; set; }
+        public Guid? AdvanceAccountApprovedBy { get; set; }
+        [ForeignKey("AdvanceAccountApprovedBy")]
+        public User ApprovedBy { get; set; }
         public List<GroupTrip> GroupTrips { get; set; }
     }
 }

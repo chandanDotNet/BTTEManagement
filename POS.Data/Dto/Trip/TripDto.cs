@@ -70,8 +70,12 @@ namespace BTTEM.Data
         public bool Consent { get; set; }
         public bool? IsGroupTripCancelRequest { get; set; }
         public string BillingCompanyName { get; set; }
+        public string ProjectType { get; set; }
+        public string Remarks { get; set; }
+        public DateTime? AdvanceAccountApprovedOn { get; set; }
+        public Guid? AdvanceAccountApprovedBy { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
         public List<GroupTripDto> GroupTrips { get; set; }
-
+        public UserDto ApprovedBy { get; set; }
     }
 }

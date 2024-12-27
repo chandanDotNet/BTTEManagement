@@ -41,7 +41,7 @@ namespace BTTEM.Repository
         public async Task<AdvanceMoneyList> GetAllAdvanceMoney(AdvanceMoneyResource advanceMoneyResource)
         {
             decimal amount = Convert.ToDecimal(this._configuration.GetSection("AdvanceMoney")["Money"]);
-            Guid LoginUserId = Guid.Parse(_userInfoToken.Id);            
+            Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
 
             var collectionBeforePaging = All.
                  Include(c => c.CreatedByUser)
@@ -56,6 +56,7 @@ namespace BTTEM.Repository
                 .ThenInclude(c => c.CompanyAccounts)
                 .Include(g => g.CreatedByUser.Grades)
                 .Include(a => a.CreatedByUser.CompanyAccounts)
+                .Include(k => k.ApprovedBy)
                 .ApplySort(advanceMoneyResource.OrderBy,
                _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
 
@@ -74,6 +75,12 @@ namespace BTTEM.Repository
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.AdvanceMoney < amount && a.RequestAdvanceMoneyStatus == advanceMoneyResource.RequestAdvanceMoneyStatus);
+            }
+
+            if (!string.IsNullOrEmpty(advanceMoneyResource.ProjectType))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.ProjectType == advanceMoneyResource.ProjectType);
             }
 
             //Filter For Infra Only           
