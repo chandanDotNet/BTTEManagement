@@ -2253,7 +2253,7 @@ namespace POS.API.Controllers.Expense
         /// Get Expenses 
         /// </summary>
         /// <param name="expenseResource"></param>
-        /// <returns></returns>
+        /// <returns></returns> 
         [HttpGet]
         //[ClaimCheck("EXP_VIEW_EXPENSE")]
         public async Task<IActionResult> GetExpenses([FromQuery] ExpenseResource expenseResource)
