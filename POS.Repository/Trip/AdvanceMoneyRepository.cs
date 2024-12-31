@@ -67,7 +67,6 @@ namespace BTTEM.Repository
                     && a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91")
                     || a.ProjectType == "Others");
             }
-
             if (LoginUserId == Guid.Parse("6162414f-06fd-4460-b447-2499aa88c602"))
             {
                 collectionBeforePaging = collectionBeforePaging
