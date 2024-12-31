@@ -2252,7 +2252,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Get Expenses 
         /// </summary>
-        /// <param name="expenseResource"></param>
+        /// <param name="expenseResource"></param> 
         /// <returns></returns> 
         [HttpGet]
         //[ClaimCheck("EXP_VIEW_EXPENSE")]
