@@ -60,7 +60,7 @@ namespace BTTEM.Repository
                 .ApplySort(advanceMoneyResource.OrderBy,
                _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
 
-            if (LoginUserId == Guid.Parse("fe7c8f30-965c-4f12-9eca-c00f9d4f99a4"))
+            if (LoginUserId == Guid.Parse("fe7c8f30-965c-4f12-9eca-c00f9d4f99a4")) 
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.AdvanceMoney >= amount 
