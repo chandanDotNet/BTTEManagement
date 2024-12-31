@@ -74,6 +74,8 @@ namespace BTTEM.Data
         public string Remarks { get; set; }
         public DateTime? AdvanceAccountApprovedOn { get; set; }
         public Guid? AdvanceAccountApprovedBy { get; set; }
+        public decimal? AdvanceAccountApprovedAmount { get; set; }
+        public string AdvanceAccountApprovedStatus { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
         public List<GroupTripDto> GroupTrips { get; set; }
         public UserDto ApprovedBy { get; set; }
