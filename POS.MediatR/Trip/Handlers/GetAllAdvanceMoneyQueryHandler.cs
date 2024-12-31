@@ -19,7 +19,7 @@ namespace BTTEM.MediatR.Trip.Handlers
         private readonly UserInfoToken _userInfoToken;
         public GetAllAdvanceMoneyQueryHandler(IAdvanceMoneyRepository advanceMoneyRepository, IMapper mapper, UserInfoToken userInfoToken)
         {
-            _advanceMoneyRepository = advanceMoneyRepository;
+            _advanceMoneyRepository = advanceMoneyRepository; 
             _mapper = mapper;
             _userInfoToken = userInfoToken;
         }
