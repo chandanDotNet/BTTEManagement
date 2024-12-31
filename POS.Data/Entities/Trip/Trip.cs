@@ -70,6 +70,8 @@ namespace BTTEM.Data
         public Guid? AdvanceAccountApprovedBy { get; set; }
         [ForeignKey("AdvanceAccountApprovedBy")]
         public User ApprovedBy { get; set; }
+        public decimal? AdvanceAccountApprovedAmount { get; set; }
+        public string AdvanceAccountApprovedStatus { get; set; }
         public List<GroupTrip> GroupTrips { get; set; }
     }
 }

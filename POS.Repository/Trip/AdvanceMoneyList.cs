@@ -71,27 +71,27 @@ namespace BTTEM.Repository
                         TripStarts = cs.TripStarts,
                         TripEnds = cs.TripEnds,
                         TotalDays = (cs.TripEnds - cs.TripStarts).Days,
-                        TripType = cs.TripType,                       
+                        TripType = cs.TripType,
                         CreatedDate = cs.CreatedDate,
                         Approval = cs.Approval,
                         Status = cs.Status,
                         DepartmentId = cs.DepartmentId,
                         AdvanceMoney = cs.AdvanceMoney,
-                        AdvanceMoneyApprovedAmount= cs.AdvanceMoneyApprovedAmount,
+                        AdvanceMoneyApprovedAmount = cs.AdvanceMoneyApprovedAmount,
                         IsRequestAdvanceMoney = cs.IsRequestAdvanceMoney,
                         ModeOfTrip = cs.ModeOfTrip,
                         MultiCity = cs.MultiCity,
                         RequestAdvanceMoneyDate = cs.RequestAdvanceMoneyDate,
                         RequestAdvanceMoneyStatus = cs.RequestAdvanceMoneyStatus,
                         AdvanceMoneyRemarks = cs.AdvanceMoneyRemarks,
-                        CreatedByUser = cs.CreatedByUser,                       
+                        CreatedByUser = cs.CreatedByUser,
                         GradeName = cs.CreatedByUser.Grades.GradeName,
                         BranchName = cs.CreatedByUser.CompanyAccountBranch.Name,
                         IsTripCompleted = cs.IsTripCompleted,
                         SourceCityName = cs.SourceCityName,
                         DestinationCityName = cs.DestinationCityName,
                         CompanyAccountId = cs.CompanyAccountId,
-                        DepartmentName = cs.DepartmentName,                       
+                        DepartmentName = cs.DepartmentName,
                         TripHotelBookings = cs.TripHotelBookings,
                         RequestAdvanceMoneyStatusBys = cs.RequestAdvanceMoneyStatusBys,
                         RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy,
@@ -111,7 +111,9 @@ namespace BTTEM.Repository
                         IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
                         CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
-                        ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
+                        ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
+                        AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
+                        AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
                     })
                     .ToListAsync();
                 return entities;
@@ -171,7 +173,9 @@ namespace BTTEM.Repository
                  IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
                  CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
-                 ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
+                 ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
+                 AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
+                 AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
              })
              .ToListAsync();
                 return entities;

@@ -47,6 +47,8 @@ namespace BTTEM.MediatR.Trip.Handlers
             entityExist.RequestAdvanceMoneyStatusBy = request.StatusUpdatedBy;
             entityExist.AdvanceAccountApprovedOn = request.AdvanceAccountApprovedOn;
             entityExist.AdvanceAccountApprovedBy = request.AdvanceAccountApprovedBy;
+            entityExist.AdvanceAccountApprovedAmount = request.AdvanceAccountApprovedAmount;
+            entityExist.AdvanceAccountApprovedStatus = request.AdvanceAccountApprovedStatus;
 
             _tripRepository.Update(entityExist);
 

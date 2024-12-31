@@ -17,5 +17,8 @@ namespace BTTEM.MediatR.Trip.Commands
         public Guid? StatusUpdatedBy { get; set; }
         public DateTime? AdvanceAccountApprovedOn { get; set; }
         public Guid? AdvanceAccountApprovedBy { get; set; }
+        public decimal? AdvanceAccountApprovedAmount { get; set; }
+        public string AdvanceAccountApprovedStatus { get; set; }
+
     }
 }
