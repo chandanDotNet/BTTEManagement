@@ -123,7 +123,14 @@ namespace BTTEM.Repository
                         IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                         GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
                         CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
-                        BillingCompanyName = cs.CompanyAccount.AccountName
+                        BillingCompanyName = cs.CompanyAccount.AccountName,
+                        AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
+                        AdvanceAccountApprovedBy = cs.AdvanceAccountApprovedBy,
+                        AdvanceAccountApprovedOn = cs.AdvanceAccountApprovedOn,
+                        AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
+                        ProjectType = cs.ProjectType,
+                        Remarks = cs.Remarks,
+                        ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -195,8 +202,16 @@ namespace BTTEM.Repository
                  IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
                  GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
                  CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
-                 BillingCompanyName = cs.CompanyAccount.AccountName
+                 BillingCompanyName = cs.CompanyAccount.AccountName,
+                 AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
+                 AdvanceAccountApprovedBy = cs.AdvanceAccountApprovedBy,
+                 AdvanceAccountApprovedOn = cs.AdvanceAccountApprovedOn,
+                 AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
+                 ProjectType = cs.ProjectType,
+                 Remarks = cs.Remarks,
+                 ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+
              })
              .ToListAsync();
                 return entities;
