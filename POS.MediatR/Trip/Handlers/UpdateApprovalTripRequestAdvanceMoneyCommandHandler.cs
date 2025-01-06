@@ -4,6 +4,7 @@ using BTTEM.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using POS.Common.UnitOfWork;
 using POS.Domain;
 using POS.Helper;
@@ -41,14 +42,39 @@ namespace BTTEM.MediatR.Trip.Handlers
         public async Task<ServiceResponse<bool>> Handle(UpdateApprovalTripRequestAdvanceMoneyCommand request, CancellationToken cancellationToken)
         {
             var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
-            entityExist.RequestAdvanceMoneyStatus = request.RequestAdvanceMoneyStatus;
-            entityExist.AdvanceMoneyRemarks = request.AdvanceMoneyRemarks;
-            entityExist.AdvanceMoneyApprovedAmount = request.AdvanceMoneyApprovedAmount;
-            entityExist.RequestAdvanceMoneyStatusBy = request.StatusUpdatedBy;
-            entityExist.AdvanceAccountApprovedOn = request.AdvanceAccountApprovedOn;
-            entityExist.AdvanceAccountApprovedBy = request.AdvanceAccountApprovedBy;
-            entityExist.AdvanceAccountApprovedAmount = request.AdvanceAccountApprovedAmount;
-            entityExist.AdvanceAccountApprovedStatus = request.AdvanceAccountApprovedStatus;
+
+            if (!string.IsNullOrEmpty(request.RequestAdvanceMoneyStatus))
+            {
+                entityExist.RequestAdvanceMoneyStatus = request.RequestAdvanceMoneyStatus;
+            }
+            if (!string.IsNullOrEmpty(request.AdvanceMoneyRemarks))
+            {
+                entityExist.AdvanceMoneyRemarks = request.AdvanceMoneyRemarks;
+            }
+            if (request.AdvanceMoneyApprovedAmount.HasValue)
+            {
+                entityExist.AdvanceMoneyApprovedAmount = request.AdvanceMoneyApprovedAmount;
+            }
+            if (request.StatusUpdatedBy.HasValue)
+            {
+                entityExist.RequestAdvanceMoneyStatusBy = request.StatusUpdatedBy;
+            }
+            if (request.AdvanceAccountApprovedOn.HasValue)
+            {
+                entityExist.AdvanceAccountApprovedOn = request.AdvanceAccountApprovedOn;
+            }
+            if (request.AdvanceAccountApprovedBy.HasValue)
+            {
+                entityExist.AdvanceAccountApprovedBy = request.AdvanceAccountApprovedBy;
+            }
+            if (request.AdvanceAccountApprovedAmount.HasValue)
+            {
+                entityExist.AdvanceAccountApprovedAmount = request.AdvanceAccountApprovedAmount;
+            }
+            if (!string.IsNullOrEmpty(request.AdvanceAccountApprovedStatus))
+            {
+                entityExist.AdvanceAccountApprovedStatus = request.AdvanceAccountApprovedStatus;
+            }
 
             _tripRepository.Update(entityExist);
 
