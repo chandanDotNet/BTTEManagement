@@ -2252,7 +2252,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Get Expenses 
         /// </summary>
-        /// <param name="expenseResource"></param>
+        /// <param name="expenseResource"></param> 
         /// <returns></returns> 
         [HttpGet]
         //[ClaimCheck("EXP_VIEW_EXPENSE")]
@@ -2528,7 +2528,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Update Status Travel Document
         /// </summary>
-        /// <param name="updateTravelDocumentStatusCommand"></param>
+        /// <param name="updateTravelDocumentStatusCommand"></param> 
         /// <returns></returns>
         [HttpPost("UpdateTravelDocumentStatus")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
