@@ -143,6 +143,7 @@ namespace POS.Repository
                     IsCompanyVehicleUser = c.IsCompanyVehicleUser,
                     AlternateEmail = c.AlternateEmail,
                     AccountTeam = c.AccountTeam,
+                    AccountTeamActionFor=c.AccountTeamActionFor,
                     IsDirector = c.IsDirector,
                 })
                 .ToListAsync();
