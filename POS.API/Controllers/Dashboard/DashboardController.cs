@@ -263,5 +263,32 @@ namespace POS.API.Controllers.Dashboard
             return Ok(result);
         }
 
+
+
+        /// <summary>
+        /// Gets all dashboard data for App and web.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("GetAllDashboardData")]
+        // [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetAllDashboardData(GetAllDashboardDataQueryCommand getAllDashboardDataQueryCommand)
+        {
+            AllDashboardDataResponse allDashboardDataResponse = new AllDashboardDataResponse();           
+            var result = await _mediator.Send(getAllDashboardDataQueryCommand);
+            if (result != null)
+            {
+                allDashboardDataResponse.status = true;
+                allDashboardDataResponse.StatusCode = 200;
+                allDashboardDataResponse.Data = result;
+            }
+            else
+            {
+                allDashboardDataResponse.status = false;
+                allDashboardDataResponse.StatusCode = 500;
+                allDashboardDataResponse.Data = result;
+            }
+            return Ok(allDashboardDataResponse);
+        }
+
     }
 }

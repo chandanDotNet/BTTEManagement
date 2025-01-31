@@ -308,4 +308,47 @@ namespace BTTEM.Data.Entities
         public string accesskey { get; set; }
     }
 
+    public class AllDashboardData
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public MyDashboardData MyDashboardData { get; set; }
+        public TeamDashboardData TeamDashboardData { get; set; }
+        public IList<UserAllTripReportDetails> UserAllTripReportDetailsList { get; set; } = new List<UserAllTripReportDetails>();
+        public IList<UserAllExpenseReportDetails> UserAllExpenseReportDetailsList { get; set; } = new List<UserAllExpenseReportDetails>();
+    }
+
+    public class MyDashboardData
+    {
+        public int TotalTripCount { get; set; } = 0;
+        public int TotalTripPendingCount { get; set; } = 0;
+        public int TotalTripApproveCount { get; set; } = 0;
+
+        public int TotalExpenseCount { get; set; } = 0;
+        public int TotalExpensePendingCount { get; set; } = 0;
+        public int TotalExpenseApproveCount { get; set; } = 0;
+
+        public decimal PermanentAdvance { get; set; }
+        
+    }
+    public class TeamDashboardData
+    {
+        public int TotalTripCount { get; set; } = 0;
+        public int TotalTripPendingCount { get; set; } = 0;
+        public int TotalTripApproveCount { get; set; } = 0;
+
+        public int TotalExpenseCount { get; set; } = 0;
+        public int TotalExpensePendingCount { get; set; } = 0;
+        public int TotalExpenseApproveCount { get; set; } = 0;       
+
+    }
+    public class AllDashboardDataResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public AllDashboardData Data { get; set; }
+    }
+
 }
