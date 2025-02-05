@@ -309,10 +309,7 @@ namespace BTTEM.Data.Entities
     }
 
     public class AllDashboardData
-    {
-        public bool status { get; set; }
-        public int StatusCode { get; set; }
-        public string message { get; set; }
+    {       
         public MyDashboardData MyDashboardData { get; set; }
         public TeamDashboardData TeamDashboardData { get; set; }
         public IList<UserAllTripReportDetails> UserAllTripReportDetailsList { get; set; } = new List<UserAllTripReportDetails>();
