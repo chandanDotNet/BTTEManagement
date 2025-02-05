@@ -394,6 +394,22 @@ namespace POS.Repository
                 { "VendorName", new PropertyMappingValue(new List<string>() { "VendorName" },true ) }
       };
 
+        private Dictionary<string, PropertyMappingValue> _approvalLevelTypePropertyMapping =
+          new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+          {
+                { "TypeName", new PropertyMappingValue(new List<string>() { "TypeName" } ) },
+                { "Company", new PropertyMappingValue(new List<string>() { "Company" } )},
+          };
+
+        private Dictionary<string, PropertyMappingValue> _approvalLevelPropertyMapping =
+         new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+         {
+                { "ApprovalLevelTypeId", new PropertyMappingValue(new List<string>() { "ApprovalLevelTypeId" } ) },
+                { "LevelName", new PropertyMappingValue(new List<string>() { "LevelName" } )},
+                { "RoleId", new PropertyMappingValue(new List<string>() { "RoleId" } )},
+                { "OrderNo", new PropertyMappingValue(new List<string>() { "OrderNo" } )},
+         };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -431,6 +447,8 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<LocalConveyanceExpenseDto, LocalConveyanceExpense>(_localConveyanceExpensePropertyMapping));
             propertyMappings.Add(new PropertyMapping<CarBikeLogBookExpenseDto, CarBikeLogBookExpense>(_carBikeLogBookExpensePropertyMapping));
             propertyMappings.Add(new PropertyMapping<VendorDto, Vendor>(_vendorPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<ApprovalLevelTypeDto, ApprovalLevelType>(_approvalLevelTypePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<ApprovalLevelDto, ApprovalLevel>(_approvalLevelPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

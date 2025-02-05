@@ -124,6 +124,9 @@ namespace POS.Domain
         public DbSet<ItineraryHotelBookingQuotation> ItineraryHotelBookingQuotations { get; set; }
         public DbSet<CancelTripItineraryHotelUser> CancelTripItineraryHotelUsers { get; set; }
         public DbSet<AppVersionUpdate> AppVersions { get; set; }
+        public DbSet<ApprovalLevelType> ApprovalLevelTypes { get; set; }
+        public DbSet<ApprovalLevel> ApprovalLevels { get; set; }
+        public DbSet<ApprovalLevelUser> ApprovalLevelUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -669,6 +672,35 @@ namespace POS.Domain
                 b.HasOne(e => e.CreatedByUser)
                     .WithMany()
                     .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ApprovalLevelType>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ApprovalLevel>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ApprovalLevelUser>(b =>
+            {
+                b.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(e => e.ApprovalLevel)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.ApprovalLevelId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 

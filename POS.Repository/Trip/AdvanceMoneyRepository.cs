@@ -23,12 +23,14 @@ namespace BTTEM.Repository
         private readonly UserInfoToken _userInfoToken;
         private readonly IUserRepository _userRepository;
         private IConfiguration _configuration;
+        private readonly IUserRoleRepository _userRoleRepository;
         public AdvanceMoneyRepository(IUnitOfWork<POSDbContext> uow,
             IPropertyMappingService propertyMappingService,
               IMapper mapper,
               UserInfoToken userInfoToken,
               IUserRepository userRepository,
-              IConfiguration configuration
+              IConfiguration configuration,
+              IUserRoleRepository userRoleRepository
             ) : base(uow)
         {
             _propertyMappingService = propertyMappingService;
@@ -36,12 +38,14 @@ namespace BTTEM.Repository
             _userInfoToken = userInfoToken;
             _userRepository = userRepository;
             _configuration = configuration;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<AdvanceMoneyList> GetAllAdvanceMoney(AdvanceMoneyResource advanceMoneyResource)
         {
             decimal amount = Convert.ToDecimal(this._configuration.GetSection("AdvanceMoney")["Money"]);
             Guid LoginUserId = Guid.Parse(_userInfoToken.Id);
+            var Role = GetUserRole(LoginUserId).Result.FirstOrDefault();
 
             var collectionBeforePaging = All.
                  Include(c => c.CreatedByUser)
@@ -60,20 +64,27 @@ namespace BTTEM.Repository
                 .ApplySort(advanceMoneyResource.OrderBy,
                _propertyMappingService.GetPropertyMapping<TripDto, Trip>());
 
-            if (LoginUserId == Guid.Parse("fe7c8f30-965c-4f12-9eca-c00f9d4f99a4")) 
+            if (LoginUserId == Guid.Parse("fe7c8f30-965c-4f12-9eca-c00f9d4f99a4"))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.AdvanceMoney >= amount 
+                    .Where(a => a.AdvanceMoney >= amount
                     && a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91")
                     || a.ProjectType == "Others");
             }
-            if (LoginUserId == Guid.Parse("6162414f-06fd-4460-b447-2499aa88c602"))
+            else if (LoginUserId == Guid.Parse("6162414f-06fd-4460-b447-2499aa88c602"))
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.AdvanceMoney < amount &&
-                    a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91") 
+                    a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91")
                     && a.ProjectType == "Ongoing");
             }
+
+            if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.ReportingTo == LoginUserId);
+            }
+
             if (!string.IsNullOrEmpty(advanceMoneyResource.RequestAdvanceMoneyStatus))
             {
                 collectionBeforePaging = collectionBeforePaging
@@ -84,6 +95,12 @@ namespace BTTEM.Repository
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.ProjectType == advanceMoneyResource.ProjectType);
+            }
+
+            if (!string.IsNullOrEmpty(advanceMoneyResource.AdvanceAccountApprovedStatus))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.AdvanceAccountApprovedStatus == advanceMoneyResource.AdvanceAccountApprovedStatus);
             }
 
             //Filter For Infra Only           
@@ -215,6 +232,23 @@ namespace BTTEM.Repository
             return await new AdvanceMoneyList(_mapper).Create(collectionBeforePaging,
                 advanceMoneyResource.Skip,
                 advanceMoneyResource.PageSize);
+        }
+
+        public async Task<List<RoleDto>> GetUserRole(Guid Id)
+        {
+            var rolesDetails = await _userRoleRepository.AllIncluding(c => c.Role).Where(d => d.UserId == Id)
+                .ToListAsync();
+
+            List<RoleDto> roleDto = new List<RoleDto>();
+            foreach (var role in rolesDetails)
+            {
+                RoleDto rd = new RoleDto();
+                rd.Id = role.Role.Id;
+                rd.Name = role.Role.Name;
+                roleDto.Add(rd);
+            }
+            // var roleClaims = await _roleClaimRepository.All.Where(c => rolesIds.Contains(c.RoleId)).Select(c => c.ClaimType).ToListAsync();
+            return roleDto;
         }
     }
 }

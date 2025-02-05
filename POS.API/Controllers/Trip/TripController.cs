@@ -956,6 +956,73 @@ namespace BTTEM.API.Controllers.Trip
                 };
 
                 var notificationResult = await _mediator.Send(addNotificationCommand);
+
+                if (responseData.Result.Status == "APPLIED")
+                {
+                    //**Email Start**
+                    string email = this._configuration.GetSection("AppSettings")["Email"];
+                    if (email == "Yes")
+                    {
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var MoneyRequestBy = await _userRepository.FindAsync(responseData.Result.CreatedBy);
+
+
+                        List<User> accountant = new List<User>();
+                        string toAccount = string.Empty;
+                        if (responseData.Result.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                        {
+                            if (updateTripRequestAdvanceMoneyCommand.ProjectType == "Ongoing")
+                            {
+                                toAccount = "gp@shyamsteel.com";
+                            }
+                            else
+                            {
+                                toAccount = "raghav@shyamsteel.com";
+                            }
+                        }
+                        else
+                        {
+                            accountant = await _userRepository.All.Include(u => u.UserRoles)
+                            .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+
+                            accountant =
+                            accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                           .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                        }
+
+                        if (string.IsNullOrEmpty(toAccount))
+                        {
+                            toAccount = string.Join(',', accountant.Select(x => x.UserName));
+                        }
+
+                        var reportingHead = await _userRepository.FindAsync(responseData.Result.CreatedBy);
+
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.Result.TripNo));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCity));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCity));
+                            templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Advance Money Approval",
+                                ToAddress = reportingHead.UserName + "," + toAccount,
+                                CCAddress = MoneyRequestBy.UserName,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
+                    }
+                }
             }
             return ReturnFormattedResponse(result);
         }
@@ -1079,6 +1146,9 @@ namespace BTTEM.API.Controllers.Trip
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                         var reportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
 
+                        var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id).ToListAsync();
+                        var hotel = await _tripHotelBookingRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id).ToListAsync();
+
                         using (StreamReader sr = new StreamReader(filePath))
                         {
                             string templateBody = sr.ReadToEnd();
@@ -1086,6 +1156,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(responseData.ModeOfTrip));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
@@ -1097,6 +1168,10 @@ namespace BTTEM.API.Controllers.Trip
 
                             var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
                             templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+
+                            templateBody = templateBody.Replace("{WEB_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
+
 
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
@@ -1112,17 +1187,66 @@ namespace BTTEM.API.Controllers.Trip
                                 responseData.CreatedByUser.UserName + "," + responseData.CreatedByUser.AlternateEmail,
                                 CCAddress = TravelDesk == false ?
                                 reportingHead.UserName :
-                                reportingHead.UserName + ",mukesh.sharma@shyamsteel.com,travels@shyamsteel.com,bitan@shyamsteel.com",
+                                reportingHead.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
                                 UserName = defaultSmtp.UserName
                             });
                         }
+
+
+
+
+
+
+                        //**Email Start**
+
+                        if (email == "Yes")
+                        {
+                            var amfilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
+                            var amdefaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                            var amMoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
+
+                            var amreportingHead = await _userRepository.FindAsync(responseData.CreatedBy);
+
+                            using (StreamReader sr = new StreamReader(filePath))
+                            {
+                                string templateBody = sr.ReadToEnd();
+                                templateBody = templateBody.Replace("{NAME}", string.Concat(amMoneyRequestBy.FirstName, " ", amMoneyRequestBy.LastName));
+                                templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                                templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
+                                templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
+                                templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
+                                templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
+                                EmailHelper.SendEmail(new SendEmailSpecification
+                                {
+                                    Body = templateBody,
+                                    FromAddress = defaultSmtp.UserName,
+                                    Host = defaultSmtp.Host,
+                                    IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                    Password = defaultSmtp.Password,
+                                    Port = defaultSmtp.Port,
+                                    Subject = "Advance Money Approval",
+                                    ToAddress = reportingHead.UserName,
+                                    CCAddress = amMoneyRequestBy.UserName,
+                                    UserName = defaultSmtp.UserName
+                                });
+                            }
+                        }
+
+
+
+
+
                     }
+
 
                     if (updateTripStatusCommand.Approval == "APPROVED")
                     {
                         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                         var reportingHead = _userRepository.FindAsync(responseData.CreatedByUser.ReportingTo.Value).Result;
+
+                        var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id).ToListAsync();
+                        var hotel = await _tripHotelBookingRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id).ToListAsync();
 
                         using (StreamReader sr = new StreamReader(filePath))
                         {
@@ -1131,6 +1255,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString("Approved"));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(responseData.ModeOfTrip));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
@@ -1142,6 +1267,9 @@ namespace BTTEM.API.Controllers.Trip
 
                             var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
                             templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+
+                            templateBody = templateBody.Replace("{WEB_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
 
                             var ccUser = string.IsNullOrEmpty(responseData.CreatedByUser.AlternateEmail) ?
                                 responseData.CreatedByUser.UserName :
@@ -1160,7 +1288,7 @@ namespace BTTEM.API.Controllers.Trip
                                 CCAddress =
                                 TravelDesk == false ?
                                 ccUser :
-                                ccUser + ",mukesh.sharma@shyamsteel.com,travels@shyamsteel.com,bitan@shyamsteel.com",
+                                ccUser + ",travels@shyamsteel.com,bitan@shyamsteel.com",
                                 UserName = defaultSmtp.UserName
                             });
                         }
@@ -1532,6 +1660,80 @@ namespace BTTEM.API.Controllers.Trip
             {
                 updateApprovalTripRequestAdvanceMoneyCommand = item;
                 var result = await _mediator.Send(updateApprovalTripRequestAdvanceMoneyCommand);
+
+
+
+
+                //**Email Start**
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+                if (email == "Yes")
+                {
+
+                    var responseData = _tripRepository.FindAsync(item.Id);
+                    var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
+                    var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                    var MoneyRequestBy = await _userRepository.FindAsync(responseData.Result.CreatedBy);
+
+
+                    List<User> accountant = new List<User>();
+                    string toAccount = string.Empty;
+                    if (responseData.Result.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                    {
+                        if (responseData.Result.ProjectType == "Ongoing")
+                        {
+                            toAccount = "gp@shyamsteel.com";
+                        }
+                        else
+                        {
+                            toAccount = "raghav@shyamsteel.com";
+                        }
+                    }
+                    else
+                    {
+                        accountant = await _userRepository.All.Include(u => u.UserRoles)
+                        .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+
+                        accountant =
+                        accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                       .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                    }
+
+                    if (string.IsNullOrEmpty(toAccount))
+                    {
+                        toAccount = string.Join(',', accountant.Select(x => x.UserName));
+                    }
+
+                    var reportingHead = await _userRepository.FindAsync(responseData.Result.CreatedBy);
+
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        string templateBody = sr.ReadToEnd();
+                        templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
+                        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                        templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.Result.TripNo));
+                        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCity));
+                        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCity));
+                        templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
+                        EmailHelper.SendEmail(new SendEmailSpecification
+                        {
+                            Body = templateBody,
+                            FromAddress = defaultSmtp.UserName,
+                            Host = defaultSmtp.Host,
+                            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                            Password = defaultSmtp.Password,
+                            Port = defaultSmtp.Port,
+                            Subject = "Advance Money Approved",
+                            ToAddress = MoneyRequestBy.UserName,
+                            CCAddress = reportingHead.UserName + "," + toAccount,
+                            UserName = defaultSmtp.UserName
+                        });
+                    }
+                }
+
+
+
                 if (result.Success)
                 {
                     Response = 1;
@@ -1542,6 +1744,7 @@ namespace BTTEM.API.Controllers.Trip
                 response.status = true;
                 response.StatusCode = 200;
                 //dashboardReportData.Data = result;
+
             }
             else
             {
