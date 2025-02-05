@@ -36,6 +36,7 @@ namespace BTTEM.Data.Resources
         public bool? IsMyRequest { get; set; }
         public string RequestAdvanceMoneyStatus { get; set; }
         public string ProjectType { get; set; }
+        public string AdvanceAccountApprovedStatus { get; set; }
 
     }
 }

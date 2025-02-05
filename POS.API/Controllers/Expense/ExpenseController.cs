@@ -37,6 +37,7 @@ using POS.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections;
+using BTTEM.MediatR.ApprovalLevel.Command;
 
 namespace POS.API.Controllers.Expense
 {
@@ -112,7 +113,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Add Local Con Expenses
         /// </summary>
-        /// <param name="addLocalConveyanceExpenseCommand"></param>
+        /// <param name="addLocalConveyanceExpenseCommandList"></param>
         /// <returns></returns>
         [HttpPost("AddLocalConveyanceExpense")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
@@ -140,7 +141,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Add Local Con Expenses for App
         /// </summary>
-        /// <param name="addLocalConveyanceExpenseCommand"></param>
+        /// <param name="addLocalConveyanceExpenseForAppCommand"></param>
         /// <returns></returns>
         [HttpPost("AddLocalConveyanceExpenseForApp")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
@@ -185,7 +186,7 @@ namespace POS.API.Controllers.Expense
         /// <summary>
         /// Update Local Conveyance Expenses
         /// </summary>
-        /// <param name="updateMasterExpenseCommand"></param>
+        /// <param name="updateLocalConveyanceExpenseCommandList"></param>
         /// <returns></returns>
         [HttpPut("UpdateLocalConveyanceExpense")]
         //[ClaimCheck("EXP_ADD_EXPENSE")]
@@ -2755,6 +2756,8 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_MSTR_EXP_UPDATE_EXPENSE")]
         public async Task<IActionResult> UpdateAllExpenseAndMasterExpenseApprovalLevel([FromBody] UpdateAllExpenseAndMasterExpenseApprovalLevelCommand updateAllExpenseAndMasterExpenseApprovalLevelCommand)
         {
+            var userResult = _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id)).Result;
+
             int approvalcheck = updateAllExpenseAndMasterExpenseApprovalLevelCommand.
                 AllExpenseAndMasterExpenseApprovalLevelCommand.Count(x => x.AccountStatus == "APPROVED");
 
@@ -2817,6 +2820,84 @@ namespace POS.API.Controllers.Expense
                 //    }
                 //}
 
+                //**Email End**
+
+
+
+                //**Email Start**
+                if (userResult.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                {
+                    string email = this._configuration.GetSection("AppSettings")["Email"];
+                    if (email == "Yes")
+                    {
+                        var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id ==
+                        updateAllExpenseAndMasterExpenseApprovalLevelCommand.AllExpenseAndMasterExpenseApprovalLevelCommand.FirstOrDefault()
+                        .MasterExpenseId).FirstOrDefaultAsync();
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                        string accountsEmail = string.Empty;
+                        accountsEmail = responseData.AccountsApprovalStage.Value == 3 ? "nandan.mandal@shyaminfra.com" :
+                            responseData.AccountsApprovalStage.Value == 2 ? "rajesh.yadav@shyaminfra.com" :
+                            responseData.AccountsApprovalStage.Value == 1 ? "nandan.mandal@shyaminfra.com" : "";
+
+                        string ccMail = string.Empty;
+
+                        if (string.IsNullOrEmpty(accountsEmail))
+                        {
+                            if (string.IsNullOrEmpty(userResult.AlternateEmail))
+                            {
+                                ccMail = userResult.UserName;
+                            }
+                            else
+                            {
+                                ccMail = userResult.UserName + "," + userResult.AlternateEmail;
+                            }
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(userResult.AlternateEmail))
+                            {
+                                ccMail = userResult.UserName + "," + accountsEmail;
+                            }
+                            else
+                            {
+                                ccMail = userResult.UserName + "," + userResult.AlternateEmail + "," + accountsEmail;
+                            }
+                        }
+
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
+                            templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(responseData.TotalAmount));
+                            templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(responseData.ExpenseType));
+                            templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(responseData.NoOfBill));
+                            templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+                            templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Expense Status",
+                                ToAddress = responseData.CreatedByUser.UserName,
+                                //CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
+                                //    userResult.UserName :
+                                //    userResult.UserName + "," + userResult.AlternateEmail,
+                                CCAddress = ccMail,
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
+                    }
+                }
                 //**Email End**
 
             }
@@ -3632,6 +3713,108 @@ namespace POS.API.Controllers.Expense
             return Ok(response);
 
             //return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Add Approval Level Type.
+        /// </summary>      
+        /// <param name="addApprovalLevelTypeCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddApprovalTypeLevel")]
+        public async Task<IActionResult> AddApprovalLevelType([FromBody] AddApprovalLevelTypeCommand addApprovalLevelTypeCommand)
+        {
+            var result = await _mediator.Send(addApprovalLevelTypeCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Approval Level Type.
+        /// </summary>      
+        /// <param name="updateApprovalLevelTypeCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateApprovalLevelType")]
+        public async Task<IActionResult> UpdateApprovalLevelType([FromBody] UpdateApprovalLevelTypeCommand updateApprovalLevelTypeCommand)
+        {
+            var result = await _mediator.Send(updateApprovalLevelTypeCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get All Approval Level Type
+        /// </summary>
+        /// <param name="approvalLevelTypeResource"></param>
+        /// <returns></returns>
+
+        [HttpGet("GetApprovalLevelTypes")]
+        public async Task<IActionResult> GetApprovalLevelTypes([FromQuery] ApprovalLevelTypeResource approvalLevelTypeResource)
+        {
+            var getAllApprovalLevelTypeQuery = new GetAllApprovalLevelTypeQuery
+            {
+                ApprovalLevelTypeResource = approvalLevelTypeResource
+            };
+            var result = await _mediator.Send(getAllApprovalLevelTypeQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Add Approval Level.
+        /// </summary>      
+        /// <param name="addApprovalLevelCommand"></param>
+        /// <returns></returns>
+        [HttpPost("AddApprovalLevel")]
+        public async Task<IActionResult> AddApprovalLevel([FromBody] AddApprovalLevelCommand addApprovalLevelCommand)
+        {
+            var result = await _mediator.Send(addApprovalLevelCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Update Approval Level.
+        /// </summary>      
+        /// <param name="updateApprovalLevelCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateApprovalLevel")]
+        public async Task<IActionResult> UpdateApprovalLevel([FromBody] UpdateApprovalLevelCommand updateApprovalLevelCommand)
+        {
+            var result = await _mediator.Send(updateApprovalLevelCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+        /// <summary>
+        /// Get All Approval Level
+        /// </summary>
+        /// <param name="approvalLevelResource"></param>
+        /// <returns></returns>
+
+        [HttpGet("GetApprovalLevels")]
+        public async Task<IActionResult> GetApprovalLevels([FromQuery] ApprovalLevelResource approvalLevelResource)
+        {
+            var getAllApprovalLevelQuery = new GetAllApprovalLevelQuery
+            {
+                ApprovalLevelResource = approvalLevelResource
+            };
+            var result = await _mediator.Send(getAllApprovalLevelQuery);
+
+            var paginationMetadata = new
+            {
+                totalCount = result.TotalCount,
+                pageSize = result.PageSize,
+                skip = result.Skip,
+                totalPages = result.TotalPages
+            };
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(result);
         }
     }
 }
