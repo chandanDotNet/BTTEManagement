@@ -93,21 +93,33 @@
                                     </h2>
                                     <br />
                                     <p>
-                                        <b style="font-size:15px;"> {NAME},</b>
+                                        <b style="font-size:15px;font-weight:bold"> {NAME}</b> <br /><br />
                                     </p>
                                     <div class="inner-main-box">
-                                        <p>
-                                            Trip No: <span style="font-weight: 600; color: #1f1f1f;"> {TRIP_NO}</span>
-                                        </p>
-                                        <p>
-                                            Source City: <span style="font-weight: 600; color: #1f1f1f;"> {SOURCE_CITY}</span>
-                                        </p>
-                                        <p>
-                                            Destination: <span style="font-weight: 600; color: #1f1f1f;"> {DESTINATION}</span>
-                                        </p>
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td>Trip No </td>
+                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {TRIP_NO}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><hr /></td>
+                                                <td><hr /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Source City </td>
+                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {SOURCE_CITY}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><hr /></td>
+                                                <td><hr /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Destination  </td>
+                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {DESTINATION}</span></td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                    
-                                    <br /><br /><p style="font-size:17px;">Your advance money for <span style="font-weight:bold;font-size:18px;">Rs.{ADVANCE_MONEY}</span> has been approved.</p>
+                                    <br /><br /><p style="font-size:17px;">Your advance money for <span style="font-weight:bold;font-size:18px;">Rs.{ADVANCE_MONEY}</span> has been {STATUS}.</p>
 
                                     <br /><br /><p style="letter-spacing: 0.56px; font-size: 14px;">
                                         Thank you for choosing Business Tour & Travel Expense Management System.

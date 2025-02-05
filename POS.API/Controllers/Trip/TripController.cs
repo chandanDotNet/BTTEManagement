@@ -972,23 +972,27 @@ namespace BTTEM.API.Controllers.Trip
                         string toAccount = string.Empty;
                         if (responseData.Result.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
                         {
-                            if (updateTripRequestAdvanceMoneyCommand.ProjectType == "Ongoing")
+                            if (responseData.Result.ProjectType == "Ongoing")
                             {
-                                toAccount = "gp@shyamsteel.com";
+                                //toAccount = "gps@shyamsteel.com";
+                                toAccount = "shubhajyoti.banerjee@shyamfuture.com";
                             }
                             else
                             {
-                                toAccount = "raghav@shyamsteel.com";
+                                //toAccount = "raghavs@shyamsteel.com";
+                                toAccount = "abhishek.roy@shyamfuture.com";
                             }
                         }
                         else
                         {
-                            accountant = await _userRepository.All.Include(u => u.UserRoles)
-                            .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                            accountant =
-                            accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                           .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                            toAccount = "chiranjit.patra@shyamfuture.com";
+                           // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                           // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+
+                           // accountant =
+                           // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                           //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
                         }
 
                         if (string.IsNullOrEmpty(toAccount))
@@ -996,7 +1000,7 @@ namespace BTTEM.API.Controllers.Trip
                             toAccount = string.Join(',', accountant.Select(x => x.UserName));
                         }
 
-                        var reportingHead = await _userRepository.FindAsync(responseData.Result.CreatedBy);
+                        var reportingHead = await _userRepository.FindAsync(MoneyRequestBy.ReportingTo.Value);
 
                         using (StreamReader sr = new StreamReader(filePath))
                         {
@@ -1007,6 +1011,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCity));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCity));
                             templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
+                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("requested."));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1205,7 +1210,40 @@ namespace BTTEM.API.Controllers.Trip
                             var amdefaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                             var amMoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
 
-                            var amreportingHead = await _userRepository.FindAsync(responseData.CreatedBy);
+                            var amreportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
+
+                            List<User> accountant = new List<User>();
+                            string toAccount = string.Empty;
+                            if (responseData.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                            {
+                                if (responseData.ProjectType == "Ongoing")
+                                {
+                                    //toAccount = "gps@shyamsteel.com";
+                                    toAccount = "shubhajyoti.banerjee@shyamfuture.com";
+                                }
+                                else
+                                {
+                                    //toAccount = "raghavs@shyamsteel.com";
+                                    toAccount = "abhishek.roy@shyamfuture.com";
+                                }
+                            }
+                            else
+                            {
+
+                                toAccount = "chiranjit.patra@shyamfuture.com";
+                               // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                               // .Where(x => x.CompanyAccountId == amMoneyRequestBy.CompanyAccountId).ToListAsync();
+
+                               // accountant =
+                               // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                               //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                            }
+
+                            if (string.IsNullOrEmpty(toAccount))
+                            {
+                                toAccount = string.Join(',', accountant.Select(x => x.UserName));
+                            }
+
 
                             using (StreamReader sr = new StreamReader(filePath))
                             {
@@ -1216,6 +1254,7 @@ namespace BTTEM.API.Controllers.Trip
                                 templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
                                 templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
                                 templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
+                                templateBody = templateBody.Replace("{STATUS}", Convert.ToString("requested."));
                                 EmailHelper.SendEmail(new SendEmailSpecification
                                 {
                                     Body = templateBody,
@@ -1225,7 +1264,7 @@ namespace BTTEM.API.Controllers.Trip
                                     Password = defaultSmtp.Password,
                                     Port = defaultSmtp.Port,
                                     Subject = "Advance Money Approval",
-                                    ToAddress = reportingHead.UserName,
+                                    ToAddress = reportingHead.UserName + "," + toAccount,
                                     CCAddress = amMoneyRequestBy.UserName,
                                     UserName = defaultSmtp.UserName
                                 });
@@ -1387,7 +1426,7 @@ namespace BTTEM.API.Controllers.Trip
                             .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
                         var toAddress = string.Join(',', accountant.Select(x => x.UserName));
 
-                        var reportingHead = await _userRepository.FindAsync(responseData.CreatedBy);
+                        var reportingHead = await _userRepository.FindAsync(MoneyRequestBy.ReportingTo.Value);
 
                         using (StreamReader sr = new StreamReader(filePath))
                         {
@@ -1398,6 +1437,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
                             templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
+                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString(updateStatusTripRequestAdvanceMoneyCommand.Status));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1683,21 +1723,25 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         if (responseData.Result.ProjectType == "Ongoing")
                         {
-                            toAccount = "gp@shyamsteel.com";
+                            //toAccount = "gps@shyamsteel.com";
+                            toAccount = "shubhajyoti.banerjee@shyamfuture.com";
                         }
                         else
                         {
-                            toAccount = "raghav@shyamsteel.com";
+                            //toAccount = "raghavs@shyamsteel.com";
+                            toAccount = "abhishek.roy@shyamfuture.com";
                         }
                     }
                     else
                     {
-                        accountant = await _userRepository.All.Include(u => u.UserRoles)
-                        .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                        accountant =
-                        accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                       .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                        toAccount = "chiranjit.patra@shyamfuture.com";
+                       // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                       // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+
+                        // accountant =
+                        // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                        //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
                     }
 
                     if (string.IsNullOrEmpty(toAccount))
@@ -1716,6 +1760,7 @@ namespace BTTEM.API.Controllers.Trip
                         templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCity));
                         templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCity));
                         templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
+                        templateBody = templateBody.Replace("{STATUS}", Convert.ToString("approved."));
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
