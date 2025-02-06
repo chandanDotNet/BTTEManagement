@@ -1648,6 +1648,43 @@ namespace BTTEM.API.Controllers.Trip
         [HttpDelete("DeleteItineraryHotelBookingQuotation/{Id}")]
         public async Task<IActionResult> DeleteItineraryHotelBookingQuotation(Guid Id)
         {
+            //int[] array = { 5, 3, 9, 2, 7 };
+            //int max = array[0];
+            //int secondMax = int.MinValue;
+            //int thirdMax = int.MinValue;
+            //for (int i = 1; i < array.Length; i++)
+            //{
+            //    if (array[i] > max)
+            //    {
+            //        thirdMax = secondMax;
+            //        secondMax = max;
+            //        max = array[i];
+            //    }
+            //    else if (array[i] > secondMax)
+            //    {
+            //        thirdMax = secondMax;
+            //        secondMax = array[i];
+            //    }
+            //    else if (array[i] > thirdMax)
+            //    {
+            //        thirdMax = array[i];
+            //    }
+            //}
+
+            //foreach (int num in array)
+            //{
+            //    if (num > max)
+            //    {
+            //        thirdMax = secondMax;
+            //        secondMax = max;
+            //        max = num;
+            //    }
+            //    else if (num > secondMax && num != max)
+            //    {
+            //        secondMax = num;
+            //    }
+            //}
+
             var deleteItineraryHotelBookingQuotationCommand = new DeleteItineraryHotelBookingQuotationCommand { Id = Id };
             var result = await _mediator.Send(deleteItineraryHotelBookingQuotationCommand);
             return ReturnFormattedResponse(result);
