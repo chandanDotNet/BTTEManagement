@@ -987,12 +987,12 @@ namespace BTTEM.API.Controllers.Trip
                         {
 
                             toAccount = "chiranjit.patra@shyamfuture.com";
-                           // accountant = await _userRepository.All.Include(u => u.UserRoles)
-                           // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+                            // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                            // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                           // accountant =
-                           // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                           //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                            // accountant =
+                            // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                            //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
                         }
 
                         if (string.IsNullOrEmpty(toAccount))
@@ -1008,10 +1008,11 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.Result.TripNo));
-                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCity));
-                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCity));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCityName));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCityName));
                             templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
-                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("requested."));
+                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("applied."));
+                            templateBody = templateBody.Replace("{COLOUR}", Convert.ToString("#00ff1a"));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1244,17 +1245,17 @@ namespace BTTEM.API.Controllers.Trip
                             //    toAccount = string.Join(',', accountant.Select(x => x.UserName));
                             //}
 
-
                             using (StreamReader sr = new StreamReader(amfilePath))
                             {
                                 string templateBody = sr.ReadToEnd();
                                 templateBody = templateBody.Replace("{NAME}", string.Concat(amMoneyRequestBy.FirstName, " ", amMoneyRequestBy.LastName));
                                 templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                                 templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
-                                templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
-                                templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
+                                templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
+                                templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                                 templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
                                 templateBody = templateBody.Replace("{STATUS}", Convert.ToString("requested."));
+                                templateBody = templateBody.Replace("{COLOUR}", Convert.ToString("#00ff1a"));
                                 EmailHelper.SendEmail(new SendEmailSpecification
                                 {
                                     Body = templateBody,
@@ -1434,10 +1435,11 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
-                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCity));
-                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCity));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
                             templateBody = templateBody.Replace("{STATUS}", Convert.ToString(updateStatusTripRequestAdvanceMoneyCommand.Status));
+                            templateBody = templateBody.Replace("{COLOUR}", updateStatusTripRequestAdvanceMoneyCommand.Status == "approved" ? Convert.ToString("#00ff1a") : Convert.ToString("#ff0000"));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1736,8 +1738,8 @@ namespace BTTEM.API.Controllers.Trip
                     {
 
                         toAccount = "chiranjit.patra@shyamfuture.com";
-                       // accountant = await _userRepository.All.Include(u => u.UserRoles)
-                       // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+                        // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                        // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
 
                         // accountant =
                         // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
@@ -1749,7 +1751,7 @@ namespace BTTEM.API.Controllers.Trip
                         toAccount = string.Join(',', accountant.Select(x => x.UserName));
                     }
 
-                    var reportingHead = await _userRepository.FindAsync(responseData.Result.CreatedBy);
+                    var reportingHead = await _userRepository.FindAsync(MoneyRequestBy.ReportingTo.Value);
 
                     using (StreamReader sr = new StreamReader(filePath))
                     {
@@ -1757,10 +1759,11 @@ namespace BTTEM.API.Controllers.Trip
                         templateBody = templateBody.Replace("{NAME}", string.Concat(MoneyRequestBy.FirstName, " ", MoneyRequestBy.LastName));
                         templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                         templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.Result.TripNo));
-                        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCity));
-                        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCity));
+                        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCityName));
+                        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCityName));
                         templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
-                        templateBody = templateBody.Replace("{STATUS}", Convert.ToString("approved."));
+                        templateBody = templateBody.Replace("{STATUS}", Convert.ToString(item.AdvanceAccountApprovedStatus));
+                        templateBody = templateBody.Replace("{COLOUR}", item.AdvanceAccountApprovedStatus == "approved" ? Convert.ToString("#00ff1a") : Convert.ToString("#ff0000"));
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
@@ -1769,7 +1772,7 @@ namespace BTTEM.API.Controllers.Trip
                             IsEnableSSL = defaultSmtp.IsEnableSSL,
                             Password = defaultSmtp.Password,
                             Port = defaultSmtp.Port,
-                            Subject = "Advance Money Approved",
+                            Subject = "Advance Money Approval",
                             ToAddress = MoneyRequestBy.UserName,
                             CCAddress = reportingHead.UserName + "," + toAccount,
                             UserName = defaultSmtp.UserName
