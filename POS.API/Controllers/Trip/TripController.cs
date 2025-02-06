@@ -974,25 +974,21 @@ namespace BTTEM.API.Controllers.Trip
                         {
                             if (responseData.Result.ProjectType == "Ongoing")
                             {
-                                //toAccount = "gps@shyamsteel.com";
-                                toAccount = "shubhajyoti.banerjee@shyamfuture.com";
+                                toAccount = "gpsss@shyamsteel.com";
                             }
                             else
                             {
-                                //toAccount = "raghavs@shyamsteel.com";
-                                toAccount = "abhishek.roy@shyamfuture.com";
+                                toAccount = "raghavsss@shyamsteel.com";
                             }
                         }
                         else
                         {
+                            accountant = await _userRepository.All.Include(u => u.UserRoles)
+                            .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                            toAccount = "chiranjit.patra@shyamfuture.com";
-                            // accountant = await _userRepository.All.Include(u => u.UserRoles)
-                            // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
-
-                            // accountant =
-                            // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                            //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                            accountant =
+                            accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                           .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
                         }
 
                         if (string.IsNullOrEmpty(toAccount))
@@ -1011,7 +1007,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.Result.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.Result.DestinationCityName));
                             templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.Result.AdvanceMoney));
-                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("applied."));
+                            templateBody = templateBody.Replace("{STATUS}", Convert.ToString("applied"));
                             templateBody = templateBody.Replace("{COLOUR}", Convert.ToString("#00ff1a"));
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
@@ -1254,7 +1250,7 @@ namespace BTTEM.API.Controllers.Trip
                                 templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
                                 templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                                 templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
-                                templateBody = templateBody.Replace("{STATUS}", Convert.ToString("requested."));
+                                templateBody = templateBody.Replace("{STATUS}", Convert.ToString("applied"));
                                 templateBody = templateBody.Replace("{COLOUR}", Convert.ToString("#00ff1a"));
                                 EmailHelper.SendEmail(new SendEmailSpecification
                                 {
@@ -1725,25 +1721,22 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         if (responseData.Result.ProjectType == "Ongoing")
                         {
-                            //toAccount = "gps@shyamsteel.com";
-                            toAccount = "shubhajyoti.banerjee@shyamfuture.com";
+                            toAccount = "gpsss@shyamsteel.com";
                         }
                         else
                         {
-                            //toAccount = "raghavs@shyamsteel.com";
-                            toAccount = "abhishek.roy@shyamfuture.com";
+                            toAccount = "raghavsss@shyamsteel.com";                           
                         }
                     }
                     else
                     {
 
-                        toAccount = "chiranjit.patra@shyamfuture.com";
-                        // accountant = await _userRepository.All.Include(u => u.UserRoles)
-                        // .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
+                        accountant = await _userRepository.All.Include(u => u.UserRoles)
+                        .Where(x => x.CompanyAccountId == MoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                        // accountant =
-                        // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                        //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                        accountant =
+                        accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                       .Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
                     }
 
                     if (string.IsNullOrEmpty(toAccount))
@@ -1773,8 +1766,8 @@ namespace BTTEM.API.Controllers.Trip
                             Password = defaultSmtp.Password,
                             Port = defaultSmtp.Port,
                             Subject = "Advance Money Approval",
-                            ToAddress = MoneyRequestBy.UserName,
-                            CCAddress = reportingHead.UserName + "," + toAccount,
+                            ToAddress = toAccount,
+                            CCAddress = MoneyRequestBy.UserName + "," + reportingHead.UserName,
                             UserName = defaultSmtp.UserName
                         });
                     }
