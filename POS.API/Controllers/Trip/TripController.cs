@@ -1212,40 +1212,40 @@ namespace BTTEM.API.Controllers.Trip
 
                             var amreportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
 
-                            List<User> accountant = new List<User>();
-                            string toAccount = string.Empty;
-                            if (responseData.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
-                            {
-                                if (responseData.ProjectType == "Ongoing")
-                                {
-                                    //toAccount = "gps@shyamsteel.com";
-                                    toAccount = "shubhajyoti.banerjee@shyamfuture.com";
-                                }
-                                else
-                                {
-                                    //toAccount = "raghavs@shyamsteel.com";
-                                    toAccount = "abhishek.roy@shyamfuture.com";
-                                }
-                            }
-                            else
-                            {
+                            //List<User> accountant = new List<User>();
+                            //string toAccount = string.Empty;
+                            //if (responseData.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                            //{
+                            //    if (responseData.ProjectType == "Ongoing")
+                            //    {
+                            //        //toAccount = "gps@shyamsteel.com";
+                            //        toAccount = "shubhajyoti.banerjee@shyamfuture.com";
+                            //    }
+                            //    else
+                            //    {
+                            //        //toAccount = "raghavs@shyamsteel.com";
+                            //        toAccount = "abhishek.roy@shyamfuture.com";
+                            //    }
+                            //}
+                            //else
+                            //{
 
-                                toAccount = "chiranjit.patra@shyamfuture.com";
-                               // accountant = await _userRepository.All.Include(u => u.UserRoles)
-                               // .Where(x => x.CompanyAccountId == amMoneyRequestBy.CompanyAccountId).ToListAsync();
+                            //    toAccount = "chiranjit.patra@shyamfuture.com";
+                            //   // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                            //   // .Where(x => x.CompanyAccountId == amMoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                               // accountant =
-                               // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                               //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
-                            }
+                            //   // accountant =
+                            //   // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                            //   //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                            //}
 
-                            if (string.IsNullOrEmpty(toAccount))
-                            {
-                                toAccount = string.Join(',', accountant.Select(x => x.UserName));
-                            }
+                            //if (string.IsNullOrEmpty(toAccount))
+                            //{
+                            //    toAccount = string.Join(',', accountant.Select(x => x.UserName));
+                            //}
 
 
-                            using (StreamReader sr = new StreamReader(filePath))
+                            using (StreamReader sr = new StreamReader(amfilePath))
                             {
                                 string templateBody = sr.ReadToEnd();
                                 templateBody = templateBody.Replace("{NAME}", string.Concat(amMoneyRequestBy.FirstName, " ", amMoneyRequestBy.LastName));
@@ -1264,7 +1264,7 @@ namespace BTTEM.API.Controllers.Trip
                                     Password = defaultSmtp.Password,
                                     Port = defaultSmtp.Port,
                                     Subject = "Advance Money Approval",
-                                    ToAddress = reportingHead.UserName + "," + toAccount,
+                                    ToAddress = reportingHead.UserName,// + "," + toAccount,
                                     CCAddress = amMoneyRequestBy.UserName,
                                     UserName = defaultSmtp.UserName
                                 });
