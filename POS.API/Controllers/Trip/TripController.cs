@@ -1141,6 +1141,8 @@ namespace BTTEM.API.Controllers.Trip
 
                 //**Email Start**
                 string email = this._configuration.GetSection("AppSettings")["Email"];
+                string tripRedirectionURL = this._configuration.GetSection("TripRedirection")["TripRedirectionURL"];
+
                 if (email == "Yes")
                 {
                     if (updateTripStatusCommand.Status == "APPLIED" && updateTripStatusCommand.Approval != "APPROVED")
@@ -1172,8 +1174,8 @@ namespace BTTEM.API.Controllers.Trip
                             var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
                             templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
 
-                            templateBody = templateBody.Replace("{WEB_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
-                            templateBody = templateBody.Replace("{APP_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
+                            templateBody = templateBody.Replace("{WEB_URL}", tripRedirectionURL + updateTripStatusCommand.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", tripRedirectionURL + updateTripStatusCommand.Id);
 
 
                             EmailHelper.SendEmail(new SendEmailSpecification
@@ -1305,8 +1307,8 @@ namespace BTTEM.API.Controllers.Trip
                             var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
                             templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
 
-                            templateBody = templateBody.Replace("{WEB_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
-                            templateBody = templateBody.Replace("{APP_URL}", "https://sftraveldesk.com/trip/details/" + updateTripStatusCommand.Id);
+                            templateBody = templateBody.Replace("{WEB_URL}", tripRedirectionURL + updateTripStatusCommand.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", tripRedirectionURL + updateTripStatusCommand.Id);
 
                             var ccUser = string.IsNullOrEmpty(responseData.CreatedByUser.AlternateEmail) ?
                                 responseData.CreatedByUser.UserName :
