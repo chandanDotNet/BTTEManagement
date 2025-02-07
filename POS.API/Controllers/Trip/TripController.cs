@@ -190,6 +190,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(result.Data.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(result.Data.Status));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(result.Data.ModeOfTrip));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(result.Data.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(result.Data.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(result.Data.TripStarts.ToString("dd MMMM yyyy")));
@@ -1158,7 +1159,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(responseData.Status));
-                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(responseData.ModeOfTrip));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerary.FirstOrDefault().TripBy));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
@@ -1291,7 +1292,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString("Approved"));
-                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(responseData.ModeOfTrip));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerary.FirstOrDefault().TripBy));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
                             templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
