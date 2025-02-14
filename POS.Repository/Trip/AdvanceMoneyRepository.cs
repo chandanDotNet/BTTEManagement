@@ -85,11 +85,18 @@ namespace BTTEM.Repository
                    .Where(a => a.CreatedByUser.ReportingTo == LoginUserId);
             }
 
+            if (Role.Id == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.RequestAdvanceMoneyStatus == "Approved");
+            }
+
             if (!string.IsNullOrEmpty(advanceMoneyResource.RequestAdvanceMoneyStatus))
             {
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.AdvanceMoney < amount && a.RequestAdvanceMoneyStatus == advanceMoneyResource.RequestAdvanceMoneyStatus);
             }
+
 
             if (!string.IsNullOrEmpty(advanceMoneyResource.ProjectType))
             {

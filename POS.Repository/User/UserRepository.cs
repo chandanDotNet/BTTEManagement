@@ -186,6 +186,8 @@ namespace POS.Repository
 
             ret.IsDirector = appUser.IsDirector;
 
+            ret.Grades = appUser.Grades;
+
             // Get all claims for this user
             var appClaimDtos = await this.GetUserAndRoleClaims(appUser);
             ret.Claims = appClaimDtos;
