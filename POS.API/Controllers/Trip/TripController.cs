@@ -1291,72 +1291,72 @@ namespace BTTEM.API.Controllers.Trip
 
                         //**Email Start**
 
-                        if (email == "Yes")
-                        {
-                            var amfilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
-                            var amdefaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                            var amMoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
+                        //if (email == "Yes")
+                        //{
+                        //    var amfilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AdvanceMoney.html");
+                        //    var amdefaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        //    var amMoneyRequestBy = await _userRepository.FindAsync(responseData.CreatedBy);
 
-                            var amreportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
+                        //    var amreportingHead = await _userRepository.FindAsync(userResult.ReportingTo.Value);
 
-                            //List<User> accountant = new List<User>();
-                            //string toAccount = string.Empty;
-                            //if (responseData.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
-                            //{
-                            //    if (responseData.ProjectType == "Ongoing")
-                            //    {
-                            //        //toAccount = "gps@shyamsteel.com";
-                            //        toAccount = "shubhajyoti.banerjee@shyamfuture.com";
-                            //    }
-                            //    else
-                            //    {
-                            //        //toAccount = "raghavs@shyamsteel.com";
-                            //        toAccount = "abhishek.roy@shyamfuture.com";
-                            //    }
-                            //}
-                            //else
-                            //{
+                        //    //List<User> accountant = new List<User>();
+                        //    //string toAccount = string.Empty;
+                        //    //if (responseData.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                        //    //{
+                        //    //    if (responseData.ProjectType == "Ongoing")
+                        //    //    {
+                        //    //        //toAccount = "gps@shyamsteel.com";
+                        //    //        toAccount = "shubhajyoti.banerjee@shyamfuture.com";
+                        //    //    }
+                        //    //    else
+                        //    //    {
+                        //    //        //toAccount = "raghavs@shyamsteel.com";
+                        //    //        toAccount = "abhishek.roy@shyamfuture.com";
+                        //    //    }
+                        //    //}
+                        //    //else
+                        //    //{
 
-                            //    toAccount = "chiranjit.patra@shyamfuture.com";
-                            //   // accountant = await _userRepository.All.Include(u => u.UserRoles)
-                            //   // .Where(x => x.CompanyAccountId == amMoneyRequestBy.CompanyAccountId).ToListAsync();
+                        //    //    toAccount = "chiranjit.patra@shyamfuture.com";
+                        //    //   // accountant = await _userRepository.All.Include(u => u.UserRoles)
+                        //    //   // .Where(x => x.CompanyAccountId == amMoneyRequestBy.CompanyAccountId).ToListAsync();
 
-                            //   // accountant =
-                            //   // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
-                            //   //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
-                            //}
+                        //    //   // accountant =
+                        //    //   // accountant.Where(c => c.UserRoles.Select(cs => cs.RoleId)
+                        //    //   //.Contains(new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2"))).ToList();
+                        //    //}
 
-                            //if (string.IsNullOrEmpty(toAccount))
-                            //{
-                            //    toAccount = string.Join(',', accountant.Select(x => x.UserName));
-                            //}
+                        //    //if (string.IsNullOrEmpty(toAccount))
+                        //    //{
+                        //    //    toAccount = string.Join(',', accountant.Select(x => x.UserName));
+                        //    //}
 
-                            using (StreamReader sr = new StreamReader(amfilePath))
-                            {
-                                string templateBody = sr.ReadToEnd();
-                                templateBody = templateBody.Replace("{NAME}", string.Concat(amMoneyRequestBy.FirstName, " ", amMoneyRequestBy.LastName));
-                                templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
-                                templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
-                                templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
-                                templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
-                                templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
-                                templateBody = templateBody.Replace("{STATUS}", Convert.ToString("applied"));
-                                templateBody = templateBody.Replace("{COLOUR}", Convert.ToString("#00ff1a"));
-                                EmailHelper.SendEmail(new SendEmailSpecification
-                                {
-                                    Body = templateBody,
-                                    FromAddress = defaultSmtp.UserName,
-                                    Host = defaultSmtp.Host,
-                                    IsEnableSSL = defaultSmtp.IsEnableSSL,
-                                    Password = defaultSmtp.Password,
-                                    Port = defaultSmtp.Port,
-                                    Subject = "Advance Money Approval",
-                                    ToAddress = reportingHead.UserName,// + "," + toAccount,
-                                    CCAddress = amMoneyRequestBy.UserName,
-                                    UserName = defaultSmtp.UserName
-                                });
-                            }
-                        }
+                        //    using (StreamReader sr = new StreamReader(amfilePath))
+                        //    {
+                        //        string templateBody = sr.ReadToEnd();
+                        //        templateBody = templateBody.Replace("{NAME}", string.Concat(amMoneyRequestBy.FirstName, " ", amMoneyRequestBy.LastName));
+                        //        templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                        //        templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(responseData.TripNo));
+                        //        templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
+                        //        templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
+                        //        templateBody = templateBody.Replace("{ADVANCE_MONEY}", Convert.ToString(responseData.AdvanceMoney));
+                        //        templateBody = templateBody.Replace("{STATUS}", Convert.ToString("applied"));
+                        //        templateBody = templateBody.Replace("{COLOUR}", Convert.ToString("#00ff1a"));
+                        //        EmailHelper.SendEmail(new SendEmailSpecification
+                        //        {
+                        //            Body = templateBody,
+                        //            FromAddress = defaultSmtp.UserName,
+                        //            Host = defaultSmtp.Host,
+                        //            IsEnableSSL = defaultSmtp.IsEnableSSL,
+                        //            Password = defaultSmtp.Password,
+                        //            Port = defaultSmtp.Port,
+                        //            Subject = "Advance Money Approval",
+                        //            ToAddress = reportingHead.UserName,// + "," + toAccount,
+                        //            CCAddress = amMoneyRequestBy.UserName,
+                        //            UserName = defaultSmtp.UserName
+                        //        });
+                        //    }
+                        //}
 
 
 
