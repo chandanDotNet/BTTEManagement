@@ -51,18 +51,18 @@ namespace POS.MediatR.Handlers
             };
 
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if(user == null)
+            if (user == null)
             {
                 await _loginAuditRepository.LoginAudit(loginAudit);
                 return ServiceResponse<UserAuthDto>.ReturnFailed(401, "UserName Or Password is InCorrect.");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            
+
             if (result.Succeeded)
             {
                 var userInfo = await _userRepository
-                    .All
+                    .All.Include(x => x.Grades)
                     .Where(c => c.UserName == request.UserName)
                     .FirstOrDefaultAsync();
                 if (!userInfo.IsActive)

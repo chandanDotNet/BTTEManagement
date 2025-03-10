@@ -280,7 +280,7 @@ namespace BTTEM.Repository
                 if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
                 {
                     collectionBeforePaging = collectionBeforePaging
-                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT");
+                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT" && a.Status.Trim() != "CANCELLED");
                 }
             }
 

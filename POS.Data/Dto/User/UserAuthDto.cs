@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BTTEM.Data;
+using System;
 using System.Collections.Generic;
 
 namespace POS.Data.Dto
@@ -43,6 +44,7 @@ namespace POS.Data.Dto
         public string? AccountTeam { get; set; }
         public string? Accesskey { get; set; }
         public bool IsDirector { get; set; }
+        public Grade Grades { get; set; }
         public List<RoleDto> UserRoles { get; set; } = new List<RoleDto>();
         public List<AppClaimDto> Claims { get; set; }
         
