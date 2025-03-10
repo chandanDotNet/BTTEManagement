@@ -108,7 +108,14 @@ namespace BTTEM.MediatR.Expense.Handlers
                 {
                     masterEntityExist.ReimbursementRemarks = request.ReimbursementRemarks;
                 }
-                
+                //New Changes for Account Rejected status
+                if (request.ReimbursementStatus== "REJECTED")
+                {
+                    masterEntityExist.ReimbursementRemarks = request.ReimbursementRemarks;
+                    masterEntityExist.ReimbursementAmount = 0;
+                    masterEntityExist.Status = "REJECTED";
+                }
+
                 _masterExpenseRepository.Update(masterEntityExist);
 
                 if (masterEntityExist.TripId.HasValue)
