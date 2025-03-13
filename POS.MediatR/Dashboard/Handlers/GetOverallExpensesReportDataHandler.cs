@@ -39,11 +39,12 @@ namespace BTTEM.MediatR.Dashboard.Handlers
         {
             AllTypeReports allTypeReports = new AllTypeReports();
             List <OverallExpensesReportData> overallExpensesReportDataList = new List<OverallExpensesReportData>();
+            List <OverallTripReportData> overallTripReportDataList = new List<OverallTripReportData>();
             string connectionString = _pathHelper.connectionStrings.Trim();
 
 
-            //========= My Dashboard Data Details
-           
+            //========= Overall Expenses Report Data
+
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand("SP_CompanyExpensesReport", con);
@@ -71,7 +72,34 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 con.Close();
             }
 
+            //========= Overall Trip Report Data
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SP_CompanyExpensesReport", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ActionId", 2);
+                cmd.Parameters.AddWithValue("@CompanyId", request.CompanyId);
+                cmd.Parameters.AddWithValue("@Month", request.Month);
+                cmd.Parameters.AddWithValue("@Year", request.Year);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    OverallTripReportData overallTripReportData = new OverallTripReportData();
+                    overallTripReportData.CompanyName = (string)rdr["CompanyName"];
+                    overallTripReportData.NoOfTripApplied = (long)rdr["NoOfTripApplied"];
+                    overallTripReportData.NoOfTripApproved = (long)rdr["NoOfTripApproved"];
+                    overallTripReportData.NoOfTripCompleted = (long)rdr["NoOfTripCompleted"];
+                    overallTripReportDataList.Add(overallTripReportData);
+                }
+                con.Close();
+            }
+
             allTypeReports.OverallExpensesReport= overallExpensesReportDataList;
+            allTypeReports.OverallTripReport= overallTripReportDataList;
 
             return allTypeReports;
         }

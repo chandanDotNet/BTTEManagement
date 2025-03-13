@@ -359,6 +359,7 @@ namespace BTTEM.Data.Entities
     public class AllTypeReports
     {       
         public List<OverallExpensesReportData> OverallExpensesReport { get; set; }
+        public List<OverallTripReportData> OverallTripReport { get; set; }
     }
 
     public class OverallExpensesReportData
@@ -371,6 +372,15 @@ namespace BTTEM.Data.Entities
         public long TotalReimbursementCount { get; set; }
         public decimal ReimbursementAmount { get; set; }
        
+    }
+
+    public class OverallTripReportData
+    {
+        public string CompanyName { get; set; }
+        public long NoOfTripApplied { get; set; }
+        public long NoOfTripApproved { get; set; }
+        public long NoOfTripCompleted { get; set; }        
+
     }
 
 }
