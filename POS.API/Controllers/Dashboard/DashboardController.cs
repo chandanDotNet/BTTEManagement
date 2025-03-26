@@ -290,5 +290,31 @@ namespace POS.API.Controllers.Dashboard
             return Ok(allDashboardDataResponse);
         }
 
+
+        /// <summary>
+        /// Gets all Overall Expenses Report Data
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("GetOverallExpensesReportData")]
+        // [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetOverallExpensesReportData(GetOverallExpensesReportDataCommand getOverallExpensesReportDataCommand)
+        {
+            OverallExpensesReportDataResponse overallExpensesReportDataResponse = new OverallExpensesReportDataResponse();
+            var result = await _mediator.Send(getOverallExpensesReportDataCommand);
+            if (result != null)
+            {
+                overallExpensesReportDataResponse.status = true;
+                overallExpensesReportDataResponse.StatusCode = 200;
+                overallExpensesReportDataResponse.Data = result;
+            }
+            else
+            {
+                overallExpensesReportDataResponse.status = false;
+                overallExpensesReportDataResponse.StatusCode = 500;
+                overallExpensesReportDataResponse.Data = result;
+            }
+            return Ok(overallExpensesReportDataResponse);
+        }
+
     }
 }

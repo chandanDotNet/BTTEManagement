@@ -67,14 +67,13 @@ namespace BTTEM.Repository
             if (LoginUserId == Guid.Parse("fe7c8f30-965c-4f12-9eca-c00f9d4f99a4"))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.AdvanceMoney >= amount
-                    && a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91")
+                    .Where(a =>a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91")
                     || a.ProjectType == "Others");
             }
             else if (LoginUserId == Guid.Parse("6162414f-06fd-4460-b447-2499aa88c602"))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.AdvanceMoney < amount &&
+                    .Where(a =>
                     a.CompanyAccountId == Guid.Parse("d0ccea5f-5393-4a34-9df6-43a9f51f9f91")
                     && a.ProjectType == "Ongoing");
             }
@@ -94,7 +93,7 @@ namespace BTTEM.Repository
             if (!string.IsNullOrEmpty(advanceMoneyResource.RequestAdvanceMoneyStatus))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.AdvanceMoney < amount && a.RequestAdvanceMoneyStatus == advanceMoneyResource.RequestAdvanceMoneyStatus);
+                    .Where(a => a.RequestAdvanceMoneyStatus == advanceMoneyResource.RequestAdvanceMoneyStatus);
             }
 
 

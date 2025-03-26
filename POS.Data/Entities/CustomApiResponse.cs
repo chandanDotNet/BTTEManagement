@@ -348,4 +348,39 @@ namespace BTTEM.Data.Entities
         public AllDashboardData Data { get; set; }
     }
 
+    public class OverallExpensesReportDataResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public AllTypeReports Data { get; set; }
+    }
+
+    public class AllTypeReports
+    {       
+        public List<OverallExpensesReportData> OverallExpensesReport { get; set; }
+        public List<OverallTripReportData> OverallTripReport { get; set; }
+    }
+
+    public class OverallExpensesReportData
+    {
+        public string CompanyName { get; set; }
+        public long NoOfExpenses { get; set; }
+        public decimal ExpensesAmount { get; set; }
+        public long ApproveByRM { get; set; }
+        public decimal ApproveAmount { get; set; }
+        public long TotalReimbursementCount { get; set; }
+        public decimal ReimbursementAmount { get; set; }
+       
+    }
+
+    public class OverallTripReportData
+    {
+        public string CompanyName { get; set; }
+        public long NoOfTripApplied { get; set; }
+        public long NoOfTripApproved { get; set; }
+        public long NoOfTripCompleted { get; set; }        
+
+    }
+
 }
