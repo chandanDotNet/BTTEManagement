@@ -69,7 +69,7 @@ namespace BTTEM.MediatR.Handlers
 
             entityExist.Name = request.Name;
 
-            entityExist.CreatedDate = DateTime.Now;
+            //entityExist.CreatedDate = DateTime.Now;
 
             if (!string.IsNullOrEmpty(request.Status))
             {
