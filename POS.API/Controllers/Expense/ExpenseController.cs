@@ -3090,24 +3090,25 @@ namespace POS.API.Controllers.Expense
 
             if (result.Success)
             {
-                var masterExpense = await _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
+                //var masterExpense = await _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
                 var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
-                if (updateExpenseAndMasterExpenseCommand.ExpenseId.HasValue)
-                {
-                    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
-                    {
-                        ExpenseId = updateExpenseAndMasterExpenseCommand.ExpenseId.Value,
-                        ActionType = "Activity",
-                        Remarks = "Expense REIMBURSED (Full/Partial/Rejected) - " + masterExpense.ExpenseNo,
-                        Status = "Expense REIMBURSED (Full/Partial/Rejected) - " + masterExpense.ExpenseNo,
-                        ActionBy = Guid.Parse(_userInfoToken.Id),
-                        ActionDate = DateTime.Now,
-                    };
-                    var response = await _mediator.Send(addExpenseTrackingCommand);
-                }
+                //if (updateExpenseAndMasterExpenseCommand.ExpenseId.HasValue)
+                //{
+                //    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+                //    {
+                //        ExpenseId = updateExpenseAndMasterExpenseCommand.ExpenseId.Value,
+                //        ActionType = "Activity",
+                //        Remarks = "Expense REIMBURSED (Full/Partial/Rejected) - " + masterExpense.ExpenseNo,
+                //        Status = "Expense REIMBURSED (Full/Partial/Rejected) - " + masterExpense.ExpenseNo,
+                //        ActionBy = Guid.Parse(_userInfoToken.Id),
+                //        ActionDate = DateTime.Now,
+                //    };
+                //    var response = await _mediator.Send(addExpenseTrackingCommand);
+                //}
 
                 if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
                 {
+                    var masterExpense = await _masterExpenseRepository.FindAsync(updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value);
                     var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                     {
                         MasterExpenseId = updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value,
