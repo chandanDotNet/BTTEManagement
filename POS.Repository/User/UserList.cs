@@ -145,6 +145,7 @@ namespace POS.Repository
                     AccountTeam = c.AccountTeam,
                     AccountTeamActionFor=c.AccountTeamActionFor,
                     IsDirector = c.IsDirector,
+                    CalenderDays = c.CalenderDays,
                 })
                 .ToListAsync();
             return entities;

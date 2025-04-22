@@ -77,5 +77,6 @@ namespace POS.Data
         public string? AccountTeam { get; set; }
         public string? AccountTeamActionFor { get; set; }
         public bool IsDirector { get; set; }
+        public int CalenderDays { get; set; }
     }
 }

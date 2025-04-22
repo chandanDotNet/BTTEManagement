@@ -49,6 +49,7 @@ namespace POS.MediatR.CommandAndQuery
         public bool IsCompanyVehicleUser { get; set; }
         public string? AccountTeam { get; set; }
         public bool IsDirector { get; set; }
+        public int CalenderDays { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new List<UserRoleDto>();
     }
 }

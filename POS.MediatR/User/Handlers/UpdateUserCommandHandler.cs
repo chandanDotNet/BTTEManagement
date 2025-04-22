@@ -104,6 +104,7 @@ namespace POS.MediatR.Handlers
             appUser.AlternateEmail = request.AlternateEmail;
             appUser.AccountTeam = request.AccountTeam;            
             appUser.IsDirector = request.IsDirector;
+            appUser.CalenderDays = request.CalenderDays;
             string oldProfilePhoto = appUser.ProfilePhoto;
             //oldProfilePhoto = appUser.ProfilePhoto;
             if (request.IsImageUpdate)

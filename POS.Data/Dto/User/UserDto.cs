@@ -66,6 +66,7 @@ namespace POS.Data.Dto
         public bool IsCompanyVehicleUser { get; set; }
         public string? AccountTeam { get; set; }
         public bool IsDirector { get; set; }
+        public int CalenderDays { get; set; }
         public string? AccountTeamActionFor { get; set; }
         // public UserDto ReportingToDetails { get; set; }
 

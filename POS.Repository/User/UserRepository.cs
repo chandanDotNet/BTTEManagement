@@ -185,7 +185,7 @@ namespace POS.Repository
             ret.AccountTeam = appUser.AccountTeam;
 
             ret.IsDirector = appUser.IsDirector;
-
+            ret.CalenderDays = appUser.CalenderDays;
             ret.Grades = appUser.Grades;
 
             // Get all claims for this user

@@ -85,6 +85,7 @@ namespace BTTEM.MediatR.User.Handlers
                     userInfoDetails.AlternateEmail = Convert.ToString(rdr["AlternateEmail"]);
                     userInfoDetails.AccountTeam = Convert.ToString(rdr["AccountTeam"]);
                     userInfoDetails.IsDirector = Convert.ToBoolean(rdr["IsDirector"]);
+                    userInfoDetails.CalenderDays = Convert.ToInt32(rdr["CalenderDays"]);
                     // expenseDataList.Add(expenseData);
                 }
                 con.Close();
