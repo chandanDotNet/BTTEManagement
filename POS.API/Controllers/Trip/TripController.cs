@@ -35,6 +35,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Runtime.CompilerServices;
 using static System.Net.WebRequestMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -322,7 +323,7 @@ namespace BTTEM.API.Controllers.Trip
         /// </summary>
 
         /// <returns></returns>
-
+        [Authorize]
         [HttpGet(Name = "GetAllTrip")]
         //[ClaimCheck("TRP_VIEW_TRIP")]
         public async Task<IActionResult> GetAllTrip([FromQuery] TripResource TripResource)
