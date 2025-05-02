@@ -39,8 +39,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BTTEM.API.Controllers.Trip
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TripController : BaseController
     {
         readonly IMediator _mediator;
@@ -323,7 +325,6 @@ namespace BTTEM.API.Controllers.Trip
         /// </summary>
 
         /// <returns></returns>
-        [Authorize]
         [HttpGet(Name = "GetAllTrip")]
         //[ClaimCheck("TRP_VIEW_TRIP")]
         public async Task<IActionResult> GetAllTrip([FromQuery] TripResource TripResource)

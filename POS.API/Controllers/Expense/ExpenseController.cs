@@ -44,7 +44,7 @@ namespace POS.API.Controllers.Expense
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ExpenseController : BaseController
     {
         private IMediator _mediator;
