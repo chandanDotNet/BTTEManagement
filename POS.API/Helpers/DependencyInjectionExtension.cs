@@ -6,9 +6,13 @@ using BTTEM.Repository.Expense;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DependencyInjectionExtension'
     public static class DependencyInjectionExtension
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DependencyInjectionExtension'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DependencyInjectionExtension.AddDependencyInjection(IServiceCollection)'
         public static void AddDependencyInjection(this IServiceCollection services)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DependencyInjectionExtension.AddDependencyInjection(IServiceCollection)'
         {
             services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
             services.AddScoped<IPropertyMappingService, PropertyMappingService>();
@@ -125,6 +129,9 @@ namespace POS.API.Helpers
             services.AddScoped<IAdvanceMoneyRepository, AdvanceMoneyRepository>();
             services.AddScoped<IApprovalLevelTypeRepository, ApprovalLevelTypeRepository>();
             services.AddScoped<IApprovalLevelRepository, ApprovalLevelRepository>();
+            services.AddScoped<ITaxCodeRepository, TaxCodeRepository>();
+            services.AddScoped<ISapRepository, SapRepository>();
+            services.AddScoped<ICostCenterRepository, CostCenterRepository>();
         }
     }
 }

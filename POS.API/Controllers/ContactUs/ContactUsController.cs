@@ -9,10 +9,14 @@ namespace POS.API.Controllers.ContactUs
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController'
     public class ContactUsController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController'
     {
         private readonly IMediator _mediator;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController.ContactUsController(IMediator)'
         public ContactUsController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController.ContactUsController(IMediator)'
         {
             _mediator = mediator;
         }
@@ -30,7 +34,9 @@ namespace POS.API.Controllers.ContactUs
         }
 
         [HttpGet]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController.GetContactUsList(ContactUsResource)'
         public async Task<IActionResult> GetContactUsList([FromQuery] ContactUsResource contactUsResource)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController.GetContactUsList(ContactUsResource)'
         {
 
             var getAllContactUsQuery = new GetAllContactUsQuery
@@ -52,7 +58,9 @@ namespace POS.API.Controllers.ContactUs
         }
 
         [HttpDelete("{id}")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController.Delete(Guid)'
         public async Task<IActionResult> Delete(Guid id)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ContactUsController.Delete(Guid)'
         {
             var deleteContactUsCommand = new DeleteContactUsCommand
             {

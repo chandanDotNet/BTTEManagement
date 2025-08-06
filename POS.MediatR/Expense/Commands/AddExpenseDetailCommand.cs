@@ -12,7 +12,6 @@ namespace BTTEM.MediatR.CommandAndQuery
 {
     public class AddExpenseDetailCommand : IRequest<ServiceResponse<ExpenseDetailDto>>
     {
-
         public Guid ExpenseId { get; set; }
         public Guid? MasterExpenseId { get; set; }
         public Guid? VendorId { get; set; }
@@ -31,5 +30,8 @@ namespace BTTEM.MediatR.CommandAndQuery
         public decimal? SGST { get; set; }
         public decimal? IGST { get; set; }
         public string SSECode { get; set; }
+        public string BillCreditType { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public DateTime? PostingDate { get; set; }
     }
 }

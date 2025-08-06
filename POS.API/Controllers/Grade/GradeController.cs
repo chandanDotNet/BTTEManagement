@@ -16,11 +16,15 @@ namespace BTTEM.API.Controllers.Grade
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GradeController'
     public class GradeController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GradeController'
     {
         readonly IMediator _mediator;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GradeController.GradeController(IMediator)'
         public GradeController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GradeController.GradeController(IMediator)'
         {
             _mediator = mediator;
         }

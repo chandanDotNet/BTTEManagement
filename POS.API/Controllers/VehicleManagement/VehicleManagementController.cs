@@ -17,11 +17,17 @@ namespace BTTEM.API.Controllers.VehicleManagement
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VehicleManagementController'
     public class VehicleManagementController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VehicleManagementController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VehicleManagementController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VehicleManagementController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VehicleManagementController.VehicleManagementController(IMediator)'
         public VehicleManagementController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VehicleManagementController.VehicleManagementController(IMediator)'
         {
             _mediator = mediator;
         }

@@ -29,13 +29,14 @@ namespace BTTEM.Data.Entities
         public decimal AllowedAmount { get; set; }
         public decimal ExpenseAmount { get; set; }
         public decimal DeviationAmount { get; set; }
+        public decimal FoodingAllowance { get; set; }
         public List<ExpenseDto> ExpenseDtos { get; set; } = new List<ExpenseDto>();
     }
 
     public class ExpenseResponseData
     {
         public MasterExpenseDto MaseterExpense { get; set; }
-        public IList<ExpenseCategoryData> ExpenseCategories { get; set; } = new List<ExpenseCategoryData>();
+        public List<ExpenseCategoryData> ExpenseCategories { get; set; } = new List<ExpenseCategoryData>();
     }
 
     public class UserInfoData
@@ -92,6 +93,8 @@ namespace BTTEM.Data.Entities
         public string AccountTeam { get; set; }
         public bool IsDirector { get; set; }
         public int CalenderDays { get; set; }
+        public string DeviceKey { get; set; }
+        public bool IsDeviceTypeAndroid { get; set; }
         //public List<PoliciesVehicleConveyance> PoliciesVehicleConveyance { get; set; }
 
     }
@@ -384,4 +387,14 @@ namespace BTTEM.Data.Entities
 
     }
 
+    public class MessageRequest
+    {
+        public string Title { get; set; }
+        public string Body { get; set; }
+        public string DeviceToken { get; set; }
+        public bool DeviceType { get; set; }
+        public string UserId { get; set; }
+        public string CustomKey { get; set; }
+        public string Id { get; set; }
+    }
 }

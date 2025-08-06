@@ -4,9 +4,13 @@ using System.IO.Compression;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CompressUtility'
     public class CompressUtility
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CompressUtility'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CompressUtility.Compress(DirectoryInfo, string)'
         public static void Compress(DirectoryInfo directorySelected, string directoryPath)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CompressUtility.Compress(DirectoryInfo, string)'
         {
             foreach (FileInfo fileToCompress in directorySelected.GetFiles())
             {
@@ -30,7 +34,9 @@ namespace POS.API.Helpers
                 }
             }
         }
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CompressUtility.Decompress(FileInfo)'
         public static void Decompress(FileInfo fileToDecompress)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CompressUtility.Decompress(FileInfo)'
         {
             using (FileStream originalFileStream = fileToDecompress.OpenRead())
             {

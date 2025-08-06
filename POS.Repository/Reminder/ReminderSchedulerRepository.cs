@@ -16,7 +16,9 @@ namespace POS.Repository
 {
     public class ReminderSchedulerRepository : GenericRepository<ReminderScheduler, POSDbContext>, IReminderSchedulerRepository
     {
+#pragma warning disable CS0108 // 'ReminderSchedulerRepository._uow' hides inherited member 'GenericRepository<ReminderScheduler, POSDbContext>._uow'. Use the new keyword if hiding was intended.
         private readonly IUnitOfWork<POSDbContext> _uow;
+#pragma warning restore CS0108 // 'ReminderSchedulerRepository._uow' hides inherited member 'GenericRepository<ReminderScheduler, POSDbContext>._uow'. Use the new keyword if hiding was intended.
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly UserInfoToken _userInfoToken;
         public ReminderSchedulerRepository(

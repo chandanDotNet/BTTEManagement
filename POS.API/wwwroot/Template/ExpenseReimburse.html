@@ -1,212 +1,714 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Static Template</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Email Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <style>
-        .main-box {
+        body {
+            font-family: 'Poppins', sans-serif;
             margin: 0;
-            margin-top: 20px;
-            padding: 34px 30px 60px;
-            background: #ffffff;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-            min-height: 260px;
+            padding: 0;
+            background-color: #fff;
         }
 
-        .inner-main-box {
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h5,
+        h6 {
             margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 700px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .viruska img {
+            max-width: 137px;
+            min-width: 120px;
+        }
+
+        table.blueTable {
+            /* background: #102BB8; */
+            background-image: url(https://bttem.shyamfuture.in/images/planBg.png);
+            min-height: 248px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .blueLeft {
+            padding-left: 110px;
+            padding-bottom: 64px;
+        }
+
+        .blueRight {
+            padding: 20px 70px 30px 70px;
+        }
+
+        .blueLeft span {
+            display: block;
+        }
+
+        .blueLeft h1 {
+            font-family: Poppins;
+            font-weight: 600;
+            font-size: 32px;
+            line-height: 32px;
+            vertical-align: middle;
+            color: #fff;
+        }
+
+        .blueLeft p {
+            color: #FFFFFF;
+            font-family: Poppins;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 18px;
+            letter-spacing: normal;
+            vertical-align: middle;
+            padding-top: 10px;
+            display: block;
+            max-width: 295px;
+        }
+
+        .dateDiv > p,
+        .statusDiv > p {
+            color: #FFFFFF;
+            font-family: Poppins;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 18px;
+            letter-spacing: normal;
+            vertical-align: middle;
+        }
+
+        p.approvedImage {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+        table.amountTable {
+            width: 477px;
+            box-shadow: 0px 4px 15px -1px #F4ECF8;
+            margin-top: -77px;
+            background-image: url(https://bttem.shyamfuture.in/images/1.png);
+            background-repeat: no-repeat;
+            background-size: cover;
+            box-shadow: 0px 4px 15px -1px #163ABB36;
+            margin-bottom: 30px;
+        }
+
+        table.amountTableInner tr td {
+            width: 50%;
             text-align: left;
         }
 
-        .main-box h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-            color: #ffffff;
-            padding: 5px 0px;
-            background-color: #499fb6;
-            border-radius: 15px;
-            /*margin-bottom: 35px;*/
+        table.amountTable tr:last-child {
+            border-bottom: 0;
         }
 
-        .main-box p {
-            margin: 0;
-            margin-top: 10px;
+        table.myDetailsTable,
+        table.myDetailsTable table {
+            /* width: 483px;     */
+            width: 453px;
+        }
+
+        table.amountTable th {
+            color: #071751;
+            font-family: Poppins;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 18px;
+            letter-spacing: normal;
+            padding-top: 46px;
+            text-align: left;
+            padding: 20px 0px 20px 10px;
+        }
+
+        table.amountTableInner tr {
+            border-bottom: 0.5px dashed #0000005c;
+        }
+
+        table.amountTable th:last-child {
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        table.amountTable tr td,
+        table.amountTable tr th {
+            border-bottom: 0.5px dashed #0000005c;
+        }
+
+        table.amountTable tr:last-child td {
+            border-bottom: 0;
+        }
+
+        table.blueTable tr td:first-child {
+            width: 60%;
+        }
+
+        p.specificDate,
+        .statusDiv {
+            font-weight: 600;
+        }
+
+        .dateDiv {
+            padding-bottom: 12px;
+        }
+
+        table.blueTable tr td:last-child {
+            vertical-align: middle;
+        }
+
+        table.amountTable tr td {
+            padding: 19px 16px 20px 17px;
+            font-family: Poppins;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 17px;
+            vertical-align: middle;
+            color: #3B3B3B;
+        }
+
+            table.amountTable tr td:last-child {
+                text-align: right;
+                font-weight: 500;
+            }
+
+
+        tr.myDetailsTableHeader {
+            background: #001143;
+        }
+
+            tr.myDetailsTableHeader td {
+                color: #FFFFFF;
+                padding: 14px;
+            }
+
+                tr.myDetailsTableHeader td span {
+                    font-weight: 700;
+                }
+
+                tr.myDetailsTableHeader td:first-child {
+                    border-top-left-radius: 10px;
+                }
+
+            tr.myDetailsTableHeader tr:last-child td:first-child {
+                border-bottom-left-radius: 10px;
+            }
+
+            tr.myDetailsTableHeader td:last-child {
+                border-top-right-radius: 10px;
+                text-align: right;
+            }
+
+        .journeyImage {
+            position: relative;
+            text-align: center;
+        }
+
+        img.busImg {
+            position: absolute;
+            transform: translateX(-50%);
+            left: 50%;
+        }
+
+        .Journey p {
+            position: relative;
+        }
+
+            .Journey p::before {
+                position: absolute;
+                content: "";
+                left: -12px;
+                top: 10px;
+                background-color: #FF0000;
+                height: 7px;
+                width: 7px;
+                border-radius: 50%;
+            }
+
+        .journeyDetail p {
+            text-align: center;
+            padding-bottom: 4px;
+            font-family: Poppins;
+            font-weight: 400;
+            font-size: 10px;
+            line-height: 18px;
+            vertical-align: middle;
+            text-transform: uppercase;
+        }
+
+        table.myDetailsTable {
+            background: #F6F8FF;
+            margin-bottom: 29px;
+        }
+
+        .journeyTableTop tr td:last-child {
+            text-align: right;
+        }
+
+        .Journey.endtJourny p::before {
+            background-color: #68B67F;
+        }
+
+        .Journey.endtJourny p {
+            position: relative;
+            width: fit-content;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        table.myDetailsTableBilling td {
+            padding: 10px 5px;
+            font-family: Poppins;
+            font-weight: 400;
             font-size: 14px;
+            line-height: 100%;
+            vertical-align: middle;
+            color: #3B3B3B;
+        }
+
+        table.myDetailsTableBilling tr {
+            border-bottom: 0.5px solid #0717511c;
+        }
+
+            table.myDetailsTableBilling tr:last-child {
+                border-bottom: 0;
+            }
+
+        table.myDetailsTable {
+            background: #F6F8FF;
+        }
+
+        table.journeyTableTop {
+            background: #fff;
+            box-shadow: 0px 4px 15px -1px #163ABB36;
+            border-radius: 10px;
+        }
+
+            table.journeyTableTop td {
+                padding: 13px 19px 13px 19px;
+            }
+
+        table.myDetailsTableBilling td {
+            padding: 16px 19px;
+        }
+
+        table.journeyTableTop {
+            width: 100% !important;
+        }
+
+        .Journey.startJourny {
+            padding-left: 10px;
+        }
+
+        table.myDetailsTableBilling tr td:last-child {
+            text-align: right;
+            color: #3B3B3B;
             font-weight: 500;
         }
+
+        table.myDetailsTable tr:last-child td:first-child {
+            border-bottom-left-radius: 20px;
+        }
+
+        .clickme {
+            box-shadow: 0px 0px 5px -1px #163ABB36;
+            padding: 10px;
+            border-radius: 15px;
+            color: #071751;
+            display: block;
+        }
+
+        table.clickmeTable td {
+            text-align: center;
+        }
+
+        table.clickmeTable {
+            padding: 0;
+            border-radius: 23px;
+            width: 483px;
+            margin: 0 auto;
+            border-spacing: 6px;
+            border-collapse: separate;
+        }
+
+        table.needHelpTable,
+        table.socialMediaTable,
+        table.tooltravelsTable {
+            width: 483px;
+            margin: 10px auto;
+        }
+
+        table.footerTable td p {
+            background: #102BB8;
+            color: #FFFFFF;
+            font-family: Poppins;
+            font-weight: 400;
+            font-size: 11px;
+            line-height: 16px;
+            text-align: center;
+            vertical-align: middle;
+            padding: 10px 0;
+        }
+
+        table.needHelpTable td h5 {
+            max-width: 324px;
+            margin: 20px auto 10px auto;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 18px;
+            letter-spacing: normal;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+            table.needHelpTable td h5 a {
+                color: #000000;
+                font-weight: 700;
+            }
+
+            table.needHelpTable td h5 span {
+                font-weight: 700;
+                color: #000000;
+            }
+
+        table.socialMediaTable tr td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+            table.socialMediaTable tr td img {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                transition: transform 0.3s ease;
+            }
+
+                table.socialMediaTable tr td img:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0px 4px 15px -1px #163ABB36;
+                    transition: transform 0.3s ease;
+                }
+
+        table.socialMediaTable {
+            max-width: 204px;
+        }
+
+        table.footerTable td img {
+            width: 100%;
+            display: block;
+        }
+
+        table.logoTable img {
+            display: block;
+        }
+
+        .footerLogo {
+            background: #F6F8FF;
+            padding: 14px 0;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+            .footerLogo h6 {
+                border-bottom: 1px solid #CAD6FF;
+                color: #071751;
+                text-align: center;
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+            }
+
+        .travelExpense h6 {
+            color: #071751;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 19px;
+            padding-bottom: 10px;
+        }
+
+        .travelExpense p {
+            font-family: Poppins;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 15px;
+            vertical-align: middle;
+            color: #3B3B3B;
+        }
+
+            .travelExpense p img {
+                width: 17px;
+                margin-right: 7px;
+            }
+
+        table.tooltravelsTable td:first-child {
+            width: 55%;
+        }
+
+        .companyLogo {
+            padding-left: 110px;
+        }
+
+        .logoTable td:first-child {
+            width: 60%;
+        }
+
+        .viruska {
+            padding-left: 23px;
+        }
+
+        img.busImg {
+            max-width: 25px;
+        }
+
+        a.clickme span {
+            margin: 0 10px;
+        }
+
+        .travelExpense p span {
+            width: 80%;
+            display: inline-table;
+        }
+
+        /* ============================ */
     </style>
+
 </head>
 
-<body style="
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: #ffffff;
-      font-size: 14px;
-    ">
-    <div style="
-        max-width: 680px;
-        margin: 0 auto;
-        padding: 20px 30px 60px;
-        background: #f4f7ff;
-        background-image: url(https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661497957196_595865/email-template-background-banner);
-        background-repeat: no-repeat;
-        background-size: 800px 452px;
-        background-position: top center;
-        font-size: 14px;
-        color: #434343;
-      ">
+<body>
+    <table class="logoTable" cellspacing="0" cellpadding="0" style="width: 700px; border-collapse: collapse;">
+        <tr>
+            <td>
+                <div class="companyLogo"><img src="https://bttem.shyamfuture.in/images/logo.png" alt="Company Logo" width="150"></div>
+            </td>
+            <td>
+                <div class="viruska"><img src="https://bttem.shyamfuture.in/images/virushka.png" alt="Photo" width="100"></div>
+            </td>
+        </tr>
+    </table>
+    <table class="blueTable" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <div class="blueLeft">
+                    <h1>Hello! <span>{NAME}</span> </h1>
+                    <p>Thank you for choosing Business Tour & Travel Expense Management System.</p>
+                </div>
+            </td>
+            <td>
+                <div class="blueRight">
+                    <div class="dateDiv">
+                        <p>Date</p>
+                        <p class="specificDate">{DATETIME}</p>
+                    </div>
+                    <div class="statusDiv">
+                        <p>Reimburse Status</p>
+                        <p class="approvedImage"><img src="https://bttem.shyamfuture.in/images/omnibus.png" alt=""> <span>{REIMBURMENT_STATUS}</span></p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-        <header>
-            <table style="width: 100%;
-            ">
-                <tbody>
-                    <tr style="height: 0;">
-                        <td>
-                            <img src="https://bttem.shyamfuture.in/assets/images/logo.png" alt="">
-                            <img alt="" src="" height="30px" />
-                        </td>
-                        <td style="text-align: right;">
-                            <span style="font-size: 16px; line-height: 30px; color: #ffffff; font-weight: bold;">{DATETIME}</span>
-                        </td>
+    <table class="amountTable" cellspacing="0" cellpadding="0">
+        <tr>
+            <td colspan="2">
+                <table class="amountTableInner" style="width: 452px;">
+                    <tr>
+                        <th>Total Amount</th>
+                        <th class="amount"> ₹ {TOTAL_AMOUNT}</th>
                     </tr>
-                </tbody>
-            </table>
-        </header>
-
-        <main>
-            <table style="width: 100%;">
-                <tbody>
-                    <tr style="height: 0;">
+                    <tr>
                         <td>
-                            <div class="main-box">
-                                <div style="width: 100%; max-width: 540px; margin: 0 auto;">
-                                    <h2>
-                                        EXPENSE STATUS
-                                    </h2>
-                                    <p>
-                                        <b style="font-size:15px;"> {NAME}</b><br /><br />
-                                    </p>
-                                    <div class="inner-main-box">
-                                        <table style="width: 100%;">
-                                            <tr>
-                                                <td>Expense No </td>
-                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {EXPENSE_NO}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><hr /></td>
-                                                <td><hr /></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Reimbursement Status </td>
-                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {REIMBURMENT_STATUS}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><hr /></td>
-                                                <td><hr /></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Amount </td>
-                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {TOTAL_AMOUNT}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><hr /></td>
-                                                <td><hr /></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Payable Amount </td>
-                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {PAYABLE_AMOUNT}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><hr /></td>
-                                                <td><hr /></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Reimbursed Amount </td>
-                                                <td><span style="font-weight: 600; color: #1f1f1f;"> {REIMBURSED_AMOUNT}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><hr /></td>
-                                                <td><hr /></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <br /><br /><b style="font-size:15px;">Expense has been Reimbursed.</b>
-                                    <p style="letter-spacing: 0.56px; font-size: 14px;">
-                                        Thank you for choosing Business Tour & Travel Expense Management System.
-                                    </p>
+                            Expense No
+                        </td>
+                        <td class="expanseDetails">{EXPENSE_NO}</td>
+                    </tr>
+                    <tr>
+                        <td>Expense Type</td>
+                        <td> {EXPENSE_TYPE}</td>
+
+                    </tr>
+                    <tr>
+                        <td> No. of Bills</td>
+                        <td> {NOOFBILL}</td>
+                    </tr>
+                    <tr>
+                        <td>Payable Amount</td>
+                        <td> {PAYABLE_AMOUNT}</td>
+                    </tr>
+                    <tr>
+                        <td>Reimbursed Amount</td>
+                        <td> {REIMBURSED_AMOUNT}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!--<table class="myDetailsTable" cellspacing="0" cellpadding="0">
+        <tr class="myDetailsTableHeader">
+            <td colspan="1"> {TOUR_DETAILS}</td>
+            <td colspan="1">{MODE_OF_TRIP} <span>{MODE_OF_TRIP_VAL}</span></td>
+        </tr>
+
+        <tr class="myDetailsTableJourney">
+            <td colspan="2" style="padding: 0;">
+                <table class="journeyTableTop">
+                    <tr>
+                        <td>
+                            <div class="Journey startJourny">
+                                <p>Start Journey</p>
+                                <h5>Kolkata (CCU)</h5>
+                                <h6><span>13 May,2025 </span><span>12:30 A.M</span></h6>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="journeyDetail">
+                                <p>Domestic</p>
+                                <div class="journeyImage">
+                                    <img src="https://bttem.shyamfuture.in/images/flightImg.png" class="busImg" alt="">
+                                    <img src="https://bttem.shyamfuture.in/images/lines.png" class="lines" alt="">
                                 </div>
                             </div>
                         </td>
+                        <td>
+                            <div class="Journey endtJourny">
+                                <p>End Journey</p>
+                                <h5>Kolkata (CCU)</h5>
+                                <h6><span>13 May,2025 </span><span>12:30 A.M</span></h6>
+                            </div>
+                        </td>
                     </tr>
-                </tbody>
-            </table>
+                </table>
+            </td>
+        </tr>
 
+        <tr>
+            <td colspan="2" style="padding: 10px 20px;">
+                <table class="myDetailsTableBilling">
+                    <tr>
+                        <td>Billing Company Name</td>
+                        <td>{BILLING_COMPANY}</td>
+                    </tr>
+                    <tr>
+                        <td>Department</td>
+                        <td>{DEPARTMENT}</td>
+                    </tr>
+                    <tr>
+                        <td>Trip Type</td>
+                        <td>{TRIP_TYPE}</td>
+                    </tr>
+                    <tr>
+                        <td>Journey Purpose</td>
+                        <td>{JOURNEY_PURPOSE}</td>
+                    </tr>
 
-            <p style="
-            max-width: 400px;
-            margin: 0 auto;
-            margin-top: 25px;
-            text-align: center;
-            font-weight: 500;
-            color: #8c8c8c;
-          ">
-                Need help? Ask at
-                <a href="mailto:support@shyamfuture.com"
-                   style="color: #499fb6; text-decoration: none;">support@shyamfuture.com</a>
-                or visit our
-                <a href="" target="_blank" style="color: #499fb6; text-decoration: none;">Help Center</a>
-            </p>
-        </main>
+                </table>
+            </td>
+        </tr>
+    </table>-->
 
-        <footer style="
-          width: 100%;
-          max-width: 490px;
-          margin: 20px auto 0;
-          text-align: center;
-          border-top: 1px solid #e6ebf1;
-        ">
-            <p style="
-            margin: 0;
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #434343;
-          ">
-                Business Tour & Travel Expense Management System
-            </p>
-            <p style="margin: 0; margin-top: 8px; color: #434343;">
-                Premises no.03-319 Block, DH-6/11, Action Area 1D, Newtown, Kolkata, Chakpachuria, West Bengal 700156
-            </p>
-            <div style="margin: 0; margin-top: 16px;">
-                <a href="" target="_blank" style="display: inline-block;">
-                    <img width="36px" alt="Facebook"
-                         src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook" />
+    <table class="clickmeTable">
+        <tr>
+            <td>
+                <a href="{WEB_URL}" class="clickme">
+                    <img src="https://bttem.shyamfuture.in/images/Layer_1.png" alt="">
+                    <span>{EXPENSE_NO} </span>
+                    <img src="https://bttem.shyamfuture.in/images/arrw.png" alt="">
                 </a>
-                <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
-                    <img width="36px" alt="Instagram"
-                         src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram" />
+            </td>
+            <td>
+                <a href="{APP_URL}" class="clickme">
+                    <img src="https://bttem.shyamfuture.in/images/Layer_2.png" alt="">
+                    <span>{EXPENSE_NO} </span>
+                    <img src="https://bttem.shyamfuture.in/images/arrw.png" alt="">
                 </a>
-                <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
-                    <img width="36px" alt="Twitter"
-                         src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter" />
-                </a>
-                <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
-                    <img width="36px" alt="Youtube"
-                         src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube" />
-                </a>
-            </div>
-            <p style="margin: 0; margin-top: 16px; color: #434343;">
-                Copyright © 2024 Company. All rights reserved.
-            </p>
-        </footer>
-    </div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="needHelpTable">
+        <tr>
+            <td>
+                <h5>
+                    <a href="#" style="text-decoration: underline;">Need help?</a> Ask at
+                    support@shyamfuture.com
+                    or visit our <a href="#" style="text-decoration: none;"> Help Center</a>
+                </h5>
+            </td>
+        </tr>
+    </table>
+
+    <table class="socialMediaTable">
+        <tr>
+            <td>
+                <a href="#"> <img src="https://bttem.shyamfuture.in/images/facebook.png" alt="Facebook"></a>
+            </td>
+            <td>
+                <a href="#"> <img src="https://bttem.shyamfuture.in/images/twitter.png" alt="Twitter"></a>
+            </td>
+
+            <td>
+                <a href="#"><img src="https://bttem.shyamfuture.in/images/linkedin.png" alt="LinkedIn"></a>
+            </td>
+            <td>
+                <a href="#"><img src="https://bttem.shyamfuture.in/images/youtube.png" alt="utube"></a>
+            </td>
+            <td>
+                <a href="#"> <img src="https://bttem.shyamfuture.in/images/insta.png" alt="Instagram"></a>
+            </td>
+        </tr>
+    </table>
+
+    <table class="tooltravelsTable">
+        <tr>
+            <td>
+                <div class="travelExpense">
+                    <h6>
+                        Business Tour & Travel Expense Management System
+                    </h6>
+                    <p>
+                        <img src="https://bttem.shyamfuture.in/images/location.png" alt=""> <span>
+                            Premises no.03-319 Block, DH-6/11, Action Area
+                            1D,
+                            Newtown, Kolkata, Chakpachuria, West Bengal 700156
+                        </span>
+                    </p>
+                </div>
+            </td>
+            <td>
+                <div class="footerLogo">
+                    <h6>POWERED BY</h6>
+                    <img src="https://bttem.shyamfuture.in/images/FooterLogo.png" alt="">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="footerTable fixed-footer-table">
+        <tr>
+            <td>
+                <img src="https://bttem.shyamfuture.in/images/footerBg.png" alt="">
+                <p>Copyright &#169; 2024 Company. All rights reserved</p>
+            </td>
+        </tr>
+
+    </table>
 </body>
+
 </html>

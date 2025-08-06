@@ -11,5 +11,7 @@ namespace POS.MediatR.CommandAndQuery
         public string RemoteIp { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+        public string DeviceKey { get; set; }
+        public bool IsDeviceTypeAndroid { get; set; }
     }
 }

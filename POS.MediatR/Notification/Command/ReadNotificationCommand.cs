@@ -10,6 +10,8 @@ namespace BTTEM.MediatR.Notification.Command
 {
     public class ReadNotificationCommand :IRequest<ServiceResponse<bool>>
     {
-        public List<Guid> Ids { get; set; }
+        //public List<Guid> Ids { get; set; }
+
+        public Guid Id { get; set; }
     }
 }

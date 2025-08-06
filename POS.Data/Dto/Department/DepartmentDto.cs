@@ -15,7 +15,9 @@ namespace BTTEM.Data.Dto
         public Guid DepartmentHeadId { get; set; }
         public bool? IsActive { get; set; }
        // public UserDto User { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? DepartmentHeadName { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public long? DepartmentHeadCount { get; set; }
 
     }

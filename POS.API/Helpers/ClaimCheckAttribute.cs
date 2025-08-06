@@ -9,22 +9,30 @@ using System.Security.Claims;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute'
     public class ClaimCheckAttribute : Attribute, IActionFilter
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute'
     {
         private readonly string _claimName;
         private StringValues auth;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute.ClaimCheckAttribute(string)'
         public ClaimCheckAttribute(string claimName)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute.ClaimCheckAttribute(string)'
         {
             _claimName = claimName;
 
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute.OnActionExecuted(ActionExecutedContext)'
         public void OnActionExecuted(ActionExecutedContext context)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute.OnActionExecuted(ActionExecutedContext)'
         {
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute.OnActionExecuting(ActionExecutingContext)'
         public void OnActionExecuting(ActionExecutingContext context)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ClaimCheckAttribute.OnActionExecuting(ActionExecutingContext)'
         {
             context.HttpContext.Request.Headers.TryGetValue("Authorization", out auth);
 

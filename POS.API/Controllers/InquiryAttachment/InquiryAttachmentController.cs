@@ -17,7 +17,9 @@ namespace POS.API.Controllers.InquiryAttachment
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquiryAttachmentController'
     public class InquiryAttachmentController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquiryAttachmentController'
     {
         private IMediator _mediator;
         private readonly ILogger<InquiryAttachmentController> _logger;
@@ -31,8 +33,12 @@ namespace POS.API.Controllers.InquiryAttachment
         public InquiryAttachmentController(
             IMediator mediator,
             ILogger<InquiryAttachmentController> logger,
+#pragma warning disable CS1573 // Parameter 'webHostEnvironment' has no matching param tag in the XML comment for 'InquiryAttachmentController.InquiryAttachmentController(IMediator, ILogger<InquiryAttachmentController>, IWebHostEnvironment, PathHelper)' (but other parameters do)
             IWebHostEnvironment webHostEnvironment,
+#pragma warning restore CS1573 // Parameter 'webHostEnvironment' has no matching param tag in the XML comment for 'InquiryAttachmentController.InquiryAttachmentController(IMediator, ILogger<InquiryAttachmentController>, IWebHostEnvironment, PathHelper)' (but other parameters do)
+#pragma warning disable CS1573 // Parameter 'pathHelper' has no matching param tag in the XML comment for 'InquiryAttachmentController.InquiryAttachmentController(IMediator, ILogger<InquiryAttachmentController>, IWebHostEnvironment, PathHelper)' (but other parameters do)
             PathHelper pathHelper)
+#pragma warning restore CS1573 // Parameter 'pathHelper' has no matching param tag in the XML comment for 'InquiryAttachmentController.InquiryAttachmentController(IMediator, ILogger<InquiryAttachmentController>, IWebHostEnvironment, PathHelper)' (but other parameters do)
         {
             _mediator = mediator;
             _logger = logger;
@@ -92,7 +98,9 @@ namespace POS.API.Controllers.InquiryAttachment
 
         [HttpGet("{id}/download")]
         [ClaimCheck("INQ_VIEW_INQUIRIES")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquiryAttachmentController.DownloadFile(Guid)'
         public async Task<IActionResult> DownloadFile(Guid id)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquiryAttachmentController.DownloadFile(Guid)'
         {
             var commnad = new GetInquiryAttachmentPathQuery
             {

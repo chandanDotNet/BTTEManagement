@@ -38,7 +38,7 @@ namespace BTTEM.MediatR.Notification.Handler
 
         public async Task<List<NotificationDto>> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
         {
-            var notifications = await _notificationRepository.All.Where(a => a.UserId == request.UserId).Include(u => u.SourceUser)
+            var notifications = await _notificationRepository.All.Where(a => a.UserId == request.UserId && a.Read == 0).Include(u => u.SourceUser)
                 .ToListAsync();
             if (notifications == null)
             {

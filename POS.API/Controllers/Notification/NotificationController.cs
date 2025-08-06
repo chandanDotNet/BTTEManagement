@@ -9,17 +9,32 @@ using POS.API.Helpers;
 using System;
 using System.Linq;
 using BTTEM.MediatR.Notification.Command;
+using POS.MediatR.CommandAndQuery;
+using POS.Data.Dto;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text;
+using Azure;
+using BTTEM.Data.Entities;
 
 namespace BTTEM.API.Controllers.Notification
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NotificationController'
     public class NotificationController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NotificationController'
     {
         private IMediator _mediator;
-        public NotificationController(IMediator mediator)
+        private readonly UserInfoToken _userInfoToken;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NotificationController.NotificationController(IMediator, UserInfoToken)'
+        public NotificationController(IMediator mediator, UserInfoToken userInfoToken)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NotificationController.NotificationController(IMediator, UserInfoToken)'
         {
             _mediator = mediator;
+            _userInfoToken = userInfoToken;
         }
 
         ///// <summary>
@@ -70,6 +85,43 @@ namespace BTTEM.API.Controllers.Notification
         {
             var result = await _mediator.Send(readNotificationCommand);
             return ReturnFormattedResponse(result);
+        }
+
+        private readonly JsonSerializerOptions _options = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+        };
+
+        [HttpPut("notification/MarkAllAsRead")]
+        [Produces("application/json", "application/xml")]
+        public async Task<IActionResult> AllNotificationMarkAsRead()
+        {
+            var allNotificationsMarkAsReadCommand = new AllNotificationsMarkAsReadCommand()
+            {
+                UserId = Guid.Parse(_userInfoToken.Id)
+            };
+            var result = await _mediator.Send(allNotificationsMarkAsReadCommand);
+            if (result.Data == true)
+            {
+                ResponseData response = new ResponseData()
+                {
+                    status = result.Data,
+                    StatusCode = result.StatusCode,
+                    message = "All notifications have been read."
+                };
+                return Ok(response);
+            }
+            else
+            {
+                ResponseData response = new ResponseData()
+                {
+                    status = result.Data,
+                    StatusCode = 400,
+                    message = "You're all caught up! No unread notifications left."
+                };
+                return BadRequest(response);
+            }           
         }
 
         /// <summary>

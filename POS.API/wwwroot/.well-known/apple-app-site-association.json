@@ -1,0 +1,27 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appID": "WN6L8CACLD.com.sftravel.desk",
+        "components": [
+          {
+            "/": "/trip",
+            "comment": "Trip List"
+          },
+          {
+            "/": "/expense",
+            "comment": "Expense List"
+          },
+          {
+            "/": "/trip/details/*",
+            "comment": "Trip Details e.g., website/trip/details/{uuid}"
+          },
+          {
+            "/": "/expense/details/*",
+            "comment": "Expense Details e.g., website/expense/details/{uuid}"
+          }
+        ]
+      }
+    ]
+  }
+}

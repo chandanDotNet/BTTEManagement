@@ -227,6 +227,11 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.IsRescheduleChargePlus = request.IsRescheduleChargePlus.Value;
             }
+
+            if (request.IsAmountConfirm.HasValue)
+            {
+                entityExist.IsAmountConfirm = request.IsAmountConfirm.Value;
+            }
             //==================  Ticket Upload
 
             if (!string.IsNullOrWhiteSpace(request.RescheduleTicketReceiptName) && !string.IsNullOrWhiteSpace(request.RescheduleTicketDocumentData))

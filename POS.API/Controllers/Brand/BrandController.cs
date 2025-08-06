@@ -14,11 +14,17 @@ namespace POS.API.Controllers.Brand
     [Route("api")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'BrandController'
     public class BrandController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'BrandController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'BrandController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'BrandController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'BrandController.BrandController(IMediator)'
         public BrandController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'BrandController.BrandController(IMediator)'
         {
             _mediator = mediator;
         }

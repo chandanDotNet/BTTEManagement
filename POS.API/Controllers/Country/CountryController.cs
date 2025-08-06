@@ -15,11 +15,17 @@ namespace POS.API.Controllers.Country
     [Route("api")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CountryController'
     public class CountryController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CountryController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CountryController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CountryController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CountryController.CountryController(IMediator)'
         public CountryController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CountryController.CountryController(IMediator)'
         {
             _mediator = mediator;
         }

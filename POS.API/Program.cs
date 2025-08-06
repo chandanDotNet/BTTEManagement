@@ -1,3 +1,5 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +12,7 @@ using POS.API;
 using POS.API.Helpers;
 using POS.Domain;
 using System;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<JobService>();

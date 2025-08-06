@@ -13,10 +13,14 @@ namespace BTTEM.API.Controllers.RequestACall
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RequestACallController'
     public class RequestACallController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RequestACallController'
     {
         readonly IMediator _mediator;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RequestACallController.RequestACallController(IMediator)'
         public RequestACallController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RequestACallController.RequestACallController(IMediator)'
         {
             _mediator = mediator;
         }

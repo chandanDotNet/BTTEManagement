@@ -13,11 +13,17 @@ namespace POS.API.Controllers.ExpenseCategory
     [Route("api")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExpenseCategoryController'
     public class ExpenseCategoryController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExpenseCategoryController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExpenseCategoryController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExpenseCategoryController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExpenseCategoryController.ExpenseCategoryController(IMediator)'
         public ExpenseCategoryController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExpenseCategoryController.ExpenseCategoryController(IMediator)'
         {
             _mediator = mediator;
         }

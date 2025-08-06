@@ -17,20 +17,27 @@ namespace BTTEM.API.Controllers.HelpSupport
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'HelpSupportController'
     public class HelpSupportController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'HelpSupportController'
     {
         readonly IMediator _mediater;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'HelpSupportController.HelpSupportController(IMediator)'
         public HelpSupportController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'HelpSupportController.HelpSupportController(IMediator)'
         {
             _mediater = mediator;
         }
 
-        /// <summary>
+        
+#pragma warning disable CS1570 // XML comment has badly formed XML -- 'Whitespace is not allowed at this location.'
+/// <summary>
         /// Get Help & Support
         /// </summary>
         /// <param name="helpSupportResource"></param>
         /// <returns></returns>
         [HttpGet]
+#pragma warning restore CS1570 // XML comment has badly formed XML -- 'Whitespace is not allowed at this location.'
         public async Task<IActionResult> GetHelpSupport([FromQuery] HelpSupportResource helpSupportResource)
         {
             var getAllHelpSupportQuery = new GetAllHelpSupportQuery()

@@ -10,10 +10,14 @@ namespace POS.API.Controllers.Testimonials
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TestimonialsController'
     public class TestimonialsController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TestimonialsController'
     {
         private readonly IMediator _mediator;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TestimonialsController.TestimonialsController(IMediator)'
         public TestimonialsController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TestimonialsController.TestimonialsController(IMediator)'
         {
             _mediator = mediator;
         }

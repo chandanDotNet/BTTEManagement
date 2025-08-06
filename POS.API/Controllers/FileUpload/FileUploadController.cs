@@ -9,7 +9,9 @@ namespace POS.API.Controllers.FileUpload
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'FileUploadController'
     public class FileUploadController : ControllerBase
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'FileUploadController'
     {
         /// <summary>
         /// Posts the specified files.

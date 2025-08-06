@@ -15,9 +15,13 @@ namespace POS.API.Controllers.EmailTemplate
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailTemplateController'
     public class EmailTemplateController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailTemplateController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailTemplateController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailTemplateController._mediator'
         private readonly ILogger<EmailTemplateController> _logger;
         /// <summary>
         /// Role

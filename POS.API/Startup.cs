@@ -26,6 +26,11 @@ using System.Linq;
 using System.Reflection;
 using POS.Repository;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.FileProviders;
+using BTTEM.API.Models;
+using BTTEM.API.Service;
+using CorePush.Apple;
+using CorePush.Google;
 
 namespace POS.API
 {
@@ -52,7 +57,7 @@ namespace POS.API
             JwtSettings settings;
             settings = GetJwtSettings();
             services.AddSingleton(settings);
-   
+
             services.AddSingleton(new PathHelper(Configuration));
             services.AddSingleton<IConnectionMappingRepository, ConnectionMappingRepository>();
             services.AddScoped(c => new UserInfoToken() { Id = defaultUserId });
@@ -100,7 +105,7 @@ namespace POS.API
                                .SetIsOriginAllowed(host => true);
                     });
             });
-            
+
             services.AddSignalR();
             services.Configure<IISServerOptions>(options =>
             {
@@ -115,8 +120,11 @@ namespace POS.API
                 {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
-                   // options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    // options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
+
+            services.AddTransient<INotificationService, NotificationService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -194,7 +202,14 @@ namespace POS.API
                 c.SwaggerEndpoint($"v1/swagger.json", "Chem Website");
                 c.RoutePrefix = "swagger";
             });
+
             app.UseStaticFiles();
+            // Configure static file options
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    ServeUnknownFileTypes = true, // Allow serving files without extensions
+            //    DefaultContentType = "application/json" // Set default content type
+            //});
 
             app.UseCors("ExposeResponseHeaders");
             app.UseHttpsRedirection();
@@ -208,7 +223,7 @@ namespace POS.API
                 endpoints.MapControllers();
                 endpoints.MapHub<UserHub>("/userHub");
             });
-        
+
             SpaStartup.Configure(app);
         }
 

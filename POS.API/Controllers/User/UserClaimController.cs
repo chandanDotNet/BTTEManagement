@@ -16,7 +16,9 @@ namespace POS.API.Controllers
     [Authorize]
     public class UserClaimController : BaseController
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UserClaimController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UserClaimController._mediator'
         /// <summary>
         /// UserClaim
         /// </summary>

@@ -7,10 +7,14 @@ using System.Linq;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ImageResize'
     public static class ImageResize
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ImageResize'
     {
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ImageResize.resizeImage(ImageInfo, string)'
         public static void resizeImage(Data.ImageInfo imageInfo, string pathToSave)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ImageResize.resizeImage(ImageInfo, string)'
         {
             string imageData = imageInfo.Src.Split(',').LastOrDefault();
             byte[] bytes = Convert.FromBase64String(imageData);
@@ -31,7 +35,9 @@ namespace POS.API.Helpers
             }
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ImageResize.customImageWithOutResize(string, string)'
         public static void customImageWithOutResize(string imageSoruce, string pathToSave)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ImageResize.customImageWithOutResize(string, string)'
         {
             string imageData = imageSoruce.Split(',').LastOrDefault();
             byte[] bytes = Convert.FromBase64String(imageData);
@@ -50,7 +56,9 @@ namespace POS.API.Helpers
                 }
             }
         }
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ImageResize.precriptionImageWithOutResize(string, string)'
         public static void precriptionImageWithOutResize(string imageSoruce, string pathToSave)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ImageResize.precriptionImageWithOutResize(string, string)'
         {
             string imageData = imageSoruce.Split(',').LastOrDefault();
             byte[] bytes = Convert.FromBase64String(imageData);

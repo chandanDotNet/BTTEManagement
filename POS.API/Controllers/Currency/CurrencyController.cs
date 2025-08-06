@@ -10,7 +10,9 @@ namespace POS.API.Controllers.Currency
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'CurrencyController'
     public class CurrencyController : ControllerBase
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'CurrencyController'
     {
         private IMediator _mediator;
 

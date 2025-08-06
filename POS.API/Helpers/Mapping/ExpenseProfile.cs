@@ -11,9 +11,13 @@ using POS.MediatR.CommandAndQuery;
 
 namespace POS.API.Helpers.Mapping
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExpenseProfile'
     public class ExpenseProfile : Profile
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExpenseProfile'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExpenseProfile.ExpenseProfile()'
         public ExpenseProfile()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExpenseProfile.ExpenseProfile()'
         {
             CreateMap<ExpenseCategory, ExpenseCategoryDto>().ReverseMap();
             CreateMap<ExpenseCategoryTax, ExpenseCategoryTaxDto>().ReverseMap();

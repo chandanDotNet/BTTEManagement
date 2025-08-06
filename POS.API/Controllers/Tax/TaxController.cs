@@ -95,5 +95,18 @@ namespace POS.API.Controllers.Tax
             var result = await _mediator.Send(deleteTaxCommand);
             return ReturnFormattedResponse(result);
         }
+
+        /// <summary>
+        /// Get Tax Code.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("TaxCodes")]
+        [Produces("application/json", "application/xml", Type = typeof(List<TaxCodeDto>))]
+        public async Task<IActionResult> GetTaxCodes()
+        {
+            var getAllTaxCodeCommand = new GetAllTaxCodeCommand { };
+            var result = await _mediator.Send(getAllTaxCodeCommand);
+            return Ok(result);
+        }
     }
 }

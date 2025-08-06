@@ -30,8 +30,12 @@ namespace POS.Data.Dto
         public string Status { get; set; }
         public string AccountStatus { get; set; }
         public string AccountStatusRemarks { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReUploadRemarks { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? RejectReason { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public decimal ReimbursementAmount { get; set; } = 0;
         public Guid ApprovedByFirstLevel { get; set; }
         public decimal ReimbursementAmountFirstLevel { get; set; } = 0;
@@ -53,9 +57,15 @@ namespace POS.Data.Dto
         public string AccountStatusRemarksThirdLevel { get; set; }
         public string ReimbursementStatusThirdLevel { get; set; }
         public string ReimbursementRemarksThirdLevel { get; set; }
-
         public int ExpenseApprovalStage { get; set; }
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
         public List<ExpenseDetailDto> ExpenseDetail { get; set; }
+        public decimal LodingMetroCity { get; set; }
+        public decimal LodingOtherCity { get; set; }
+        public decimal MiscDA { get; set; }
+        public decimal FoodingAllowance { get; set; }
+        public decimal ConveyanceWithinCity { get; set; }
+        public decimal ConveyanceCityOuterArea { get; set; }
+        public decimal Deviation { get; set; }
     }
 }

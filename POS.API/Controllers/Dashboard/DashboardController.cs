@@ -9,6 +9,7 @@ using BTTEM.MediatR.Dashboard.Commands;
 using System;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.Data.Entities;
+using POS.Repository;
 
 namespace POS.API.Controllers.Dashboard
 {
@@ -20,15 +21,17 @@ namespace POS.API.Controllers.Dashboard
     //[Authorize]
     public class DashboardController : ControllerBase
     {
-
         public IMediator _mediator { get; set; }
+
+        private readonly IUserRepository _userRepository;
         /// <summary>
         /// DashboardController
         /// </summary>
         /// <param name="mediator"></param>
-        public DashboardController(IMediator mediator)
+        public DashboardController(IMediator mediator, IUserRepository userRepository)
         {
             _mediator = mediator;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -277,6 +280,20 @@ namespace POS.API.Controllers.Dashboard
             var result = await _mediator.Send(getAllDashboardDataQueryCommand);
             if (result != null)
             {
+                var userInfo = await _userRepository.FindAsync(getAllDashboardDataQueryCommand.UserId);
+                var updateUserProfileCommand = new UpdateUserProfileCommand()
+                {
+                    Address = userInfo.Address,
+                    Email = userInfo.Email,
+                    FirstName = userInfo.FirstName,
+                    LastName = userInfo.LastName,
+                    PhoneNumber = userInfo.PhoneNumber,
+                    UserName = userInfo.UserName,
+                    DeviceKey= getAllDashboardDataQueryCommand.DeviceKey,   
+                    IsDeviceTypeAndroid = getAllDashboardDataQueryCommand.IsDeviceTypeAndroid
+                };
+                var userResult = await _mediator.Send(updateUserProfileCommand);
+
                 allDashboardDataResponse.status = true;
                 allDashboardDataResponse.StatusCode = 200;
                 allDashboardDataResponse.Data = result;

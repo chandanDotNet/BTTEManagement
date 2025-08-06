@@ -35,7 +35,9 @@ namespace BTTEM.MediatR.Dashboard.Handlers
         }
 
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task<AllTypeReports> Handle(GetOverallExpensesReportDataCommand request, CancellationToken cancellationToken)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             AllTypeReports allTypeReports = new AllTypeReports();
             List <OverallExpensesReportData> overallExpensesReportDataList = new List<OverallExpensesReportData>();

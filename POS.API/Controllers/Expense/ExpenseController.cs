@@ -39,16 +39,28 @@ using Microsoft.Extensions.Configuration;
 using System.Collections;
 using BTTEM.MediatR.ApprovalLevel.Command;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using BTTEM.MediatR.Trip.Commands;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Text;
+using BTTEM.API.Models;
+using BTTEM.API.Service;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace POS.API.Controllers.Expense
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExpenseController'
     public class ExpenseController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExpenseController'
     {
         private IMediator _mediator;
         private readonly UserInfoToken _userInfoToken;
+        private readonly ITripItineraryRepository _tripItineraryRepository;
         private readonly IExpenseRepository _expenseRepository;
         private readonly IExpenseDocumentRepository _expenseDocumentRepository;
         private readonly ILocalConveyanceExpenseDocumentRepository _localConveyanceExpenseDocumentRepository;
@@ -62,6 +74,9 @@ namespace POS.API.Controllers.Expense
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailSMTPSettingRepository _emailSMTPSettingRepository;
         private IConfiguration _configuration;
+        private readonly INotificationService _notificationService;
+        private readonly ICompanyAccountRepository _companyAccountRepository;
+
         /// <summary>
         /// 
         /// </summary>
@@ -74,7 +89,7 @@ namespace POS.API.Controllers.Expense
             IEmailSMTPSettingRepository emailSMTPSettingRepository,
             IConfiguration configuration, ILocalConveyanceExpenseDocumentRepository localConveyanceExpenseDocumentRepository,
             ILocalConveyanceExpenseRepository localConveyanceExpenseRepository, ICarBikeLogBookExpenseRepository carBikeLogBookExpenseRepository,
-            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository, IExpenseDocumentRepository expenseDocumentRepository)
+            ICarBikeLogBookExpenseDocumentRepository carBikeLogBookExpenseDocumentRepository, IExpenseDocumentRepository expenseDocumentRepository, ITripItineraryRepository tripItineraryRepository, INotificationService notificationService, ICompanyAccountRepository companyAccountRepository)
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
@@ -91,6 +106,9 @@ namespace POS.API.Controllers.Expense
             _carBikeLogBookExpenseRepository = carBikeLogBookExpenseRepository;
             _carBikeLogBookExpenseDocumentRepository = carBikeLogBookExpenseDocumentRepository;
             _expenseDocumentRepository = expenseDocumentRepository;
+            _tripItineraryRepository = tripItineraryRepository;
+            _notificationService = notificationService;
+            _companyAccountRepository = companyAccountRepository;
         }
         /// <summary>
         /// Add Expenses
@@ -113,7 +131,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = result.Data.MasterExpenseId.Value,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Expense has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Expense No. " + masterExpense.ExpenseNo + " created.",
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -134,7 +152,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddLocalConveyanceExpense(List<AddLocalConveyanceExpenseCommand> addLocalConveyanceExpenseCommandList)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in addLocalConveyanceExpenseCommandList)
             {
                 AddLocalConveyanceExpenseCommand addLocalConveyanceExpenseCommand = new AddLocalConveyanceExpenseCommand();
@@ -158,7 +176,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Local conveyance expense has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Local conveyance expense added - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -181,7 +199,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddLocalConveyanceExpenseForApp(AddLocalConveyanceExpenseForAppCommand addLocalConveyanceExpenseForAppCommand)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in addLocalConveyanceExpenseForAppCommand.addLocalConveyanceExpenseData)
             {
                 AddLocalConveyanceExpenseCommand addLocalConveyanceExpenseCommand = new AddLocalConveyanceExpenseCommand();
@@ -206,7 +224,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Local conveyance expense has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Local conveyance expense added - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -245,7 +263,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Local conveyance expense document has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Expense document attached - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -266,7 +284,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateLocalConveyanceExpense(List<UpdateLocalConveyanceExpenseCommand> updateLocalConveyanceExpenseCommandList)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in updateLocalConveyanceExpenseCommandList)
             {
                 UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand = new UpdateLocalConveyanceExpenseCommand();
@@ -286,7 +304,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterExpense.Id,
                         ExpenseTypeName = masterExpense.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Local conveyance expense has been successfully updated - Expense No. " + masterExpense.ExpenseNo,
+                        Remarks = "Local conveyance expense modified - Expense No. " + masterExpense.ExpenseNo,
                         Status = "Updated",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -313,7 +331,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateExpenseApprovalLevel(UpdateExpenseApprovalLevelCommand updateExpenseApprovalLevelCommand)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             var result = await _mediator.Send(updateExpenseApprovalLevelCommand);
             if (result.Success)
             {
@@ -330,7 +348,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Expense approval level has been successfully updated - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Expense approval updated - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -343,6 +361,7 @@ namespace POS.API.Controllers.Expense
         }
 
         // <summary>
+
         /// Update Local Conveyance Expenses
         /// </summary>
         /// <param name="updateMasterExpenseCommand"></param>
@@ -351,7 +370,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateLocalConveyanceExpenseForApp(UpdateLocalConveyanceExpenseForAppCommand updateLocalConveyanceExpenseForAppCommand)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in updateLocalConveyanceExpenseForAppCommand.updateLocalConveyanceExpenseData)
             {
                 UpdateLocalConveyanceExpenseCommand updateLocalConveyanceExpenseCommand = new UpdateLocalConveyanceExpenseCommand();
@@ -371,7 +390,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterExpense.Id,
                         ExpenseTypeName = masterExpense.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Local conveyance expense has been successfully updated - Expense No. " + masterExpense.ExpenseNo,
+                        Remarks = "Local conveyance expense modified - Expense No. " + masterExpense.ExpenseNo,
                         Status = "Updated",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -413,7 +432,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Local conveyance expense has been successfully deleted - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Local conveyance expense deleted - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -450,7 +469,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Local conveyance expense document has been successfully deleted - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Local conveyance expense documents deleted - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -501,7 +520,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddCarBikeLogBookExpense(List<AddCarBikeLogBookExpenseCommand> addCarBikeLogBookExpenseCommandList)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in addCarBikeLogBookExpenseCommandList)
             {
                 AddCarBikeLogBookExpenseCommand addLocalConveyanceExpenseCommand = new AddCarBikeLogBookExpenseCommand();
@@ -521,7 +540,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterExpense.Id,
                         ExpenseTypeName = masterExpense.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Car Bike log book expense has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                        Remarks = "Car Bike log book expense added - Expense No. " + masterExpense.ExpenseNo,
                         Status = "Added",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -545,7 +564,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddCarBikeLogBookExpenseForApp(AddCarBikeLogBookExpenseCommandForApp addCarBikeLogBookExpenseCommandForApp)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in addCarBikeLogBookExpenseCommandForApp.addCarBikeLogBookExpenseCommandList)
             {
                 AddCarBikeLogBookExpenseCommand addLocalConveyanceExpenseCommand = new AddCarBikeLogBookExpenseCommand();
@@ -565,7 +584,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterExpense.Id,
                         ExpenseTypeName = masterExpense.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Car Bike log book expense has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                        Remarks = "Car Bike log book expense added - Expense No. " + masterExpense.ExpenseNo,
                         Status = "Added",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -602,7 +621,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Car Bike log book expense document has been successfully added - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Car Bike log book expense document added - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -615,6 +634,7 @@ namespace POS.API.Controllers.Expense
         }
 
         // <summary>
+
         /// Update CarBike LogBook Expense
         /// </summary>
         /// <param name="updateMasterExpenseCommand"></param>
@@ -623,7 +643,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateCarBikeLogBookExpense(List<UpdateCarBikeLogBookExpenseCommand> updateCarBikeLogBookExpenseCommandList)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in updateCarBikeLogBookExpenseCommandList)
             {
                 UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand = new UpdateCarBikeLogBookExpenseCommand();
@@ -643,7 +663,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterExpense.Id,
                         ExpenseTypeName = masterExpense.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Car Bike log book expense document has been successfully updated - Expense No. " + masterExpense.ExpenseNo,
+                        Remarks = "Car Bike log book expense document modified - Expense No. " + masterExpense.ExpenseNo,
                         Status = "Updated",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -667,7 +687,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateCarBikeLogBookExpenseForApp(UpdateCarBikeLogBookExpenseCommandForApp updateCarBikeLogBookExpenseCommandForApp)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in updateCarBikeLogBookExpenseCommandForApp.updateCarBikeLogBookExpenseCommandList)
             {
                 UpdateCarBikeLogBookExpenseCommand updateCarBikeLogBookExpenseCommand = new UpdateCarBikeLogBookExpenseCommand();
@@ -687,7 +707,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterExpense.Id,
                         ExpenseTypeName = masterExpense.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Car Bike log book expense has been successfully updated - Expense No. " + masterExpense.ExpenseNo,
+                        Remarks = "Car Bike log book expense modified - Expense No. " + masterExpense.ExpenseNo,
                         Status = "Updated",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -727,7 +747,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Car Bike log book expense has been successfully deleted - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Car Bike log book expense deleted - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -763,7 +783,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Car Bike log book expense document has been successfully deleted - Expense No. " + masterExpense.ExpenseNo,
+                    Remarks = "Car Bike log book expense document deleted - Expense No. " + masterExpense.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -842,7 +862,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = id,
                     ExpenseTypeName = result.Data.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Master Expense has been successfully added - Expense No. " + result.Data.ExpenseNo,
+                    Remarks = "Expense No. " + result.Data.ExpenseNo + " created.",
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -1413,14 +1433,17 @@ namespace POS.API.Controllers.Expense
                 }
                 //===============
 
-
                 //**Email Start**
                 if (addMasterExpenseCommand.Status == "APPLIED")
                 {
                     string email = this._configuration.GetSection("AppSettings")["Email"];
+                    string expenseRedirectionURL = this._configuration.GetSection("ExpenseRedirection")["ExpenseRedirectionURL"];
+
                     if (email == "Yes")
                     {
-                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "AddExpense.html");
+                        var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == addMasterExpenseCommand.TripId).ToListAsync();
+
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", itinerary.Count == 0 ? "Expense.html" : "ExpenseWithTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                         var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
@@ -1436,6 +1459,42 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(addMasterExpenseCommand.IsGroupExpense == true ? "Yes" : "No"));
                             templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(addMasterExpenseCommand.NoOfPerson == null ? "0" : addMasterExpenseCommand.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(addMasterExpenseCommand.Status));
+
+                            templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + result.Data.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", expenseRedirectionURL + result.Data.Id + "/" + result.Data.CreatedBy);
+
+
+                            if (addMasterExpenseCommand.TripId != null && addMasterExpenseCommand.TripId != Guid.Empty)
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "Tour Details");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "Mode Of Trip :");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "Domestic");
+
+
+                                var responseData = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == addMasterExpenseCommand.TripId).FirstOrDefaultAsync();
+                                string itineraryHtml = ItineraryHtml(itinerary, responseData.TripType);
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                                var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
+                            }
+                            else
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "");
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", "");
+
+                                var ca = await _companyAccountRepository.FindAsync(addMasterExpenseCommand.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", "");
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", "");
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", "");
+                            }
+
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -1455,6 +1514,39 @@ namespace POS.API.Controllers.Expense
                         }
                     }
                     //**Email End**
+
+
+                    //*** Start Push Notification User ***
+                    MessageRequest userRequest = new MessageRequest()
+                    {
+                        Body = "Master Expense added - Expense No. " + result.Data.ExpenseNo,
+                        CustomKey = "Expense",
+                        DeviceToken = userResult.DeviceKey,
+                        DeviceType = userResult.IsDeviceTypeAndroid,
+                        Id = result.Data.Id.ToString(),
+                        Title = "SFT Travel Desk",
+                        UserId = userResult.Id.ToString()
+                    };
+                    var user = PushNotificationForExpense(userRequest);
+
+                    //*** End Push Notification User ***
+
+                    //*** Start Push Notification Reporting Head ***
+
+                    var reporting = await _userRepository.FindAsync(userResult.ReportingTo.Value);
+                    MessageRequest rmRequest = new MessageRequest()
+                    {
+                        Body = "Master Expense added - Expense No. " + result.Data.ExpenseNo,
+                        CustomKey = "Expense",
+                        DeviceToken = reporting.DeviceKey,
+                        DeviceType = reporting.IsDeviceTypeAndroid,
+                        Id = result.Data.Id.ToString(),
+                        Title = "SFT Travel Desk",
+                        UserId = userResult.Id.ToString()
+                    };
+                    var rmUser = PushNotificationForExpense(rmRequest);
+
+                    //*** Start Push Notification Reporting Head ***
                 }
 
             }
@@ -1484,7 +1576,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = updateMasterExpenseCommand.Id,
                     ExpenseTypeName = masterResponseData.Name,
                     ActionType = "Activity",
-                    Remarks = "Master Expense has been successfully updated - " + masterResponseData.ExpenseNo,
+                    Remarks = masterResponseData.ExpenseNo + " modified",
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -1515,7 +1607,7 @@ namespace POS.API.Controllers.Expense
                         ExpenseId = item.Id,
                         ExpenseTypeName = masterResponseData.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Expense has been updated  - " + masterResponseData.ExpenseNo,
+                        Remarks = masterResponseData.ExpenseNo + " modified.",
                         Status = "Updated",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -1608,7 +1700,9 @@ namespace POS.API.Controllers.Expense
                         var resultPoliciesSetting = await _mediator.Send(getAllPoliciesSettingCommand);
                         //===============================
 
+#pragma warning disable CS0219 // The variable 'IsDeviation' is assigned but its value is never used
                         bool IsDeviation = false;
+#pragma warning restore CS0219 // The variable 'IsDeviation' is assigned but its value is never used
                         UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
                         foreach (var item in expenseCategory)
                         {
@@ -2180,11 +2274,15 @@ namespace POS.API.Controllers.Expense
 
                 //**Email Start**
                 string email = this._configuration.GetSection("AppSettings")["Email"];
+                string expenseRedirectionURL = this._configuration.GetSection("ExpenseRedirection")["ExpenseRedirectionURL"];
+
                 if (email == "Yes")
                 {
                     if (updateMasterExpenseCommand.Status == "APPLIED")
                     {
-                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
+                        var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == masterResponseData.TripId).ToListAsync();
+
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", itinerary.Count == 0 ? "ExpenseStatus.html" : "ExpenseStatusWithTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                         var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
@@ -2200,6 +2298,42 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(masterResponseData.IsGroupExpense == true ? "Yes" : "No"));
                             templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(masterResponseData.NoOfPerson == null ? "0" : masterResponseData.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(updateMasterExpenseCommand.Status));
+
+                            templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + masterResponseData.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", expenseRedirectionURL + masterResponseData.Id + "/" + masterResponseData.CreatedBy);
+
+
+                            if (masterResponseData.TripId != null && masterResponseData.TripId != Guid.Empty)
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "Tour Details");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "Mode Of Trip :");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "Domestic");
+
+
+                                var responseData = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == masterResponseData.TripId).FirstOrDefaultAsync();
+                                string itineraryHtml = ItineraryHtml(itinerary, responseData.TripType);
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                                var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
+                            }
+                            else
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "");
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", "");
+
+                                var ca = await _companyAccountRepository.FindAsync(masterResponseData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", "");
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", "");
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", "");
+                            }
+
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -2217,10 +2351,37 @@ namespace POS.API.Controllers.Expense
                                 UserName = defaultSmtp.UserName
                             });
                         }
+
+                        //*** Start Push Notification User ***
+                        MessageRequest userRequest = new MessageRequest()
+                        {
+                            Body = "Expense status " + updateMasterExpenseCommand.Status + " - Expense No. " + masterResponseData.ExpenseNo,
+                            CustomKey = "Expense",
+                            DeviceToken = userResult.DeviceKey,
+                            DeviceType = userResult.IsDeviceTypeAndroid,
+                            Id = masterResponseData.Id.ToString(),
+                            Title = "SFT Travel Desk",
+                            UserId = userResult.Id.ToString()
+                        };
+
+                        var user = PushNotificationForExpense(userRequest);
+
+                        //*** Start Push Notification User ***
+                        MessageRequest rmRequest = new MessageRequest()
+                        {
+                            Body = "Expense status " + updateMasterExpenseCommand.Status + " - Expense No. " + masterResponseData.ExpenseNo,
+                            CustomKey = "Expense",
+                            DeviceToken = reportingHead.DeviceKey,
+                            DeviceType = reportingHead.IsDeviceTypeAndroid,
+                            Id = masterResponseData.Id.ToString(),
+                            Title = "SFT Travel Desk",
+                            UserId = reportingHead.Id.ToString()
+                        };
+
+                        var rm = PushNotificationForExpense(rmRequest);
                     }
                 }
                 //**Email End**
-
             }
             return ReturnFormattedResponse(result);
         }
@@ -2251,7 +2412,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterResponseData.Id,
                     ExpenseTypeName = masterResponseData.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Expense document has been successfully deleted - " + masterResponseData.ExpenseNo,
+                    Remarks = "Expense document deleted - " + masterResponseData.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2285,7 +2446,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterResponseData.Id,
                     ExpenseTypeName = masterResponseData.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Expense details has been successfully deleted - " + masterResponseData.ExpenseNo,
+                    Remarks = "Expense details deleted - " + masterResponseData.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2305,7 +2466,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> AddExpenseDetails(AddExpenseDetailListCommand addExpenseDetailListCommand)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
             foreach (var item in addExpenseDetailListCommand.AddExpenseDetailList)
             {
                 AddExpenseDetailCommand addExpenseDetailCommand = new AddExpenseDetailCommand();
@@ -2324,7 +2485,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterResponseData.Id,
                         ExpenseTypeName = masterResponseData.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Expense details has been successfully added - " + masterResponseData.ExpenseNo,
+                        Remarks = "Expense details added - " + masterResponseData.ExpenseNo,
                         Status = "Added",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -2340,6 +2501,7 @@ namespace POS.API.Controllers.Expense
         }
 
         // <summary>
+
         /// Update Expense Details
         /// </summary>
         /// <param name="updateExpenseDetailCommandList"></param>
@@ -2348,7 +2510,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_ADD_EXPENSE")]
         public async Task<IActionResult> UpdateExpenseDetails(UpdateExpenseDetailListCommand updateExpenseDetailCommandList)
         {
-            ResponseData responseData = new ResponseData();
+            BTTEM.Data.Entities.ResponseData responseData = new BTTEM.Data.Entities.ResponseData();
 
             var command = new DeleteExpenseDetailCommand() { ExpenseId = updateExpenseDetailCommandList.UpdateExpenseDetailList.FirstOrDefault().ExpenseId };
             var result1 = await _mediator.Send(command);
@@ -2371,7 +2533,7 @@ namespace POS.API.Controllers.Expense
                         MasterExpenseId = masterResponseData.Id,
                         ExpenseTypeName = masterResponseData.ExpenseType,
                         ActionType = "Activity",
-                        Remarks = "Expense details has been successfully updated - " + masterResponseData.ExpenseNo,
+                        Remarks = "Expense details modified - " + masterResponseData.ExpenseNo,
                         Status = "Updated",
                         ActionBy = Guid.Parse(_userInfoToken.Id),
                         ActionDate = DateTime.Now,
@@ -2409,7 +2571,7 @@ namespace POS.API.Controllers.Expense
                     ExpenseId = updateExpenseCommand.Id,
                     ExpenseTypeName = responseData.Name,
                     ActionType = "Activity",
-                    Remarks = "Expense has been successfully updated - " + masterExpense.ExpenseNo,
+                    Remarks = "Expense modified - " + masterExpense.ExpenseNo,
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2442,7 +2604,7 @@ namespace POS.API.Controllers.Expense
                     ExpenseTypeName = responseData.Name,
                     MasterExpenseId = responseData.MasterExpenseId,
                     ActionType = "Activity",
-                    Remarks = "Expense has been " + updateExpenseStatusCommand.Status == "APPROVED" ? updateExpenseStatusCommand.Status : " for " + updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
+                    Remarks = "Expense " + updateExpenseStatusCommand.Status == "APPROVED" ? updateExpenseStatusCommand.Status : " for " + updateExpenseStatusCommand.RejectReason,//responseData.Result.Name + " Expense Status Updated",
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2484,6 +2646,7 @@ namespace POS.API.Controllers.Expense
             {
                 var responseData = await _expenseRepository.FindAsync(allupdateExpenseStatusCommand.updateExpenseStatus.FirstOrDefault().Id);
                 var masterExpense = await _masterExpenseRepository.FindAsync(responseData.MasterExpenseId);
+                //var masterExpense = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == responseData.MasterExpenseId).FirstOrDefaultAsync();
                 var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
                 var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
                 {
@@ -2491,7 +2654,7 @@ namespace POS.API.Controllers.Expense
                     ExpenseTypeName = masterExpense.ExpenseType,
                     MasterExpenseId = masterExpense.Id,
                     ActionType = "Activity",
-                    Remarks = "All expenses have been successfully updated - " + masterExpense.ExpenseNo,//responseData.Result.Name + " Expense Status Updated",
+                    Remarks = "All expenses status updated - " + masterExpense.ExpenseNo,//responseData.Result.Name + " Expense Status Updated",
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2542,12 +2705,12 @@ namespace POS.API.Controllers.Expense
                 if (updateMasterExpenseStatusCommand.Status == "ROLLBACK")
                 {
                     StatusMessage = "Rolled-back";
-                    RemarksMessage = "Master expense has been Rollback - " + responseData.ExpenseNo;
+                    RemarksMessage = "Master expense Rolled-back - " + responseData.ExpenseNo;
                 }
                 else
                 {
                     StatusMessage = "Updated";
-                    RemarksMessage = "Master expense has been updated - " + responseData.ExpenseNo;
+                    RemarksMessage = "Master expense updated - " + responseData.ExpenseNo;
                 }
 
 
@@ -2567,16 +2730,29 @@ namespace POS.API.Controllers.Expense
 
                 //**Email Start**
                 string email = this._configuration.GetSection("AppSettings")["Email"];
+                string expenseRedirectionURL = this._configuration.GetSection("ExpenseRedirection")["ExpenseRedirectionURL"];
                 if (email == "Yes")
                 {
                     var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseStatus.html");
                     var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                     var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
 
+                    //var accounts = _userRepository.AllIncluding(r => r.UserRoles).Where(r => r.UserRoles.FirstOrDefault().RoleId == Guid.Parse("241772CB-C907-4961-88CB-A0BF8004BBB2")).ToList();
+                    //accounts = accounts.Where(x => x.AccountTeam == responseData.AccountTeam).ToList();                   
+
+                    //var accounts = _userRepository.AllIncluding(r => r.UserRoles).Where(u => u.AccountTeamActionFor == responseData.AccountTeam).ToList();
+
+                    // .Where(u => u.AccountTeamActionFor == responseData.AccountTeam).ToList();
+                    //&& u.UserRoles.FirstOrDefault(r => r.RoleId == Guid.Parse("241772CB-C907-4961-88CB-A0BF8004BBB2")));
+
+                    //var accountMail = string.Join(",", accounts.Select(x => x.UserName));
+
+                    var accounts = this._configuration.GetSection(responseData.AccountTeam)["UserEmail"];
+
                     using (StreamReader sr = new StreamReader(filePath))
                     {
                         string templateBody = sr.ReadToEnd();
-                        templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                        templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
                         templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                         templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
                         templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(responseData.TotalAmount));
@@ -2585,6 +2761,41 @@ namespace POS.API.Controllers.Expense
                         templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
                         templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
                         templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));
+
+                        templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + responseData.Id);
+                        templateBody = templateBody.Replace("{APP_URL}", expenseRedirectionURL + responseData.Id + "/" + responseData.CreatedBy);
+
+                        if (responseData.TripId != null && responseData.TripId != Guid.Empty)
+                        {
+                            templateBody = templateBody.Replace("{TOUR_DETAILS}", "Tour Details");
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", "Mode Of Trip :");
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "Domestic");
+
+                            var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == responseData.TripId).ToListAsync();
+                            var tripData = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == responseData.TripId).FirstOrDefaultAsync();
+                            string itineraryHtml = ItineraryHtml(itinerary, tripData.TripType);
+                            templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                            var ca = await _companyAccountRepository.FindAsync(tripData.CompanyAccountId.Value);
+                            templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
+                            templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
+                            templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
+                        }
+                        else
+                        {
+                            templateBody = templateBody.Replace("{TOUR_DETAILS}", "");
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", "");
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "");
+                            templateBody = templateBody.Replace("{ITINERARY_HTML}", "");
+
+                            var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                            templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                            templateBody = templateBody.Replace("{DEPARTMENT}", "");
+                            templateBody = templateBody.Replace("{TRIP_TYPE}", "");
+                            templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", "");
+                        }
+
                         EmailHelper.SendEmail(new SendEmailSpecification
                         {
                             Body = templateBody,
@@ -2596,11 +2807,26 @@ namespace POS.API.Controllers.Expense
                             Subject = "Expense Status",
                             ToAddress = responseData.CreatedByUser.UserName,
                             CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
-                                userResult.UserName :
-                                userResult.UserName + "," + userResult.AlternateEmail,
+                            //userResult.UserName :
+                            //userResult.UserName + "," + userResult.AlternateEmail,
+                            userResult.UserName + "," + accounts :
+                            userResult.UserName + "," + accounts + "," + userResult.AlternateEmail,
                             UserName = defaultSmtp.UserName
                         });
                     }
+
+                    MessageRequest userRequest = new MessageRequest()
+                    {
+                        Body = "Expense status " + responseData.ApprovalStage + " - Expense No. " + responseData.ExpenseNo,
+                        CustomKey = "Expense",
+                        DeviceToken = userResult.DeviceKey,
+                        DeviceType = userResult.IsDeviceTypeAndroid,
+                        Id = responseData.CreatedByUser.Id.ToString(),
+                        Title = "SFT Travel Desk",
+                        UserId = userResult.Id.ToString()
+                    };
+
+                    var user = PushNotificationForExpense(userRequest);
                 }
                 //**Email End**
             }
@@ -2735,7 +2961,7 @@ namespace POS.API.Controllers.Expense
                     ExpenseId = id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Expense has been deleted - " + masterExpense.ExpenseNo,
+                    Remarks = "Expense deleted - " + masterExpense.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2767,7 +2993,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = responseData.Id,
                     ExpenseTypeName = responseData.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Master Expense has been deleted - " + responseData.ExpenseNo,
+                    Remarks = "Master Expense deleted - " + responseData.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2797,7 +3023,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = responseData.Id,
                     ExpenseTypeName = responseData.Name,
                     ActionType = "Activity",
-                    Remarks = "Master expense has been deleted - " + responseData.ExpenseNo,
+                    Remarks = "Master expense deleted - " + responseData.ExpenseNo,
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2877,7 +3103,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = Guid.Empty,
                     ExpenseTypeName = string.Empty,
                     ActionType = "Activity",
-                    Remarks = "Travel document have been uploaded",
+                    Remarks = "Travel document uploaded",
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2906,7 +3132,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = Guid.Empty,
                     ExpenseTypeName = string.Empty,
                     ActionType = "Activity",
-                    Remarks = "Travel documents have been updated",
+                    Remarks = "Travel documents updated",
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2934,7 +3160,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = Guid.Empty,
                     ExpenseTypeName = string.Empty,
                     ActionType = "Activity",
-                    Remarks = "Travel documents have been updated",
+                    Remarks = "Travel documents updated",
                     Status = "Updated",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -2964,7 +3190,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = Guid.Empty,
                     ExpenseTypeName = string.Empty,
                     ActionType = "Activity",
-                    Remarks = "Travel documents have been deleted",
+                    Remarks = "Travel documents deleted",
                     Status = "Deleted",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -3051,7 +3277,7 @@ namespace POS.API.Controllers.Expense
                     MasterExpenseId = masterExpense.Id,
                     ExpenseTypeName = masterExpense.ExpenseType,
                     ActionType = "Activity",
-                    Remarks = "Amount has been successfully added in the wallet - " + masterExpense.ExpenseNo,
+                    Remarks = "Amount added in the wallet - " + masterExpense.ExpenseNo,
                     Status = "Added",
                     ActionBy = Guid.Parse(_userInfoToken.Id),
                     ActionDate = DateTime.Now,
@@ -3125,23 +3351,70 @@ namespace POS.API.Controllers.Expense
                 if (updateExpenseAndMasterExpenseCommand.MasterExpenseId.HasValue)
                 {
                     string email = this._configuration.GetSection("AppSettings")["Email"];
+                    string expenseRedirectionURL = this._configuration.GetSection("ExpenseRedirection")["ExpenseRedirectionURL"];
                     if (email == "Yes")
                     {
                         var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id == updateExpenseAndMasterExpenseCommand.MasterExpenseId.Value).FirstOrDefaultAsync();
-                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "ExpenseReimburse.html");
+
+                        var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == responseData.TripId).ToListAsync();
+
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", itinerary.Count == 0 ? "ExpenseReimburse.html" : "ExpenseReimburseWithTrip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
                         var reportingHead = _userRepository.FindAsync(userResult.ReportingTo.Value).Result;
+
+                        var accounts = _userRepository.AllIncluding(r => r.UserRoles).Where(u => u.AccountTeamActionFor == responseData.AccountTeam).ToList();
+                        //&& u.UserRoles.FirstOrDefault(r => r.RoleId == Guid.Parse("241772CB-C907-4961-88CB-A0BF8004BBB2")));
+                        var accountMail = string.Join(",", accounts.Select(x => x.UserName));
 
                         using (StreamReader sr = new StreamReader(filePath))
                         {
                             string templateBody = sr.ReadToEnd();
-                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
                             templateBody = templateBody.Replace("{REIMBURMENT_STATUS}", Convert.ToString(responseData.ReimbursementStatus));
                             templateBody = templateBody.Replace("{TOTAL_AMOUNT}", Convert.ToString(responseData.TotalAmount));
                             templateBody = templateBody.Replace("{PAYABLE_AMOUNT}", Convert.ToString(responseData.PayableAmount));
                             templateBody = templateBody.Replace("{REIMBURSED_AMOUNT}", Convert.ToString(responseData.ReimbursementAmount));
+                            templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(responseData.ExpenseType));
+                            templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(responseData.NoOfBill));
+
+                            templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + responseData.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", expenseRedirectionURL + responseData.Id + "/" + responseData.CreatedBy);
+
+
+                            if (responseData.TripId != null && responseData.TripId != Guid.Empty)
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "Tour Details");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "Mode Of Trip :");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "Domestic");
+
+
+                                var tripData = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == responseData.TripId).FirstOrDefaultAsync();
+                                string itineraryHtml = ItineraryHtml(itinerary, tripData.TripType);
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                                var ca = await _companyAccountRepository.FindAsync(tripData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
+                            }
+                            else
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "");
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", "");
+
+                                var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", "");
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", "");
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", "");
+                            }
+
+
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -3153,11 +3426,24 @@ namespace POS.API.Controllers.Expense
                                 Subject = "Expense Reimbursed Status",
                                 ToAddress = responseData.CreatedByUser.UserName,
                                 CCAddress = string.IsNullOrEmpty(userResult.AlternateEmail) ?
-                                userResult.UserName :
+                                userResult.UserName + "," + accountMail :
                                 userResult.UserName + "," + userResult.AlternateEmail,
                                 UserName = defaultSmtp.UserName
                             });
                         }
+
+                        MessageRequest userRequest = new MessageRequest()
+                        {
+                            Body = "Expense Reimbursed status " + responseData.ReimbursementStatus + " - Expense No. " + responseData.ExpenseNo,
+                            CustomKey = "Expense",
+                            DeviceToken = userResult.DeviceKey,
+                            DeviceType = userResult.IsDeviceTypeAndroid,
+                            Id = responseData.CreatedByUser.Id.ToString(),
+                            Title = "SFT Travel Desk",
+                            UserId = userResult.Id.ToString()
+                        };
+
+                        var user = PushNotificationForExpense(userRequest);
                     }
                 }
                 //**Email End**
@@ -3186,7 +3472,7 @@ namespace POS.API.Controllers.Expense
             decimal reimbursementAmount = updateAllExpenseAndMasterExpenseApprovalLevelCommand.
                 AllExpenseAndMasterExpenseApprovalLevelCommand.Sum(x => x.ReimbursementAmount);
 
-            ResponseData response = new ResponseData();
+            BTTEM.Data.Entities.ResponseData response = new BTTEM.Data.Entities.ResponseData();
             int Response = 0;
             UpdateExpenseAndMasterExpenseApprovalLevelCommand updateExpenseAndMasterExpenseApprovalLevel = new UpdateExpenseAndMasterExpenseApprovalLevelCommand();
             foreach (var expenseAndMasterExpenseApprovalLevel in updateAllExpenseAndMasterExpenseApprovalLevelCommand.AllExpenseAndMasterExpenseApprovalLevelCommand)
@@ -3248,6 +3534,8 @@ namespace POS.API.Controllers.Expense
                 if (userResult.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
                 {
                     string email = this._configuration.GetSection("AppSettings")["Email"];
+                    string expenseRedirectionURL = this._configuration.GetSection("ExpenseRedirection")["ExpenseRedirectionURL"];
+
                     if (email == "Yes")
                     {
                         var responseData = await _masterExpenseRepository.AllIncluding(u => u.CreatedByUser).Where(x => x.Id ==
@@ -3290,7 +3578,7 @@ namespace POS.API.Controllers.Expense
                         using (StreamReader sr = new StreamReader(filePath))
                         {
                             string templateBody = sr.ReadToEnd();
-                            templateBody = templateBody.Replace("{NAME}", string.Concat(userResult.FirstName, " ", userResult.LastName));
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(responseData.CreatedByUser.FirstName, " ", responseData.CreatedByUser.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{EXPENSE_NO}", responseData.ExpenseNo);
                             templateBody = templateBody.Replace("{EXPENSE_AMOUNT}", Convert.ToString(responseData.TotalAmount));
@@ -3299,6 +3587,42 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
                             templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));
+
+                            templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + responseData.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", expenseRedirectionURL + responseData.Id + "/" + responseData.CreatedBy);
+
+
+                            if (responseData.TripId != null && responseData.TripId != Guid.Empty)
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "Tour Details");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "Mode Of Trip :");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "Domestic");
+
+                                var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == responseData.TripId).ToListAsync();
+                                var tripData = await _tripRepository.AllIncluding(c => c.CreatedByUser).Where(x => x.Id == responseData.TripId).FirstOrDefaultAsync();
+                                string itineraryHtml = ItineraryHtml(itinerary, tripData.TripType);
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                                var ca = await _companyAccountRepository.FindAsync(tripData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
+                            }
+                            else
+                            {
+                                templateBody = templateBody.Replace("{TOUR_DETAILS}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP}", "");
+                                templateBody = templateBody.Replace("{MODE_OF_TRIP_VAL}", "");
+                                templateBody = templateBody.Replace("{ITINERARY_HTML}", "");
+
+                                var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
+                                templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+                                templateBody = templateBody.Replace("{DEPARTMENT}", "");
+                                templateBody = templateBody.Replace("{TRIP_TYPE}", "");
+                                templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", "");
+                            }
+
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
                                 Body = templateBody,
@@ -3316,6 +3640,20 @@ namespace POS.API.Controllers.Expense
                                 UserName = defaultSmtp.UserName
                             });
                         }
+
+
+                        MessageRequest userRequest = new MessageRequest()
+                        {
+                            Body = "Expense Reimbursed status " + responseData.ApprovalStage + " - Expense No. " + responseData.ExpenseNo,
+                            CustomKey = "Expense",
+                            DeviceToken = userResult.DeviceKey,
+                            DeviceType = userResult.IsDeviceTypeAndroid,
+                            Id = responseData.CreatedByUser.Id.ToString(),
+                            Title = "SFT Travel Desk",
+                            UserId = userResult.Id.ToString()
+                        };
+
+                        var user = PushNotificationForExpense(userRequest);
                     }
                 }
                 //**Email End**
@@ -3749,9 +4087,10 @@ namespace POS.API.Controllers.Expense
                         }
                         item.AllowedAmount = resultPoliciesLodgingFooding.BudgetAmount * Convert.ToDecimal(localNoOfDays);
                         item.ExpenseAmount = expenseData.Sum(x => x.Amount);
+
                         if (item.ExpenseAmount >= item.AllowedAmount)
                         {
-                            item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
+                            item.FoodingAllowance = resultPoliciesLodgingFooding.BudgetAmount;
                         }
                     }
                     //--Conveyance (within a City)
@@ -3783,7 +4122,6 @@ namespace POS.API.Controllers.Expense
                                     item.DeviationAmount = item.ExpenseAmount - item.AllowedAmount;
                                 }
                             }
-
                         }
                     }
                     //--Conveyance (city to outer area)
@@ -3868,6 +4206,90 @@ namespace POS.API.Controllers.Expense
 
             responseData.MaseterExpense.NoOfPendingReimbursementAction = result.FirstOrDefault().Expenses
             .Where(x => x.Amount > 0 && x.Status == "APPROVED" && x.AccountStatus == null || x.AccountStatus == string.Empty || x.AccountStatus == "PENDING").Count();
+
+            responseData.ExpenseCategories.ForEach(item =>
+            {
+                item.ExpenseDtos.ForEach(exp =>
+                {
+                    exp.LodingMetroCity = resultPoliciesLodgingFooding.MetroCitiesUptoAmount;
+                    if (exp.ExpenseCategoryId == new Guid("FBF965BD-A53E-4D97-978A-34C2007202E5"))
+                    {
+                        exp.Deviation = exp.Amount > resultPoliciesLodgingFooding.MetroCitiesUptoAmount ?
+                        exp.Amount - resultPoliciesLodgingFooding.MetroCitiesUptoAmount : 0;
+                    }
+
+                    exp.LodingOtherCity = resultPoliciesLodgingFooding.OtherCitiesUptoAmount;
+                    if (exp.ExpenseCategoryId == new Guid("1AADD03D-90E1-4589-8B9D-6121049B490D"))
+                    {
+                        exp.Deviation = exp.Amount > resultPoliciesLodgingFooding.OtherCitiesUptoAmount ?
+                        exp.Amount - resultPoliciesLodgingFooding.OtherCitiesUptoAmount : 0;
+                    }
+
+                    exp.MiscDA = resultPoliciesDetail.FirstOrDefault().DailyAllowance;
+                    if (exp.ExpenseCategoryId == new Guid("ED69E9A0-2D54-4A91-A598-F79973B9FE99"))
+                    {
+                        exp.Deviation = exp.Amount > resultPoliciesDetail.FirstOrDefault().DailyAllowance ?
+                        exp.Amount - resultPoliciesDetail.FirstOrDefault().DailyAllowance : 0;
+                    }
+
+                    exp.FoodingAllowance = resultPoliciesLodgingFooding.BudgetAmount;
+                    if (exp.ExpenseCategoryId == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9"))
+                    {
+                        exp.Deviation = exp.Amount > resultPoliciesLodgingFooding.BudgetAmount ?
+                        exp.Amount - resultPoliciesLodgingFooding.BudgetAmount : 0;
+                    }
+
+                    if (exp.ExpenseCategoryId == new Guid("B1977DB3-D909-4936-A5DA-41BF84638963"))
+                    {
+                        var Conveyance = resultConveyance.Where(a => a.Name == "Conveyance (within a city)");
+
+                        if (Conveyance != null)
+                        {
+                            var ConveyancesItemAll = Conveyance.Select(a => a.conveyancesItem).Where(b => b.Any(a => a.ConveyanceItemName == "Budget")).FirstOrDefault();
+                            var ConveyancesItem = ConveyancesItemAll.Where(a => a.ConveyanceItemName == "Budget");
+                            if (ConveyancesItem != null)
+                            {
+                                bool IsCheck = (bool)ConveyancesItem.FirstOrDefault().IsCheck;
+                                if (IsCheck == true)
+                                {
+                                    if (ConveyancesItem.FirstOrDefault().Amount != null)
+                                    {
+                                        exp.ConveyanceWithinCity = (decimal)(ConveyancesItem.FirstOrDefault().Amount);
+
+
+                                        exp.Deviation = exp.Amount > ConveyancesItem.FirstOrDefault().Amount.Value ?
+                                        exp.Amount - ConveyancesItem.FirstOrDefault().Amount.Value : 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (exp.ExpenseCategoryId == new Guid("5278397A-C8DD-475A-A7A7-C05708B2BB06"))
+                    {
+                        var ConveyanceCityOuterArea = resultConveyance.Where(a => a.Name == "Conveyance (city to outer area)");
+                        if (ConveyanceCityOuterArea != null)
+                        {
+                            var ConveyancesItemAll = ConveyanceCityOuterArea.Select(a => a.conveyancesItem).Where(b => b.Any(a => a.ConveyanceItemName == "Budget")).FirstOrDefault();
+                            var ConveyancesItem = ConveyancesItemAll.Where(a => a.ConveyanceItemName == "Budget");
+                            if (ConveyancesItem != null)
+                            {
+                                bool IsCheck = (bool)ConveyancesItem.FirstOrDefault().IsCheck;
+                                if (IsCheck == true)
+                                {
+                                    if (ConveyancesItem.FirstOrDefault().Amount != null)
+                                    {
+                                        exp.ConveyanceCityOuterArea = (decimal)(ConveyancesItem.FirstOrDefault().Amount);
+
+                                        exp.Deviation = exp.Amount > ConveyancesItem.FirstOrDefault().Amount.Value ?
+                                        exp.Amount - ConveyancesItem.FirstOrDefault().Amount.Value : 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
 
             var paginationMetadata = new
             {
@@ -4110,7 +4532,7 @@ namespace POS.API.Controllers.Expense
         //[ClaimCheck("EXP_UPDATE_EXPENSE")]
         public async Task<IActionResult> ChangeExpenseAccountTeam([FromBody] ChangeExpenseAccountTeamCommand changeExpenseAccountTeamCommand)
         {
-            ResponseData response = new ResponseData();
+            BTTEM.Data.Entities.ResponseData response = new BTTEM.Data.Entities.ResponseData();
             int Response = 0;
             var result = await _mediator.Send(changeExpenseAccountTeamCommand);
             if (result.Success)
@@ -4235,6 +4657,194 @@ namespace POS.API.Controllers.Expense
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Send to SAP.
+        /// </summary>      
+        /// <param name="sapCommand"></param>
+        /// <returns></returns>
+        [HttpPost("SendToSAP")]
+        public async Task<IActionResult> SendToSAP([FromBody] SapCommand sapCommand)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://ssilsaprtr.shyamsteel.com:44340/RESTAdapter/TravelExpense");
+            request.Headers.Add("Authorization", "Basic UE9FSU5WT0lDRTphc2Rmams4bEAqMjQ=");
+            request.Headers.Add("Cookie", "saplb_*=(J2EE2526620)2526650");
+
+            var payload = JsonConvert.SerializeObject(new { Record = sapCommand.Record });
+            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseData = await response.Content.ReadAsStringAsync();
+
+            var resultObject = System.Text.Json.JsonSerializer.Deserialize<RootObject>(responseData);
+
+            int journeyNumber = resultObject?.Result?.JourneyNumber ?? 0;
+
+            AddSapCommand addSapCommand = new AddSapCommand()
+            {
+                Id = Guid.NewGuid(),
+                SapData = Newtonsoft.Json.JsonConvert.SerializeObject(sapCommand.Record),
+                Status = "Parked",
+                DocumentNumber = resultObject?.Result?.JourneyNumber ?? 0
+            };
+
+            var result = await _mediator.Send(addSapCommand);
+            return ReturnFormattedResponse(result);
+        }
+        public class RootObject
+        {
+            public ResultData Result { get; set; }
+        }
+        public class ResultData
+        {
+            public int JourneyNumber { get; set; }
+            public string Message { get; set; }
+        }
+
+        [NonAction]
+        public string ItineraryHtml(List<TripItinerary> tripItineraries, string TripType)
+        {
+            string baseUrl = this._configuration.GetSection("Url")["BaseUrl"];
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in tripItineraries)
+            {
+                sb.Append("<table class='journeyTableTop' style = 'background-color:#fff; box-shadow: -1px 4px 3px 2px #0000ff1a; margin-bottom:5px;'>");
+                sb.Append("<tr>");
+                sb.Append("<td>");
+                sb.Append("<div class='Journey startJourny'>");
+                sb.Append("<p>Start Journey</p>");
+                sb.Append("<h5>" + item.DepartureCityName + "</h5>");
+                sb.Append("<h6><span>" + item.DepartureDate + "</span></h6>");
+                sb.Append("</div>");
+                sb.Append("</td>");
+                sb.Append("<td>");
+                sb.Append("<div class='journeyDetail'>");
+                sb.Append("<p>" + TripType + "</p>");
+                sb.Append("<div class='journeyImage'>");
+                if (item.TripBy == "Bus")
+                {
+                    sb.Append("<img src = '" + baseUrl + " images/busImg.png' class='busImg' alt='' style='max-width: 27px; margin: 0 auto !important; display: block;'> ");
+                }
+                if (item.TripBy == "Flight")
+                {
+                    sb.Append("<img src = '" + baseUrl + "images/flightImg.png' class='busImg' alt='' style='display:block; margin:0 auto;' >");
+                }
+                if (item.TripBy == "Train")
+                {
+                    sb.Append("<img src = '" + baseUrl + "images/trainImg2.png' class='busImg' alt='' style='display:block; margin:0 auto;' >");
+                }
+                if (item.TripBy == "Car")
+                {
+                    sb.Append("<img src = '" + baseUrl + "images/carImg.png' class='busImg' alt='' style='display:block; margin:0 auto;' >");
+                }
+                sb.Append("<img src = '" + baseUrl + "images/lines.png' class='lines' alt='' style='display:block; margin:0 auto;' >");
+                sb.Append("</div>");
+                if (item.TripBy == "Bus")
+                {
+                    sb.Append("<p>Bus Booking</p>");
+                }
+                if (item.TripBy == "Flight")
+                {
+                    sb.Append("<p>Flight Booking</p>");
+                }
+                if (item.TripBy == "Train")
+                {
+                    sb.Append("<p>Train Booking</p>");
+                }
+                if (item.TripBy == "Car")
+                {
+                    sb.Append("<p>Car Booking</p>");
+                }
+                sb.Append("</div>");
+                sb.Append("</td>");
+                sb.Append("<td>");
+                sb.Append("<div class='Journey endtJourny'>");
+                sb.Append("<p>End Journey</p>");
+                sb.Append("<h5>" + item.ArrivalCityName + "</h5>");
+                sb.Append("<h6><span>" + item.DepartureDate + "</span></h6>");
+                sb.Append("</div>");
+                sb.Append("</td>");
+                sb.Append("</tr>");
+                sb.Append("</table>");
+            }
+            return sb.ToString();
+        }
+
+
+        [NonAction]
+        public async Task<ResponseModel> PushNotificationForExpense(MessageRequest request)
+        {
+            NotificationModel message = null;
+            if (!string.IsNullOrEmpty(request.DeviceToken) && request.DeviceType == false)
+            {
+                message = new NotificationModel()
+                {
+                    Message = new BTTEM.API.Models.Message
+                    {
+                        Token = request.DeviceToken,
+
+                        Notification = new BTTEM.API.Models.Notification()
+                        {
+                            Title = request.Title,
+                            Body = request.Body
+                        },
+
+                        Data = new BTTEM.API.Models.Data
+                        {
+                            NotificationTitle = request.Title,
+                            NotificationBody = request.Body,
+                            UserId = request.UserId,
+                            Screen = "Profile",
+                            CustomKey = request.CustomKey,
+                            Id = request.Id
+                        },
+
+                        Android = new Android()
+                        {
+                            Priority = "high"
+                        }
+                    }
+                };
+            }
+            else if (!string.IsNullOrEmpty(request.DeviceToken) && request.DeviceType == true)
+            {
+                message = new NotificationModel()
+                {
+                    Message = new BTTEM.API.Models.Message
+                    {
+                        Token = request.DeviceToken,
+
+                        Data = new BTTEM.API.Models.Data
+                        {
+                            NotificationTitle = request.Title,
+                            NotificationBody = request.Body,
+                            UserId = request.UserId,
+                            Screen = "Profile",
+                            CustomKey = request.CustomKey,
+                            Id = request.Id
+                        },
+
+                        Android = new Android()
+                        {
+                            Priority = "high"
+                        }
+                    }
+                };
+            }
+
+            var resultNotification = await _notificationService.SendNotification(message);
+
+            if (resultNotification.IsSuccess)
+            {
+                return resultNotification;
+            }
+            else
+            {
+                return resultNotification;
+            }
         }
     }
 }

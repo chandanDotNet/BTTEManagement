@@ -18,13 +18,18 @@ namespace POS.API.Controllers
     [Authorize]
     public class RoleController : BaseController
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RoleController._mediator'
         public IMediator _mediator { get; set; }
-        /// <summary>
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RoleController._mediator'
+        
+#pragma warning disable CS1572 // XML comment has a param tag for 'logger', but there is no parameter by that name
+/// <summary>
         /// Role
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="logger"></param>
         public RoleController(
+#pragma warning restore CS1572 // XML comment has a param tag for 'logger', but there is no parameter by that name
             IMediator mediator)
         {
             _mediator = mediator;

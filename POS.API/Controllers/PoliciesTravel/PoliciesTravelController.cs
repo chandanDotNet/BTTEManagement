@@ -23,12 +23,16 @@ namespace BTTEM.API.Controllers.PoliciesTravel
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'PoliciesTravelController'
     public class PoliciesTravelController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'PoliciesTravelController'
     {
 
         readonly IMediator _mediator;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'PoliciesTravelController.PoliciesTravelController(IMediator)'
         public PoliciesTravelController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'PoliciesTravelController.PoliciesTravelController(IMediator)'
         {
             _mediator = mediator;
         }
@@ -412,15 +416,20 @@ namespace BTTEM.API.Controllers.PoliciesTravel
 
 
 
-        /// <summary>
+        
+#pragma warning disable CS1572 // XML comment has a param tag for 'UpdatePoliciesDetailCommand', but there is no parameter by that name
+/// <summary>
         ///  Update a PoliciesDetail
         /// </summary>
         /// <param name="UpdatePoliciesDetailCommand"></param>
         /// <returns></returns>
         [HttpPut]
+#pragma warning restore CS1572 // XML comment has a param tag for 'UpdatePoliciesDetailCommand', but there is no parameter by that name
         //[ClaimCheck("USR_ADD_USER")]
         [Produces("application/json", "application/xml", Type = typeof(PoliciesDetailDto))]
+#pragma warning disable CS1573 // Parameter 'updatePoliciesDetailCommand' has no matching param tag in the XML comment for 'PoliciesTravelController.UpdatePoliciesDetail(UpdatePoliciesDetailCommand)' (but other parameters do)
         public async Task<IActionResult> UpdatePoliciesDetail(UpdatePoliciesDetailCommand updatePoliciesDetailCommand)
+#pragma warning restore CS1573 // Parameter 'updatePoliciesDetailCommand' has no matching param tag in the XML comment for 'PoliciesTravelController.UpdatePoliciesDetail(UpdatePoliciesDetailCommand)' (but other parameters do)
         {
             var result = await _mediator.Send(updatePoliciesDetailCommand);
             return ReturnFormattedResponse(result);

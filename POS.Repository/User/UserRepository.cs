@@ -186,6 +186,8 @@ namespace POS.Repository
 
             ret.IsDirector = appUser.IsDirector;
             ret.CalenderDays = appUser.CalenderDays;
+            ret.DeviceKey = appUser.DeviceKey;
+            ret.IsDeviceTypeAndroid = appUser.IsDeviceTypeAndroid;
             ret.Grades = appUser.Grades;
 
             // Get all claims for this user

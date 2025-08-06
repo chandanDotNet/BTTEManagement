@@ -8,9 +8,13 @@ using POS.MediatR.SalesOrderPayment.Command;
 
 namespace POS.API.Helpers.Mapping
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SalesOrderProfile'
     public class SalesOrderProfile : Profile
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SalesOrderProfile'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SalesOrderProfile.SalesOrderProfile()'
         public SalesOrderProfile()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SalesOrderProfile.SalesOrderProfile()'
         {
             CreateMap<SalesOrder, SalesOrderDto>().ReverseMap();
             CreateMap<UpdateSalesOrderReturnCommand, SalesOrder>();

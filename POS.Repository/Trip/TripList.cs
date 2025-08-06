@@ -130,7 +130,8 @@ namespace BTTEM.Repository
                         AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
                         ProjectType = cs.ProjectType,
                         Remarks = cs.Remarks,
-                        ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
+                        ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
+                        CreatedBy = cs.CreatedBy
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -209,7 +210,8 @@ namespace BTTEM.Repository
                  AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
                  ProjectType = cs.ProjectType,
                  Remarks = cs.Remarks,
-                 ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy)
+                 ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
+                 CreatedBy = cs.CreatedBy
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
              })

@@ -11,14 +11,19 @@ namespace POS.API.Controllers.InquiryActivity
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquiryActivityController'
     public class InquiryActivityController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquiryActivityController'
     {
         private readonly IMediator _mediator;
-        /// <summary>
+        
+#pragma warning disable CS1574 // XML comment has cref attribute 'InquiryNoteController' that could not be resolved
+/// <summary>
         /// Initializes a new instance of the <see cref="InquiryNoteController"/> class.
         /// </summary>
         /// <param name="mediator">The mediator.</param>
         public InquiryActivityController(IMediator mediator)
+#pragma warning restore CS1574 // XML comment has cref attribute 'InquiryNoteController' that could not be resolved
         {
             _mediator = mediator;
         }
