@@ -22,8 +22,12 @@ namespace BTTEM.MediatR.Trip.Commands
     {
         public string Type { get; set; }
         public Guid Id { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? NoOfTickets { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? NoOfRoom { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public bool? IsItinerary { get; set; }
         public bool? IsCancel { get; set; }
         public List<CancelTripItineraryHotelUserDto> cancelTripItineraryHotelUsers { get; set; }

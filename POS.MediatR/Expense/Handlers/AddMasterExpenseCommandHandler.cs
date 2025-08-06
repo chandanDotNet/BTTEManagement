@@ -211,7 +211,6 @@ namespace BTTEM.MediatR.CommandAndQuery
                 }
             }
 
-
             _masterExpenseRepository.Add(entity);
 
             if (await _uow.SaveAsync() <= 0)

@@ -13,7 +13,9 @@ namespace POS.API.Controllers.Supplier
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SupplierSearchController'
     public class SupplierSearchController : ControllerBase
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SupplierSearchController'
     {
         private readonly IMediator _mediator;
 

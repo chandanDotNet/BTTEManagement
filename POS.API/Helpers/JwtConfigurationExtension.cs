@@ -11,9 +11,13 @@ using POS.Data.Dto;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'JwtAuthenticationConfigurationExtension'
     public static class JwtAuthenticationConfigurationExtension
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'JwtAuthenticationConfigurationExtension'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'JwtAuthenticationConfigurationExtension.AddJwtAutheticationConfiguration(IServiceCollection, JwtSettings)'
         public static void AddJwtAutheticationConfiguration(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'JwtAuthenticationConfigurationExtension.AddJwtAutheticationConfiguration(IServiceCollection, JwtSettings)'
             this IServiceCollection services,
             JwtSettings settings)
         {

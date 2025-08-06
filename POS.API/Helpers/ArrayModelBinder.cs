@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ArrayModelBinder'
     public class ArrayModelBinder : IModelBinder
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ArrayModelBinder'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ArrayModelBinder.BindModelAsync(ModelBindingContext)'
         public Task BindModelAsync(ModelBindingContext bindingContext)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ArrayModelBinder.BindModelAsync(ModelBindingContext)'
         {
             // Our binder works only on enumerable types
             if (!bindingContext.ModelMetadata.IsEnumerableType)

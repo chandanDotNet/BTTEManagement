@@ -19,7 +19,6 @@ namespace BTTEM.Data
         public int Read { get; set; }
         public Guid TripId { get; set; }
         public string TypeName { get; set; }
-
-
+        public string Redirection { get; set; }
     }
 }

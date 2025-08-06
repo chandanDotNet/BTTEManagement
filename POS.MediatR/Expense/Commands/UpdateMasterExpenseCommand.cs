@@ -25,14 +25,22 @@ namespace BTTEM.MediatR.Commands
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
         public Guid? CompanyAccountId { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerOneStatus { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerTwoStatus { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerThreeStatus { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public bool? IsExpenseChecker { get; set; }
         public int? AccountsApprovalStage { get; set; }
         public string ReceiptName { get; set; }
         public string DocumentData { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountTeam { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public List<UpdateExpenseCommand> ExpenseDetails { get; set; }
 

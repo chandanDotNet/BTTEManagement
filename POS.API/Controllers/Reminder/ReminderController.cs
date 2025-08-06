@@ -16,9 +16,13 @@ namespace POS.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ReminderController'
     public class ReminderController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ReminderController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ReminderController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ReminderController._mediator'
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReminderController"/> class.
@@ -122,12 +126,15 @@ namespace POS.API.Controllers
             return ReturnFormattedResponse(result);
         }
 
-        /// <summary>
+        
+#pragma warning disable CS1572 // XML comment has a param tag for 'id', but there is no parameter by that name
+/// <summary>
         /// Gets the reminder.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("notofication/top10")]
+#pragma warning restore CS1572 // XML comment has a param tag for 'id', but there is no parameter by that name
         [Produces("application/json", "application/xml")]
         public async Task<IActionResult> GetTop10ReminderNotification()
         {
@@ -138,14 +145,19 @@ namespace POS.API.Controllers
             var result = await _mediator.Send(getTop10ReminderNotificationQuery);
             return Ok(result);
         }
-        /// <summary>
+        
+#pragma warning disable CS1572 // XML comment has a param tag for 'id', but there is no parameter by that name
+/// <summary>
         /// Gets the reminder.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("notifications")]
+#pragma warning restore CS1572 // XML comment has a param tag for 'id', but there is no parameter by that name
         [Produces("application/json", "application/xml")]
+#pragma warning disable CS1573 // Parameter 'reminderResource' has no matching param tag in the XML comment for 'ReminderController.GetNotifications(ReminderResource)' (but other parameters do)
         public async Task<IActionResult> GetNotifications([FromQuery] ReminderResource reminderResource)
+#pragma warning restore CS1573 // Parameter 'reminderResource' has no matching param tag in the XML comment for 'ReminderController.GetNotifications(ReminderResource)' (but other parameters do)
         {
             var getAllReminderNotificationQuery = new GetAllReminderNotificationQuery
             {
@@ -165,17 +177,17 @@ namespace POS.API.Controllers
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(result);
         }
-        [HttpGet("notification/markasread")]
-        [Produces("application/json", "application/xml")]
-        public async Task<IActionResult> GetNotificationMarkasRead()
-        {
-            var markAsReadAllNotificationsCommand = new MarkAsReadAllNotificationsCommand
-            {
-            };
+        //[HttpGet("notification/markasread")]
+        //[Produces("application/json", "application/xml")]
+        //public async Task<IActionResult> GetNotificationMarkasRead()
+        //{
+        //    var markAsReadAllNotificationsCommand = new MarkAsReadAllNotificationsCommand
+        //    {
+        //    };
 
-            var result = await _mediator.Send(markAsReadAllNotificationsCommand);
+        //    var result = await _mediator.Send(markAsReadAllNotificationsCommand);
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
     }
 }

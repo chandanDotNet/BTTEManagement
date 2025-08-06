@@ -3,9 +3,13 @@ using BTTEM.API.Helpers.Mapping;
 
 namespace POS.API.Helpers.Mapping
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MapperConfig'
     public static class MapperConfig
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MapperConfig'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MapperConfig.GetMapperConfigs()'
         public static IMapper GetMapperConfigs()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MapperConfig.GetMapperConfigs()'
         {
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -87,6 +91,8 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new AppVersionUpdateProfile());
                 mc.AddProfile(new ApprovalLevelTypeProfile());
                 mc.AddProfile(new ApprovalLevelProfile());
+                mc.AddProfile(new SapProfile());
+                mc.AddProfile(new CostCenterProfile());
             });
             return mappingConfig.CreateMapper();
         }

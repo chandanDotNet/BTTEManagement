@@ -14,10 +14,14 @@ namespace POS.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ReminderSchedulerController'
     public class ReminderSchedulerController : ControllerBase
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ReminderSchedulerController'
     {
         private readonly IMediator _mediator;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ReminderSchedulerController.ReminderSchedulerController(IMediator)'
         public ReminderSchedulerController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ReminderSchedulerController.ReminderSchedulerController(IMediator)'
         {
             _mediator = mediator;
         }

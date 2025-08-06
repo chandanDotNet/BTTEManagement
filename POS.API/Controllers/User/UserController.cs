@@ -213,7 +213,8 @@ namespace POS.API.Controllers
             return ReturnFormattedResponse(result);
         }
 
-        /// <summary>
+        
+/// <summary>
         /// Update Profile
         /// </summary>
         /// <param name="id"></param>
@@ -242,6 +243,17 @@ namespace POS.API.Controllers
                 FormFile = Request.Form.Files,
             };
             var result = await _mediator.Send(updateUserProfilePhotoCommand);
+            return ReturnFormattedResponse(result);
+        }
+
+       
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet("IsMobileNumberExist/{Id}")]
+        public async Task<IActionResult> IsMobileNumberExist(Guid Id)
+        {
+            var userMobileCommand = new UserMobileCommand { Id = Id };
+            var result = await _mediator.Send(userMobileCommand);
             return ReturnFormattedResponse(result);
         }
 
@@ -383,7 +395,8 @@ namespace POS.API.Controllers
                 };
 
                 //var response = ServiceResponse<OtpResponseData>.Return409("Failed to send Otp.");
-                return Ok(data);
+                return BadRequest(data);
+
             }          
         }
 
@@ -841,6 +854,18 @@ namespace POS.API.Controllers
                 var jsonData = new { Download = filepath };
                 return Ok(jsonData);
             }
+        }
+
+       
+        /// <param name="RoleId"></param>
+        /// <param name="ActionKey"></param>
+        /// <returns></returns>
+        [HttpGet("UserPrivillage/{RoleId},{ActionKey}")]
+        public async Task<IActionResult> UserPrivillage(Guid RoleId,string ActionKey)
+        {
+            var userPrivillageCommand = new UserPrivillageCommand { RoleId = RoleId, ActionKey = ActionKey };
+            var result = await _mediator.Send(userPrivillageCommand);
+            return ReturnFormattedResponse(result);
         }
     }
 }

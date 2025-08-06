@@ -8,15 +8,13 @@ namespace BTTEM.Data
 {
     public class ExpenseDetail 
     {
-
         public Guid Id { get; set; }
         public Guid ExpenseId { get; set; }
         public Guid? MasterExpenseId { get; set; }
         public Guid? VendorId { get; set; }
         public string? VendorName { get; set; }
         public Guid? SubVendorId { get; set; }
-        public string? SubVendorName { get; set; }
-        
+        public string? SubVendorName { get; set; }        
         public decimal? BasicValue { get; set; }
         public decimal? TaxAmount { get; set; }
         public string? TaxCode { get; set; }
@@ -29,6 +27,8 @@ namespace BTTEM.Data
         public decimal? SGST { get; set; }
         public decimal? IGST { get; set; }
         public string SSECode { get; set; }
-
+        public string BillCreditType { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public DateTime? PostingDate { get; set; }
     }
 }

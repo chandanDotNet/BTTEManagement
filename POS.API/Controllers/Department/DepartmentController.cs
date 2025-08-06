@@ -13,12 +13,16 @@ namespace BTTEM.API.Controllers.Department
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DepartmentController'
     public class DepartmentController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DepartmentController'
     {
 
         readonly IMediator _mediator;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DepartmentController.DepartmentController(IMediator)'
         public DepartmentController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DepartmentController.DepartmentController(IMediator)'
         {
             _mediator = mediator;
         }

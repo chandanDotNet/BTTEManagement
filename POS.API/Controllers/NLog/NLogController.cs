@@ -14,10 +14,16 @@ namespace POS.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NLogController'
     public class NLogController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NLogController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NLogController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NLogController._mediator'
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NLogController.NLogController(IMediator)'
         public NLogController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NLogController.NLogController(IMediator)'
         {
             _mediator = mediator;
         }

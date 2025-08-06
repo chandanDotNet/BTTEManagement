@@ -63,5 +63,6 @@ namespace BTTEM.Data
         public string TaxAmountFive { get; set; }
         public string? PNRNumber { get; set; }
         public bool? IsRescheduleChargePlus { get; set; }
+        public bool? IsAmountConfirm { get; set; }
     }
 }

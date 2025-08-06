@@ -201,7 +201,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                         if (!string.IsNullOrWhiteSpace(tv.BookingNumber))
                         {
                             entityExist.BookingNumber = tv.BookingNumber;
-                        }
+                        }                       
 
                         if (tv.IsRescheduleChargePlus == true)
                         {

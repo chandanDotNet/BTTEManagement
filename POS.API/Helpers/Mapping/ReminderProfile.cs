@@ -6,9 +6,13 @@ using POS.MediatR.CommandAndQuery;
 
 namespace POS.API.Helpers.Mapping
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ReminderProfile'
     public class ReminderProfile : Profile
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ReminderProfile'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ReminderProfile.ReminderProfile()'
         public ReminderProfile()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ReminderProfile.ReminderProfile()'
         {
             CreateMap<Reminder, ReminderDto>().ReverseMap();
             CreateMap<AddReminderCommand, Reminder>();

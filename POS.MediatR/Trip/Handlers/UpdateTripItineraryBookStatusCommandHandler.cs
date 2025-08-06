@@ -76,7 +76,7 @@ namespace BTTEM.MediatR.Handlers
                 if (request.Amount > 0)
                 {
                     entityExist.Amount = request.Amount;
-                }
+                }                
 
                 //==================  Ticket Upload
 
@@ -184,6 +184,10 @@ namespace BTTEM.MediatR.Handlers
                     entityExist.BookingNumber = request.BookingNumber;
                 }
 
+                if (request.IsAmountConfirm.HasValue)
+                {
+                    entityExist.IsAmountConfirm = request.IsAmountConfirm;
+                }
 
                 //==================  Ticket Upload
 

@@ -410,6 +410,15 @@ namespace POS.Repository
                 { "OrderNo", new PropertyMappingValue(new List<string>() { "OrderNo" } )},
          };
 
+        private Dictionary<string, PropertyMappingValue> _costCenterPropertyMapping =
+        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+         {
+                { "CostCenterBranchName", new PropertyMappingValue(new List<string>() { "CostCenterBranchName" },true ) },
+                { "BusinessArea", new PropertyMappingValue(new List<string>() { "BusinessArea" },true ) },
+                { "BusinessPlace", new PropertyMappingValue(new List<string>() { "BusinessPlace" },true ) },
+                { "ProfitCenter", new PropertyMappingValue(new List<string>() { "ProfitCenter" },true ) }
+         };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
         {
@@ -449,6 +458,7 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<VendorDto, Vendor>(_vendorPropertyMapping));
             propertyMappings.Add(new PropertyMapping<ApprovalLevelTypeDto, ApprovalLevelType>(_approvalLevelTypePropertyMapping));
             propertyMappings.Add(new PropertyMapping<ApprovalLevelDto, ApprovalLevel>(_approvalLevelPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<CostCenterDto, CostCenter>(_costCenterPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

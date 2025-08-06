@@ -17,11 +17,17 @@ namespace BTTEM.API.Controllers.MultiLevelApproval
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MultiLevelApprovalController'
     public class MultiLevelApprovalController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MultiLevelApprovalController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MultiLevelApprovalController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MultiLevelApprovalController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'MultiLevelApprovalController.MultiLevelApprovalController(IMediator)'
         public MultiLevelApprovalController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'MultiLevelApprovalController.MultiLevelApprovalController(IMediator)'
         {
             _mediator = mediator;
         }

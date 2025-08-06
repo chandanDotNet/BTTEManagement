@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.travel.sfdesk",
+    "sha256_cert_fingerprints":
+    ["1A:10:2F:3B:44:F3:34:5B:66:DD:6A:09:EB:49:E5:C8:C0:E8:B0:AB:45:BF:3A:F5:14:40:55:F8:35:45:3E:AE"]
+  }
+}]

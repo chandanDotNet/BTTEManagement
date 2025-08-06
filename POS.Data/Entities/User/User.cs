@@ -78,5 +78,7 @@ namespace POS.Data
         public string? AccountTeamActionFor { get; set; }
         public bool IsDirector { get; set; }
         public int CalenderDays { get; set; }
+        public string DeviceKey { get; set; }
+        public bool IsDeviceTypeAndroid { get; set; }
     }
 }

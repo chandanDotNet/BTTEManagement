@@ -14,7 +14,9 @@ namespace POS.API.Controllers
     [Route("api")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquiryStatusController'
     public class InquiryStatusController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquiryStatusController'
     {
         private readonly IMediator _mediator;
         /// <summary>

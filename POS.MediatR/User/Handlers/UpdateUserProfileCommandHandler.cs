@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using POS.Helper;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using Microsoft.IdentityModel.Tokens;
 
 namespace POS.MediatR.Handlers
 {
@@ -47,10 +48,30 @@ namespace POS.MediatR.Handlers
                 _logger.LogError("User does not exist.");
                 return ServiceResponse<UserDto>.Return409("User does not exist.");
             }
-            appUser.FirstName = request.FirstName;
-            appUser.LastName = request.LastName;
-            appUser.PhoneNumber = request.PhoneNumber;
-            appUser.Address = request.Address;
+            if (!string.IsNullOrEmpty(request.FirstName))
+            {
+                appUser.FirstName = request.FirstName;
+            }
+            if (!string.IsNullOrEmpty(request.LastName))
+            {
+                appUser.LastName = request.LastName;
+            }
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                appUser.PhoneNumber = request.PhoneNumber;
+            }
+            if (!string.IsNullOrEmpty(request.Address))
+            {
+                appUser.Address = request.Address;
+            }
+            if (!string.IsNullOrEmpty(request.DeviceKey))
+            {
+                appUser.DeviceKey = request.DeviceKey;
+            }
+            if (request.IsDeviceTypeAndroid.HasValue)
+            {
+                appUser.IsDeviceTypeAndroid = request.IsDeviceTypeAndroid.Value;
+            }            
             IdentityResult result = await _userManager.UpdateAsync(appUser);
             if (await _uow.SaveAsync() <= 0 && !result.Succeeded)
             {

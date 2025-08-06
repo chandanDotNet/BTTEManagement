@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 
 namespace POS.API.Helpers
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'JwtMiddleware'
     public class JwtMiddleware
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'JwtMiddleware'
     {
         private readonly RequestDelegate _next;
         private JwtSettings _settings = null;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'JwtMiddleware.JwtMiddleware(RequestDelegate, JwtSettings)'
         public JwtMiddleware(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'JwtMiddleware.JwtMiddleware(RequestDelegate, JwtSettings)'
             RequestDelegate next,
              JwtSettings settings)
         {
@@ -21,7 +25,9 @@ namespace POS.API.Helpers
             _settings = settings;
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'JwtMiddleware.Invoke(HttpContext)'
         public async Task Invoke(HttpContext context)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'JwtMiddleware.Invoke(HttpContext)'
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 

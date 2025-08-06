@@ -59,6 +59,16 @@ namespace POS.MediatR.Handlers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
+            if (!string.IsNullOrEmpty(request.DeviceKey))
+            {
+                if (!string.IsNullOrEmpty(user.DeviceKey))
+                {
+                    user.DeviceKey = request.DeviceKey;
+                    user.IsDeviceTypeAndroid = request.IsDeviceTypeAndroid;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+
             if (result.Succeeded)
             {
                 var userInfo = await _userRepository

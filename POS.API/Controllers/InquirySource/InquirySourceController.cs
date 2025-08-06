@@ -14,11 +14,17 @@ namespace POS.API.Controllers.InquirySource
     [Route("api")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquirySourceController'
     public class InquirySourceController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquirySourceController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquirySourceController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquirySourceController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InquirySourceController.InquirySourceController(IMediator)'
         public InquirySourceController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InquirySourceController.InquirySourceController(IMediator)'
         {
             _mediator = mediator;
         }

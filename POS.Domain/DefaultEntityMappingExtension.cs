@@ -136,36 +136,36 @@ namespace POS.Domain
    .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<TravelDocument>()
-  .Property(b => b.ModifiedDate)
-  .HasDefaultValueSql("GETUTCDATE()");
-
-            modelBuilder.Entity<HelpSupport>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
-
-            modelBuilder.Entity<ItineraryTicketBooking>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
-
-            modelBuilder.Entity<LocalConveyanceExpense>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
-
-            modelBuilder.Entity<CarBikeLogBookExpense>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
-
-            modelBuilder.Entity<Vendor>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
+          .Property(b => b.ModifiedDate)
+          .HasDefaultValueSql("GETUTCDATE()");
+        
+                    modelBuilder.Entity<HelpSupport>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
+        
+                    modelBuilder.Entity<ItineraryTicketBooking>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
+        
+                    modelBuilder.Entity<LocalConveyanceExpense>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
+        
+                    modelBuilder.Entity<CarBikeLogBookExpense>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
+        
+                    modelBuilder.Entity<Vendor>()
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<ItineraryTicketBookingQuotation>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<ItineraryHotelBookingQuotation>()
-.Property(b => b.ModifiedDate)
-.HasDefaultValueSql("GETUTCDATE()");
+        .Property(b => b.ModifiedDate)
+        .HasDefaultValueSql("GETUTCDATE()");
 
 
             modelBuilder.Entity<AppVersionUpdate>()
@@ -180,6 +180,14 @@ namespace POS.Domain
             modelBuilder.Entity<ApprovalLevel>()
           .Property(b => b.ModifiedDate)
           .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<Sap>()
+         .Property(b => b.ModifiedDate)
+         .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<CostCenter>()
+            .Property(b => b.ModifiedDate)
+            .HasDefaultValueSql("GETUTCDATE()");
         }
 
         public static void DefalutDeleteValueFilter(this ModelBuilder modelBuilder)
@@ -297,7 +305,7 @@ namespace POS.Domain
          .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<ItineraryTicketBookingQuotation>()
-.HasQueryFilter(p => !p.IsDeleted);
+        .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<MasterExpense>()
                .HasQueryFilter(p => !p.IsDeleted);
@@ -321,45 +329,51 @@ namespace POS.Domain
          .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<State>()
-       .HasQueryFilter(p => !p.IsDeleted);
+         .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<Branch>()
-      .HasQueryFilter(p => !p.IsDeleted);
+        .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<CompanyAccount>()
-     .HasQueryFilter(p => !p.IsDeleted);
+        .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<TravelDocument>()
-    .HasQueryFilter(p => !p.IsDeleted);
+        .HasQueryFilter(p => !p.IsDeleted);
 
             modelBuilder.Entity<HelpSupport>()
-   .HasQueryFilter(p => !p.IsDeleted);
+            .HasQueryFilter(p => !p.IsDeleted);
 
-            modelBuilder.Entity<LocalConveyanceExpense>()
-  .HasQueryFilter(p => !p.IsDeleted);
+                    modelBuilder.Entity<LocalConveyanceExpense>()
+          .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<CarBikeLogBookExpense>()
+         .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<TripHotelBooking>()
+        .HasQueryFilter(p => !p.IsDeleted);
+                    modelBuilder.Entity<TripItinerary>()
+        .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<Vendor>()
+        .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<ItineraryHotelBookingQuotation>()
+        .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<AppVersionUpdate>()
+        .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<ApprovalLevelType>()
+        .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<ApprovalLevel>()
+        .HasQueryFilter(p => !p.IsDeleted);
+        
+                    modelBuilder.Entity<Sap>()
+        .HasQueryFilter(p => !p.IsDeleted);
 
-            modelBuilder.Entity<CarBikeLogBookExpense>()
- .HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<TripHotelBooking>()
-.HasQueryFilter(p => !p.IsDeleted);
-            modelBuilder.Entity<TripItinerary>()
-.HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<Vendor>()
-.HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<ItineraryHotelBookingQuotation>()
-.HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<AppVersionUpdate>()
-.HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<ApprovalLevelType>()
-.HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<ApprovalLevel>()
-.HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<CostCenter>()
+        .HasQueryFilter(p => !p.IsDeleted);
 
         }
     }

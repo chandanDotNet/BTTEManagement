@@ -17,10 +17,16 @@ namespace BTTEM.API.Controllers.Vendor
 {
     [Route("api/[controller]")]
     [ApiController]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VendorController'
     public class VendorController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VendorController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VendorController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VendorController._mediator'
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VendorController.VendorController(IMediator)'
         public VendorController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VendorController.VendorController(IMediator)'
         {
             _mediator = mediator;   
         }
@@ -103,7 +109,9 @@ namespace BTTEM.API.Controllers.Vendor
         }
 
         [HttpGet("GetVendors")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'VendorController.GetVendors(VendorResource)'
         public async Task<IActionResult> GetVendors([FromQuery] VendorResource vendorResource)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'VendorController.GetVendors(VendorResource)'
         {
             var getAllVendorQueryCommand = new GetAllVendorQueryCommand()
             {

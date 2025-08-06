@@ -20,7 +20,9 @@ namespace POS.API.Controllers
     [Authorize]
     public class SupplierController : BaseController
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SupplierController._mediator'
         public readonly IMediator _mediator;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SupplierController._mediator'
         private readonly ILogger<SupplierController> _logger;
 
         /// <summary>
@@ -28,7 +30,9 @@ namespace POS.API.Controllers
         /// </summary>
         /// <param name="mediator">The mediator.</param>
         public SupplierController(IMediator mediator,
+#pragma warning disable CS1573 // Parameter 'logger' has no matching param tag in the XML comment for 'SupplierController.SupplierController(IMediator, ILogger<SupplierController>)' (but other parameters do)
              ILogger<SupplierController> logger)
+#pragma warning restore CS1573 // Parameter 'logger' has no matching param tag in the XML comment for 'SupplierController.SupplierController(IMediator, ILogger<SupplierController>)' (but other parameters do)
         {
             _mediator = mediator;
             _logger = logger;

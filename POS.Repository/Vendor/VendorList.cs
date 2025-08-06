@@ -50,14 +50,14 @@ namespace BTTEM.Repository
                    Id = c.Id,
                    VendorName = c.VendorName,
                    Email = c.Email,
-                   GSTNo= c.GSTNo,
-                   Phone= c.Phone,
-                   ResponsiblePersonName= c.ResponsiblePersonName,
-                   VendorAddress= c.VendorAddress,
-                   VendorCode= c.VendorCode,
+                   GSTNo = c.GSTNo,
+                   Phone = c.Phone,
+                   ResponsiblePersonName = c.ResponsiblePersonName,
+                   VendorAddress = c.VendorAddress,
+                   VendorCode = c.VendorCode,
                    Website = c.Website
 
-               }).ToListAsync();
+               }).OrderBy(x => x.VendorName).ToListAsync();
                 return entities;
             }
             else
@@ -78,7 +78,7 @@ namespace BTTEM.Repository
                    VendorCode = c.VendorCode,
                    Website = c.Website
 
-               }).ToListAsync();
+               }).OrderBy(x => x.VendorName).ToListAsync();
                 return entities;
             }
         }

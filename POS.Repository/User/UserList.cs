@@ -146,6 +146,8 @@ namespace POS.Repository
                     AccountTeamActionFor=c.AccountTeamActionFor,
                     IsDirector = c.IsDirector,
                     CalenderDays = c.CalenderDays,
+                    DeviceKey = c.DeviceKey,
+                    IsDeviceTypeAndroid = c.IsDeviceTypeAndroid
                 })
                 .ToListAsync();
             return entities;

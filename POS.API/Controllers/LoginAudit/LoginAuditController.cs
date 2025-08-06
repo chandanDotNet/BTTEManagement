@@ -12,10 +12,16 @@ namespace POS.API.Controllers.LoginAudit
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginAuditController'
     public class LoginAuditController : ControllerBase
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginAuditController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginAuditController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginAuditController._mediator'
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginAuditController.LoginAuditController(IMediator)'
         public LoginAuditController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginAuditController.LoginAuditController(IMediator)'
         {
             _mediator = mediator;
         }

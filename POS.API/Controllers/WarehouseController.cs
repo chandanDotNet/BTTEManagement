@@ -15,11 +15,17 @@ namespace POS.API.Controllers.Warehouse
     [Route("api")]
     [ApiController]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WarehouseController'
     public class WarehouseController : BaseController
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WarehouseController'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WarehouseController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WarehouseController._mediator'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'WarehouseController.WarehouseController(IMediator)'
         public WarehouseController(IMediator mediator)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'WarehouseController.WarehouseController(IMediator)'
         {
             _mediator = mediator;
         }

@@ -59,6 +59,7 @@ namespace POS.Domain
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Tax> Taxes { get; set; }
+        public DbSet<TaxCode> TaxCodes { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductTax> ProductTaxes { get; set; }
@@ -127,9 +128,16 @@ namespace POS.Domain
         public DbSet<ApprovalLevelType> ApprovalLevelTypes { get; set; }
         public DbSet<ApprovalLevel> ApprovalLevels { get; set; }
         public DbSet<ApprovalLevelUser> ApprovalLevelUsers { get; set; }
+        public DbSet<Sap> Saps { get; set; }
+        public DbSet<CostCenter> CostCenters { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<TaxCode>(b =>
+            {
+                b.HasNoKey();
+            });
 
             builder.Entity<User>(b =>
             {
@@ -703,6 +711,23 @@ namespace POS.Domain
                     .HasForeignKey(ur => ur.ApprovalLevelId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            builder.Entity<Sap>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<CostCenter>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
 
             builder.Entity<User>().ToTable("Users");
             builder.Entity<Role>().ToTable("Roles");

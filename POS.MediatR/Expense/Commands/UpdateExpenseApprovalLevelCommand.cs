@@ -12,7 +12,9 @@ namespace BTTEM.MediatR.Expense.Commands
     {
         public Guid? MasterExpenseId { get; set; }
         public Guid? AccountsCheckerId { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerStatus { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public int? AccountsApprovalStage { get; set; }
 
     }

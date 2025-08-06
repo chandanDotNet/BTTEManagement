@@ -18,7 +18,9 @@ namespace POS.API.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class PageController : BaseController
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'PageController._mediator'
         public IMediator _mediator { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'PageController._mediator'
         /// <summary>
         /// Page
         /// </summary>

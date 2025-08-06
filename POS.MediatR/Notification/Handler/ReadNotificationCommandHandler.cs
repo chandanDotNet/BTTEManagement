@@ -32,18 +32,19 @@ namespace BTTEM.MediatR.Notification.Handler
         }
         public async Task<ServiceResponse<bool>> Handle(ReadNotificationCommand request, CancellationToken cancellationToken)
         {
-            foreach (var item in request.Ids)
+            //foreach (var item in request.Ids)
+            //{
+            var entity = await _noticationRepository.FindAsync(request.Id);
+            if (entity == null)
             {
-                var entity = await _noticationRepository.FindAsync(item);
-                if (entity == null)
-                {
-                    _logger.LogError("Data not found!");
-                    return ServiceResponse<bool>.Return409("Data not found!");
-                }
-                entity.Read = 1;
-                _noticationRepository.Update(entity);
+                _logger.LogError("Data not found!");
+                return ServiceResponse<bool>.Return409("Data not found!");
             }
-            if (await _uow.SaveAsync() <= 1)
+            entity.Read = 1;
+            _noticationRepository.Update(entity);
+            //}
+
+            if (await _uow.SaveAsync() <= 0)
             {
                 return ServiceResponse<bool>.Return500();
             }
