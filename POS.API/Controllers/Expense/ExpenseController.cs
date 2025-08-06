@@ -2522,6 +2522,79 @@ namespace POS.API.Controllers.Expense
 
 
         /// <summary>
+        /// Update Expense All Status For Director.
+        /// </summary>       
+        /// <param name="allUpdateExpenseStatusForDirectorCommand"></param>
+        /// <returns></returns>
+        [HttpPut("AllUpdateExpenseStatusForDirector")]
+        //[ClaimCheck("EXP_UPDATE_EXPENSE")]
+        public async Task<IActionResult> AllUpdateExpenseStatusForDirector(AllUpdateExpenseStatusForDirectorCommand allUpdateExpenseStatusForDirectorCommand)
+        {
+            DashboardReportData dashboardReportData = new DashboardReportData();
+            int Response = 0;
+            foreach (var mitem in allUpdateExpenseStatusForDirectorCommand.AllMasterExpense)
+            {
+
+                foreach (var item in mitem.ExpenseDetailsList)
+                {
+                    UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
+                    updateExpenseStatusCommand = item;
+                    var result = await _mediator.Send(updateExpenseStatusCommand);
+                    if (result.Success)
+                    {
+                        Response = 1;
+                    }
+                }
+
+                //=======================
+                UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand= new UpdateMasterExpenseStatusCommand();
+                updateMasterExpenseStatusCommand.Id = id;
+                var result1 = await _mediator.Send(updateMasterExpenseStatusCommand);
+            }
+
+
+            //if (Response == 1)
+            //{
+            //    var responseData = await _expenseRepository.FindAsync(allupdateExpenseStatusCommand.updateExpenseStatus.FirstOrDefault().Id);
+            //    var masterExpense = await _masterExpenseRepository.FindAsync(responseData.MasterExpenseId);
+            //    var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+            //    var addExpenseTrackingCommand = new AddExpenseTrackingCommand()
+            //    {
+            //        ExpenseId = Guid.Empty,
+            //        ExpenseTypeName = masterExpense.ExpenseType,
+            //        MasterExpenseId = masterExpense.Id,
+            //        ActionType = "Activity",
+            //        Remarks = "All expenses have been successfully updated - " + masterExpense.ExpenseNo,//responseData.Result.Name + " Expense Status Updated",
+            //        Status = "Updated",
+            //        ActionBy = Guid.Parse(_userInfoToken.Id),
+            //        ActionDate = DateTime.Now,
+            //    };
+            //    var response = await _mediator.Send(addExpenseTrackingCommand);
+            //}
+
+            //SyncMasterExpenseAmountCommand syncMasterExpenseAmountCommand = new SyncMasterExpenseAmountCommand();
+            //syncMasterExpenseAmountCommand.Id = id;
+            //var responseSync = await _mediator.Send(syncMasterExpenseAmountCommand);
+            //return ReturnFormattedResponse(200);
+
+            if (Response > 0)
+            {
+                dashboardReportData.status = true;
+                dashboardReportData.StatusCode = 200;
+                //dashboardReportData.Data = result;
+            }
+            else
+            {
+                dashboardReportData.status = false;
+                dashboardReportData.StatusCode = 500;
+                //dashboardReportData.Data = result;
+            }
+            return Ok(dashboardReportData);
+
+        }
+
+
+        /// <summary>
         /// Update Master Expense Status.
         /// </summary>
         /// <param name="id"></param>
