@@ -10,6 +10,7 @@ namespace BTTEM.MediatR.Trip.Commands
 {
     public class UpdateAllTripItineraryBookStatusCommand : IRequest<ServiceResponse<bool>>
     {
+        public Guid? TripId { get; set; }
         public List<AllTripItineraryBookStatus> AllTripItineraryBookStatusList { get; set; }
     }
     public class AllTripItineraryBookStatus

@@ -2709,9 +2709,10 @@ namespace POS.API.Controllers.Expense
                     }
                 }
 
-                //=======================
-                UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand= new UpdateMasterExpenseStatusCommand();
-                updateMasterExpenseStatusCommand.Id = id;
+                ////=======================
+                UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand = new UpdateMasterExpenseStatusCommand();
+                updateMasterExpenseStatusCommand.Id = mitem.MasterExpenseId;
+                updateMasterExpenseStatusCommand.ApprovalStage = "APPROVED";
                 var result1 = await _mediator.Send(updateMasterExpenseStatusCommand);
             }
 

@@ -11,6 +11,7 @@ namespace BTTEM.MediatR.Expense.Commands
     {
 
         public Guid MasterExpenseId { get; set; }
+        public bool IsDeviation { get; set; }
         public List<UpdateExpenseStatusCommand> ExpenseDetailsList { get; set; }
     }
 }
