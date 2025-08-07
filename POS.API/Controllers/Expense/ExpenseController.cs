@@ -1457,7 +1457,7 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(addMasterExpenseCommand.ExpenseType));
                             templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(addMasterExpenseCommand.NoOfBill));
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(addMasterExpenseCommand.IsGroupExpense == true ? "Yes" : "No"));
-                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(addMasterExpenseCommand.NoOfPerson == null ? "0" : addMasterExpenseCommand.NoOfPerson));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(addMasterExpenseCommand.NoOfPerson == null ? "1" : addMasterExpenseCommand.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(addMasterExpenseCommand.Status));
 
                             templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + result.Data.Id);
@@ -2296,7 +2296,7 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(masterResponseData.ExpenseType));
                             templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(masterResponseData.NoOfBill));
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(masterResponseData.IsGroupExpense == true ? "Yes" : "No"));
-                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(masterResponseData.NoOfPerson == null ? "0" : masterResponseData.NoOfPerson));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(masterResponseData.NoOfPerson == null ? "1" : masterResponseData.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(updateMasterExpenseCommand.Status));
 
                             templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + masterResponseData.Id);
@@ -2759,7 +2759,7 @@ namespace POS.API.Controllers.Expense
                         templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(responseData.ExpenseType));
                         templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(responseData.NoOfBill));
                         templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
-                        templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+                        templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "1" : responseData.NoOfPerson));
                         templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));
 
                         templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + responseData.Id);
@@ -3585,7 +3585,7 @@ namespace POS.API.Controllers.Expense
                             templateBody = templateBody.Replace("{EXPENSE_TYPE}", Convert.ToString(responseData.ExpenseType));
                             templateBody = templateBody.Replace("{NOOFBILL}", Convert.ToString(responseData.NoOfBill));
                             templateBody = templateBody.Replace("{GROUPEXPENSE}", Convert.ToString(responseData.IsGroupExpense == true ? "Yes" : "No"));
-                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "1" : responseData.NoOfPerson));
                             templateBody = templateBody.Replace("{EXPENSE_STATUS}", Convert.ToString(responseData.ApprovalStage));
 
                             templateBody = templateBody.Replace("{WEB_URL}", expenseRedirectionURL + responseData.Id);
