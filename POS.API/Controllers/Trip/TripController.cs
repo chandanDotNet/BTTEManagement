@@ -767,6 +767,96 @@ namespace BTTEM.API.Controllers.Trip
             return ReturnFormattedResponse(result);
         }
 
+
+        ///Version 2.0
+        /// <summary>
+        /// All approval Trip Itinerary Book Status For Director
+        /// </summary>
+        /// <param name="updateAllTripItineraryBookStatusForDirectorCommand"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateAllTripItineraryBookStatusForDirector")]
+        [Produces("application/json", "application/xml", Type = typeof(TripItineraryDto))]
+        public async Task<IActionResult> UpdateAllTripItineraryForDirector(UpdateAllTripItineraryBookStatusForDirectorCommand updateAllTripItineraryBookStatusForDirectorCommand)
+        {
+            DashboardReportData dashboardReportData = new DashboardReportData();
+            int Response = 0;
+            foreach (var item in updateAllTripItineraryBookStatusForDirectorCommand.AllTripItineraryBookStatusList)
+            {
+                var result = await _mediator.Send(item);
+                if (result.Success)
+                {
+                    Response = 1;
+                    var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+                    //var TrippID = item.TripId;
+
+
+                    //foreach (var item in updateAllTripItineraryBookStatusCommand.AllTripItineraryBookStatusList)
+                    //{
+                    //    if (item.IsItinerary == true)
+                    //    {
+                    //        var responseData = await _tripItineraryRepository.FindAsync(item.Id);
+                    //        var tripData = await _tripRepository.FindAsync(item.TripId.Value);
+
+                    //        var addTripTrackingCommand = new AddTripTrackingCommand()
+                    //        {
+                    //            TripId = tripData.Id,
+                    //            TripItineraryId = responseData.Id,
+                    //            TripTypeName = tripData.TripType,
+                    //            ActionType = "Activity",
+                    //            Remarks =
+                    //            !string.IsNullOrEmpty(item.BookStatus) ?
+                    //            "Trip ticket booked by travel desk - Trip No. " + tripData.TripNo
+                    //            : "Trip ticket booking status updated to " + item.ApprovalStatus,
+                    //            Status = !string.IsNullOrEmpty(item.BookStatus) ?
+                    //            "Travel Desk" : "Updated",
+                    //            ActionBy = Guid.Parse(_userInfoToken.Id),
+                    //            ActionDate = DateTime.Now
+                    //        };
+                    //        var response = await _mediator.Send(addTripTrackingCommand);
+                    //    }
+                    //    else
+                    //    {
+                    //        var responseData = await _tripHotelBookingRepository.FindAsync(item.Id);
+                    //        var tripData = await _tripRepository.FindAsync(item.TripId.Value);
+
+                    //        var addTripTrackingCommand = new AddTripTrackingCommand()
+                    //        {
+                    //            TripId = tripData.Id,
+                    //            TripItineraryId = responseData.Id,
+                    //            TripTypeName = tripData.TripType,
+                    //            ActionType = "Activity",
+                    //            Remarks =
+                    //            !string.IsNullOrEmpty(item.BookStatus) ?
+                    //            "Hotel booked by travel desk - Trip No. " + tripData.TripNo :
+                    //            "Hotel booking status updated to " + item.ApprovalStatus,
+                    //            Status =
+                    //            !string.IsNullOrEmpty(item.BookStatus) ?
+                    //            "Travel Desk" : "Updated",
+                    //            ActionBy = Guid.Parse(_userInfoToken.Id),
+                    //            ActionDate = DateTime.Now
+                    //        };
+                    //        var response = await _mediator.Send(addTripTrackingCommand);
+                    //    }
+                    //}
+                }
+
+            }
+            if (Response > 0)
+            {
+                dashboardReportData.status = true;
+                dashboardReportData.StatusCode = 200;
+                //dashboardReportData.Data = result;
+            }
+            else
+            {
+                dashboardReportData.status = false;
+                dashboardReportData.StatusCode = 500;
+                //dashboardReportData.Data = result;
+            }
+            return Ok(dashboardReportData);
+        }
+
+
         /// <summary>
         /// Get All Trips Itinerary
         /// </summary>
