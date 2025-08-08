@@ -1031,6 +1031,7 @@ namespace BTTEM.API.Controllers.Trip
             {
                 dashboardReportData.status = true;
                 dashboardReportData.StatusCode = 200;
+                dashboardReportData.message = "Approved Successfully";
                 //dashboardReportData.Data = result;
             }
             else
