@@ -553,6 +553,189 @@ namespace BTTEM.API.Controllers.Trip
 
                 var tripData = await _tripRepository.FindAsync(responseHotelData == null ? responseItinareryData.TripId : responseHotelData.TripId);
 
+
+                bool TravelDesk = false;
+                var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == tripData.Id && x.BookTypeBy == "Travel Desk").ToListAsync();
+                var hotel = await _tripHotelBookingRepository.All.Where(x => x.TripId == tripData.Id && x.BookTypeBy == "Travel Desk").ToListAsync();
+
+                var companyId = Guid.Empty;
+
+                if (itinerary.Count > 0)
+                {
+                    var requestUser = _userRepository.FindAsync(itinerary.FirstOrDefault().CreatedBy);
+                    companyId = requestUser.Result.CompanyAccountId;
+                    TravelDesk = true;
+                }
+                if (hotel.Count > 0)
+                {
+                    var requestUser = _userRepository.FindAsync(hotel.FirstOrDefault().CreatedBy);
+                    companyId = requestUser.Result.CompanyAccountId;
+                }
+
+                if (companyId != Guid.Empty)
+                {
+                    var userRoles = _userRoleRepository
+                       .AllIncluding(c => c.User)
+                       .Where(c => c.RoleId == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")
+                       && c.User.CompanyAccountId == companyId)
+                       .Select(cs => new UserRoleDto
+                       {
+                           UserId = cs.UserId,
+                           RoleId = cs.RoleId,
+                           UserName = cs.User.UserName,
+                           FirstName = cs.User.FirstName,
+                           LastName = cs.User.LastName
+                       }).ToList();
+                }
+
+
+                //**Email Start**
+                string email = this._configuration.GetSection("AppSettings")["Email"];
+
+                string tripRedirectionURL = this._configuration.GetSection("TripRedirection")["TripRedirectionURL"];
+
+                if (email == "Yes")
+                {
+                    if (tripData.Status == "APPLIED" && tripData.Approval != "APPROVED")
+                    {
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "Trip.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+
+                        var reportingHead = await _userRepository.FindAsync(tripData.CreatedByUser.ReportingTo.Value);
+
+                        var itinerarys = await _tripItineraryRepository.All.Where(x => x.TripId == tripData.Id)
+                            .OrderByDescending(x => x.TripBy).OrderBy(x => x.DepartureDate).ToListAsync();
+
+                        var hotels = await _tripHotelBookingRepository.All.Where(x => x.TripId == tripData.Id).ToListAsync();
+
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(tripData.CreatedByUser.FirstName, " ", tripData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripData.TripNo));
+                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(tripData.Status));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerarys.FirstOrDefault().TripBy));
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
+                            templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(tripData.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(tripData.SourceCityName));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(tripData.DestinationCityName));
+                            templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
+                            templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(tripData.IsGroupTrip == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(tripData.NoOfPerson == null ? "1" : tripData.NoOfPerson));
+
+                            var ca = await _companyAccountRepository.FindAsync(tripData.CompanyAccountId.Value);
+                            templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+
+                            templateBody = templateBody.Replace("{WEB_URL}", tripRedirectionURL + tripData.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", tripRedirectionURL + tripData.Id + "/" + tripData.CreatedBy);
+
+                            string itineraryHtml = ItineraryHtml(itinerarys, tripData.TripType);
+
+                            if (hotels.Count > 0)
+                            {
+                                string itineraryHotelHtml = ItineraryHotelHtml(hotels, "Hotel");
+                                itineraryHtml = itineraryHtml + itineraryHotelHtml;
+                            }
+
+                            templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Journey Rescheduled - " + tripData.TripNo,
+                                ToAddress = string.IsNullOrEmpty(tripData.CreatedByUser.AlternateEmail) ?
+                                tripData.CreatedByUser.UserName :
+                                tripData.CreatedByUser.UserName + "," + tripData.CreatedByUser.AlternateEmail,
+                                CCAddress = TravelDesk == false ?
+                                reportingHead.UserName :
+                                reportingHead.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
+
+                    }
+
+
+                    if (tripData.Approval == "APPROVED")
+                    {
+                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "Trip.html");
+                        var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
+                        var reportingHead = _userRepository.FindAsync(tripData.CreatedByUser.ReportingTo.Value).Result;
+
+                        var itinerarys = await _tripItineraryRepository.All.Where(x => x.TripId == tripData.Id)
+                            .OrderByDescending(x => x.TripBy).OrderBy(x => x.DepartureDate).ToListAsync();
+
+                        var hotels = await _tripHotelBookingRepository.All.Where(x => x.TripId == tripData.Id).ToListAsync();
+
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            string templateBody = sr.ReadToEnd();
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(tripData.CreatedByUser.FirstName, " ", tripData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
+                            templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripData.TripNo));
+                            templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString("Approved"));
+                            templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerarys.FirstOrDefault().TripBy));
+                            templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
+                            templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(tripData.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(tripData.SourceCityName));
+                            templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(tripData.DestinationCityName));
+                            templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
+                            templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(tripData.IsGroupTrip == true ? "Yes" : "No"));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(tripData.NoOfPerson == null ? "1" : tripData.NoOfPerson));
+
+                            var ca = await _companyAccountRepository.FindAsync(tripData.CompanyAccountId.Value);
+                            templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
+
+                            templateBody = templateBody.Replace("{WEB_URL}", tripRedirectionURL + tripData.Id);
+                            templateBody = templateBody.Replace("{APP_URL}", tripRedirectionURL + tripData.Id + "/" + tripData.CreatedBy);
+
+                            string itineraryHtml = ItineraryHtml(itinerarys, tripData.TripType);
+
+                            if (hotels.Count > 0)
+                            {
+                                string itineraryHotelHtml = ItineraryHotelHtml(hotels, "Hotel");
+                                itineraryHtml = itineraryHtml + itineraryHotelHtml;
+                            }
+
+                            templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
+
+                            var ccUser = string.IsNullOrEmpty(tripData.CreatedByUser.AlternateEmail) ?
+                                tripData.CreatedByUser.UserName :
+                                tripData.CreatedByUser.UserName + "," + tripData.CreatedByUser.AlternateEmail;
+
+                            EmailHelper.SendEmail(new SendEmailSpecification
+                            {
+                                Body = templateBody,
+                                FromAddress = defaultSmtp.UserName,
+                                Host = defaultSmtp.Host,
+                                IsEnableSSL = defaultSmtp.IsEnableSSL,
+                                Password = defaultSmtp.Password,
+                                Port = defaultSmtp.Port,
+                                Subject = "Journey Rescheduled - " + tripData.TripNo,
+                                ToAddress = reportingHead.UserName,
+                                CCAddress =
+                                TravelDesk == false ?
+                                ccUser :
+                                ccUser + ",travels@shyamsteel.com,bitan@shyamsteel.com",
+                                UserName = defaultSmtp.UserName
+                            });
+                        }
+
+                    }
+                }
+
+                //**Email End**
+
+
+
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
                     TripId = tripData.Id,
@@ -1306,7 +1489,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
                             templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(responseData.IsGroupTrip == true ? "Yes" : "No"));
-                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "1" : responseData.NoOfPerson));
 
                             var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
                             templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
@@ -1332,7 +1515,7 @@ namespace BTTEM.API.Controllers.Trip
                                 IsEnableSSL = defaultSmtp.IsEnableSSL,
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
-                                Subject = "Journey Requested",
+                                Subject = "Journey Requested - " + responseData.TripNo,
                                 ToAddress = string.IsNullOrEmpty(responseData.CreatedByUser.AlternateEmail) ?
                                 responseData.CreatedByUser.UserName :
                                 responseData.CreatedByUser.UserName + "," + responseData.CreatedByUser.AlternateEmail,
@@ -1372,7 +1555,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
                             templateBody = templateBody.Replace("{GROUP_TRIP}", Convert.ToString(responseData.IsGroupTrip == true ? "Yes" : "No"));
-                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "0" : responseData.NoOfPerson));
+                            templateBody = templateBody.Replace("{NO_OF_PERSON}", Convert.ToString(responseData.NoOfPerson == null ? "1" : responseData.NoOfPerson));
 
                             var ca = await _companyAccountRepository.FindAsync(responseData.CompanyAccountId.Value);
                             templateBody = templateBody.Replace("{BILLING_COMPANY}", ca.AccountName);
@@ -1402,7 +1585,7 @@ namespace BTTEM.API.Controllers.Trip
                                 IsEnableSSL = defaultSmtp.IsEnableSSL,
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
-                                Subject = "Journey Requested",
+                                Subject = "Journey Requested - " + responseData.TripNo,
                                 ToAddress = reportingHead.UserName,
                                 CCAddress =
                                 TravelDesk == false ?
@@ -2421,7 +2604,7 @@ namespace BTTEM.API.Controllers.Trip
                 sb.Append("<tr>");
                 sb.Append("<td>");
                 sb.Append("<div class='Journey startJourny'>");
-                sb.Append("<p>Start Journey</p>");
+                sb.Append("<p>Check-in</p>");
                 sb.Append("<h5>" + item.CityName + "</h5>");
                 sb.Append("<h6><span>" + item.CheckIn + "</span></h6>");
                 sb.Append("</div>");
@@ -2440,7 +2623,7 @@ namespace BTTEM.API.Controllers.Trip
                 sb.Append("</td>");
                 sb.Append("<td>");
                 sb.Append("<div class='Journey endtJourny'>");
-                sb.Append("<p>End Journey</p>");
+                sb.Append("<p>Check-out</p>");
                 sb.Append("<h5>" + item.NearbyLocation + "</h5>");
                 sb.Append("<h6><span>" + item.CheckOut + "</span></h6>");
                 sb.Append("</div>");
