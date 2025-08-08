@@ -618,7 +618,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerarys.FirstOrDefault().TripBy));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
-                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(tripData.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", tripData.TripStarts.ToString("yyyy-MM-dd") + " " + itinerarys.FirstOrDefault().PickupTime);
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(tripData.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(tripData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
@@ -684,7 +684,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerarys.FirstOrDefault().TripBy));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(tripData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(tripData.TripType));
-                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(tripData.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", tripData.TripStarts.ToString("yyyy-MM-dd") + " " + itinerarys.FirstOrDefault().PickupTime);
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(tripData.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(tripData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(tripData.PurposeFor));
@@ -1361,10 +1361,14 @@ namespace BTTEM.API.Controllers.Trip
         {
             bool TravelDesk = false;
             var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
-            if (userDetails.IsDirector)
+
+            if (updateTripStatusCommand.Status != "ROLLBACK" || updateTripStatusCommand.Approval != "REJECTED" || updateTripStatusCommand.Status != "CANCELLED")
             {
-                updateTripStatusCommand.Approval = "APPROVED";
-                updateTripStatusCommand.Status = "APPLIED";
+                if (userDetails.IsDirector)
+                {
+                    updateTripStatusCommand.Approval = "APPROVED";
+                    updateTripStatusCommand.Status = "APPLIED";
+                }
             }
             var result = await _mediator.Send(updateTripStatusCommand);
 
@@ -1485,7 +1489,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerary.FirstOrDefault().TripBy));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
-                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", responseData.TripStarts.ToString("yyyy-MM-dd") + " " + itinerary.FirstOrDefault().PickupTime);
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
@@ -1551,7 +1555,7 @@ namespace BTTEM.API.Controllers.Trip
                             templateBody = templateBody.Replace("{MODE_OF_TRIP}", Convert.ToString(itinerary.FirstOrDefault().TripBy));
                             templateBody = templateBody.Replace("{DEPARTMENT}", Convert.ToString(responseData.DepartmentName));
                             templateBody = templateBody.Replace("{TRIP_TYPE}", Convert.ToString(responseData.TripType));
-                            templateBody = templateBody.Replace("{JOURNEY_DATE}", Convert.ToString(responseData.TripStarts.ToString("dd MMMM yyyy")));
+                            templateBody = templateBody.Replace("{JOURNEY_DATE}", responseData.TripStarts.ToString("yyyy-MM-dd") + " " + itinerary.FirstOrDefault().PickupTime);
                             templateBody = templateBody.Replace("{SOURCE_CITY}", Convert.ToString(responseData.SourceCityName));
                             templateBody = templateBody.Replace("{DESTINATION}", Convert.ToString(responseData.DestinationCityName));
                             templateBody = templateBody.Replace("{JOURNEY_PURPOSE}", Convert.ToString(responseData.PurposeFor));
@@ -2530,7 +2534,7 @@ namespace BTTEM.API.Controllers.Trip
                 sb.Append("<div class='Journey startJourny'>");
                 sb.Append("<p>Start Journey</p>");
                 sb.Append("<h5>" + item.DepartureCityName + "</h5>");
-                sb.Append("<h6><span>" + item.DepartureDate + "</span></h6>");
+                sb.Append("<h6><span>" + item.DepartureDate.ToString("yyyy-MM-dd") + " " + item.PickupTime + "</span></h6>");
                 sb.Append("</div>");
                 sb.Append("</td>");
                 sb.Append("<td>");
@@ -2585,7 +2589,7 @@ namespace BTTEM.API.Controllers.Trip
                 sb.Append("<div class='Journey endtJourny'>");
                 sb.Append("<p>End Journey</p>");
                 sb.Append("<h5>" + item.ArrivalCityName + "</h5>");
-                sb.Append("<h6><span>" + item.DepartureDate + "</span></h6>");
+                sb.Append("<h6><span>" + item.DepartureDate.ToString("yyyy-MM-dd") + " " + item.PickupTime + "</span></h6>");
                 sb.Append("</div>");
                 sb.Append("</td>");
                 sb.Append("</tr>");
@@ -2607,7 +2611,7 @@ namespace BTTEM.API.Controllers.Trip
                 sb.Append("<div class='Journey startJourny'>");
                 sb.Append("<p>Check-in</p>");
                 sb.Append("<h5>" + item.CityName + "</h5>");
-                sb.Append("<h6><span>" + item.CheckIn + "</span></h6>");
+                sb.Append("<h6><span>" + item.CheckIn.ToString("yyyy-MM-dd") + " " + item.CheckInTime + "</span></h6>");
                 sb.Append("</div>");
                 sb.Append("</td>");
                 sb.Append("<td>");
@@ -2626,7 +2630,7 @@ namespace BTTEM.API.Controllers.Trip
                 sb.Append("<div class='Journey endtJourny'>");
                 sb.Append("<p>Check-out</p>");
                 sb.Append("<h5>" + item.NearbyLocation + "</h5>");
-                sb.Append("<h6><span>" + item.CheckOut + "</span></h6>");
+                sb.Append("<h6><span>" + item.CheckOut.ToString("yyyy-MM-dd") + " " + item.CheckOutTime + "</span></h6>");
                 sb.Append("</div>");
                 sb.Append("</td>");
                 sb.Append("</tr>");
