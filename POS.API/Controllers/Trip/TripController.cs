@@ -788,7 +788,10 @@ namespace BTTEM.API.Controllers.Trip
                     Response = 1;
                     var userResult = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
                     //var TrippID = item.TripId;
-
+                    UpdateTripStatusCommand updateTripStatusCommand = new UpdateTripStatusCommand();
+                    updateTripStatusCommand.Approval = item.ApprovalStatus;
+                    updateTripStatusCommand.Id= item.TripId.Value;
+                    var resultTrip = await _mediator.Send(updateTripStatusCommand);
 
                     //foreach (var item in updateAllTripItineraryBookStatusCommand.AllTripItineraryBookStatusList)
                     //{

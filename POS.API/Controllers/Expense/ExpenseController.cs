@@ -3987,7 +3987,7 @@ namespace POS.API.Controllers.Expense
             }
             var getUserGradeAndAccountCommand = new GetUserGradeAndAccountCommand
             {
-                UserId = masterExpensesDetails.CreatedBy //result.Data.CreatedByUser.Id,
+                UserId = masterExpensesDetails.CreatedBy //result.Data.CreatedByUser.Id, 
             };
             var resultUser = await _mediator.Send(getUserGradeAndAccountCommand);
             PoliciesDetailResource policiesDetailResourceQuery = new PoliciesDetailResource
