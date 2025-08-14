@@ -37,62 +37,36 @@ namespace POS.Data
         public string Status { get; set; }
         public string AccountStatus { get; set; }
         public string AccountStatusRemarks { get; set; }
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReUploadRemarks { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? RejectReason { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public decimal ReimbursementAmount { get; set; } = 0;
 
         public Guid? ApprovedByFirstLevel { get; set; }
         public decimal? ReimbursementAmountFirstLevel { get; set; } = 0;
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountStatusFirstLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountStatusRemarksFirstLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementStatusFirstLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementRemarksFirstLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 
         public Guid? ApprovedBySecondLevel { get; set; }
         public decimal? ReimbursementAmountSecondLevel { get; set; } = 0;
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountStatusSecondLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountStatusRemarksSecondLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementStatusSecondLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementRemarksSecondLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 
         public Guid? ApprovedByThirdLevel { get; set; }
         public decimal? ReimbursementAmountThirdLevel { get; set; } = 0;
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountStatusThirdLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountStatusRemarksThirdLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementStatusThirdLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementRemarksThirdLevel { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 
         public int? ExpenseApprovalStage { get; set; }= 0;
 
         public List<ExpenseDocument> ExpenseDocument { get; set; }
         public List<ExpenseDetail> ExpenseDetail { get; set; }
+        public decimal DeviationAmount { get; set; }
+        public string Allowance { get; set; }
     }
 }
