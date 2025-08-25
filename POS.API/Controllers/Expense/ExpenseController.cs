@@ -1020,7 +1020,7 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                             updateExpenseStatusCommand.DeviationAmount = expense.Amount;
                                         }
-                                       
+
                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                         updateExpenseStatusCommand.Allowance = "Not Specified";
                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
@@ -1062,7 +1062,7 @@ namespace POS.API.Controllers.Expense
 
                                             }
                                             if (expense.Amount <= PoliciesLodgingFooding)
-                                            {                                                
+                                            {
                                                 updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 updateExpenseStatusCommand.DeviationAmount = 0;
@@ -1077,7 +1077,7 @@ namespace POS.API.Controllers.Expense
                                                     updateExpenseStatusCommand.DeviationAmount = expense.Amount - PoliciesLodgingFooding;
                                                 }
                                             }
-                                           
+
                                             updateExpenseStatusCommand.Allowance = Convert.ToString(PoliciesLodgingFooding);
 
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
@@ -1134,7 +1134,7 @@ namespace POS.API.Controllers.Expense
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             }
                                             if (expense.Amount <= PoliciesLodgingFooding)
-                                            {                                                
+                                            {
                                                 updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
 
@@ -1384,8 +1384,9 @@ namespace POS.API.Controllers.Expense
                                             }
                                             else
                                             {
+                                                updateExpenseStatusCommand.DeviationAmount = 0;
                                                 updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                
+
                                             }
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
@@ -1418,6 +1419,7 @@ namespace POS.API.Controllers.Expense
                             {
                                 if (resultPoliciesLodgingFooding.IsBudget == true)
                                 {
+                                    bool check = false;
                                     decimal PoliciesFooding = 0;
                                     int localNoOfDays = 1;
                                     var ExpenseDetailsList = addMasterExpenseCommand.ExpenseDetails.Where(a => a.Amount > 0 && a.ExpenseCategoryId == new Guid("BB0BF3AA-1FD9-4F1C-9FDE-8498073C58A9")).GroupBy(a => a.ExpenseDate).ToList();
@@ -1438,7 +1440,14 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.DeviationAmount = expenseAmount - PoliciesFooding;
+                                                if (check == false)
+                                                {
+                                                    if (expense.Amount >  resultPoliciesLodgingFooding.BudgetAmount )
+                                                    {
+                                                        updateExpenseStatusCommand.DeviationAmount = expenseAmount - PoliciesFooding;
+                                                        check = true;
+                                                    }
+                                                }
                                                 updateExpenseStatusCommand.Allowance = Convert.ToString(PoliciesFooding);
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
@@ -1449,6 +1458,7 @@ namespace POS.API.Controllers.Expense
                                     {
                                         if (expenseList.Count > 0)
                                         {
+                                            check = false;
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
@@ -1461,7 +1471,15 @@ namespace POS.API.Controllers.Expense
                                                 else
                                                 {
                                                     updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                    updateExpenseStatusCommand.DeviationAmount = expenseAmount - PoliciesFooding;
+                                                    
+                                                    if (check == false)
+                                                    {
+                                                        if (expense.Amount > resultPoliciesLodgingFooding.BudgetAmount)
+                                                        {
+                                                            updateExpenseStatusCommand.DeviationAmount = expenseAmount - PoliciesFooding;
+                                                            check = true;
+                                                        }
+                                                    }
                                                     updateExpenseStatusCommand.Allowance = Convert.ToString(PoliciesFooding);
                                                 }
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
