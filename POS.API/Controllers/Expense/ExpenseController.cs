@@ -4922,6 +4922,24 @@ namespace POS.API.Controllers.Expense
                 return resultNotification;
             }
         }
+
+
+        /// <summary>
+        /// Get All Expenses Group Category Wise
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("GetAllExpenseCategoryWise/{id}")]
+        //[ClaimCheck("EXP_VIEW_EXPENSES")]
+        public async Task<IActionResult> GetAllExpensesDetailsListCategoryWise(Guid id)
+        {
+            var ReportQuery = new GetAllExpenseCategoryWiseQuery { Id = id }; //AllExpenseCategoryWise
+            var result = await _mediator.Send(ReportQuery);            
+
+            return Ok(result);
+
+        }
     }
 }
 

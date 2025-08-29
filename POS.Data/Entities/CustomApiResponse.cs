@@ -397,4 +397,48 @@ namespace BTTEM.Data.Entities
         public string CustomKey { get; set; }
         public string Id { get; set; }
     }
+
+    public class AllExpenseData
+    {
+       
+        public IList<AllExpenseDataList> AllExpenseDataList { get; set; } = new List<AllExpenseDataList>();
+       
+    }
+
+    public class AllExpenseDataList
+    {
+        public Guid MasterExpenseId { get; set; }
+        public Guid UserId { get; set; }
+        public string UserName { get; set; }       
+        public string ExpenseNo { get; set; }
+        public Guid? TripId { get; set; }
+        public string TripName { get; set; }
+        public string ExpenseType { get; set; }
+        public string Status { get; set; }
+        public int NoOfBill { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal DeviationAmount { get; set; }
+        public decimal? PayableAmount { get; set; }
+        public decimal ReimbursementAmount { get; set; }       
+        public string ApprovalStatus { get; set; }
+        public Guid? ApprovalBy { get; set; }
+        public string ApprovalByName { get; set; }
+        public DateTime? ApprovalDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool IsGroupExpense { get; set; }
+        public string NoOfPerson { get; set; }
+        public string NoOfPersonName { get; set; }
+        public List<AllExpenseCategoryWiseData> AllExpenseCategoryWise { get; set; } = new List<AllExpenseCategoryWiseData>();
+
+    }
+
+    public class AllExpenseCategoryWiseData
+    {
+        public Guid ExpenseCategoryId { get; set; }
+        public string ExpenseCategoryName { get; set; }
+        public decimal AllowedAmount { get; set; }
+        public decimal ExpenseAmount { get; set; }
+        public decimal DeviationAmount { get; set; }       
+        public List<ExpenseDto> ExpenseDtos { get; set; } = new List<ExpenseDto>();
+    }
 }
