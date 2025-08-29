@@ -109,7 +109,7 @@
         table.amountTable {
             width: 477px;
             box-shadow: 0px 4px 15px -1px #F4ECF8;
-            margin-top: -77px;
+            margin-top: -50px;
             background-image: url(https://bttem.shyamfuture.in/images/1.png);
             background-repeat: no-repeat;
             background-size: cover;
@@ -181,7 +181,7 @@
 
         table.amountTable tr td {
             padding: 19px 16px 20px 17px;
-            font-weight: 400;
+            font-weight: 700;
             font-size: 13px;
             line-height: 17px;
             vertical-align: middle;
@@ -447,13 +447,15 @@
             font-weight: 400;
             font-size: 12px;
             line-height: 15px;
-            vertical-align: middle;
+            vertical-align: top;
             color: #3B3B3B;
         }
 
             .travelExpense p img {
                 width: 17px;
                 margin-right: 7px;
+                display: inline-block;
+                vertical-align: top;
             }
 
         table.tooltravelsTable td:first-child {
@@ -477,14 +479,24 @@
         }
 
         a.clickme span {
-            margin: 0 10px;
+            margin: 0 0px 0 0;
+            display: inline-block;
+            vertical-align: middle;
         }
-
         .travelExpense p span {
             width: 80%;
-            display: inline-table;
+            display: inline-block;
         }
-
+        .clickme.downloadTicket {
+            box-shadow: unset;
+            vertical-align: middle;
+            padding: 0;
+        }
+        .clickme.downloadTicket img {
+            width: 29px;
+            display: inline-block;
+            vertical-align: middle;
+        }
         /* ============================ */
     </style>
 
@@ -535,12 +547,12 @@
                         <td class="expanseDetails">{TRIP_NO}</td>
                     </tr>                   
                     <tr>
-                        <td>Download Ticket</td>
+                        <td>Ticket</td>
                         <td>
-                            <a href="{TICKET}" class="clickme">
-                                <img src="https://bttem.shyamfuture.in/images/ticket.png" alt="">
+                            <a href="{TICKET}" class="clickme downloadTicket ">
+                                <img src="../images/ticket-img.svg" alt="">
                                 <span>{TRIP_NO} </span>
-                                <img src="https://bttem.shyamfuture.in/images/arrw.png" alt="">
+                               
                             </a>
                         </td>
                     </tr>

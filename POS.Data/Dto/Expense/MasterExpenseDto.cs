@@ -77,6 +77,8 @@ namespace BTTEM.Data
         public List<GroupTripDto>? GroupTrips { get; set; }
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public CompanyAccountDto CompanyAccount { get; set; }
-        public CompanyAccountDto BillingCompanyAccount { get; set; }       
+        public CompanyAccountDto BillingCompanyAccount { get; set; }
+        public decimal TotalDeviation { get; set; } = 0;
+        public string Remarks { get; set; }
     }
 }

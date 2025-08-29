@@ -67,5 +67,7 @@ namespace POS.Data.Dto
         public decimal ConveyanceWithinCity { get; set; }
         public decimal ConveyanceCityOuterArea { get; set; }
         public decimal Deviation { get; set; }
+        public decimal DeviationAmount { get; set; }
+        public string Allowance { get; set; }
     }
 }

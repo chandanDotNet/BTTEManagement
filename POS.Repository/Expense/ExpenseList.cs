@@ -117,6 +117,7 @@ namespace POS.Repository
                         ReimbursementAmountThirdLevel=cs.ReimbursementAmountThirdLevel.Value,
                         ReimbursementRemarksThirdLevel = cs.ReimbursementRemarksThirdLevel,
                         ReimbursementStatusThirdLevel= cs.ReimbursementStatusThirdLevel,
+                        DeviationAmount = cs.DeviationAmount
                     })
                     .ToListAsync();
                 return entities;
@@ -168,6 +169,7 @@ namespace POS.Repository
                  ReimbursementAmountThirdLevel = cs.ReimbursementAmountThirdLevel.Value,
                  ReimbursementRemarksThirdLevel = cs.ReimbursementRemarksThirdLevel,
                  ReimbursementStatusThirdLevel = cs.ReimbursementStatusThirdLevel,
+                 DeviationAmount = cs.DeviationAmount
 
              })
              .ToListAsync();

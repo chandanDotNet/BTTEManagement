@@ -75,7 +75,7 @@ namespace BTTEM.Repository.Expense
             }
         }
 
-        public async Task<List<MasterExpenseDto>> GetDtos(IQueryable<MasterExpense> source, int skip, int pageSize,string filter)
+        public async Task<List<MasterExpenseDto>> GetDtos(IQueryable<MasterExpense> source, int skip, int pageSize, string filter)
         {
             if (pageSize == 0)
             {
@@ -109,6 +109,7 @@ namespace BTTEM.Repository.Expense
                         RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                         CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                         Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
+                        //TotalDeviation = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList().Sum(x => x.DeviationAmount),
                         Trip = cs.Trip,
                         JourneyNumber = cs.JourneyNumber,
                         ReimbursementRemarks = cs.ReimbursementRemarks,
@@ -133,7 +134,7 @@ namespace BTTEM.Repository.Expense
                         BillingCompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccounts),
                         ReceiptPath = cs.ReceiptPath,
                         ReceiptName = cs.ReceiptName,
-                        AccountTeam= cs.AccountTeam
+                        AccountTeam = cs.AccountTeam
                         //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                         //{
                         //    Id = c.Id,
@@ -157,78 +158,81 @@ namespace BTTEM.Repository.Expense
                             data.User = await _userRepository.FindAsync(data.UserId);
                         }
                     }
+                    item.TotalDeviation = item.Expenses.ToList().Sum(x => x.DeviationAmount);
+                    item.Remarks = item.Expenses.ToList().FirstOrDefault().Description;
                 }
 
                 return entities;
             }
             else
             {
-              var entities = await source
-             .Skip(skip)
-             .Take(pageSize)
-             .AsNoTracking()
-             .Select(cs => new MasterExpenseDto
-             {
-                 Id = cs.Id,
-                 ExpenseNo = cs.ExpenseNo,
-                 TripId = cs.TripId,
-                 Name = cs.Name,
-                 TotalAmount = cs.TotalAmount,
-                 PayableAmount = cs.PayableAmount,
-                 ReimbursementAmount = cs.ReimbursementAmount,
-                 FirstLevelReimbursementAmount = cs.FirstLevelReimbursementAmount,
-                 SecondLevelReimbursementAmount = cs.SecondLevelReimbursementAmount,
-                 ThirdLevelReimbursementAmount = cs.ThirdLevelReimbursementAmount,
-                 AdvanceMoney = cs.AdvanceMoney,
-                 ApprovalStage = cs.ApprovalStage,
-                 ApprovalStageBy = cs.ApprovalStageBy,
-                 ApprovalStageDate = cs.ApprovalStageDate,
-                 NoOfBill = cs.NoOfBill,
-                 //ExpenseByUser= cs.ExpenseByUser,                 
-                 //NoOfBill = cs.Expenses.Count,
-                 Status = cs.Status,
-                 ExpenseType = cs.ExpenseType,
-                 CreatedDate = cs.CreatedDate,
-                 ReimbursementStatus = cs.ReimbursementStatus,
-                 IsExpenseCompleted = cs.IsExpenseCompleted,
-                 RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
-                 CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
-                 Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
-                 Trip = cs.Trip,
-                 JourneyNumber = cs.JourneyNumber,
-                 ReimbursementRemarks = cs.ReimbursementRemarks,
-                 IsGroupExpense = cs.IsGroupExpense,
-                 NoOfPerson = cs.NoOfPerson,
-                 GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
-                 IsGroupTrip = cs.Trip.IsGroupTrip.Value,
-                 GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
-                 //CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
-                 IsExpenseChecker = cs.IsExpenseChecker,
-                 AccountsApprovalStage = cs.AccountsApprovalStage,
-                 AccountsCheckerOneId = cs.AccountsCheckerOneId,
-                 LevelOneUser = string.Concat(cs.LevelOneUser.FirstName,' ',cs.LevelOneUser.LastName),
-                 AccountsCheckerOneStatus = cs.AccountsCheckerOneStatus,
-                 AccountsCheckerTwoId = cs.AccountsCheckerTwoId,
-                 LevelTwoUser = string.Concat(cs.LevelTwoUser.FirstName, ' ', cs.LevelTwoUser.LastName),
-                 AccountsCheckerTwoStatus = cs.AccountsCheckerTwoStatus,
-                 AccountsCheckerThreeId = cs.AccountsCheckerThreeId,
-                 LevelThreeUser = string.Concat(cs.LevelThreeUser.FirstName, ' ', cs.LevelThreeUser.LastName),
-                 AccountsCheckerThreeStatus = cs.AccountsCheckerThreeStatus,
-                 CompanyAccountId = cs.CompanyAccountId,
-                 BillingCompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccounts),
-                 ReceiptPath = cs.ReceiptPath,
-                 ReceiptName = cs.ReceiptName,
-                 AccountTeam = cs.AccountTeam
-                 //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
-                 //{
-                 //    Id = c.Id,
-                 //    UserId = c.UserId,
-                 //    TripId = c.TripId,                     
-                 //    //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
+                var entities = await source
+               .Skip(skip)
+               .Take(pageSize)
+               .AsNoTracking()
+               .Select(cs => new MasterExpenseDto
+               {
+                   Id = cs.Id,
+                   ExpenseNo = cs.ExpenseNo,
+                   TripId = cs.TripId,
+                   Name = cs.Name,
+                   TotalAmount = cs.TotalAmount,
+                   PayableAmount = cs.PayableAmount,
+                   ReimbursementAmount = cs.ReimbursementAmount,
+                   FirstLevelReimbursementAmount = cs.FirstLevelReimbursementAmount,
+                   SecondLevelReimbursementAmount = cs.SecondLevelReimbursementAmount,
+                   ThirdLevelReimbursementAmount = cs.ThirdLevelReimbursementAmount,
+                   AdvanceMoney = cs.AdvanceMoney,
+                   ApprovalStage = cs.ApprovalStage,
+                   ApprovalStageBy = cs.ApprovalStageBy,
+                   ApprovalStageDate = cs.ApprovalStageDate,
+                   NoOfBill = cs.NoOfBill,
+                   //ExpenseByUser= cs.ExpenseByUser,                 
+                   //NoOfBill = cs.Expenses.Count,
+                   Status = cs.Status,
+                   ExpenseType = cs.ExpenseType,
+                   CreatedDate = cs.CreatedDate,
+                   ReimbursementStatus = cs.ReimbursementStatus,
+                   IsExpenseCompleted = cs.IsExpenseCompleted,
+                   RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
+                   CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+                   Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
+                   //TotalDeviation = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList().Sum(x => x.DeviationAmount),
+                   Trip = cs.Trip,
+                   JourneyNumber = cs.JourneyNumber,
+                   ReimbursementRemarks = cs.ReimbursementRemarks,
+                   IsGroupExpense = cs.IsGroupExpense,
+                   NoOfPerson = cs.NoOfPerson,
+                   GroupExpenses = _mapper.Map<List<GroupExpenseDto>>(cs.GroupExpenses),
+                   IsGroupTrip = cs.Trip.IsGroupTrip.Value,
+                   GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.Trip.GroupTrips),
+                   //CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
+                   IsExpenseChecker = cs.IsExpenseChecker,
+                   AccountsApprovalStage = cs.AccountsApprovalStage,
+                   AccountsCheckerOneId = cs.AccountsCheckerOneId,
+                   LevelOneUser = string.Concat(cs.LevelOneUser.FirstName, ' ', cs.LevelOneUser.LastName),
+                   AccountsCheckerOneStatus = cs.AccountsCheckerOneStatus,
+                   AccountsCheckerTwoId = cs.AccountsCheckerTwoId,
+                   LevelTwoUser = string.Concat(cs.LevelTwoUser.FirstName, ' ', cs.LevelTwoUser.LastName),
+                   AccountsCheckerTwoStatus = cs.AccountsCheckerTwoStatus,
+                   AccountsCheckerThreeId = cs.AccountsCheckerThreeId,
+                   LevelThreeUser = string.Concat(cs.LevelThreeUser.FirstName, ' ', cs.LevelThreeUser.LastName),
+                   AccountsCheckerThreeStatus = cs.AccountsCheckerThreeStatus,
+                   CompanyAccountId = cs.CompanyAccountId,
+                   BillingCompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CompanyAccounts),
+                   ReceiptPath = cs.ReceiptPath,
+                   ReceiptName = cs.ReceiptName,
+                   AccountTeam = cs.AccountTeam
+                   //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
+                   //{
+                   //    Id = c.Id,
+                   //    UserId = c.UserId,
+                   //    TripId = c.TripId,                     
+                   //    //User = _mapper.Map<User>(_userRepository.FindAsync(c.UserId))
 
-                 //}).ToList(),
-             })//.OrderByDescending(x => x.CreatedDate)
-             .ToListAsync();
+                   //}).ToList(),
+               })//.OrderByDescending(x => x.CreatedDate)
+               .ToListAsync();
 
                 foreach (var item in entities)
                 {
@@ -239,6 +243,8 @@ namespace BTTEM.Repository.Expense
                             data.User = await _userRepository.FindAsync(data.UserId);
                         }
                     }
+                    item.TotalDeviation = item.Expenses.ToList().Sum(x => x.DeviationAmount);
+                    item.Remarks = item.Expenses.ToList().FirstOrDefault().Description;
                 }
 
                 if (!string.IsNullOrEmpty(filter))
@@ -252,7 +258,7 @@ namespace BTTEM.Repository.Expense
                     {
                         item.Expenses = flattened.ToList();
                     });
-                }               
+                }
 
                 return entities;
             }

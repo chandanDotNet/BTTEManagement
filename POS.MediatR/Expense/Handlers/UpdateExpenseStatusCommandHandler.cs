@@ -116,7 +116,15 @@ namespace BTTEM.MediatR.Expense.Handlers
             if (!string.IsNullOrEmpty(request.Status))
             {
                 entityExist.Status = request.Status;
-            }            
+            }
+            if (request.DeviationAmount >0 )
+            {
+                entityExist.DeviationAmount = request.DeviationAmount;
+            }
+            if (string.IsNullOrEmpty(request.Allowance))
+            {
+                entityExist.Allowance = request.Allowance;
+            }
 
             _expenseRepository.Update(entityExist);
 
