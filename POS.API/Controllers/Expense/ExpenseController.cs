@@ -1450,6 +1450,7 @@ namespace POS.API.Controllers.Expense
                                                 }
                                                 updateExpenseStatusCommand.Allowance = Convert.ToString(PoliciesFooding);
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                updateExpenseStatusCommand.DeviationAmount = 0;
                                             }
                                         }
 
@@ -1484,6 +1485,7 @@ namespace POS.API.Controllers.Expense
                                                 }
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
+                                                updateExpenseStatusCommand.DeviationAmount = 0;
                                             }
                                         }
                                     }

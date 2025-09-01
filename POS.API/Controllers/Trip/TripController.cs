@@ -601,7 +601,8 @@ namespace BTTEM.API.Controllers.Trip
                         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "Trip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
 
-                        var reportingHead = await _userRepository.FindAsync(tripData.CreatedByUser.ReportingTo.Value);
+                        var tripCreatedBy = await _userRepository.FindAsync(tripData.CreatedBy);
+                        var reportingHead = await _userRepository.FindAsync(tripCreatedBy.ReportingTo.Value);
 
                         var itinerarys = await _tripItineraryRepository.All.Where(x => x.TripId == tripData.Id)
                             .OrderByDescending(x => x.TripBy).OrderBy(x => x.DepartureDate).ToListAsync();
@@ -611,7 +612,7 @@ namespace BTTEM.API.Controllers.Trip
                         using (StreamReader sr = new StreamReader(filePath))
                         {
                             string templateBody = sr.ReadToEnd();
-                            templateBody = templateBody.Replace("{NAME}", string.Concat(tripData.CreatedByUser.FirstName, " ", tripData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(tripCreatedBy.FirstName, " ", tripCreatedBy.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString(tripData.Status));
@@ -650,9 +651,9 @@ namespace BTTEM.API.Controllers.Trip
                                 Password = defaultSmtp.Password,
                                 Port = defaultSmtp.Port,
                                 Subject = "Journey Rescheduled - " + tripData.TripNo,
-                                ToAddress = string.IsNullOrEmpty(tripData.CreatedByUser.AlternateEmail) ?
-                                tripData.CreatedByUser.UserName :
-                                tripData.CreatedByUser.UserName + "," + tripData.CreatedByUser.AlternateEmail,
+                                ToAddress = string.IsNullOrEmpty(tripCreatedBy.AlternateEmail) ?
+                                tripCreatedBy.UserName :
+                                tripCreatedBy.UserName + "," + tripCreatedBy.AlternateEmail,
                                 CCAddress = TravelDesk == false ?
                                 reportingHead.UserName :
                                 reportingHead.UserName + ",travels@shyamsteel.com,bitan@shyamsteel.com",
@@ -667,7 +668,9 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Template", "Trip.html");
                         var defaultSmtp = await _emailSMTPSettingRepository.FindBy(c => c.IsDefault).FirstOrDefaultAsync();
-                        var reportingHead = _userRepository.FindAsync(tripData.CreatedByUser.ReportingTo.Value).Result;
+
+                        var tripCreatedBy = await _userRepository.FindAsync(tripData.CreatedBy);
+                        var reportingHead = _userRepository.FindAsync(tripCreatedBy.ReportingTo.Value).Result;
 
                         var itinerarys = await _tripItineraryRepository.All.Where(x => x.TripId == tripData.Id)
                             .OrderByDescending(x => x.TripBy).OrderBy(x => x.DepartureDate).ToListAsync();
@@ -677,7 +680,7 @@ namespace BTTEM.API.Controllers.Trip
                         using (StreamReader sr = new StreamReader(filePath))
                         {
                             string templateBody = sr.ReadToEnd();
-                            templateBody = templateBody.Replace("{NAME}", string.Concat(tripData.CreatedByUser.FirstName, " ", tripData.CreatedByUser.LastName));
+                            templateBody = templateBody.Replace("{NAME}", string.Concat(tripCreatedBy.FirstName, " ", tripCreatedBy.LastName));
                             templateBody = templateBody.Replace("{DATETIME}", DateTime.Now.ToString("dddd, dd MMMM yyyy"));
                             templateBody = templateBody.Replace("{TRIP_NO}", Convert.ToString(tripData.TripNo));
                             templateBody = templateBody.Replace("{TRIP_STATUS}", Convert.ToString("Approved"));
@@ -707,9 +710,9 @@ namespace BTTEM.API.Controllers.Trip
 
                             templateBody = templateBody.Replace("{ITINERARY_HTML}", itineraryHtml);
 
-                            var ccUser = string.IsNullOrEmpty(tripData.CreatedByUser.AlternateEmail) ?
-                                tripData.CreatedByUser.UserName :
-                                tripData.CreatedByUser.UserName + "," + tripData.CreatedByUser.AlternateEmail;
+                            var ccUser = string.IsNullOrEmpty(tripCreatedBy.AlternateEmail) ?
+                                tripCreatedBy.UserName :
+                                tripCreatedBy.UserName + "," + tripCreatedBy.AlternateEmail;
 
                             EmailHelper.SendEmail(new SendEmailSpecification
                             {
@@ -1412,7 +1415,7 @@ namespace BTTEM.API.Controllers.Trip
                 //};
                 //var notificationResult = await _mediator.Send(addNotificationCommand);
 
-                if (updateTripStatusCommand.Approval == "APPROVED")
+                if (updateTripStatusCommand.Approval == "APPROVED" || updateTripStatusCommand.Status == "APPLIED")
                 {
                     var itinerary = await _tripItineraryRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id && x.BookTypeBy == "Travel Desk").ToListAsync();
                     var hotel = await _tripHotelBookingRepository.All.Where(x => x.TripId == updateTripStatusCommand.Id && x.BookTypeBy == "Travel Desk").ToListAsync();
@@ -1429,6 +1432,7 @@ namespace BTTEM.API.Controllers.Trip
                     {
                         var requestUser = _userRepository.FindAsync(hotel.FirstOrDefault().CreatedBy);
                         companyId = requestUser.Result.CompanyAccountId;
+                        TravelDesk = true;
                     }
 
                     if (companyId != Guid.Empty)
