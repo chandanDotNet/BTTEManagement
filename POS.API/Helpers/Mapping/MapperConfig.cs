@@ -93,6 +93,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new ApprovalLevelProfile());
                 mc.AddProfile(new SapProfile());
                 mc.AddProfile(new CostCenterProfile());
+                mc.AddProfile(new BusinessAreaProfile());
             });
             return mappingConfig.CreateMapper();
         }

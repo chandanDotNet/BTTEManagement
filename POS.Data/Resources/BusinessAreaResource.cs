@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Data.Resources
 {
-    public class CostCenterResource : ResourceParameters
+    public class BusinessAreaResource : ResourceParameters
     {
-        public CostCenterResource() : base("CostCenterName")
+        public BusinessAreaResource() : base("BusinessAreaName")
         {
 
         }
         public Guid? Id { get; set; }
         public string SearchQuery { get; set; }
+        public Guid? CompanyAccountId { get; set; }
     }
 }

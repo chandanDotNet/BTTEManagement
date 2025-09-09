@@ -413,11 +413,17 @@ namespace POS.Repository
         private Dictionary<string, PropertyMappingValue> _costCenterPropertyMapping =
         new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
          {
+                { "CostCenterName", new PropertyMappingValue(new List<string>() { "CostCenterName" },true ) }
+         };
+
+        private Dictionary<string, PropertyMappingValue> _businessAreaPropertyMapping =
+       new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+        {
                 { "CostCenterBranchName", new PropertyMappingValue(new List<string>() { "CostCenterBranchName" },true ) },
-                { "BusinessArea", new PropertyMappingValue(new List<string>() { "BusinessArea" },true ) },
+                { "BusinessAreaName", new PropertyMappingValue(new List<string>() { "BusinessAreaName" },true ) },
                 { "BusinessPlace", new PropertyMappingValue(new List<string>() { "BusinessPlace" },true ) },
                 { "ProfitCenter", new PropertyMappingValue(new List<string>() { "ProfitCenter" },true ) }
-         };
+        };
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
         public PropertyMappingService()
@@ -459,6 +465,8 @@ namespace POS.Repository
             propertyMappings.Add(new PropertyMapping<ApprovalLevelTypeDto, ApprovalLevelType>(_approvalLevelTypePropertyMapping));
             propertyMappings.Add(new PropertyMapping<ApprovalLevelDto, ApprovalLevel>(_approvalLevelPropertyMapping));
             propertyMappings.Add(new PropertyMapping<CostCenterDto, CostCenter>(_costCenterPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<BusinessAreaDto, BusinessArea>(_businessAreaPropertyMapping));
+
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

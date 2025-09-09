@@ -132,6 +132,7 @@ namespace POS.API.Helpers
             services.AddScoped<ITaxCodeRepository, TaxCodeRepository>();
             services.AddScoped<ISapRepository, SapRepository>();
             services.AddScoped<ICostCenterRepository, CostCenterRepository>();
+            services.AddScoped<IBusinessAreaRepository, BusinessAreaRepository>();
         }
     }
 }

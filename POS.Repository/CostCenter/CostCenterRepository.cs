@@ -44,10 +44,7 @@ namespace BTTEM.Repository
                 var ecapestring = Regex.Unescape(encodingName);
                 encodingName = encodingName.Replace(@"\", @"\\").Replace("%", @"\%").Replace("_", @"\_").Replace("[", @"\[").Replace(" ", "%");
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => EF.Functions.Like(a.CostCenterBranchName, $"{encodingName}%")
-                    || EF.Functions.Like(a.BusinessArea, $"{encodingName}%")
-                    || EF.Functions.Like(a.BusinessPlace, $"{encodingName}%")
-                    || EF.Functions.Like(a.ProfitCenter, $"{encodingName}%"));
+                    .Where(a => EF.Functions.Like(a.CostCenterName, $"{encodingName}%"));
             }
 
             var CostCenterList = new CostCenterList();

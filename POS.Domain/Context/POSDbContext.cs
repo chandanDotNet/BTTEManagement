@@ -130,6 +130,7 @@ namespace POS.Domain
         public DbSet<ApprovalLevelUser> ApprovalLevelUsers { get; set; }
         public DbSet<Sap> Saps { get; set; }
         public DbSet<CostCenter> CostCenters { get; set; }
+        public DbSet<BusinessArea> BusinessAreas { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -727,6 +728,15 @@ namespace POS.Domain
                     .HasForeignKey(ur => ur.CreatedBy)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            builder.Entity<BusinessArea>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
 
 
             builder.Entity<User>().ToTable("Users");

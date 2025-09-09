@@ -30,7 +30,7 @@ namespace BTTEM.MediatR.Tax.Handlers
 
         public async Task<List<TaxCodeDto>> Handle(GetAllTaxCodeCommand request, CancellationToken cancellationToken)
         {
-            var entities = await _taxCodeRepository.All.ProjectTo<TaxCodeDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var entities = await _taxCodeRepository.All.ProjectTo<TaxCodeDto>(_mapper.ConfigurationProvider).ToListAsync(); 
             return entities;
         }
     }
