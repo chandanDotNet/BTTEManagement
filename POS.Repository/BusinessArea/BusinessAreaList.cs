@@ -1,5 +1,5 @@
-﻿using BTTEM.Data.Dto;
-using BTTEM.Data;
+﻿using BTTEM.Data;
+using BTTEM.Data.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BTTEM.Repository
 {
-    public class CostCenterList : List<CostCenterDto>
+    public class BusinessAreaList : List<BusinessAreaDto>
     {
-        public CostCenterList()
+        public BusinessAreaList()
         {
 
         }
@@ -21,7 +21,7 @@ namespace BTTEM.Repository
         public int PageSize { get; private set; }
         public int TotalCount { get; private set; }
 
-        public CostCenterList(List<CostCenterDto> items, int count, int skip, int pageSize)
+        public BusinessAreaList(List<BusinessAreaDto> items, int count, int skip, int pageSize)
         {
             TotalCount = count;
             PageSize = pageSize;
@@ -30,29 +30,34 @@ namespace BTTEM.Repository
             AddRange(items);
         }
 
-        public async Task<CostCenterList> Create(IQueryable<CostCenter> source, int skip, int pageSize)
+        public async Task<BusinessAreaList> Create(IQueryable<BusinessArea> source, int skip, int pageSize)
         {
             var count = await GetCount(source);
             var dtoList = await GetDtos(source, skip, pageSize);
-            var dtoPageList = new CostCenterList(dtoList, count, skip, pageSize);
+            var dtoPageList = new BusinessAreaList(dtoList, count, skip, pageSize);
             return dtoPageList;
         }
 
-        public async Task<int> GetCount(IQueryable<CostCenter> source)
+        public async Task<int> GetCount(IQueryable<BusinessArea> source)
         {
             return await source.AsNoTracking().CountAsync();
         }
-        public async Task<List<CostCenterDto>> GetDtos(IQueryable<CostCenter> source, int skip, int pageSize)
+        public async Task<List<BusinessAreaDto>> GetDtos(IQueryable<BusinessArea> source, int skip, int pageSize)
         {
             if (pageSize == 0)
             {
                 var entities = await source
                .Skip(skip)
                .AsNoTracking()
-               .Select(c => new CostCenterDto
+               .Select(c => new BusinessAreaDto
                {
                    Id = c.Id,
-                   CostCenterName = c.CostCenterName
+                   CostCenterBranchName = c.CostCenterBranchName,
+                   BusinessAreaStateName = c.BusinessAreaStateName,
+                   BusinessAreaName = c.BusinessAreaName,
+                   BusinessPlace = c.BusinessPlace,
+                   ProfitCenter = c.ProfitCenter,
+                   CompanyAccountId = c.CompanyAccountId
                }).ToListAsync();
                 return entities;
             }
@@ -62,10 +67,15 @@ namespace BTTEM.Repository
                .Skip(skip)
                //.Take(pageSize)
                .AsNoTracking()
-               .Select(c => new CostCenterDto
+               .Select(c => new BusinessAreaDto
                {
                    Id = c.Id,
-                   CostCenterName = c.CostCenterName,
+                   CostCenterBranchName = c.CostCenterBranchName,
+                   BusinessAreaStateName = c.BusinessAreaStateName,
+                   BusinessAreaName = c.BusinessAreaName,
+                   BusinessPlace = c.BusinessPlace,
+                   ProfitCenter = c.ProfitCenter,
+                   CompanyAccountId = c.CompanyAccountId
                }).ToListAsync();
                 return entities;
             }

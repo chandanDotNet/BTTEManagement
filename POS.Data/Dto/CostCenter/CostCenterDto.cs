@@ -9,9 +9,6 @@ namespace BTTEM.Data.Dto
     public class CostCenterDto
     {
         public Guid? Id { get; set; }
-        public string CostCenterBranchName { get; set; }
-        public string BusinessArea { get; set; }
-        public string BusinessPlace { get; set; }
-        public string ProfitCenter { get; set; }
+        public string CostCenterName { get; set; }
     }
 }

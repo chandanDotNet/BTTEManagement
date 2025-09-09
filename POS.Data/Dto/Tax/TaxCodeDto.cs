@@ -9,5 +9,6 @@ namespace POS.Data.Dto
     public class TaxCodeDto
     {
         public string Name { get; set; }
+
     }
 }

@@ -1841,9 +1841,7 @@ namespace POS.API.Controllers.Expense
                         var resultPoliciesSetting = await _mediator.Send(getAllPoliciesSettingCommand);
                         //===============================
 
-#pragma warning disable CS0219 // The variable 'IsDeviation' is assigned but its value is never used
                         bool IsDeviation = false;
-#pragma warning restore CS0219 // The variable 'IsDeviation' is assigned but its value is never used
                         UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
                         foreach (var item in expenseCategory)
                         {
