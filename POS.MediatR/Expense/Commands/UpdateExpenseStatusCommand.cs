@@ -17,6 +17,7 @@ namespace BTTEM.MediatR.CommandAndQuery
         public decimal PayableAmount { get; set; }
         public decimal DeviationAmount { get; set; }
         public string Allowance { get; set; }
+        public Guid? BusinessAreaId { get; set; }
 
     }
 }
