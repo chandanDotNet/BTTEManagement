@@ -23,15 +23,11 @@ namespace BTTEM.API.Controllers.Notification
 {
     [Route("api/[controller]")]
     [ApiController]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NotificationController'
     public class NotificationController : BaseController
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NotificationController'
     {
         private IMediator _mediator;
         private readonly UserInfoToken _userInfoToken;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NotificationController.NotificationController(IMediator, UserInfoToken)'
         public NotificationController(IMediator mediator, UserInfoToken userInfoToken)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NotificationController.NotificationController(IMediator, UserInfoToken)'
         {
             _mediator = mediator;
             _userInfoToken = userInfoToken;
