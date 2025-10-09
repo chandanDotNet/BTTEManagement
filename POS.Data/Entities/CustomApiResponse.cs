@@ -441,4 +441,84 @@ namespace BTTEM.Data.Entities
         public decimal DeviationAmount { get; set; }       
         public List<ExpenseDto> ExpenseDtos { get; set; } = new List<ExpenseDto>();
     }
+
+    //SAP Model
+    public class Item
+    {
+        public string Supplier { get; set; }
+        public string Amount { get; set; }
+        public string BaseAmount { get; set; }
+        public string TaxCode { get; set; }
+        public string SubVendor { get; set; }
+        public string TaxGSTSubVendor { get; set; }
+        public string MainVendorIRNApplicable { get; set; }
+        public string SubVendorIRNApplicable { get; set; }
+        public string SACCode1 { get; set; }
+        public string SACCode2 { get; set; }
+        public string RefDocNo { get; set; }
+        public string DocPostingDate { get; set; }
+        public string ExpenseType { get; set; }
+        public string CostCenter { get; set; }
+        public string BusinessPlace { get; set; }
+        public string BusinessArea { get; set; }
+    }
+    public class Record
+    {
+        public string AuthorizationKey { get; set; }
+        public string CompanyCode { get; set; }
+        public string UserName { get; set; }
+        public WithTax WithTax { get; set; }
+        public WithoutTax WithoutTax { get; set; }
+    }
+    public class Root
+    {
+        public Record Record { get; set; }
+    }
+    public class WithoutTax
+    {
+        public string Supplier { get; set; }
+        public string HODate { get; set; }
+        public string DocumentDate { get; set; }
+        public string PostingDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string Persons { get; set; }
+        public string TravelType { get; set; }
+        public string CostCenter { get; set; }
+        public string BusinessPlace { get; set; }
+        public string Assignment { get; set; }
+        public string Reference { get; set; }
+        public string TradingPartner { get; set; }
+        public string Remarks { get; set; }
+        public string BusinessArea { get; set; }
+        public string Fare { get; set; }
+        public string Fooding { get; set; }
+        public string Lodging { get; set; }
+        public string Conveyance { get; set; }
+        public string OtherExpense { get; set; }
+        public string Network { get; set; }
+        public string ActivityNo { get; set; }
+    }
+
+    public class WithTax
+    {        
+        public string JourneyNo { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string DocumentDate { get; set; }
+        public string PostingDate { get; set; }
+        public string HODate { get; set; }
+        public string Persons { get; set; }
+        public string TravelType { get; set; }
+        public string Reference { get; set; }
+        public string TradingPartner { get; set; }
+        public string Assignment { get; set; }
+        public string Remarks { get; set; }
+        public string SACCode { get; set; }
+        public string Network { get; set; }
+        public string ActivityNo { get; set; }
+        public string BikeMaintenance { get; set; }
+        public string CreditNote { get; set; }
+        public List<Item> Item { get; set; } = new List<Item>();
+    }
 }

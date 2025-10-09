@@ -30,5 +30,6 @@ namespace BTTEM.Data
         public string BillCreditType { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public DateTime? PostingDate { get; set; }
+        public string CostCenter { get; set; }
     }
 }

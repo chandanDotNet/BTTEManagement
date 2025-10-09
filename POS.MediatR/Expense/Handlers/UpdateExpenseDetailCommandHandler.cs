@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BTTEM.Data;
 using BTTEM.Data.Dto;
+using BTTEM.Data.Entities;
 using BTTEM.MediatR.Commands;
 using BTTEM.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using POS.Common.UnitOfWork;
 using POS.Domain;
@@ -59,15 +61,28 @@ namespace BTTEM.MediatR.Handlers
             //    entity.Id = Guid.NewGuid();
             //    _expenseDetailRepository.Add(entity);
             //}
-            var entity = _mapper.Map<ExpenseDetail>(request);
-            entity.Id = Guid.NewGuid();
-            _expenseDetailRepository.Add(entity);
 
-            if(request.IsTaxable==true)
+            if (request.CostCenterCheck == false)
             {
-                var expense = await _expenseRepository.FindAsync(request.ExpenseId.Value);
-                expense.BillType = "GST";
-                _expenseRepository.Update(expense);
+                var entity = _mapper.Map<ExpenseDetail>(request);
+                entity.Id = Guid.NewGuid();
+                _expenseDetailRepository.Add(entity);
+
+                if (request.IsTaxable == true)
+                {
+                    var expense = await _expenseRepository.FindAsync(request.ExpenseId.Value);
+                    expense.BillType = "GST";
+                    _expenseRepository.Update(expense);
+                }
+            }
+            else
+            {
+                var expenseDetails =  await _expenseDetailRepository.All.Where(x => x.MasterExpenseId == request.MasterExpenseId).ToListAsync();
+                expenseDetails.ForEach(item =>
+                {
+                    item.CostCenter = request.CostCenter;
+                });            
+                _expenseDetailRepository.UpdateRange(expenseDetails);
             }
 
             if (await _uow.SaveAsync() <= 0)
@@ -78,6 +93,6 @@ namespace BTTEM.MediatR.Handlers
             }
             return ServiceResponse<bool>.ReturnResultWith200(true);
         }
-            
+
     }
 }

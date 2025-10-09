@@ -39,26 +39,18 @@ namespace BTTEM.Data
         public int NoOfPendingReimbursementAction { get; set; } = 0;
         public Trip Trip { get; set; }
         public string JourneyNumber { get; set; }
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? ReimbursementRemarks { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public bool IsGroupExpense { get; set; }
         public string NoOfPerson { get; set; }
         public Guid? AccountsCheckerOneId { get; set; }
         public string LevelOneUser { get; set; }
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerOneStatus { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public Guid? AccountsCheckerTwoId { get; set; }
         public string LevelTwoUser { get; set; }
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerTwoStatus { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public Guid? AccountsCheckerThreeId { get; set; }
         public string LevelThreeUser { get; set; }
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountsCheckerThreeStatus { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public bool? IsExpenseChecker { get; set; }
         public int? AccountsApprovalStage { get; set; }
         public Guid? CompanyAccountId { get; set; }
@@ -68,17 +60,15 @@ namespace BTTEM.Data
         public string ReceiptName { get; set; }
         public string ReceiptPath { get; set; }
         public bool IsExpenseChecked { get; set; } = false;
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? AccountTeam { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public List<GroupExpenseDto> GroupExpenses { get; set; }
         public bool? IsGroupTrip { get; set; }
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public List<GroupTripDto>? GroupTrips { get; set; }
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public CompanyAccountDto CompanyAccount { get; set; }
         public CompanyAccountDto BillingCompanyAccount { get; set; }
         public decimal TotalDeviation { get; set; } = 0;
         public string Remarks { get; set; }
+        public int? SapJourneyNumber { get; set; }
+        public string? SapDocumentNumber { get; set; }
     }
 }

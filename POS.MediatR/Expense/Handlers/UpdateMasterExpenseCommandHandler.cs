@@ -67,117 +67,123 @@ namespace BTTEM.MediatR.Handlers
                 return ServiceResponse<bool>.Return409("Expense does not exists.");
             }
 
-            entityExist.Name = request.Name;
-
-            //entityExist.CreatedDate = DateTime.Now;
-
-            if (!string.IsNullOrEmpty(request.Status))
+            if (request.SapChecking == true)
             {
-                entityExist.Status = request.Status;
+                entityExist.SapDocumentNumber = request.SapDocumentNumber;
+                entityExist.SapJourneyNumber = request.SapJourneyNumber;
+                _masterExpenseRepository.Update(entityExist);
             }
-            if (!string.IsNullOrEmpty(request.ApprovalStage))
+            else
             {
-                entityExist.ApprovalStage = request.ApprovalStage;
-            }
-            if (request.TotalAmount > 0)
-            {
-                entityExist.TotalAmount = request.TotalAmount;
-            }
-            if (request.ReimbursementAmount > 0)
-            {
-                entityExist.ReimbursementAmount = request.ReimbursementAmount;
-            }
-            if (request.AdvanceMoney > 0)
-            {
-                entityExist.AdvanceMoney = request.AdvanceMoney;
-            }
-            entityExist.NoOfBill = request.NoOfBill;
-            entityExist.PayableAmount = 0;
-            entityExist.IsGroupExpense = request.IsGroupExpense;
-            entityExist.NoOfPerson = request.NoOfPerson;
+                entityExist.Name = request.Name;
 
-            entityExist.CompanyAccountId = request.CompanyAccountId;
-
-            if (request.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
-            {               
-                entityExist.AccountsCheckerOneStatus = string.IsNullOrEmpty(request.AccountsCheckerOneStatus) ? entityExist.AccountsCheckerOneStatus : "PENDING";
-                entityExist.AccountsCheckerTwoStatus = string.IsNullOrEmpty(request.AccountsCheckerTwoStatus) ? entityExist.AccountsCheckerTwoStatus : "PENDING";
-                entityExist.AccountsCheckerThreeStatus = string.IsNullOrEmpty(request.AccountsCheckerThreeStatus) ? entityExist.AccountsCheckerThreeStatus : "PENDING";
-                entityExist.IsExpenseChecker = true;
-                entityExist.AccountsApprovalStage = request.AccountsApprovalStage == null ? entityExist.AccountsApprovalStage : 0;
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.DocumentData))
-            {
-
-                if (!string.IsNullOrWhiteSpace(request.ReceiptName))
+                if (!string.IsNullOrEmpty(request.Status))
                 {
-                    entityExist.ReceiptName = request.ReceiptName;
+                    entityExist.Status = request.Status;
                 }
-                
-                string contentRootPath = _webHostEnvironment.WebRootPath;
-                var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
-
-                if (!Directory.Exists(pathToSave))
+                if (!string.IsNullOrEmpty(request.ApprovalStage))
                 {
-                    Directory.CreateDirectory(pathToSave);
+                    entityExist.ApprovalStage = request.ApprovalStage;
+                }
+                if (request.TotalAmount > 0)
+                {
+                    entityExist.TotalAmount = request.TotalAmount;
+                }
+                if (request.ReimbursementAmount > 0)
+                {
+                    entityExist.ReimbursementAmount = request.ReimbursementAmount;
+                }
+                if (request.AdvanceMoney > 0)
+                {
+                    entityExist.AdvanceMoney = request.AdvanceMoney;
+                }
+                entityExist.NoOfBill = request.NoOfBill;
+                entityExist.PayableAmount = 0;
+                entityExist.IsGroupExpense = request.IsGroupExpense;
+                entityExist.NoOfPerson = request.NoOfPerson;
+
+                entityExist.CompanyAccountId = request.CompanyAccountId;
+
+                if (request.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+                {
+                    entityExist.AccountsCheckerOneStatus = string.IsNullOrEmpty(request.AccountsCheckerOneStatus) ? entityExist.AccountsCheckerOneStatus : "PENDING";
+                    entityExist.AccountsCheckerTwoStatus = string.IsNullOrEmpty(request.AccountsCheckerTwoStatus) ? entityExist.AccountsCheckerTwoStatus : "PENDING";
+                    entityExist.AccountsCheckerThreeStatus = string.IsNullOrEmpty(request.AccountsCheckerThreeStatus) ? entityExist.AccountsCheckerThreeStatus : "PENDING";
+                    entityExist.IsExpenseChecker = true;
+                    entityExist.AccountsApprovalStage = request.AccountsApprovalStage == null ? entityExist.AccountsApprovalStage : 0;
                 }
 
-                var extension = Path.GetExtension(request.ReceiptName);
-                var id = Guid.NewGuid();
-                var path = $"{id}.{extension}";
-                var documentPath = Path.Combine(pathToSave, path);
-                string base64 = request.DocumentData.Split(',').LastOrDefault();
-                if (!string.IsNullOrWhiteSpace(base64))
+                if (!string.IsNullOrWhiteSpace(request.DocumentData))
                 {
-                    byte[] bytes = Convert.FromBase64String(base64);
-                    try
+
+                    if (!string.IsNullOrWhiteSpace(request.ReceiptName))
                     {
-                        await File.WriteAllBytesAsync($"{documentPath}", bytes);
-                        entityExist.ReceiptPath = path;
+                        entityExist.ReceiptName = request.ReceiptName;
                     }
-                    catch
+
+                    string contentRootPath = _webHostEnvironment.WebRootPath;
+                    var pathToSave = Path.Combine(contentRootPath, _pathHelper.Attachments);
+
+                    if (!Directory.Exists(pathToSave))
                     {
-                        _logger.LogError("Error while saving files", entityExist);
+                        Directory.CreateDirectory(pathToSave);
+                    }
+
+                    var extension = Path.GetExtension(request.ReceiptName);
+                    var id = Guid.NewGuid();
+                    var path = $"{id}.{extension}";
+                    var documentPath = Path.Combine(pathToSave, path);
+                    string base64 = request.DocumentData.Split(',').LastOrDefault();
+                    if (!string.IsNullOrWhiteSpace(base64))
+                    {
+                        byte[] bytes = Convert.FromBase64String(base64);
+                        try
+                        {
+                            await File.WriteAllBytesAsync($"{documentPath}", bytes);
+                            entityExist.ReceiptPath = path;
+                        }
+                        catch
+                        {
+                            _logger.LogError("Error while saving files", entityExist);
+                        }
                     }
                 }
-            }
 
-            if (request.CompanyAccountId.HasValue && _userInfoToken.CompanyAccountId.HasValue)
-            {
-                request.AccountTeam = _userInfoToken.AccountTeam;
-
-                //if (request.CompanyAccountId == _userInfoToken.CompanyAccountId)
-                //{
-                //    request.AccountTeam = _userInfoToken.AccountTeam;
-                //}
-                //else
-                //{
-                //    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
-                //    request.AccountTeam = company.AccountTeam;
-                //}
-            }
-
-            _masterExpenseRepository.Update(entityExist);
-
-            var groupExpenseExist = await _groupExpenseRepository.All.Where(v => v.MasterExpenseId == request.Id).ToListAsync();
-            if (groupExpenseExist.Count > 0)
-            {
-                _groupExpenseRepository.RemoveRange(groupExpenseExist);
-            }
-
-            if (request.GroupExpenses != null)
-            {
-                request.GroupExpenses.ForEach(item =>
+                if (request.CompanyAccountId.HasValue && _userInfoToken.CompanyAccountId.HasValue)
                 {
-                    item.MasterExpenseId = request.Id;
-                    item.Id = Guid.NewGuid();
-                });
+                    request.AccountTeam = _userInfoToken.AccountTeam;
 
-                var groupExpense = _mapper.Map<List<GroupExpense>>(request.GroupExpenses);
-                _groupExpenseRepository.AddRange(groupExpense);
+                    //if (request.CompanyAccountId == _userInfoToken.CompanyAccountId)
+                    //{
+                    //    request.AccountTeam = _userInfoToken.AccountTeam;
+                    //}
+                    //else
+                    //{
+                    //    var company = _companyAccountRepository.All.Where(x => x.Id == request.CompanyAccountId).FirstOrDefault();
+                    //    request.AccountTeam = company.AccountTeam;
+                    //}
+                }
+
+                _masterExpenseRepository.Update(entityExist);
+
+                var groupExpenseExist = await _groupExpenseRepository.All.Where(v => v.MasterExpenseId == request.Id).ToListAsync();
+                if (groupExpenseExist.Count > 0)
+                {
+                    _groupExpenseRepository.RemoveRange(groupExpenseExist);
+                }
+
+                if (request.GroupExpenses != null)
+                {
+                    request.GroupExpenses.ForEach(item =>
+                    {
+                        item.MasterExpenseId = request.Id;
+                        item.Id = Guid.NewGuid();
+                    });
+
+                    var groupExpense = _mapper.Map<List<GroupExpense>>(request.GroupExpenses);
+                    _groupExpenseRepository.AddRange(groupExpense);
+                }
             }
-
             if (await _uow.SaveAsync() <= 0)
             {
 
