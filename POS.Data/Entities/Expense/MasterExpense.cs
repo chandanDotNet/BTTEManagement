@@ -59,6 +59,7 @@ namespace BTTEM.Data
         public string? AccountTeam { get; set; }
         public int? SapJourneyNumber { get; set; }
         public string? SapDocumentNumber { get; set; }
+        public DateTime? ExpensesAppliedOn { get; set; }
         public CompanyAccount CompanyAccounts { get; set; }
         public List<GroupExpense> GroupExpenses { get; set; }
     }
