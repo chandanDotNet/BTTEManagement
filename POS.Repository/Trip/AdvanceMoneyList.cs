@@ -114,6 +114,8 @@ namespace BTTEM.Repository
                         ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
                         AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
                         AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
+                        IsTripEndNotConfirmed = cs.IsTripEndNotConfirmed,
+                        TripAppliedOn = cs.TripAppliedOn
                     })
                     .ToListAsync();
                 return entities;
@@ -176,6 +178,8 @@ namespace BTTEM.Repository
                  ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
                  AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
                  AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
+                 IsTripEndNotConfirmed = cs.IsTripEndNotConfirmed,
+                 TripAppliedOn = cs.TripAppliedOn
              })
              .ToListAsync();
                 return entities;

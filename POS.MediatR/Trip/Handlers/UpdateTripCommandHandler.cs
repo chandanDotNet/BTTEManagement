@@ -151,7 +151,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             }
                 //entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
                 //entityExist.AdvanceMoney = request.AdvanceMoney;
-
+             
 
 
             _tripRepository.Update(entityExist);

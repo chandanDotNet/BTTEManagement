@@ -72,6 +72,8 @@ namespace BTTEM.Data
         public User ApprovedBy { get; set; }
         public decimal? AdvanceAccountApprovedAmount { get; set; }
         public string AdvanceAccountApprovedStatus { get; set; }
+        public bool IsTripEndNotConfirmed { get; set; } = false;
+        public DateTime? TripAppliedOn { get; set; }
         public List<GroupTrip> GroupTrips { get; set; }
     }
 }

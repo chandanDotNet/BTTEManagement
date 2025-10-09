@@ -79,5 +79,7 @@ namespace BTTEM.Data
         public List<TravelDocumentDto> TravelDocument { get; set; }
         public List<GroupTripDto> GroupTrips { get; set; }
         public UserDto ApprovedBy { get; set; }
+        public bool IsTripEndNotConfirmed { get; set; } = false;
+        public DateTime? TripAppliedOn { get; set; }
     }
 }
