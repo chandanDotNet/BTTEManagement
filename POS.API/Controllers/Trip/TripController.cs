@@ -1366,7 +1366,7 @@ namespace BTTEM.API.Controllers.Trip
             var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
             var trip = await _tripRepository.FindAsync(updateTripStatusCommand.Id);
 
-            if (updateTripStatusCommand.Status != "ROLLBACK" && updateTripStatusCommand.Status != "CANCELLED" || updateTripStatusCommand.Approval != "REJECTED")
+            if (updateTripStatusCommand.Status != "ROLLBACK" || updateTripStatusCommand.Status != "CANCELLED" || updateTripStatusCommand.Approval != "REJECTED")
             {
                 if (userDetails.IsDirector && userDetails.Id== trip.CreatedBy) 
                 {
