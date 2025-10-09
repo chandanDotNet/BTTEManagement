@@ -69,5 +69,6 @@ namespace POS.Data.Dto
         public decimal Deviation { get; set; }
         public decimal DeviationAmount { get; set; }
         public string Allowance { get; set; }
+        public Guid? BusinessAreaId { get; set; }
     }
 }

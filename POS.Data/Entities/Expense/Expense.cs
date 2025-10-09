@@ -68,6 +68,6 @@ namespace POS.Data
         public List<ExpenseDetail> ExpenseDetail { get; set; }
         public decimal DeviationAmount { get; set; }
         public string Allowance { get; set; }
-        public Guid BusinessAreaId { get; set; }
+        public Guid? BusinessAreaId { get; set; }
     }
 }

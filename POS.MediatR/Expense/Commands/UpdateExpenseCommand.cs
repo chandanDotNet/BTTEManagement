@@ -29,6 +29,7 @@ namespace POS.MediatR.CommandAndQuery
         public string DocumentData { get; set; }
         public string Status { get; set; }
         public string ReUploadRemarks { get; set; }
+        public Guid BusinessAreaId { get; set; }
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
         public List<ExpenseDetailDto> ExpenseDetail { get; set; }
 

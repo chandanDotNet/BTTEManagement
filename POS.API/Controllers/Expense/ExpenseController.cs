@@ -1022,7 +1022,6 @@ namespace POS.API.Controllers.Expense
                                         }
 
                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                         updateExpenseStatusCommand.Allowance = "Not Specified";
                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                     }
@@ -1054,7 +1053,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
 
                                             if (userDetails.IsDirector)
                                             {
@@ -1099,7 +1097,6 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             updateExpenseStatusCommand.DeviationAmount = 0;
                                             updateExpenseStatusCommand.Allowance = "Director(Full)";
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -1130,7 +1127,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -1174,7 +1170,6 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             updateExpenseStatusCommand.DeviationAmount = 0;
                                             updateExpenseStatusCommand.Allowance = "Director(Full)";
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -1210,7 +1205,6 @@ namespace POS.API.Controllers.Expense
                                                         updateExpenseStatusCommand.Id = expense.Id;
                                                         updateExpenseStatusCommand.DeviationAmount = expenseAmount - ConveyancesAmount;
                                                         updateExpenseStatusCommand.Allowance = Convert.ToString(ConveyancesAmount);
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
                                                 }
@@ -1222,7 +1216,6 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         if (userDetails.IsDirector)
                                                         {
                                                             updateExpenseStatusCommand.Status = "APPROVED";
@@ -1249,7 +1242,6 @@ namespace POS.API.Controllers.Expense
                                                 foreach (var expense in expenseList)
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
-                                                    updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                     //updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                     if (userDetails.IsDirector)
                                                     {
@@ -1302,7 +1294,6 @@ namespace POS.API.Controllers.Expense
                                                         updateExpenseStatusCommand.Id = expense.Id;
                                                         updateExpenseStatusCommand.DeviationAmount = expenseAmount - ConveyancesAmount;
                                                         updateExpenseStatusCommand.Allowance = Convert.ToString(ConveyancesAmount);
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                                     }
                                                 }
@@ -1314,7 +1305,6 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         if (userDetails.IsDirector)
                                                         {
                                                             updateExpenseStatusCommand.Status = "APPROVED";
@@ -1341,7 +1331,6 @@ namespace POS.API.Controllers.Expense
                                                 foreach (var expense in expenseList)
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
-                                                    updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                     //updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                     if (userDetails.IsDirector)
                                                     {
@@ -1387,7 +1376,6 @@ namespace POS.API.Controllers.Expense
                                         if (expense.Amount <= DA)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -1406,7 +1394,6 @@ namespace POS.API.Controllers.Expense
                                         else
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -1453,10 +1440,9 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 if (check == false)
                                                 {
-                                                    if (expense.Amount >  resultPoliciesLodgingFooding.BudgetAmount )
+                                                    if (expense.Amount > resultPoliciesLodgingFooding.BudgetAmount)
                                                     {
                                                         updateExpenseStatusCommand.DeviationAmount = expenseAmount - PoliciesFooding;
                                                         check = true;
@@ -1477,7 +1463,6 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 if (userDetails.IsDirector)
                                                 {
                                                     updateExpenseStatusCommand.Status = "APPROVED";
@@ -1487,7 +1472,7 @@ namespace POS.API.Controllers.Expense
                                                 else
                                                 {
                                                     updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
-                                                    
+
                                                     if (check == false)
                                                     {
                                                         if (expense.Amount > resultPoliciesLodgingFooding.BudgetAmount)
@@ -1512,7 +1497,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -1539,7 +1523,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             updateExpenseStatusCommand.DeviationAmount = 0;
@@ -1561,7 +1544,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                             updateExpenseStatusCommand.DeviationAmount = 0;
@@ -1577,7 +1559,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             updateExpenseStatusCommand.DeviationAmount = expense.Amount;
                                             updateExpenseStatusCommand.Allowance = "Not Specified";
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
@@ -1884,7 +1865,6 @@ namespace POS.API.Controllers.Expense
                                         {
                                             updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                         }
-                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                         updateExpenseStatusCommand.PayableAmount = expense.Amount;
                                         var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                     }
@@ -1928,14 +1908,12 @@ namespace POS.API.Controllers.Expense
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             }
                                             if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
                                             else
@@ -1943,7 +1921,6 @@ namespace POS.API.Controllers.Expense
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = "PENDING";
                                                 updateExpenseStatusCommand.PayableAmount = 0;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
 
@@ -1961,7 +1938,6 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.Id = expense.Id;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -2005,14 +1981,12 @@ namespace POS.API.Controllers.Expense
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             }
                                             if (expense.Amount <= PoliciesLodgingFooding)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                 updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
                                             else
@@ -2020,7 +1994,6 @@ namespace POS.API.Controllers.Expense
                                                 updateExpenseStatusCommand.Id = expense.Id;
                                                 updateExpenseStatusCommand.Status = "PENDING";
                                                 updateExpenseStatusCommand.PayableAmount = 0;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                             }
                                         }
@@ -2038,7 +2011,6 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.Id = expense.Id;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -2071,7 +2043,6 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         if (userDetails.IsDirector)
                                                         {
                                                             updateExpenseStatusCommand.Status = "APPROVED";
@@ -2094,7 +2065,6 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         if (userDetails.IsDirector)
                                                         {
                                                             updateExpenseStatusCommand.Status = "APPROVED";
@@ -2116,7 +2086,6 @@ namespace POS.API.Controllers.Expense
                                                 foreach (var expense in expenseList)
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
-                                                    updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                     //updateExpenseStatusCommand.Status = "PENDING"; updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                     if (userDetails.IsDirector)
                                                     {
@@ -2162,7 +2131,6 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         if (userDetails.IsDirector)
                                                         {
                                                             updateExpenseStatusCommand.Status = "APPROVED";
@@ -2185,7 +2153,6 @@ namespace POS.API.Controllers.Expense
                                                     foreach (var expense in expenseList)
                                                     {
                                                         updateExpenseStatusCommand.Id = expense.Id;
-                                                        updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                         if (userDetails.IsDirector)
                                                         {
                                                             updateExpenseStatusCommand.Status = "APPROVED";
@@ -2207,7 +2174,6 @@ namespace POS.API.Controllers.Expense
                                                 foreach (var expense in expenseList)
                                                 {
                                                     updateExpenseStatusCommand.Id = expense.Id;
-                                                    updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                     //updateExpenseStatusCommand.Status = resultUser.CompanyAccountId == new Guid("D0CCEA5F-5393-4A34-9DF6-43A9F51F9F91") ? "PENDING" : "APPROVED";
                                                     if (userDetails.IsDirector)
                                                     {
@@ -2247,7 +2213,6 @@ namespace POS.API.Controllers.Expense
                                         if (expense.Amount <= DA)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -2262,7 +2227,6 @@ namespace POS.API.Controllers.Expense
                                         else
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -2318,7 +2282,6 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 if (userDetails.IsDirector)
                                                 {
                                                     updateExpenseStatusCommand.Status = "APPROVED";
@@ -2341,7 +2304,6 @@ namespace POS.API.Controllers.Expense
                                             foreach (var expense in expenseList)
                                             {
                                                 updateExpenseStatusCommand.Id = expense.Id;
-                                                updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                                 if (userDetails.IsDirector)
                                                 {
                                                     updateExpenseStatusCommand.Status = "APPROVED";
@@ -2363,7 +2325,6 @@ namespace POS.API.Controllers.Expense
                                         foreach (var expense in expenseList)
                                         {
                                             updateExpenseStatusCommand.Id = expense.Id;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             if (userDetails.IsDirector)
                                             {
                                                 updateExpenseStatusCommand.Status = "APPROVED";
@@ -2388,7 +2349,6 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.Id = expense.Id;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -2406,7 +2366,6 @@ namespace POS.API.Controllers.Expense
                                             updateExpenseStatusCommand.Id = expense.Id;
                                             updateExpenseStatusCommand.Status = "APPROVED";
                                             updateExpenseStatusCommand.PayableAmount = expense.Amount;
-                                            updateExpenseStatusCommand.BusinessAreaId = expense.BusinessAreaId;
                                             var result1 = await _mediator.Send(updateExpenseStatusCommand);
                                         }
                                     }
@@ -4925,6 +4884,7 @@ namespace POS.API.Controllers.Expense
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://ssilsaprtr.shyamsteel.com:44340/RESTAdapter/TravelExpense");
+            //request.Headers.Add("Authorization", "Basic UE9FSU5WT0lDRTphc2Rmams4bEAqMjQ=");
             request.Headers.Add("Authorization", "Basic UE9FSU5WT0lDRTphc2Rmams4bEAqMjQ=");
             request.Headers.Add("Cookie", "saplb_*=(J2EE2526620)2526650");
 
@@ -4938,17 +4898,57 @@ namespace POS.API.Controllers.Expense
             var resultObject = System.Text.Json.JsonSerializer.Deserialize<RootObject>(responseData);
 
             int journeyNumber = resultObject?.Result?.JourneyNumber ?? 0;
+            string DocumentNo = string.Empty;
+            if (journeyNumber > 0)
+            {
+                DocumentNo = string.Join(",", resultObject.Result.DocumentNumber).Replace("[", "").Replace("]", "");
+            }
+
+            string message = string.Join(",", resultObject.Result.Message);
+            string messageReturn = string.Join(",", resultObject.Result.MessageReturn);
 
             AddSapCommand addSapCommand = new AddSapCommand()
             {
                 Id = Guid.NewGuid(),
+                MasterExpenseId = sapCommand.Record.MasterExpenseId,
                 SapData = Newtonsoft.Json.JsonConvert.SerializeObject(sapCommand.Record),
-                Status = "Parked",
-                DocumentNumber = resultObject?.Result?.JourneyNumber ?? 0
+                Status = !string.IsNullOrEmpty(message) || !string.IsNullOrEmpty(messageReturn) ? "Failed" : "Success",
+                JourneyNumber = journeyNumber,
+                DocumentNumber = DocumentNo,
+                Message = message,
+                MessageReturn = messageReturn,
             };
 
             var result = await _mediator.Send(addSapCommand);
-            return ReturnFormattedResponse(result);
+
+            if (journeyNumber > 0 && !string.IsNullOrEmpty(DocumentNo))
+            {
+                UpdateMasterExpenseCommand updateMasterExpenseCommand = new UpdateMasterExpenseCommand();
+                updateMasterExpenseCommand.Id = sapCommand.Record.MasterExpenseId;
+                updateMasterExpenseCommand.SapDocumentNumber = DocumentNo;
+                updateMasterExpenseCommand.SapJourneyNumber = journeyNumber;
+                updateMasterExpenseCommand.SapChecking = true;
+                var retunMasExpResult = await _mediator.Send(updateMasterExpenseCommand);
+
+                UpdateExpenseDetailCommand updateExpenseDetailCommand = new UpdateExpenseDetailCommand();
+                updateExpenseDetailCommand.MasterExpenseId = sapCommand.Record.MasterExpenseId;
+                updateExpenseDetailCommand.CostCenter = sapCommand.Record.WithTax.Item.FirstOrDefault().CostCenter;
+                updateExpenseDetailCommand.CostCenterCheck = true;
+                var expDetResult = await _mediator.Send(updateExpenseDetailCommand);
+
+            }            
+
+            ReturnResultData rootObject = new ReturnResultData()
+            {
+                DocumentNumber = DocumentNo,
+                JourneyNumber = journeyNumber,
+                Message = message,
+                MessageReturn = messageReturn,
+                Status = !string.IsNullOrEmpty(message) || !string.IsNullOrEmpty(messageReturn) ? "Failed" : "Success",
+            };
+
+            return Ok(rootObject);
+            //return ReturnFormattedResponse(result);
         }
         public class RootObject
         {
@@ -4957,7 +4957,17 @@ namespace POS.API.Controllers.Expense
         public class ResultData
         {
             public int JourneyNumber { get; set; }
+            public object DocumentNumber { get; set; }
+            public object Message { get; set; }
+            public object MessageReturn { get; set; }
+        }
+        public class ReturnResultData
+        {
+            public int JourneyNumber { get; set; }
+            public string DocumentNumber { get; set; }
             public string Message { get; set; }
+            public string MessageReturn { get; set; }
+            public string Status { get; set; }
         }
 
         [NonAction]
