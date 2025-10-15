@@ -132,7 +132,9 @@ namespace BTTEM.Repository
                         Remarks = cs.Remarks,
                         ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
                         CreatedBy = cs.CreatedBy,
-                        RejectedReason = cs.RejectedReason
+                        RejectedReason = cs.RejectedReason,
+                        IsTripEndNotConfirmed= cs.IsTripEndNotConfirmed,
+                        TripAppliedOn = cs.TripAppliedOn
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -213,7 +215,9 @@ namespace BTTEM.Repository
                  Remarks = cs.Remarks,
                  ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
                  CreatedBy = cs.CreatedBy,
-                 RejectedReason = cs.RejectedReason
+                 RejectedReason = cs.RejectedReason,
+                 IsTripEndNotConfirmed = cs.IsTripEndNotConfirmed,
+                 TripAppliedOn = cs.TripAppliedOn
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
              })

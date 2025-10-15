@@ -181,6 +181,11 @@ namespace BTTEM.MediatR.CommandAndQuery
                 item.Id = Guid.NewGuid();
             });
 
+            if (entity.Status == "APPLIED")
+            {
+                entity.ExpensesAppliedOn=DateTime.Now;
+            }
+
             if (!string.IsNullOrWhiteSpace(request.ReceiptName) && !string.IsNullOrWhiteSpace(request.DocumentData))
             {
                 string contentRootPath = _webHostEnvironment.WebRootPath;

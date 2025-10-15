@@ -1364,10 +1364,11 @@ namespace BTTEM.API.Controllers.Trip
         {
             bool TravelDesk = false;
             var userDetails = await _userRepository.FindAsync(Guid.Parse(_userInfoToken.Id));
+            var trip = await _tripRepository.FindAsync(updateTripStatusCommand.Id);
 
-            if (updateTripStatusCommand.Status != "ROLLBACK" || updateTripStatusCommand.Approval != "REJECTED" || updateTripStatusCommand.Status != "CANCELLED")
+            if (updateTripStatusCommand.Status != "ROLLBACK" || updateTripStatusCommand.Status != "CANCELLED" || updateTripStatusCommand.Approval != "REJECTED")
             {
-                if (userDetails.IsDirector)
+                if (userDetails.IsDirector && userDetails.Id== trip.CreatedBy) 
                 {
                     updateTripStatusCommand.Approval = "APPROVED";
                     updateTripStatusCommand.Status = "APPLIED";

@@ -852,6 +852,8 @@ namespace POS.API.Controllers.Expense
                 }
             }
 
+          
+
             var result = await _mediator.Send(addMasterExpenseCommand);
             if (result.Success)
             {

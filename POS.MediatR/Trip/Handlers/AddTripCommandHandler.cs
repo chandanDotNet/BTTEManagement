@@ -75,6 +75,10 @@ namespace BTTEM.MediatR.Trip.Handlers
                 item.Id = Guid.NewGuid();
             });
 
+            if (entity.Status == "APPLIED")
+            {
+                entity.TripAppliedOn = DateTime.Now;
+            }
 
             _tripRepository.Add(entity);
 

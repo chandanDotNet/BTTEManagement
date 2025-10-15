@@ -46,6 +46,18 @@ namespace BTTEM.MediatR.Trip.Handlers
             var entityExist = await _tripRepository.FindBy(v => v.Id == request.Id).FirstOrDefaultAsync();
             if (!string.IsNullOrEmpty(request.Status))
             {
+               
+                if (entityExist.Status == "APPLIED")
+                {
+                    
+                }
+                else
+                {
+                    if (request.Status == "APPLIED")
+                    {
+                        entityExist.TripAppliedOn = DateTime.Now;
+                    }                   
+                }
                 entityExist.Status = request.Status;
             }
 
@@ -63,6 +75,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.RollbackCount = entityExist.RollbackCount + 1;
                 entityExist.Status = "YET TO SUBMIT";
+                entityExist.Approval = "PENDING";
             }
 
             if (request.Status == "CANCELLED")
@@ -90,6 +103,7 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.JourneyNumber = request.JourneyNumber;
             }
+
 
             _tripRepository.Update(entityExist);
             if (await _uow.SaveAsync() <= 0)

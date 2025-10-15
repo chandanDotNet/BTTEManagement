@@ -79,7 +79,19 @@ namespace BTTEM.MediatR.Handlers
 
                 if (!string.IsNullOrEmpty(request.Status))
                 {
+                    if (entityExist.Status == "APPLIED")
+                    {
+
+                    }
+                    else
+                    {
+                        if (request.Status == "APPLIED")
+                        {
+                            entityExist.ExpensesAppliedOn = DateTime.Now;
+                        }
+                    }
                     entityExist.Status = request.Status;
+                   
                 }
                 if (!string.IsNullOrEmpty(request.ApprovalStage))
                 {

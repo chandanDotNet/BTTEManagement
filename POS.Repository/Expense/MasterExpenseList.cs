@@ -138,6 +138,8 @@ namespace BTTEM.Repository.Expense
                         SapJourneyNumber = cs.SapJourneyNumber,
                         SapDocumentNumber = cs.SapDocumentNumber,
                         RejectedReason = cs.RejectedReason,
+                        ExpensesAppliedOn=cs.ExpensesAppliedOn,
+
                         //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                         //{
                         //    Id = c.Id,
@@ -229,6 +231,7 @@ namespace BTTEM.Repository.Expense
                    SapJourneyNumber = cs.SapJourneyNumber.Value,
                    SapDocumentNumber = cs.SapDocumentNumber,
                    RejectedReason = cs.RejectedReason,
+                   ExpensesAppliedOn = cs.ExpensesAppliedOn,
                    //GroupTrips = cs.Trip.GroupTrips.Select(c => new GroupTripDto
                    //{
                    //    Id = c.Id,
