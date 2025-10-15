@@ -16,5 +16,6 @@ namespace BTTEM.MediatR.CommandAndQuery
         public string ApprovalStage { get; set; }
         public Guid? StatusBy { get; set; }
         public string JourneyNumber { get; set; }
+        public string RejectedReason { get; set; }
     }
 }

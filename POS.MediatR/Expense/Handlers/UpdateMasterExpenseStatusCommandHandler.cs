@@ -93,6 +93,11 @@ namespace BTTEM.MediatR.Expense.Handlers
                 entityExist.Status = "YET TO SUBMIT";
             }
 
+            if (request.ApprovalStage == "REJECTED")
+            {
+                entityExist.RejectedReason = request.RejectedReason;
+            }
+
             if (!string.IsNullOrEmpty(request.JourneyNumber))
             {
                 entityExist.JourneyNumber = request.JourneyNumber;

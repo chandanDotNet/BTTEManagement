@@ -20,5 +20,6 @@ namespace BTTEM.MediatR.Trip.Commands
         public string TravelDeskName { get; set; }
         public Guid? TravelDeskId { get; set; }
         public string JourneyNumber { get; set; }
+        public string RejectedReason { get; set; }
     }
 }

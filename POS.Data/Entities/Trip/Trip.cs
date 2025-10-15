@@ -72,6 +72,7 @@ namespace BTTEM.Data
         public User ApprovedBy { get; set; }
         public decimal? AdvanceAccountApprovedAmount { get; set; }
         public string AdvanceAccountApprovedStatus { get; set; }
+        public string RejectedReason { get; set; }
         public List<GroupTrip> GroupTrips { get; set; }
     }
 }

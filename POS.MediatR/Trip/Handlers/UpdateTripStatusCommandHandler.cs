@@ -54,6 +54,11 @@ namespace BTTEM.MediatR.Trip.Handlers
                 entityExist.Approval = request.Approval;
             }
 
+            if (request.Approval == "REJECTED")
+            {
+                entityExist.RejectedReason = request.RejectedReason;
+            }
+
             if (request.Status == "ROLLBACK" && entityExist.RollbackCount <= 3)
             {
                 entityExist.RollbackCount = entityExist.RollbackCount + 1;

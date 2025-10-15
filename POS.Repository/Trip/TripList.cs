@@ -131,7 +131,8 @@ namespace BTTEM.Repository
                         ProjectType = cs.ProjectType,
                         Remarks = cs.Remarks,
                         ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
-                        CreatedBy = cs.CreatedBy
+                        CreatedBy = cs.CreatedBy,
+                        RejectedReason = cs.RejectedReason
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
                     })
@@ -211,7 +212,8 @@ namespace BTTEM.Repository
                  ProjectType = cs.ProjectType,
                  Remarks = cs.Remarks,
                  ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
-                 CreatedBy = cs.CreatedBy
+                 CreatedBy = cs.CreatedBy,
+                 RejectedReason = cs.RejectedReason
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
 
              })
