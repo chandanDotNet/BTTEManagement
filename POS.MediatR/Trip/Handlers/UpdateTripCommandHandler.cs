@@ -149,9 +149,13 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.Consent = request.Consent;
             }
-                //entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
-                //entityExist.AdvanceMoney = request.AdvanceMoney;
-             
+            if (request.IsTripEndNotConfirmed == true)
+            {
+                entityExist.IsTripEndNotConfirmed = request.IsTripEndNotConfirmed;
+            }
+            //entityExist.IsRequestAdvanceMoney = request.IsRequestAdvanceMoney;
+            //entityExist.AdvanceMoney = request.AdvanceMoney;
+
 
 
             _tripRepository.Update(entityExist);
