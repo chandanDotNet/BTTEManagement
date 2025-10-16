@@ -74,7 +74,7 @@ namespace BTTEM.Data
         public string AdvanceAccountApprovedStatus { get; set; }
         public bool IsTripEndNotConfirmed { get; set; } = false;
         public DateTime? TripAppliedOn { get; set; }
-        public string RejectedReason { get; set; }
+        public string? RejectedReason { get; set; }
         public List<GroupTrip> GroupTrips { get; set; }
     }
 }

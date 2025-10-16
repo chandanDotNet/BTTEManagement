@@ -60,7 +60,7 @@ namespace BTTEM.Data
         public int? SapJourneyNumber { get; set; }
         public string? SapDocumentNumber { get; set; }
 
-        public string RejectedReason { get; set; }
+        public string? RejectedReason { get; set; }
 
         public DateTime? ExpensesAppliedOn { get; set; }
 
