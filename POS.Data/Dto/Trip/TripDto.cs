@@ -76,7 +76,7 @@ namespace BTTEM.Data
         public Guid? AdvanceAccountApprovedBy { get; set; }
         public decimal? AdvanceAccountApprovedAmount { get; set; }
         public string AdvanceAccountApprovedStatus { get; set; }
-        public string RejectedReason { get; set; }
+        public string? RejectedReason { get; set; }
         public List<TravelDocumentDto> TravelDocument { get; set; }
         public List<GroupTripDto> GroupTrips { get; set; }
         public UserDto ApprovedBy { get; set; }
