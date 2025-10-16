@@ -127,7 +127,7 @@ namespace BTTEM.API.Controllers.Trip
 
             if (result.Success)
             {
-                //Tracking
+                //Tracking 
                 //var userResult = await _userRepository.FindAsync(result.Data.CreatedBy);
                 var addTripTrackingCommand = new AddTripTrackingCommand()
                 {
