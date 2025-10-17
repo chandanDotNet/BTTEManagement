@@ -2836,6 +2836,7 @@ namespace POS.API.Controllers.Expense
         {
             DashboardReportData dashboardReportData = new DashboardReportData();
             int Response = 0;
+            string Status=string.Empty;
             foreach (var mitem in allUpdateExpenseStatusForDirectorCommand.AllMasterExpense)
             {
 
@@ -2843,17 +2844,19 @@ namespace POS.API.Controllers.Expense
                 {
                     UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
                     updateExpenseStatusCommand = item;
+                    Status=updateExpenseStatusCommand.Status;
                     var result = await _mediator.Send(updateExpenseStatusCommand);
                     if (result.Success)
                     {
                         Response = 1;
+
                     }
                 }
 
                 ////=======================
                 UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand = new UpdateMasterExpenseStatusCommand();
                 updateMasterExpenseStatusCommand.Id = mitem.MasterExpenseId;
-                updateMasterExpenseStatusCommand.ApprovalStage = "APPROVED";
+                updateMasterExpenseStatusCommand.ApprovalStage = Status;
                 var result1 = await _mediator.Send(updateMasterExpenseStatusCommand);
             }
 
