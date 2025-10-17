@@ -2857,6 +2857,7 @@ namespace POS.API.Controllers.Expense
                 UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand = new UpdateMasterExpenseStatusCommand();
                 updateMasterExpenseStatusCommand.Id = mitem.MasterExpenseId;
                 updateMasterExpenseStatusCommand.ApprovalStage = Status;
+                updateMasterExpenseStatusCommand.Status = mitem.RejectedReason;
                 var result1 = await _mediator.Send(updateMasterExpenseStatusCommand);
             }
 

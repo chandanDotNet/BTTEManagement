@@ -124,7 +124,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             if (string.IsNullOrEmpty(request.Allowance))
             {
                 entityExist.Allowance = request.Allowance;
-            }           
+            }
 
             _expenseRepository.Update(entityExist);
 
