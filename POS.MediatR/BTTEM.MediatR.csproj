@@ -26,4 +26,8 @@
     <ProjectReference Include="..\POS.Repository\BTTEM.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MMT\Handler\" />
+  </ItemGroup>
+
 </Project>

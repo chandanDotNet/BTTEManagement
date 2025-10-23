@@ -30,6 +30,8 @@ namespace POS.MediatR.CommandAndQuery
         public string Status { get; set; }
         public string ReUploadRemarks { get; set; }
         public Guid BusinessAreaId { get; set; }
+        public string CostCenter { get; set; }
+        public bool CostCenterCheck { get; set; } = false;
         public List<ExpenseDocumentDto> ExpenseDocument { get; set; }
         public List<ExpenseDetailDto> ExpenseDetail { get; set; }
 

@@ -67,6 +67,8 @@ namespace BTTEM.MediatR.Expense.Handlers
                         SubVendorIRNApplicable = Convert.ToString(rdr["SubVendorIRNApplicable"]),
                         TaxCode = Convert.ToString(rdr["TaxCode"]),
                         TaxGSTSubVendor = Convert.ToString(rdr["TaxGSTSubVendor"]),
+                        Ids = Convert.ToString(rdr["Ids"]),
+                        EType = Convert.ToString(rdr["EType"]),
 
                     });
                 }

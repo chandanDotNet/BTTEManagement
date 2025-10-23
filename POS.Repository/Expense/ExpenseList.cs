@@ -119,7 +119,8 @@ namespace POS.Repository
                         ReimbursementStatusThirdLevel= cs.ReimbursementStatusThirdLevel,
                         DeviationAmount = cs.DeviationAmount,
                         Allowance = cs.Allowance,
-                        BusinessAreaId = cs.BusinessAreaId
+                        BusinessAreaId = cs.BusinessAreaId,
+                        CostCenter  = cs.CostCenter,
                     })
                     .ToListAsync();
                 return entities;
@@ -173,7 +174,8 @@ namespace POS.Repository
                  ReimbursementStatusThirdLevel = cs.ReimbursementStatusThirdLevel,
                  DeviationAmount = cs.DeviationAmount,
                  Allowance = cs.Allowance,
-                 BusinessAreaId = cs.BusinessAreaId
+                 BusinessAreaId = cs.BusinessAreaId,
+                 CostCenter = cs.CostCenter,
 
              })
              .ToListAsync();

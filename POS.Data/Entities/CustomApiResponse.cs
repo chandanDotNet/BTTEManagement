@@ -461,6 +461,8 @@ namespace BTTEM.Data.Entities
         public string CostCenter { get; set; }
         public string BusinessPlace { get; set; }
         public string BusinessArea { get; set; }
+        public string Ids { get; set; }
+        public string EType { get; set; }
     }
     public class Record
     {
