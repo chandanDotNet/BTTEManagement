@@ -60,7 +60,7 @@ namespace BTTEM.MediatR.Trip.Handlers
                 var entity = _mapper.Map<Data.TripItinerary>(tv);
                 entity.Id = Guid.NewGuid();
                 entity.ApprovalStatus = "PENDING";
-                if (userDetails.IsDirector)
+                if (userDetails.IsDirector && entity.CreatedBy == userDetails.Id)
                 {
                     entity.ApprovalStatus = "APPROVED";
                     entity.ApprovalStatusDate = DateTime.Now;
@@ -82,6 +82,14 @@ namespace BTTEM.MediatR.Trip.Handlers
                 var existEntity = await _tripRepository.FindAsync(request.TripItinerary.FirstOrDefault().TripId);
                 existEntity.TripEnds = request.TripItinerary.FirstOrDefault().DepartureDate;
                 _tripRepository.Update(existEntity);
+            }else
+            {
+                var existEntity = await _tripRepository.FindAsync(request.TripItinerary.FirstOrDefault().TripId);
+                if(existEntity.IsTripEndNotConfirmed==true)
+                {
+                    existEntity.Approval = "PENDING";
+                    _tripRepository.Update(existEntity);
+                }
             }
 
             //var entity = _mapper.Map<BTTEM.Data.TripItinerary>(request);            
