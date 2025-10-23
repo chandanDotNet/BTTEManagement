@@ -2856,8 +2856,7 @@ namespace POS.API.Controllers.Expense
 
                 ////=======================
                 UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand = new UpdateMasterExpenseStatusCommand();
-                updateMasterExpenseStatusCommand.Id = mitem.MasterExpenseId;
-                updateMasterExpenseStatusCommand.ApprovalStage = Status;
+                updateMasterExpenseStatusCommand.Id = mitem.MasterExpenseId;                
                 updateMasterExpenseStatusCommand.RejectedReason = mitem.RejectedReason;
                 if(Status.IsNullOrEmpty())
                 {
