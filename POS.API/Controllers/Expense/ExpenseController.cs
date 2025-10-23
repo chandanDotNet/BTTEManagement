@@ -852,7 +852,7 @@ namespace POS.API.Controllers.Expense
                 }
             }
 
-          
+
 
             var result = await _mediator.Send(addMasterExpenseCommand);
             if (result.Success)
@@ -2836,7 +2836,7 @@ namespace POS.API.Controllers.Expense
         {
             DashboardReportData dashboardReportData = new DashboardReportData();
             int Response = 0;
-            string Status=string.Empty;
+            string Status = string.Empty;
             foreach (var mitem in allUpdateExpenseStatusForDirectorCommand.AllMasterExpense)
             {
 
@@ -2844,7 +2844,7 @@ namespace POS.API.Controllers.Expense
                 {
                     UpdateExpenseStatusCommand updateExpenseStatusCommand = new UpdateExpenseStatusCommand();
                     updateExpenseStatusCommand = item;
-                    Status=updateExpenseStatusCommand.Status;
+                    Status = updateExpenseStatusCommand.Status;
                     var result = await _mediator.Send(updateExpenseStatusCommand);
                     if (result.Success)
                     {
@@ -2857,7 +2857,7 @@ namespace POS.API.Controllers.Expense
                 UpdateMasterExpenseStatusCommand updateMasterExpenseStatusCommand = new UpdateMasterExpenseStatusCommand();
                 updateMasterExpenseStatusCommand.Id = mitem.MasterExpenseId;
                 updateMasterExpenseStatusCommand.ApprovalStage = Status;
-                updateMasterExpenseStatusCommand.Status = mitem.RejectedReason;
+                updateMasterExpenseStatusCommand.RejectedReason = mitem.RejectedReason;
                 var result1 = await _mediator.Send(updateMasterExpenseStatusCommand);
             }
 
@@ -4936,13 +4936,36 @@ namespace POS.API.Controllers.Expense
                 updateMasterExpenseCommand.SapChecking = true;
                 var retunMasExpResult = await _mediator.Send(updateMasterExpenseCommand);
 
-                UpdateExpenseDetailCommand updateExpenseDetailCommand = new UpdateExpenseDetailCommand();
-                updateExpenseDetailCommand.MasterExpenseId = sapCommand.Record.MasterExpenseId;
-                updateExpenseDetailCommand.CostCenter = sapCommand.Record.WithTax.Item.FirstOrDefault().CostCenter;
-                updateExpenseDetailCommand.CostCenterCheck = true;
-                var expDetResult = await _mediator.Send(updateExpenseDetailCommand);
+                var wt = sapCommand.Record.WithTax;
+                foreach (var item in wt.Item)
+                {
+                    if (!string.IsNullOrEmpty(item.Ids))
+                    {
+                        var eIds = item.Ids.Split(',');
+                        foreach (var ed in eIds)
+                        {
 
-            }            
+                            if (item.EType == "E")
+                            {
+                                UpdateExpenseCommand updateExpenseCommand = new UpdateExpenseCommand();
+                                updateExpenseCommand.Id = Guid.Parse(ed);
+                                updateExpenseCommand.CostCenter = item.CostCenter;
+                                updateExpenseCommand.CostCenterCheck = true;
+                                var expResult = await _mediator.Send(updateExpenseCommand);
+                            }
+                            else
+                            {
+                                UpdateExpenseDetailCommand updateExpenseDetailCommand = new UpdateExpenseDetailCommand();
+                                //updateExpenseDetailCommand.MasterExpenseId = sapCommand.Record.MasterExpenseId;
+                                updateExpenseDetailCommand.Id = Guid.Parse(ed);
+                                updateExpenseDetailCommand.CostCenter = item.CostCenter;
+                                updateExpenseDetailCommand.CostCenterCheck = true;
+                                var expDetResult = await _mediator.Send(updateExpenseDetailCommand);
+                            }
+                        }
+                    }
+                }
+            }
 
             ReturnResultData rootObject = new ReturnResultData()
             {

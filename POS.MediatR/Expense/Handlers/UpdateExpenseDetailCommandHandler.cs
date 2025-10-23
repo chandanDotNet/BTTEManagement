@@ -77,12 +77,9 @@ namespace BTTEM.MediatR.Handlers
             }
             else
             {
-                var expenseDetails =  await _expenseDetailRepository.All.Where(x => x.MasterExpenseId == request.MasterExpenseId).ToListAsync();
-                expenseDetails.ForEach(item =>
-                {
-                    item.CostCenter = request.CostCenter;
-                });            
-                _expenseDetailRepository.UpdateRange(expenseDetails);
+                var expenseDetails =  await _expenseDetailRepository.FindAsync(request.Id.Value);
+                expenseDetails.CostCenter = request.CostCenter;
+                _expenseDetailRepository.Update(expenseDetails);
             }
 
             if (await _uow.SaveAsync() <= 0)

@@ -1,47 +1,50 @@
-﻿using BTTEM.MediatR.PoliciesTravel.Commands;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using POS.API.Controllers;
-using System.Threading.Tasks;
-using System;
-using BTTEM.MediatR.CommandAndQuery;
-using BTTEM.Data;
-using BTTEM.MediatR.Trip.Commands;
-using POS.API.Helpers;
-using BTTEM.Data.Resources;
-using System.Threading;
-using POS.Data.Resources;
-using POS.MediatR.CommandAndQuery;
-using System.Linq;
-using POS.Data;
-using System.Security.Claims;
-using POS.Data.Dto;
-using Microsoft.AspNetCore.Http.HttpResults;
-using BTTEM.Repository;
-using Microsoft.EntityFrameworkCore;
-using POS.Repository;
-using System.Security.Cryptography.X509Certificates;
+﻿using AutoMapper;
 using Azure.Core;
-using System.ComponentModel.Design;
-using BTTEM.Data.Dto;
-using POS.Helper;
-using AutoMapper;
-using System.Collections.Generic;
-using BTTEM.Data.Entities;
-using BTTEM.MediatR.Commands;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using System.Runtime.CompilerServices;
-using static System.Net.WebRequestMethods;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json;
-using BTTEM.API.Service;
-using System.Text;
-using System.Text.RegularExpressions;
 using BTTEM.API.Models;
+using BTTEM.API.Service;
+using BTTEM.Data;
+using BTTEM.Data.Dto;
+using BTTEM.Data.Entities;
+using BTTEM.Data.Resources;
+using BTTEM.MediatR.CommandAndQuery;
+using BTTEM.MediatR.Commands;
+using BTTEM.MediatR.PoliciesTravel.Commands;
+using BTTEM.MediatR.Trip.Commands;
+using BTTEM.Repository;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
+using POS.API.Controllers;
+using POS.API.Helpers;
+using POS.Data;
+using POS.Data.Dto;
+using POS.Data.Resources;
+using POS.Helper;
+using POS.MediatR.CommandAndQuery;
+using POS.Repository;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using static POS.API.Controllers.Expense.ExpenseController;
+using static System.Net.WebRequestMethods;
 
 namespace BTTEM.API.Controllers.Trip
 {
@@ -2715,6 +2718,43 @@ namespace BTTEM.API.Controllers.Trip
             {
                 return resultNotification;
             }
+        }
+
+
+        /// <summary>
+        /// MMT .
+        /// </summary>      
+        /// <param name="TripRequest"></param>
+        /// <returns></returns>
+        [HttpPost("mmt-trip-request")]
+        public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/corporate/v1/create/partner/travel-request");
+            request.Headers.Add("partner-apikey", "08b1cb0c8c5b3f39bae10ad5cb3888eba4501449");
+            request.Headers.Add("client-code", "A836CD1C6B2B3");
+            request.Headers.Add("Cookie", "_abck=1BB518837275EF0EB2627F5541D45DBC~-1~YAAQ5KTUF9m+p+qZAQAA+lLdEA7+F44y+Qm+jyI4FpHQ7DxH8fCXPs+osijOmKekw4l7EBE2pQwho9fHyZrbfw36hglyifsvYV6O+d/HBEmUvIg/T1Im/MTmXFY3KrjddbPBQO1NH0FZLTgLpWJsJQtmAQcU9OGQl3ffiTd3IyoSRsMBhHVdJhDbfOQ7WbYY5hps3kCC4rbelIcwA2109l0WvzbcAFUejM1rKsL2n2QgmcOjirTbg/X5cCxqzc3+KJ3hzyiOygX05dQphDo3990kQ6muTI2xwMVyDBD7zGysXK4qRwuBV9z2c3GYN7sn3fIMtkB5DOCsk0TguFCSP96GBILFtr60W/ZZo315lTDszdT/wUB6dXochNgZv0yEntQVSav4eqBhleS8IuaYQQSAu86/cKwFDQbGKhMl3jn4bqKD32A0MuQpXCVnJq1C2PEsFwVVE/3CcNXu+tktWpWiiczWX5Q=~-1~-1~-1~-1~-1; ak_bmsc=6C957C80CCBEAC3FDD9E5CB5E048ECFF~000000000000000000000000000000~YAAQ5KTUF1PAjeqZAQAABh2IEB3oHiG1MCkvYQQ5EcmsGlzIxufAd9NDmJZ7vNxqhgyve36qRiDNZl0O0pRoFWGjVYOMaugRVwqumRrvNyY+zy2UlifGizk8HlucT5QriEs3fKlAY77hTRK66IBzpEADzecUcfyLPsP07ZQoXseraKq3NtEqqKFZEHs2QOpKV6nTaEIYAbp6WgDqkSFLo5hJ+BCNYkBXnqMM8LgVUpFa9ddhj/tS8IsCDmQ0n1tFhfWUFLYBQ2p4Sw4FERQCoksqvdsKMLtwGPB1WxfA64CRAjSGt2qvFHnZ5ZVKDSEURIPPZvL7AwgZ4ClCarH6MbqiO6arrhTiKq2rdCY8bvnp9w==; bm_sv=A57017B9CA971E272EEFE43ADB0A622A~YAAQ56TUF1SwIvWZAQAATx/lEB2x8ApkuhD+15GS/4PAmXnO7/+t8Hl9usfL41DaUcSLFufUlqILLn/Xq94C41+vBna4zMjybgd2nb54TshXWHkK67xnKLzvmRAxgf58tW3lsRs+iATqJx1ho4IcAqMGjUm+PYkCFZ0TQpZxeN7oM5sY9f0fUhBvxW4aYBIN8+LGmAjhgfb6zjOnTtqNWpvKg1Ay2ZTBn9mH5u2WTV/RTI+Ex6QgJlmNR6QQWBNQHpxphQ==~1; bm_sz=77839A08C45CEF945B811C7AC62C16F1~YAAQ5KTUF9u+p+qZAQAA+lLdEB3Uow9P1ij3XlkH4dyF5PZNs5ZyqeO8ooycI4/whfN5GcijPx4mC2WzyFqjS3Em1twr3XhHk6akAisvwBZ63LrP8lOWP7qCi6NP6CFanQsw9q5AxBsOrnaj2ehg7UT1uUTPRqxVfSeKTUld1iImPXwYg8WNQdfETocYNlcII9vy1KJ4koT+5IbVxVLjiJGcYbAe4H3nzy6eJ/jD+HUdJNcRll55oUDB812Cj6ap2e3rS7Y+UczGvct+bxLTSn4ABIZS/qh1btddLkKauQpN+DtG6P+kGagdYfZmrVDZxqbB13R1oXqJOJr6pAm/ajrgH+jOgYP6DMXsOONBmUqzJw==~3618356~3289904");
+
+            var payload = System.Text.Json.JsonSerializer.Serialize(mMMTTrip.MMTTrip, new JsonSerializerOptions
+            {
+                WriteIndented = true // Optional: for readable logs
+            });
+
+            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return StatusCode((int)response.StatusCode, new { Error = "MMT API request failed", Details = errorContent });
+            }
+
+            var responseData = await response.Content.ReadAsStringAsync();
+
+            var responseResult = JsonConvert.DeserializeObject<object>(responseData);
+
+            return Ok(responseResult);
         }
     }
 }
