@@ -8,6 +8,7 @@ using BTTEM.Data.Entities;
 using BTTEM.Data.Resources;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.MediatR.Commands;
+using BTTEM.MediatR.Expense.Commands;
 using BTTEM.MediatR.PoliciesTravel.Commands;
 using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
@@ -2727,8 +2728,12 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="TripRequest"></param>
         /// <returns></returns>
         [HttpPost("mmt-trip-request")]
-        public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip)
+        //public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
+        public async Task<IActionResult> MMTTripRequest(Guid TripId)
         {
+            AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
+            var mmtPayload = GetMMTBookingRequestDetails(TripId);
+
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/corporate/v1/create/partner/travel-request");
             request.Headers.Add("partner-apikey", "08b1cb0c8c5b3f39bae10ad5cb3888eba4501449");
@@ -2755,6 +2760,15 @@ namespace BTTEM.API.Controllers.Trip
             var responseResult = JsonConvert.DeserializeObject<object>(responseData);
 
             return Ok(responseResult);
+        }
+
+        [HttpGet("GetMMTBookingRequestDetails/{tripId}")]
+        public async Task<IActionResult> GetMMTBookingRequestDetails(Guid tripId)
+        {
+            var mMTpDataQuery = new GetMMTBookingRequestDetailsDataQuery { TripId = tripId };
+            var result = await _mediator.Send(mMTpDataQuery);
+            return Ok(result);
+
         }
     }
 }

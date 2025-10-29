@@ -62,6 +62,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     myDashboardData.TotalTripCount = (int)rdr["TotalTripCount"];
                     myDashboardData.TotalTripPendingCount = (int)rdr["TotalTripPendingCount"];
                     myDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
+                    myDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     myDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
                     myDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
                     myDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
@@ -90,6 +91,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     teamDashboardData.TotalTripCount = (int)rdr["TotalTripCount"];
                     teamDashboardData.TotalTripPendingCount = (int)rdr["TotalTripPendingCount"];
                     teamDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
+                    teamDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     teamDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
                     teamDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
                     teamDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
