@@ -16,9 +16,14 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class ApprovalDetails
     {
         public string approvalRequired { get; set; }
-        public List<object> approverDetails { get; set; }
+        public List<ApproverDetail> approverDetails { get; set; }
     }
-
+    public class ApproverDetail
+    {
+        public int approvalLevel { get; set; }
+        public string name { get; set; }
+        public string emailId { get; set; }
+    }
     public class Child
     {
         public string count { get; set; }
@@ -75,7 +80,6 @@ namespace BTTEM.MediatR.CommandAndQuery
         public DeviceDetails deviceDetails { get; set; }
         public TravellerDetails travellerDetails { get; set; }
         public Services services { get; set; }
-        public List<HOTEL> HOTEL { get; set; }
         public ReasonForTravel reasonForTravel { get; set; }
         public ApprovalDetails approvalDetails { get; set; }
         public string trfId { get; set; }
@@ -84,6 +88,7 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class Services
     {
         public List<FLIGHT> FLIGHT { get; set; }
+        public List<HOTEL> HOTEL { get; set; }
     }
 
     public class To
@@ -102,12 +107,13 @@ namespace BTTEM.MediatR.CommandAndQuery
     public class HOTEL
     {
         public string serviceId { get; set; }
-        public string cityCode { get; set; }
+        public object checkin { get; set; }
+        public object checkout { get; set; }
         public string cityName { get; set; }
+        public string cityCode { get; set; }
+        public string stateName { get; set; }
         public string countryCode { get; set; }
         public string countryName { get; set; }
-        public long checkin { get; set; }
-        public long checkout { get; set; }
         public List<RoomDetailsPaxWise> roomDetailsPaxWise { get; set; }
     }
     public class RoomDetailsPaxWise

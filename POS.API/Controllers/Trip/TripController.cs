@@ -8,6 +8,7 @@ using BTTEM.Data.Entities;
 using BTTEM.Data.Resources;
 using BTTEM.MediatR.CommandAndQuery;
 using BTTEM.MediatR.Commands;
+using BTTEM.MediatR.Expense.Commands;
 using BTTEM.MediatR.PoliciesTravel.Commands;
 using BTTEM.MediatR.Trip.Commands;
 using BTTEM.Repository;
@@ -2727,13 +2728,17 @@ namespace BTTEM.API.Controllers.Trip
         /// <param name="TripRequest"></param>
         /// <returns></returns>
         [HttpPost("mmt-trip-request")]
-        public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip)
+        //public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
+        public async Task<IActionResult> MMTTripRequest(Guid TripId)
         {
+            AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
+            var mmtPayload = GetMMTBookingRequestDetails(TripId);
+
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/corporate/v1/create/partner/travel-request");
             request.Headers.Add("partner-apikey", "08b1cb0c8c5b3f39bae10ad5cb3888eba4501449");
             request.Headers.Add("client-code", "A836CD1C6B2B3");
-            request.Headers.Add("Cookie", "_abck=1BB518837275EF0EB2627F5541D45DBC~-1~YAAQ5KTUF9m+p+qZAQAA+lLdEA7+F44y+Qm+jyI4FpHQ7DxH8fCXPs+osijOmKekw4l7EBE2pQwho9fHyZrbfw36hglyifsvYV6O+d/HBEmUvIg/T1Im/MTmXFY3KrjddbPBQO1NH0FZLTgLpWJsJQtmAQcU9OGQl3ffiTd3IyoSRsMBhHVdJhDbfOQ7WbYY5hps3kCC4rbelIcwA2109l0WvzbcAFUejM1rKsL2n2QgmcOjirTbg/X5cCxqzc3+KJ3hzyiOygX05dQphDo3990kQ6muTI2xwMVyDBD7zGysXK4qRwuBV9z2c3GYN7sn3fIMtkB5DOCsk0TguFCSP96GBILFtr60W/ZZo315lTDszdT/wUB6dXochNgZv0yEntQVSav4eqBhleS8IuaYQQSAu86/cKwFDQbGKhMl3jn4bqKD32A0MuQpXCVnJq1C2PEsFwVVE/3CcNXu+tktWpWiiczWX5Q=~-1~-1~-1~-1~-1; ak_bmsc=6C957C80CCBEAC3FDD9E5CB5E048ECFF~000000000000000000000000000000~YAAQ5KTUF1PAjeqZAQAABh2IEB3oHiG1MCkvYQQ5EcmsGlzIxufAd9NDmJZ7vNxqhgyve36qRiDNZl0O0pRoFWGjVYOMaugRVwqumRrvNyY+zy2UlifGizk8HlucT5QriEs3fKlAY77hTRK66IBzpEADzecUcfyLPsP07ZQoXseraKq3NtEqqKFZEHs2QOpKV6nTaEIYAbp6WgDqkSFLo5hJ+BCNYkBXnqMM8LgVUpFa9ddhj/tS8IsCDmQ0n1tFhfWUFLYBQ2p4Sw4FERQCoksqvdsKMLtwGPB1WxfA64CRAjSGt2qvFHnZ5ZVKDSEURIPPZvL7AwgZ4ClCarH6MbqiO6arrhTiKq2rdCY8bvnp9w==; bm_sv=A57017B9CA971E272EEFE43ADB0A622A~YAAQ56TUF1SwIvWZAQAATx/lEB2x8ApkuhD+15GS/4PAmXnO7/+t8Hl9usfL41DaUcSLFufUlqILLn/Xq94C41+vBna4zMjybgd2nb54TshXWHkK67xnKLzvmRAxgf58tW3lsRs+iATqJx1ho4IcAqMGjUm+PYkCFZ0TQpZxeN7oM5sY9f0fUhBvxW4aYBIN8+LGmAjhgfb6zjOnTtqNWpvKg1Ay2ZTBn9mH5u2WTV/RTI+Ex6QgJlmNR6QQWBNQHpxphQ==~1; bm_sz=77839A08C45CEF945B811C7AC62C16F1~YAAQ5KTUF9u+p+qZAQAA+lLdEB3Uow9P1ij3XlkH4dyF5PZNs5ZyqeO8ooycI4/whfN5GcijPx4mC2WzyFqjS3Em1twr3XhHk6akAisvwBZ63LrP8lOWP7qCi6NP6CFanQsw9q5AxBsOrnaj2ehg7UT1uUTPRqxVfSeKTUld1iImPXwYg8WNQdfETocYNlcII9vy1KJ4koT+5IbVxVLjiJGcYbAe4H3nzy6eJ/jD+HUdJNcRll55oUDB812Cj6ap2e3rS7Y+UczGvct+bxLTSn4ABIZS/qh1btddLkKauQpN+DtG6P+kGagdYfZmrVDZxqbB13R1oXqJOJr6pAm/ajrgH+jOgYP6DMXsOONBmUqzJw==~3618356~3289904");
+            request.Headers.Add("Cookie", "_abck=1BB518837275EF0EB2627F5541D45DBC~-1~YAAQ5KTUF9m+p+qZAQAA+lLdEA7+F44y+Qm+jyI4FpHQ7DxH8fCXPs+osijOmKekw4l7EBE2pQwho9fHyZrbfw36hglyifsvYV6O+d/HBEmUvIg/T1Im/MTmXFY3KrjddbPBQO1NH0FZLTgLpWJsJQtmAQcU9OGQl3ffiTd3IyoSRsMBhHVdJhDbfOQ7WbYY5hps3kCC4rbelIcwA2109l0WvzbcAFUejM1rKsL2n2QgmcOjirTbg/X5cCxqzc3+KJ3hzyiOygX05dQphDo3990kQ6muTI2xwMVyDBD7zGysXK4qRwuBV9z2c3GYN7sn3fIMtkB5DOCsk0TguFCSP96GBILFtr60W/ZZo315lTDszdT/wUB6dXochNgZv0yEntQVSav4eqBhleS8IuaYQQSAu86/cKwFDQbGKhMl3jn4bqKD32A0MuQpXCVnJq1C2PEsFwVVE/3CcNXu+tktWpWiiczWX5Q=~-1~-1~-1~-1~-1; ak_bmsc=21816718D45C06CB66A1E3ACE991AD56~000000000000000000000000000000~YAAQ56TUFz13YvWZAQAArAaQER2Mdg2giFzns8yHUISxcLg5eOuKTnc0nqAvMpJbHPJAJVC6GxzSfkXvzFDmp0R+KUNBTz3pb8ESexCKwDAdAJxgdt1nwzw4fBXyhxzi8cPhkr1BB9kQvmPeEfdS9OlF1nvt6JRdA5WPr33tPb4yPZcOKyslS8pG0jaCMpbqV3KgwhDdQfIuxJBXQL/YZbH1fH9B0OZMgU7hwtdyq9kH7IgAe1EYBRJHYtLgAHZ+hDCph/tjnGMvjI26hVlrizyek5PNs9RMyr9DioeemUG++yB6szamWmtpEk4u4QqADx35V9FYZyv7YrVQNOU3fdIfkn6MIHZqvEaC3m9otcmurw==; bm_sz=77839A08C45CEF945B811C7AC62C16F1~YAAQ5KTUF9u+p+qZAQAA+lLdEB3Uow9P1ij3XlkH4dyF5PZNs5ZyqeO8ooycI4/whfN5GcijPx4mC2WzyFqjS3Em1twr3XhHk6akAisvwBZ63LrP8lOWP7qCi6NP6CFanQsw9q5AxBsOrnaj2ehg7UT1uUTPRqxVfSeKTUld1iImPXwYg8WNQdfETocYNlcII9vy1KJ4koT+5IbVxVLjiJGcYbAe4H3nzy6eJ/jD+HUdJNcRll55oUDB812Cj6ap2e3rS7Y+UczGvct+bxLTSn4ABIZS/qh1btddLkKauQpN+DtG6P+kGagdYfZmrVDZxqbB13R1oXqJOJr6pAm/ajrgH+jOgYP6DMXsOONBmUqzJw==~3618356~3289904");
 
             var payload = System.Text.Json.JsonSerializer.Serialize(mMMTTrip.MMTTrip, new JsonSerializerOptions
             {
@@ -2755,6 +2760,15 @@ namespace BTTEM.API.Controllers.Trip
             var responseResult = JsonConvert.DeserializeObject<object>(responseData);
 
             return Ok(responseResult);
+        }
+
+        [HttpGet("GetMMTBookingRequestDetails/{tripId}")]
+        public async Task<IActionResult> GetMMTBookingRequestDetails(Guid tripId)
+        {
+            var mMTpDataQuery = new GetMMTBookingRequestDetailsDataQuery { TripId = tripId };
+            var result = await _mediator.Send(mMTpDataQuery);
+            return Ok(result);
+
         }
     }
 }

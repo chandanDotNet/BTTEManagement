@@ -44,7 +44,7 @@ namespace BTTEM.Data.Entities
         public bool status { get; set; }
         public int StatusCode { get; set; }
         public string message { get; set; }
-        public UserInfoDetails userInfoDetails { get; set; }        
+        public UserInfoDetails userInfoDetails { get; set; }
     }
 
     public class UserInfoDetails
@@ -137,9 +137,9 @@ namespace BTTEM.Data.Entities
         public decimal DA { get; set; }
         public decimal Others { get; set; }
         public decimal Total { get; set; }
-        public string Remarks { get; set; }    
-        public string ExpenseNo { get; set; }    
-        public string TripNo { get; set; }    
+        public string Remarks { get; set; }
+        public string ExpenseNo { get; set; }
+        public string TripNo { get; set; }
 
 
     }
@@ -150,7 +150,7 @@ namespace BTTEM.Data.Entities
         public string Description { get; set; }
         public decimal Fare { get; set; }
         public string CancelationReason { get; set; }
-        public decimal AgentCharge { get; set; }   
+        public decimal AgentCharge { get; set; }
 
 
     }
@@ -177,7 +177,7 @@ namespace BTTEM.Data.Entities
         public string TripName { get; set; }
         public string TripStarts { get; set; }
         public string TripEnds { get; set; }
-        
+
     }
     public class UserAllExpenseReportDetails
     {
@@ -279,7 +279,7 @@ namespace BTTEM.Data.Entities
     {
         public bool status { get; set; }
         public int StatusCode { get; set; }
-        public string message { get; set; }       
+        public string message { get; set; }
     }
 
     public class LoginResponse
@@ -313,7 +313,7 @@ namespace BTTEM.Data.Entities
     }
 
     public class AllDashboardData
-    {       
+    {
         public MyDashboardData MyDashboardData { get; set; }
         public TeamDashboardData TeamDashboardData { get; set; }
         public IList<UserAllTripReportDetails> UserAllTripReportDetailsList { get; set; } = new List<UserAllTripReportDetails>();
@@ -330,22 +330,23 @@ namespace BTTEM.Data.Entities
         public int TotalTripPendingCount { get; set; } = 0;
         public int TotalTripApproveCount { get; set; } = 0;
 
+        public int TotalTripRejectCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
 
         public decimal PermanentAdvance { get; set; }
-        
+
     }
     public class TeamDashboardData
     {
         public int TotalTripCount { get; set; } = 0;
         public int TotalTripPendingCount { get; set; } = 0;
         public int TotalTripApproveCount { get; set; } = 0;
-
+        public int TotalTripRejectCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
-        public int TotalExpenseApproveCount { get; set; } = 0;       
+        public int TotalExpenseApproveCount { get; set; } = 0;
 
     }
     public class AllDashboardDataResponse
@@ -365,7 +366,7 @@ namespace BTTEM.Data.Entities
     }
 
     public class AllTypeReports
-    {       
+    {
         public List<OverallExpensesReportData> OverallExpensesReport { get; set; }
         public List<OverallTripReportData> OverallTripReport { get; set; }
     }
@@ -379,7 +380,7 @@ namespace BTTEM.Data.Entities
         public decimal ApproveAmount { get; set; }
         public long TotalReimbursementCount { get; set; }
         public decimal ReimbursementAmount { get; set; }
-       
+
     }
 
     public class OverallTripReportData
@@ -387,7 +388,7 @@ namespace BTTEM.Data.Entities
         public string CompanyName { get; set; }
         public long NoOfTripApplied { get; set; }
         public long NoOfTripApproved { get; set; }
-        public long NoOfTripCompleted { get; set; }        
+        public long NoOfTripCompleted { get; set; }
 
     }
 
@@ -404,16 +405,16 @@ namespace BTTEM.Data.Entities
 
     public class AllExpenseData
     {
-       
+
         public IList<AllExpenseDataList> AllExpenseDataList { get; set; } = new List<AllExpenseDataList>();
-       
+
     }
 
     public class AllExpenseDataList
     {
         public Guid MasterExpenseId { get; set; }
         public Guid UserId { get; set; }
-        public string UserName { get; set; }       
+        public string UserName { get; set; }
         public string ExpenseNo { get; set; }
         public Guid? TripId { get; set; }
         public string TripName { get; set; }
@@ -423,7 +424,7 @@ namespace BTTEM.Data.Entities
         public decimal TotalAmount { get; set; }
         public decimal DeviationAmount { get; set; }
         public decimal? PayableAmount { get; set; }
-        public decimal ReimbursementAmount { get; set; }       
+        public decimal ReimbursementAmount { get; set; }
         public string ApprovalStatus { get; set; }
         public Guid? ApprovalBy { get; set; }
         public string ApprovalByName { get; set; }
@@ -442,7 +443,7 @@ namespace BTTEM.Data.Entities
         public string ExpenseCategoryName { get; set; }
         public decimal AllowedAmount { get; set; }
         public decimal ExpenseAmount { get; set; }
-        public decimal DeviationAmount { get; set; }       
+        public decimal DeviationAmount { get; set; }
         public List<ExpenseDto> ExpenseDtos { get; set; } = new List<ExpenseDto>();
     }
 
@@ -507,7 +508,7 @@ namespace BTTEM.Data.Entities
     }
 
     public class WithTax
-    {        
+    {
         public string JourneyNo { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
@@ -585,4 +586,41 @@ namespace BTTEM.Data.Entities
         public string AppliedBy { get; set; }
 
     }
+    public class MMTData
+    {
+        public TripClassification tripClassification { get; set; }
+        public List<TripItineraries> tripItineraries { get; set; }
+        public FromTripDetails fromTripDetails { get; set; }
+
+    }
+    public class TripClassification
+    {
+        public string TripBy { get; set; }
+        public string ServiceId { get; set; }
+        public string TripType { get; set; }
+        public string TravelClass { get; set; }
+    }
+    public class TripItineraries
+    {
+        public string FromAirportCode { get; set; }
+        public string FromCityName { get; set; }
+        public string FromCountryCode { get; set; }
+        public string FromCountryName { get; set; }
+        public string ToAirportCode { get; set; }
+        public string ToCityName { get; set; }
+        public string ToCountryCode { get; set; }
+        public string ToCountryName { get; set; }
+        public string DepartureDate { get; set; }
+    }
+    public class FromTripDetails
+    {
+        public string ServiceId { get; set; }
+        public string CityCode { get; set; }
+        public string CityName { get; set; }
+        public string FromCountryCode { get; set; }
+        public string FromCountryName { get; set; }
+        public string CheckIn { get; set; }
+        public string CheckOut { get; set; }
+    }
+    
 }
