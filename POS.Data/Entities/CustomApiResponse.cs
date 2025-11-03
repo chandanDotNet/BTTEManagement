@@ -318,6 +318,10 @@ namespace BTTEM.Data.Entities
         public TeamDashboardData TeamDashboardData { get; set; }
         public IList<UserAllTripReportDetails> UserAllTripReportDetailsList { get; set; } = new List<UserAllTripReportDetails>();
         public IList<UserAllExpenseReportDetails> UserAllExpenseReportDetailsList { get; set; } = new List<UserAllExpenseReportDetails>();
+        public IList<MyUpcomingTripDetails> MyUpcomingTripDetailsList { get; set; } = new List<MyUpcomingTripDetails>();
+        public IList<TeamUpcomingTripDetails> TeamUpcomingTripDetailsList { get; set; } = new List<TeamUpcomingTripDetails>();
+        public IList<MyRecentExpensesDetails> MyRecentExpensesDetailsList { get; set; } = new List<MyRecentExpensesDetails>();
+        public IList<TeamRecentExpensesDetails> TeamRecentExpensesDetailsList { get; set; } = new List<TeamRecentExpensesDetails>();
     }
 
     public class MyDashboardData
@@ -327,11 +331,18 @@ namespace BTTEM.Data.Entities
         public int TotalTripApproveCount { get; set; } = 0;
 
         public int TotalTripRejectCount { get; set; } = 0;
+        public int TotalTripCanceledCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
+        public int TotalExpenseRejectCount { get; set; } = 0;
+        public int TotalExpenseRembCount { get; set; } = 0;
 
         public decimal PermanentAdvance { get; set; }
+        public string Name { get; set; }
+        public string EmpCode { get; set; }
+        public string Grade { get; set; }
+        public string ProfilePhoto { get; set; }
 
     }
     public class TeamDashboardData
@@ -340,9 +351,12 @@ namespace BTTEM.Data.Entities
         public int TotalTripPendingCount { get; set; } = 0;
         public int TotalTripApproveCount { get; set; } = 0;
         public int TotalTripRejectCount { get; set; } = 0;
+        public int TotalTripCanceledCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
+        public int TotalExpenseRejectCount { get; set; } = 0;
+        public int TotalExpenseRembCount { get; set; } = 0;
 
     }
     public class AllDashboardDataResponse
@@ -522,6 +536,64 @@ namespace BTTEM.Data.Entities
         public string CreditNote { get; set; }
         public List<Item> Item { get; set; } = new List<Item>();
     }
+
+    public class MyUpcomingTripDetails
+    {
+        public Guid Id { get; set; }
+        public string TripNo { get; set; }
+        public string TripName { get; set; }
+        public string TripStarts { get; set; }
+        public string TripEnds { get; set; }
+        public string SourceCityName { get; set; }
+        public string DestinationCityName { get; set; }
+        public string AppliedOn { get; set; }
+        public string AppliedBy { get; set; }
+        public string TripBy { get; set; }
+
+    }
+
+    public class TeamUpcomingTripDetails
+    {
+        public Guid Id { get; set; }
+        public string TripNo { get; set; }
+        public string TripName { get; set; }
+        public string TripStarts { get; set; }
+        public string TripEnds { get; set; }
+        public string SourceCityName { get; set; }
+        public string DestinationCityName { get; set; }
+        public string AppliedOn { get; set; }
+        public string AppliedBy { get; set; }
+        public string TripBy { get; set; }
+
+    }
+
+    public class MyRecentExpensesDetails
+    {
+        public Guid Id { get; set; }
+        public string ExpenseNo { get; set; }
+        public string Status { get; set; }
+        public string Approval { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal ApprovedAmount { get; set; }
+        public decimal ReimbursementAmount { get; set; }
+        public string AppliedOn { get; set; }
+        public string AppliedBy { get; set; }
+
+    }
+
+    public class TeamRecentExpensesDetails
+    {
+        public Guid Id { get; set; }
+        public string ExpenseNo { get; set; }
+        public string Status { get; set; }
+        public string Approval { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal ApprovedAmount { get; set; }
+        public decimal ReimbursementAmount { get; set; }
+        public string AppliedOn { get; set; }
+        public string AppliedBy { get; set; }
+
+    }
     public class MMTData
     {
         public TripClassification tripClassification { get; set; }
@@ -558,5 +630,29 @@ namespace BTTEM.Data.Entities
         public string CheckIn { get; set; }
         public string CheckOut { get; set; }
     }
-    
+
+    public class AllFinancialYearDataResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public AllFinancialYearData Data { get; set; }
+    }
+
+    public class AllFinancialYearData
+    {
+        public List<FinancialYearData> FinancialYear { get; set; }
+
+    }
+
+    public class FinancialYearData
+    {
+        public int Id { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string Name { get; set; }
+
+    }
+
+
 }

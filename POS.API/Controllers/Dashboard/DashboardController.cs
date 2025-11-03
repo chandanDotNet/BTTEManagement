@@ -333,5 +333,35 @@ namespace POS.API.Controllers.Dashboard
             return Ok(overallExpensesReportDataResponse);
         }
 
+
+        /// <summary>
+        /// Get Financial Year Data
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetFinancialYearData")]
+        // [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetFinancialYearData()
+        {
+
+            GetFinancialYearDataCommand getFinancialYearDataCommand=new GetFinancialYearDataCommand();
+            AllFinancialYearDataResponse allFinancialYearDataResponse = new AllFinancialYearDataResponse();           
+
+            //GetFinancialYearDataCommandHandler
+            var result = await _mediator.Send(getFinancialYearDataCommand);
+            if (result != null)
+            {
+                allFinancialYearDataResponse.status = true;
+                allFinancialYearDataResponse.StatusCode = 200;
+                allFinancialYearDataResponse.Data = result;
+            }
+            else
+            {
+                allFinancialYearDataResponse.status = false;
+                allFinancialYearDataResponse.StatusCode = 500;
+                allFinancialYearDataResponse.Data = result;
+            }
+            return Ok(allFinancialYearDataResponse);
+        }
+        
     }
 }
