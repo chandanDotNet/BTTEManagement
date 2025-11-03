@@ -35,9 +35,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
             _pathHelper = pathHelper;
         }
 
-#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task<AllDashboardData> Handle(GetAllDashboardDataQueryCommand request, CancellationToken cancellationToken)
-#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             AllDashboardData allDashboardData = new AllDashboardData();
             string connectionString = _pathHelper.connectionStrings.Trim();
@@ -95,8 +93,6 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     teamDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
                     teamDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
                     teamDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
-                   
-
                 }
                 con.Close();
             }

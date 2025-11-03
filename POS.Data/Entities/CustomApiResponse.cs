@@ -401,9 +401,7 @@ namespace BTTEM.Data.Entities
 
     public class AllExpenseData
     {
-
         public IList<AllExpenseDataList> AllExpenseDataList { get; set; } = new List<AllExpenseDataList>();
-
     }
 
     public class AllExpenseDataList

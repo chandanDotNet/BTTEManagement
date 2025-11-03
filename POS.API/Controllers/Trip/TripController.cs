@@ -41,6 +41,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -2723,16 +2724,16 @@ namespace BTTEM.API.Controllers.Trip
 
 
         /// <summary>
-        /// MMT .
+        /// MMT Trip Request.
         /// </summary>      
         /// <param name="TripRequest"></param>
         /// <returns></returns>
-        [HttpPost("mmt-trip-request")]
-        //public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
-        public async Task<IActionResult> MMTTripRequest(Guid TripId)
+        [HttpPost("mmt-trip-request/{tripId}")]
+        public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
+        //public async Task<IActionResult> MMTTripRequest(Guid TripId)
         {
-            AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
-            var mmtPayload = GetMMTBookingRequestDetails(TripId);
+            //var mmtPayload = GeneratePayload(TripId);
+            //AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
 
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/corporate/v1/create/partner/travel-request");
@@ -2762,14 +2763,174 @@ namespace BTTEM.API.Controllers.Trip
             return Ok(responseResult);
         }
 
-        [HttpGet("GetMMTBookingRequestDetails/{tripId}")]
-        public async Task<IActionResult> GetMMTBookingRequestDetails(Guid tripId)
-        {
-            var mMTpDataQuery = new GetMMTBookingRequestDetailsDataQuery { TripId = tripId };
-            var result = await _mediator.Send(mMTpDataQuery);
-            return Ok(result);
+        //[HttpGet("GetMMTBookingRequestDetails/{tripId}")]
+        //public async Task<IActionResult> GetMMTBookingRequestDetails(Guid tripId)
+        //{
+        //    var mMTpDataQuery = new GetMMTBookingRequestDetailsDataQuery { TripId = tripId };
+        //    var result = await _mediator.Send(mMTpDataQuery);
+        //    return Ok(result);
 
-        }
+        //}
+
+        //[HttpGet("GeneratePayload/{tripId}")]
+        ////[NonAction]
+        ////public ContentResult GeneratePayload(Guid TripId)
+        //public async Task<IActionResult> GeneratePayload(Guid tripId)
+        //{
+        //    var mmtPayloadData = GetMMTBookingRequestDetails(tripId).Result;
+            
+        //    AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
+
+        //    List<ApproverDetail> approverDetail = new List<ApproverDetail>();
+        //    approverDetail.Add(new ApproverDetail()
+        //    {
+        //        approvalLevel = 0,
+        //        emailId = "",
+        //        name = "",
+        //    });
+        //    ApprovalDetails approvalDetails = new ApprovalDetails()
+        //    {
+        //        approvalRequired = "false",
+        //        approverDetails = approverDetail
+        //    };    
+            
+            
+        //    Child child = new Child()
+        //    {
+        //        age = new List<object>(),
+        //        count = "",
+        //    };
+
+
+        //    DeviceDetails deviceDetails = new DeviceDetails()
+        //    {
+        //        platform = "DESKTOP"
+        //    };
+
+
+        //    List<JourneyDetail> journeyDetail = new List<JourneyDetail>();
+        //    journeyDetail.Add(new JourneyDetail()
+        //    {
+
+        //    });            
+
+        //    From from = new From()
+        //    {
+        //        airportCode = "",
+        //        cityName = "",
+        //        countryCode = "",
+        //        countryName = ""
+        //    };
+
+
+        //    ReasonForTravel reasonForTravel = new ReasonForTravel()
+        //    {
+        //        reason = ""
+        //    };           
+
+        //    PaxDetail paxDetail = new PaxDetail();
+        //    List<FLIGHT> fLIGHT = new List<FLIGHT>();
+        //    fLIGHT.Add(new FLIGHT()
+        //    {
+        //        journeyDetails = journeyDetail,
+        //        paxDetails = paxDetail,
+        //        serviceId = "",
+        //        travelClass = "",
+        //        tripType = ""
+        //    });
+            
+        //    List<PaxDetail> lstPaxDetail = new List<PaxDetail>();
+        //    lstPaxDetail.Add(new PaxDetail()
+        //    {
+
+        //    });
+        //    TravellerDetails travellerDetails = new TravellerDetails()
+        //    {
+        //        paxDetails = lstPaxDetail
+        //    };
+
+        //    List<HOTEL> hOTEL = new List<HOTEL>();
+        //    hOTEL.Add(new HOTEL()
+        //    {
+
+        //    });
+        //    Services services = new Services()
+        //    {
+        //        FLIGHT = fLIGHT,
+        //        HOTEL = hOTEL
+               
+        //    };
+
+        //    To to = new To()
+        //    {
+        //        airportCode = "",
+        //        cityName = "",
+        //        countryName = "",
+        //        countryCode = ""
+        //    };                      
+
+        //    RoomDetailsPaxWise roomDetailsPaxWise = new RoomDetailsPaxWise()
+        //    {
+        //        adult = 0,
+        //        child = child,
+        //        infant = 0
+        //    };
+
+        //    MMTTripRequest mMTTripRequest = new MMTTripRequest()
+        //    {
+
+        //    };
+
+        //    //var data = new { Item = "Manual Item", Price = 9.99 };
+        //    //var jsonString = System.Text.Json.JsonSerializer.Serialize(data); 
+
+        //    // Or using Newtonsoft.Json:
+        //    // var jsonString = JsonConvert.SerializeObject(data);
+        //    return Ok();
+        //    //return Content(mmtPayloadData.ToString(), "application/json");
+        //}
+
+        ///// <summary>
+        ///// MMT Get Trip Data.
+        ///// </summary>      
+        ///// <param name="TripRequest"></param>
+        ///// <returns></returns>
+        //[HttpPost("mmt-trip-request/{tripId}")]
+        ////public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
+        //public async Task<IActionResult> MMTAllTripData([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
+        //{
+        //    var mmtPayload = GeneratePayload(TripId);
+
+        //    AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
+
+        //    var client = new HttpClient();
+        //    var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/corporate/v1/create/partner/travel-request");
+        //    request.Headers.Add("partner-apikey", "08b1cb0c8c5b3f39bae10ad5cb3888eba4501449");
+        //    request.Headers.Add("client-code", "A836CD1C6B2B3");
+        //    request.Headers.Add("Cookie", "_abck=1BB518837275EF0EB2627F5541D45DBC~-1~YAAQ5KTUF9m+p+qZAQAA+lLdEA7+F44y+Qm+jyI4FpHQ7DxH8fCXPs+osijOmKekw4l7EBE2pQwho9fHyZrbfw36hglyifsvYV6O+d/HBEmUvIg/T1Im/MTmXFY3KrjddbPBQO1NH0FZLTgLpWJsJQtmAQcU9OGQl3ffiTd3IyoSRsMBhHVdJhDbfOQ7WbYY5hps3kCC4rbelIcwA2109l0WvzbcAFUejM1rKsL2n2QgmcOjirTbg/X5cCxqzc3+KJ3hzyiOygX05dQphDo3990kQ6muTI2xwMVyDBD7zGysXK4qRwuBV9z2c3GYN7sn3fIMtkB5DOCsk0TguFCSP96GBILFtr60W/ZZo315lTDszdT/wUB6dXochNgZv0yEntQVSav4eqBhleS8IuaYQQSAu86/cKwFDQbGKhMl3jn4bqKD32A0MuQpXCVnJq1C2PEsFwVVE/3CcNXu+tktWpWiiczWX5Q=~-1~-1~-1~-1~-1; ak_bmsc=21816718D45C06CB66A1E3ACE991AD56~000000000000000000000000000000~YAAQ56TUFz13YvWZAQAArAaQER2Mdg2giFzns8yHUISxcLg5eOuKTnc0nqAvMpJbHPJAJVC6GxzSfkXvzFDmp0R+KUNBTz3pb8ESexCKwDAdAJxgdt1nwzw4fBXyhxzi8cPhkr1BB9kQvmPeEfdS9OlF1nvt6JRdA5WPr33tPb4yPZcOKyslS8pG0jaCMpbqV3KgwhDdQfIuxJBXQL/YZbH1fH9B0OZMgU7hwtdyq9kH7IgAe1EYBRJHYtLgAHZ+hDCph/tjnGMvjI26hVlrizyek5PNs9RMyr9DioeemUG++yB6szamWmtpEk4u4QqADx35V9FYZyv7YrVQNOU3fdIfkn6MIHZqvEaC3m9otcmurw==; bm_sz=77839A08C45CEF945B811C7AC62C16F1~YAAQ5KTUF9u+p+qZAQAA+lLdEB3Uow9P1ij3XlkH4dyF5PZNs5ZyqeO8ooycI4/whfN5GcijPx4mC2WzyFqjS3Em1twr3XhHk6akAisvwBZ63LrP8lOWP7qCi6NP6CFanQsw9q5AxBsOrnaj2ehg7UT1uUTPRqxVfSeKTUld1iImPXwYg8WNQdfETocYNlcII9vy1KJ4koT+5IbVxVLjiJGcYbAe4H3nzy6eJ/jD+HUdJNcRll55oUDB812Cj6ap2e3rS7Y+UczGvct+bxLTSn4ABIZS/qh1btddLkKauQpN+DtG6P+kGagdYfZmrVDZxqbB13R1oXqJOJr6pAm/ajrgH+jOgYP6DMXsOONBmUqzJw==~3618356~3289904");
+
+        //    var payload = System.Text.Json.JsonSerializer.Serialize(mMMTTrip.MMTTrip, new JsonSerializerOptions
+        //    {
+        //        WriteIndented = true // Optional: for readable logs
+        //    });
+
+        //    request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+        //    var response = await client.SendAsync(request);
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        var errorContent = await response.Content.ReadAsStringAsync();
+        //        return StatusCode((int)response.StatusCode, new { Error = "MMT API request failed", Details = errorContent });
+        //    }
+
+        //    var responseData = await response.Content.ReadAsStringAsync();
+
+        //    var responseResult = JsonConvert.DeserializeObject<object>(responseData);
+
+        //    return Ok(responseResult);
+        //}
+
     }
 }
 
