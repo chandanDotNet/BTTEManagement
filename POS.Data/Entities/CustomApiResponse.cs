@@ -331,11 +331,18 @@ namespace BTTEM.Data.Entities
         public int TotalTripApproveCount { get; set; } = 0;
 
         public int TotalTripRejectCount { get; set; } = 0;
+        public int TotalTripCanceledCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
+        public int TotalExpenseRejectCount { get; set; } = 0;
+        public int TotalExpenseRembCount { get; set; } = 0;
 
         public decimal PermanentAdvance { get; set; }
+        public string Name { get; set; }
+        public string EmpCode { get; set; }
+        public string Grade { get; set; }
+        public string ProfilePhoto { get; set; }
 
     }
     public class TeamDashboardData
@@ -344,9 +351,12 @@ namespace BTTEM.Data.Entities
         public int TotalTripPendingCount { get; set; } = 0;
         public int TotalTripApproveCount { get; set; } = 0;
         public int TotalTripRejectCount { get; set; } = 0;
+        public int TotalTripCanceledCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
+        public int TotalExpenseRejectCount { get; set; } = 0;
+        public int TotalExpenseRembCount { get; set; } = 0;
 
     }
     public class AllDashboardDataResponse
@@ -622,5 +632,29 @@ namespace BTTEM.Data.Entities
         public string CheckIn { get; set; }
         public string CheckOut { get; set; }
     }
-    
+
+    public class AllFinancialYearDataResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public AllFinancialYearData Data { get; set; }
+    }
+
+    public class AllFinancialYearData
+    {
+        public List<FinancialYearData> FinancialYear { get; set; }
+
+    }
+
+    public class FinancialYearData
+    {
+        public int Id { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string Name { get; set; }
+
+    }
+
+
 }

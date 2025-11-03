@@ -11,6 +11,7 @@ using POS.Repository;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -63,10 +64,19 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     myDashboardData.TotalTripPendingCount = (int)rdr["TotalTripPendingCount"];
                     myDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     myDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
+                    myDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
                     myDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
                     myDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
                     myDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
-                    myDashboardData.PermanentAdvance = (decimal)rdr["PermanentAdvance"];                  
+                    myDashboardData.TotalExpenseRejectCount = (int)rdr["TotalExpenseRejectCount"];
+                    myDashboardData.TotalExpenseRembCount = (int)rdr["TotalExpenseRembCount"];
+                    myDashboardData.PermanentAdvance = (decimal)rdr["PermanentAdvance"];  
+                    
+                    myDashboardData.Name = rdr["Name"].ToString();                  
+                    myDashboardData.EmpCode = rdr["EmpCode"].ToString();                  
+                    myDashboardData.Grade = rdr["Grade"].ToString();                  
+                    myDashboardData.ProfilePhoto = rdr["ProfilePhoto"].ToString();                  
+                    //myDashboardData.ProfilePhoto = Path.Combine(_pathHelper.UserProfilePath, rdr["ProfilePhoto"].ToString());                  
 
                 }
                 con.Close();
@@ -92,9 +102,12 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     teamDashboardData.TotalTripPendingCount = (int)rdr["TotalTripPendingCount"];
                     teamDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     teamDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
+                    teamDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
                     teamDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
                     teamDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
                     teamDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
+                    teamDashboardData.TotalExpenseRejectCount = (int)rdr["TotalExpenseRejectCount"];
+                    teamDashboardData.TotalExpenseRembCount = (int)rdr["TotalExpenseRembCount"];
                    
 
                 }
@@ -128,6 +141,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     MyUpcomingTripDetails.DestinationCityName = rdr["DestinationCityName"].ToString();
                     MyUpcomingTripDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     MyUpcomingTripDetails.AppliedBy = rdr["AppliedBy"].ToString();
+                    MyUpcomingTripDetails.TripBy = rdr["TripBy"].ToString();
 
                     MyUpcomingTripDetailsList.Add(MyUpcomingTripDetails);
                 }
@@ -161,6 +175,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     TeamUpcomingTripDetails.DestinationCityName = rdr["DestinationCityName"].ToString();
                     TeamUpcomingTripDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     TeamUpcomingTripDetails.AppliedBy = rdr["AppliedBy"].ToString();
+                    TeamUpcomingTripDetails.TripBy = rdr["TripBy"].ToString();
 
                     TeamUpcomingTripDetailsList.Add(TeamUpcomingTripDetails);
                 }
@@ -195,6 +210,7 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     MyRecentExpensesDetails.ReimbursementAmount = (decimal)rdr["ReimbursementAmount"];
                     MyRecentExpensesDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     MyRecentExpensesDetails.AppliedBy = rdr["AppliedBy"].ToString();
+                  
 
                     MyRecentExpensesDetailsList.Add(MyRecentExpensesDetails);
                 }
