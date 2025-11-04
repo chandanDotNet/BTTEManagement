@@ -52,6 +52,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
                 cmd.Parameters.AddWithValue("@Month", request.Month);
                 cmd.Parameters.AddWithValue("@Year", request.Year);
+                cmd.Parameters.AddWithValue("@StartDate", request.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
@@ -90,6 +92,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
                 cmd.Parameters.AddWithValue("@Month", request.Month);
                 cmd.Parameters.AddWithValue("@Year", request.Year);
+                cmd.Parameters.AddWithValue("@StartDate", request.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
@@ -123,6 +127,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
                 cmd.Parameters.AddWithValue("@Month", request.Month);
                 cmd.Parameters.AddWithValue("@Year", request.Year);
+                cmd.Parameters.AddWithValue("@StartDate", request.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
@@ -157,6 +163,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
                 cmd.Parameters.AddWithValue("@Month", request.Month);
                 cmd.Parameters.AddWithValue("@Year", request.Year);
+                cmd.Parameters.AddWithValue("@StartDate", request.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
@@ -192,6 +200,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
                 cmd.Parameters.AddWithValue("@Month", request.Month);
                 cmd.Parameters.AddWithValue("@Year", request.Year);
+                cmd.Parameters.AddWithValue("@StartDate", request.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
@@ -227,6 +237,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@UsersId", request.UserId);
                 cmd.Parameters.AddWithValue("@Month", request.Month);
                 cmd.Parameters.AddWithValue("@Year", request.Year);
+                cmd.Parameters.AddWithValue("@StartDate", request.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
