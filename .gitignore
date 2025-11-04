@@ -40,3 +40,4 @@ msbuild.wrn
 /POS.API/Properties/PublishProfiles
 
 /POS.API/BTTEM.API.csproj
+/POS.API/Properties/PublishProfiles/FolderProfile.pubxml
