@@ -283,6 +283,11 @@ namespace BTTEM.Repository
                                            .Where(a => a.Status.Trim() != "YET TO SUBMIT" && a.Status.Trim() != "CANCELLED");
                 }
             }
+            if(tripResource.IsUpcoming == true)
+            {
+                collectionBeforePaging = collectionBeforePaging
+                  .Where(a => a.TripStarts >DateTime.Now );
+            }
 
 
             return await new TripList(_mapper).Create(collectionBeforePaging,
