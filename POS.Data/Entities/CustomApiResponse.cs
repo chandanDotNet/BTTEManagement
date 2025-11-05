@@ -332,11 +332,11 @@ namespace BTTEM.Data.Entities
 
         public int TotalTripRejectCount { get; set; } = 0;
         public int TotalTripCanceledCount { get; set; } = 0;
-        public int TotalExpenseCount { get; set; } = 0;
-        public int TotalExpensePendingCount { get; set; } = 0;
-        public int TotalExpenseApproveCount { get; set; } = 0;
-        public int TotalExpenseRejectCount { get; set; } = 0;
-        public int TotalExpenseRembCount { get; set; } = 0;
+        public decimal TotalExpenseCount { get; set; } = 0;
+        public decimal TotalExpensePendingCount { get; set; } = 0;
+        public decimal TotalExpenseApproveCount { get; set; } = 0;
+        public decimal TotalExpenseRejectCount { get; set; } = 0;
+        public decimal TotalExpenseRembCount { get; set; } = 0;
 
         public decimal PermanentAdvance { get; set; }
         public string Name { get; set; }
@@ -352,11 +352,11 @@ namespace BTTEM.Data.Entities
         public int TotalTripApproveCount { get; set; } = 0;
         public int TotalTripRejectCount { get; set; } = 0;
         public int TotalTripCanceledCount { get; set; } = 0;
-        public int TotalExpenseCount { get; set; } = 0;
-        public int TotalExpensePendingCount { get; set; } = 0;
-        public int TotalExpenseApproveCount { get; set; } = 0;
-        public int TotalExpenseRejectCount { get; set; } = 0;
-        public int TotalExpenseRembCount { get; set; } = 0;
+        public decimal TotalExpenseCount { get; set; } = 0;
+        public decimal TotalExpensePendingCount { get; set; } = 0;
+        public decimal TotalExpenseApproveCount { get; set; } = 0;
+        public decimal TotalExpenseRejectCount { get; set; } = 0;
+        public decimal TotalExpenseRembCount { get; set; } = 0;
 
     }
     public class AllDashboardDataResponse

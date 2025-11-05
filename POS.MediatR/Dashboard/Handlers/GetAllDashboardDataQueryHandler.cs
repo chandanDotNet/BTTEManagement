@@ -65,11 +65,11 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     myDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     myDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     myDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
-                    myDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
-                    myDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
-                    myDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
-                    myDashboardData.TotalExpenseRejectCount = (int)rdr["TotalExpenseRejectCount"];
-                    myDashboardData.TotalExpenseRembCount = (int)rdr["TotalExpenseRembCount"];
+                    myDashboardData.TotalExpenseCount = (decimal)rdr["TotalExpenseCount"];
+                    myDashboardData.TotalExpensePendingCount = (decimal)rdr["TotalExpensePendingCount"];
+                    myDashboardData.TotalExpenseApproveCount = (decimal)rdr["TotalExpenseApproveCount"];
+                    myDashboardData.TotalExpenseRejectCount = (decimal)rdr["TotalExpenseRejectCount"];
+                    myDashboardData.TotalExpenseRembCount = (decimal)rdr["TotalExpenseRembCount"];
                     myDashboardData.PermanentAdvance = (decimal)rdr["PermanentAdvance"];  
                     
                     myDashboardData.Name = rdr["Name"].ToString();                  
@@ -105,11 +105,11 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     teamDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     teamDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     teamDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
-                    teamDashboardData.TotalExpenseCount = (int)rdr["TotalExpenseCount"];
-                    teamDashboardData.TotalExpensePendingCount = (int)rdr["TotalExpensePendingCount"];
-                    teamDashboardData.TotalExpenseApproveCount = (int)rdr["TotalExpenseApproveCount"];
-                    teamDashboardData.TotalExpenseRejectCount = (int)rdr["TotalExpenseRejectCount"];
-                    teamDashboardData.TotalExpenseRembCount = (int)rdr["TotalExpenseRembCount"];
+                    teamDashboardData.TotalExpenseCount = (decimal)rdr["TotalExpenseCount"];
+                    teamDashboardData.TotalExpensePendingCount = (decimal)rdr["TotalExpensePendingCount"];
+                    teamDashboardData.TotalExpenseApproveCount = (decimal)rdr["TotalExpenseApproveCount"];
+                    teamDashboardData.TotalExpenseRejectCount = (decimal)rdr["TotalExpenseRejectCount"];
+                    teamDashboardData.TotalExpenseRembCount = (decimal)rdr["TotalExpenseRembCount"];
                    
 
                 }
