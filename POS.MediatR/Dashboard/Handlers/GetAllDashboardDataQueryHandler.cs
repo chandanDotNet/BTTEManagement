@@ -65,11 +65,19 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     myDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     myDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     myDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
-                    myDashboardData.TotalExpenseCount = (decimal)rdr["TotalExpenseCount"];
-                    myDashboardData.TotalExpensePendingCount = (decimal)rdr["TotalExpensePendingCount"];
-                    myDashboardData.TotalExpenseApproveCount = (decimal)rdr["TotalExpenseApproveCount"];
-                    myDashboardData.TotalExpenseRejectCount = (decimal)rdr["TotalExpenseRejectCount"];
-                    myDashboardData.TotalExpenseRembCount = (decimal)rdr["TotalExpenseRembCount"];
+
+                    myDashboardData.TotalExpenseCount = Convert.ToInt32((decimal)rdr["TotalExpenseCount"]);
+                    myDashboardData.TotalExpensePendingCount = Convert.ToInt32((decimal)rdr["TotalExpensePendingCount"]);
+                    myDashboardData.TotalExpenseApproveCount = Convert.ToInt32((decimal)rdr["TotalExpenseApproveCount"]);
+                    myDashboardData.TotalExpenseRejectCount = Convert.ToInt32((decimal)rdr["TotalExpenseRejectCount"]); 
+                    myDashboardData.TotalExpenseRembCount = Convert.ToInt32((decimal)rdr["TotalExpenseRembCount"]);
+
+                    myDashboardData.TotalExpense = (string)rdr["TotalExpenseCount"].ToString();
+                    myDashboardData.TotalExpensePending = (string)rdr["TotalExpensePendingCount"].ToString();
+                    myDashboardData.TotalExpenseApprove = (string)rdr["TotalExpenseApproveCount"].ToString(); 
+                    myDashboardData.TotalExpenseReject = (string)rdr["TotalExpenseRejectCount"].ToString();
+                    myDashboardData.TotalExpenseRemb = (string)rdr["TotalExpenseRembCount"].ToString();
+
                     myDashboardData.PermanentAdvance = (decimal)rdr["PermanentAdvance"];  
                     
                     myDashboardData.Name = rdr["Name"].ToString();                  
@@ -105,12 +113,17 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     teamDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     teamDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     teamDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
-                    teamDashboardData.TotalExpenseCount = (decimal)rdr["TotalExpenseCount"];
-                    teamDashboardData.TotalExpensePendingCount = (decimal)rdr["TotalExpensePendingCount"];
-                    teamDashboardData.TotalExpenseApproveCount = (decimal)rdr["TotalExpenseApproveCount"];
-                    teamDashboardData.TotalExpenseRejectCount = (decimal)rdr["TotalExpenseRejectCount"];
-                    teamDashboardData.TotalExpenseRembCount = (decimal)rdr["TotalExpenseRembCount"];
-                   
+                    teamDashboardData.TotalExpenseCount = Convert.ToInt32((decimal)rdr["TotalExpenseCount"]);
+                    teamDashboardData.TotalExpensePendingCount = Convert.ToInt32((decimal)rdr["TotalExpensePendingCount"]);
+                    teamDashboardData.TotalExpenseApproveCount = Convert.ToInt32((decimal)rdr["TotalExpenseApproveCount"]);
+                    teamDashboardData.TotalExpenseRejectCount = Convert.ToInt32((decimal)rdr["TotalExpenseRejectCount"]);
+                    teamDashboardData.TotalExpenseRembCount = Convert.ToInt32((decimal)rdr["TotalExpenseRembCount"]);
+                    teamDashboardData.TotalExpense = (string)rdr["TotalExpenseCount"].ToString();
+                    teamDashboardData.TotalExpensePending = (string)rdr["TotalExpensePendingCount"].ToString();
+                    teamDashboardData.TotalExpenseApprove = (string)rdr["TotalExpenseApproveCount"].ToString();
+                    teamDashboardData.TotalExpenseReject = (string)rdr["TotalExpenseRejectCount"].ToString();
+                    teamDashboardData.TotalExpenseRemb = (string)rdr["TotalExpenseRembCount"].ToString();
+
 
                 }
                 con.Close();
@@ -146,6 +159,9 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     MyUpcomingTripDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     MyUpcomingTripDetails.AppliedBy = rdr["AppliedBy"].ToString();
                     MyUpcomingTripDetails.TripBy = rdr["TripBy"].ToString();
+                    MyUpcomingTripDetails.Approval = rdr["Approval"].ToString();
+                    MyUpcomingTripDetails.Status = rdr["Status"].ToString();
+                    MyUpcomingTripDetails.ReportingToName = rdr["ReportingToName"].ToString();
 
                     MyUpcomingTripDetailsList.Add(MyUpcomingTripDetails);
                 }
@@ -167,8 +183,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                 cmd.Parameters.AddWithValue("@EndDate", request.EndDate);
 
                 con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
-
+                SqlDataReader rdr = cmd.ExecuteReader(); 
+                 
                 while (rdr.Read())
                 {
                     TeamUpcomingTripDetails TeamUpcomingTripDetails = new TeamUpcomingTripDetails();
@@ -182,6 +198,9 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     TeamUpcomingTripDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     TeamUpcomingTripDetails.AppliedBy = rdr["AppliedBy"].ToString();
                     TeamUpcomingTripDetails.TripBy = rdr["TripBy"].ToString();
+                    TeamUpcomingTripDetails.Approval = rdr["Approval"].ToString();
+                    TeamUpcomingTripDetails.Status = rdr["Status"].ToString();
+                    TeamUpcomingTripDetails.ReportingToName = rdr["ReportingToName"].ToString();
 
                     TeamUpcomingTripDetailsList.Add(TeamUpcomingTripDetails);
                 }
@@ -218,6 +237,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     MyRecentExpensesDetails.ReimbursementAmount = (decimal)rdr["ReimbursementAmount"];
                     MyRecentExpensesDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     MyRecentExpensesDetails.AppliedBy = rdr["AppliedBy"].ToString();
+                    MyRecentExpensesDetails.ApprovedOn = rdr["ApprovedOn"].ToString();
+                    MyRecentExpensesDetails.BillCount = rdr["BillCount"].ToString();
                   
 
                     MyRecentExpensesDetailsList.Add(MyRecentExpensesDetails);
@@ -255,6 +276,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     TeamRecentExpensesDetails.ReimbursementAmount = (decimal)rdr["ReimbursementAmount"];
                     TeamRecentExpensesDetails.AppliedOn = rdr["AppliedOn"].ToString();
                     TeamRecentExpensesDetails.AppliedBy = rdr["AppliedBy"].ToString();
+                    TeamRecentExpensesDetails.ApprovedOn = rdr["ApprovedOn"].ToString();
+                    TeamRecentExpensesDetails.BillCount = rdr["BillCount"].ToString();
 
                     TeamRecentExpensesDetailsList.Add(TeamRecentExpensesDetails);
                 }
