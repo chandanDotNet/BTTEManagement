@@ -675,5 +675,34 @@ namespace BTTEM.Data.Entities
 
     }
 
+    public class TeamListDataResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public AllTeamListData Data { get; set; }
+    }
+    public class AllTeamListData
+    {
+        public List<TeamListData> TeamListData { get; set; }
+
+    }
+
+    public class TeamListData
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string EmailId { get; set; }
+        public string CompanyName { get; set; }
+        public string Branch { get; set; }
+        public string Department { get; set; }
+        public string Designation { get; set; }
+        public string SapCode { get; set; }
+        public string EmpId { get; set; }
+        public string MobileNo { get; set; }
+        public string Grade { get; set; }
+
+    }
+
 
 }

@@ -140,7 +140,15 @@ namespace BTTEM.MediatR.Trip.Handlers
             {
                 entityExist.IsGroupTrip = request.IsGroupTrip;
             }
-              
+            if (request.IsGroupTripVal == "Y")
+            {
+                entityExist.IsGroupTrip = true;
+            }
+            if (request.IsGroupTripVal == "N")
+            {
+                entityExist.IsGroupTrip = false;
+            }
+
             if (!string.IsNullOrEmpty(request.NoOfPerson))
             {
                 entityExist.NoOfPerson = request.NoOfPerson;

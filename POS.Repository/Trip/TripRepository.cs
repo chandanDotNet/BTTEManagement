@@ -58,7 +58,8 @@ namespace BTTEM.Repository
                     if (Role != null)
                     {
                         if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
-                        {
+                        {                           
+
                             tripResource.ReportingHeadId = LoginUserId;
                         }
                         //else if (Role.Id != new Guid("F72616BE-260B-41BB-A4EE-89146622179A") || Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Travel Desk or Submitter
@@ -116,8 +117,18 @@ namespace BTTEM.Repository
 
             if (tripResource.ReportingHeadId.HasValue)
             {
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId);
+
+                if (companyAccountId.IsDirector == true)
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId && a.CreatedBy!= LoginUserId);
+                }
+                else
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId);
+                }
+               
             }
             //if (tripResource.CompanyAccountId.HasValue)
             //{

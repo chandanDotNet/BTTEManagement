@@ -137,7 +137,7 @@ namespace BTTEM.Repository
                         TripAppliedOn = cs.TripAppliedOn,
                         TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)): cs.TripItinerarys.FirstOrDefault().TripBy,
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
-
+                        ApprovalOn = cs.ApprovalOn,
                     })
                     .ToListAsync();
                 return entities;
@@ -219,9 +219,9 @@ namespace BTTEM.Repository
                  RejectedReason = cs.RejectedReason,
                  IsTripEndNotConfirmed = cs.IsTripEndNotConfirmed,
                  TripAppliedOn = cs.TripAppliedOn,
-                 TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)) : cs.TripItinerarys.FirstOrDefault().TripBy
+                 TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)) : cs.TripItinerarys.FirstOrDefault().TripBy,
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
-
+                  ApprovalOn = cs.ApprovalOn,
              })
              .ToListAsync();
                 return entities;

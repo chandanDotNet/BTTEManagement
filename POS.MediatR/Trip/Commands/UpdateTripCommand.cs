@@ -54,6 +54,7 @@ namespace BTTEM.MediatR.Trip.Commands
         public string? VendorCode { get; set; }
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public bool IsGroupTrip { get; set; } = false;
+        public string IsGroupTripVal { get; set; } //Y/N
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? NoOfPerson { get; set; }
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.

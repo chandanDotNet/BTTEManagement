@@ -147,8 +147,17 @@ namespace BTTEM.Repository
 
             if (expenseResource.ReportingHeadId.HasValue)
             {
-                collectionBeforePaging = collectionBeforePaging
+                if(userDetails.IsDirector==true)
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.ReportingTo == expenseResource.ReportingHeadId && a.CreatedBy!=LoginUserId);
+                }
+                else
+                {
+                    collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CreatedByUser.ReportingTo == expenseResource.ReportingHeadId);
+                }
+                
             }
             if (expenseResource.CreatedBy.HasValue)
             {
