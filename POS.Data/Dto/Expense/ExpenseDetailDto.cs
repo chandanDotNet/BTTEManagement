@@ -26,10 +26,10 @@ namespace BTTEM.Data.Dto
         public decimal? CGST { get; set; }
         public decimal? SGST { get; set; }
         public decimal? IGST { get; set; }
-        public string SSECode { get; set; }
+        public string? SSECode { get; set; }
         public string BillCreditType { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public DateTime? PostingDate { get; set; }
-        public string CostCenter { get; set; }
+        public string? CostCenter { get; set; }
     }
 }

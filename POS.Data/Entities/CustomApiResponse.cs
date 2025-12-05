@@ -332,6 +332,8 @@ namespace BTTEM.Data.Entities
 
         public int TotalTripRejectCount { get; set; } = 0;
         public int TotalTripCanceledCount { get; set; } = 0;
+        public int TotalTripCancelRequestCount { get; set; } = 0;
+        public int YettoSubmitTripCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } 
         public int TotalExpensePendingCount { get; set; } 
         public int TotalExpenseApproveCount { get; set; } 
@@ -342,6 +344,7 @@ namespace BTTEM.Data.Entities
         public string TotalExpenseApprove { get; set; }
         public string TotalExpenseReject { get; set; }
         public string TotalExpenseRemb { get; set; }
+        public string DeductedExpense { get; set; }
 
         public decimal PermanentAdvance { get; set; }
         public string Name { get; set; }
@@ -357,6 +360,7 @@ namespace BTTEM.Data.Entities
         public int TotalTripApproveCount { get; set; } = 0;
         public int TotalTripRejectCount { get; set; } = 0;
         public int TotalTripCanceledCount { get; set; } = 0;
+        public int TotalTripCancelRequestCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
@@ -368,6 +372,7 @@ namespace BTTEM.Data.Entities
         public string TotalExpenseApprove { get; set; }
         public string TotalExpenseReject { get; set; }
         public string TotalExpenseRemb { get; set; }
+        public string DeductedExpense { get; set; }
 
     }
     public class AllDashboardDataResponse

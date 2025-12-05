@@ -65,6 +65,8 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     myDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     myDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     myDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
+                    myDashboardData.TotalTripCancelRequestCount = (int)rdr["TotalTripCancelRequestCount"];
+                    myDashboardData.YettoSubmitTripCount = (int)rdr["YettoSubmitTripCount"];
 
                     myDashboardData.TotalExpenseCount = Convert.ToInt32((decimal)rdr["TotalExpenseCount"]);
                     myDashboardData.TotalExpensePendingCount = Convert.ToInt32((decimal)rdr["TotalExpensePendingCount"]);
@@ -72,11 +74,12 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     myDashboardData.TotalExpenseRejectCount = Convert.ToInt32((decimal)rdr["TotalExpenseRejectCount"]); 
                     myDashboardData.TotalExpenseRembCount = Convert.ToInt32((decimal)rdr["TotalExpenseRembCount"]);
 
-                    myDashboardData.TotalExpense = (string)rdr["TotalExpenseCount"].ToString();
-                    myDashboardData.TotalExpensePending = (string)rdr["TotalExpensePendingCount"].ToString();
-                    myDashboardData.TotalExpenseApprove = (string)rdr["TotalExpenseApproveCount"].ToString(); 
-                    myDashboardData.TotalExpenseReject = (string)rdr["TotalExpenseRejectCount"].ToString();
-                    myDashboardData.TotalExpenseRemb = (string)rdr["TotalExpenseRembCount"].ToString();
+                    myDashboardData.TotalExpense = (string)rdr["TotalExpense"].ToString();
+                    myDashboardData.TotalExpensePending = (string)rdr["TotalExpensePending"].ToString();
+                    myDashboardData.TotalExpenseApprove = (string)rdr["TotalExpenseApprove"].ToString(); 
+                    myDashboardData.TotalExpenseReject = (string)rdr["TotalExpenseReject"].ToString();
+                    myDashboardData.TotalExpenseRemb = (string)rdr["TotalExpenseRemb"].ToString();
+                    myDashboardData.DeductedExpense = (string)rdr["DeductedExpense"].ToString();
 
                     myDashboardData.PermanentAdvance = (decimal)rdr["PermanentAdvance"];  
                     
@@ -113,17 +116,18 @@ namespace BTTEM.MediatR.Dashboard.Handlers
                     teamDashboardData.TotalTripApproveCount = (int)rdr["TotalTripApproveCount"];
                     teamDashboardData.TotalTripRejectCount = (int)rdr["TotalTripRejectCount"];
                     teamDashboardData.TotalTripCanceledCount = (int)rdr["TotalTripCanceledCount"];
+                    teamDashboardData.TotalTripCancelRequestCount = (int)rdr["TotalTripCancelRequestCount"];
                     teamDashboardData.TotalExpenseCount = Convert.ToInt32((decimal)rdr["TotalExpenseCount"]);
                     teamDashboardData.TotalExpensePendingCount = Convert.ToInt32((decimal)rdr["TotalExpensePendingCount"]);
                     teamDashboardData.TotalExpenseApproveCount = Convert.ToInt32((decimal)rdr["TotalExpenseApproveCount"]);
                     teamDashboardData.TotalExpenseRejectCount = Convert.ToInt32((decimal)rdr["TotalExpenseRejectCount"]);
                     teamDashboardData.TotalExpenseRembCount = Convert.ToInt32((decimal)rdr["TotalExpenseRembCount"]);
-                    teamDashboardData.TotalExpense = (string)rdr["TotalExpenseCount"].ToString();
-                    teamDashboardData.TotalExpensePending = (string)rdr["TotalExpensePendingCount"].ToString();
-                    teamDashboardData.TotalExpenseApprove = (string)rdr["TotalExpenseApproveCount"].ToString();
-                    teamDashboardData.TotalExpenseReject = (string)rdr["TotalExpenseRejectCount"].ToString();
-                    teamDashboardData.TotalExpenseRemb = (string)rdr["TotalExpenseRembCount"].ToString();
-
+                    teamDashboardData.TotalExpense = (string)rdr["TotalExpense"].ToString();
+                    teamDashboardData.TotalExpensePending = (string)rdr["TotalExpensePending"].ToString();
+                    teamDashboardData.TotalExpenseApprove = (string)rdr["TotalExpenseApprove"].ToString();
+                    teamDashboardData.TotalExpenseReject = (string)rdr["TotalExpenseReject"].ToString();
+                    teamDashboardData.TotalExpenseRemb = (string)rdr["TotalExpenseRemb"].ToString();
+                    teamDashboardData.DeductedExpense = (string)rdr["DeductedExpense"].ToString();
 
                 }
                 con.Close();
