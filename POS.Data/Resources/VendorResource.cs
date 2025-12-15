@@ -15,5 +15,6 @@ namespace BTTEM.Data.Resources
 
         }
         public string VendorName { get; set; }
+        public string? VendorCode { get; set; }
     }
 }

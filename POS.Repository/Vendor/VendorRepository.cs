@@ -46,7 +46,14 @@ namespace BTTEM.Repository
                     .Where(a => EF.Functions.Like(a.VendorName, $"{encodingName}%"));
             }
 
-            var VendorList = new VendorList();
+            if (!string.IsNullOrEmpty(vendorResource.VendorCode))
+            {
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => EF.Functions.Like(a.VendorCode, $"%{vendorResource.VendorCode}%"));
+            }
+
+
+                var VendorList = new VendorList();
             return await VendorList.Create(collectionBeforePaging, vendorResource.Skip, vendorResource.PageSize);
         }
     }
