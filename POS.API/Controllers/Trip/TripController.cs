@@ -981,7 +981,7 @@ namespace BTTEM.API.Controllers.Trip
                     //var TrippID = item.TripId;
                     UpdateTripStatusCommand updateTripStatusCommand = new UpdateTripStatusCommand();
                     updateTripStatusCommand.Approval = item.ApprovalStatus;
-                    updateTripStatusCommand.Id= item.TripId.Value;
+                    updateTripStatusCommand.Id = item.TripId.Value;
                     var resultTrip = await _mediator.Send(updateTripStatusCommand);
 
                     //foreach (var item in updateAllTripItineraryBookStatusCommand.AllTripItineraryBookStatusList)
@@ -1373,7 +1373,7 @@ namespace BTTEM.API.Controllers.Trip
 
             if (updateTripStatusCommand.Status != "ROLLBACK" || updateTripStatusCommand.Status != "CANCELLED" || updateTripStatusCommand.Approval != "REJECTED")
             {
-                if (userDetails.IsDirector && userDetails.Id== trip.CreatedBy) 
+                if (userDetails.IsDirector && userDetails.Id == trip.CreatedBy)
                 {
                     updateTripStatusCommand.Approval = "APPROVED";
                     updateTripStatusCommand.Status = "APPLIED";
@@ -2778,7 +2778,7 @@ namespace BTTEM.API.Controllers.Trip
         //public async Task<IActionResult> GeneratePayload(Guid tripId)
         //{
         //    var mmtPayloadData = GetMMTBookingRequestDetails(tripId).Result;
-            
+
         //    AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
 
         //    List<ApproverDetail> approverDetail = new List<ApproverDetail>();
@@ -2793,8 +2793,8 @@ namespace BTTEM.API.Controllers.Trip
         //        approvalRequired = "false",
         //        approverDetails = approverDetail
         //    };    
-            
-            
+
+
         //    Child child = new Child()
         //    {
         //        age = new List<object>(),
@@ -2838,7 +2838,7 @@ namespace BTTEM.API.Controllers.Trip
         //        travelClass = "",
         //        tripType = ""
         //    });
-            
+
         //    List<PaxDetail> lstPaxDetail = new List<PaxDetail>();
         //    lstPaxDetail.Add(new PaxDetail()
         //    {
@@ -2858,7 +2858,7 @@ namespace BTTEM.API.Controllers.Trip
         //    {
         //        FLIGHT = fLIGHT,
         //        HOTEL = hOTEL
-               
+
         //    };
 
         //    To to = new To()
@@ -2890,46 +2890,40 @@ namespace BTTEM.API.Controllers.Trip
         //    //return Content(mmtPayloadData.ToString(), "application/json");
         //}
 
-        ///// <summary>
-        ///// MMT Get Trip Data.
-        ///// </summary>      
-        ///// <param name="TripRequest"></param>
-        ///// <returns></returns>
-        //[HttpPost("mmt-trip-request/{tripId}")]
-        ////public async Task<IActionResult> MMTTripRequest([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
-        //public async Task<IActionResult> MMTAllTripData([FromBody] AddMMTTripCommand mMMTTrip, Guid TripId)
-        //{
-        //    var mmtPayload = GeneratePayload(TripId);
+        /// <summary>
+        /// MMT Get Trip Data.
+        /// </summary>      
+        /// <param name="TripData"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("mmt-trip-data")]
+        public async Task<IActionResult> MMTAllTripData([FromBody] MMTTripQueryCommand mMMTTripQuery)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/transaction/data");
+            request.Headers.Add("partner-apikey", "08b1cb0c8c5b3f39bae10ad5cb3888eba4501449");
+            request.Headers.Add("client-code", "A836CD1C6B2B3");
+            request.Headers.Add("Accept", "text/csv");
+            request.Headers.Add("Cookie", "_abck=1BB518837275EF0EB2627F5541D45DBC~-1~YAAQ5KTUFzcvXE2aAQAAl2/lUw5UcGLLp9ycQpG7wpXw18RUYPPRoDuDGx8bPqK13R+pW6wbTtUzCYqw9hhAaevky3J1mNSGpUJhXQYqI5N0oLyWvT0AVMlIFNAK35D2jlpgVzS2IxHl2KaUugX3gv/wHazuljcvoXbo/sKu+xQoCYb0bJUoHtts1Puh7zx8CG0rY9cyR73fJpmrsLd4xil2DpZukGQzcB2GtEHBaq11uGByBaF6WPmmrwVy4DI0dcXjZT1TaklDc0fzqwQ4EV/mVRppOLPPMTpLnAOd60bwl7AgwntlRyAlUWFjAbN4/8eqE3v8DmxllU6j4/UWo4Mk55+/BJqpJhbZfLF46L8JBySU15pTzGhwaWNKVvHBLiUEQDUA+5kQtVgbaXWSlCW/W4Hacba5AmAzn0GoMbqGjQykn5hoUjFDX+ZGWtUOz1nwIy/IjohW3i26bIQ3oTmTlwpgWlc=~-1~-1~-1~-1~-1; bm_sz=DC9CDE9BCAF1544F6197C6B57FCBA2C8~YAAQ5KTUFzgvXE2aAQAAl2/lUx2IOygxKea1GKpk9FveGswo5y11x/4SuTna7Q/ZF06G3A1irZ9ierhbz4N4HEiiCyrRBL4eZjUxxmnRQ3+BNtZuYzXzAsMYNL9n7bAKZoFxkEb5dL2Rq/wx88aGcWyjA/Cc53yHfU8BMyh1NQROgfqKg1SyhIMLfBEIfWAtNIznjOnto992jvJ7UWxh7VroXiLpp685PpiKHVaTihMF82mFsasS+41AdY71nS17GhF+ukZaP2s6UzCkwNyfXnPLt83L1qNM01tFCqZhGCP5as7mrlLvX82yBImHweEDdaNxt3fhHhxdIK+lx7pVYDBNO0s8jRKVAkWxbkbfxF2YkA==~4274488~3420985");
+            //var content = new StringContent("{\r\n\"expense-client-id\":\"a5f728ad-63bc-4c74-afe9-8e7fedd35d4d\",\r\n\"external-org-id\":\"3c51d85c-bcb4-4726-9b26-56a6ee5d2d1c\",\r\n\"to-date\": 1759206600000,\r\n\"from-date\":1756701000000,\r\n\"report-type\":\"FLIGHT\",\r\n\"level\":\"INVOICE\"\r\n}\r\n", null, "application/json");
+            var jsonPayload = $@"
+            {{
+                ""expense-client-id"": ""{mMMTTripQuery.expenseclientid}"",
+                ""external-org-id"": ""{mMMTTripQuery.externalorgid}"",
+                ""to-date"": {mMMTTripQuery.todate},
+                ""from-date"": {mMMTTripQuery.fromdate},
+                ""report-type"": ""{mMMTTripQuery.reporttype}"",
+                ""level"": ""{mMMTTripQuery.level}""
+            }}";
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content.ReadAsStringAsync();
+            var csvBytes = Encoding.UTF8.GetBytes(data.ToString());
+            return File(csvBytes, "text/csv", "MMTTrips.csv");
+        }
 
-        //    AddMMTTripCommand mMMTTrip = new AddMMTTripCommand();
-
-        //    var client = new HttpClient();
-        //    var request = new HttpRequestMessage(HttpMethod.Post, "https://corpcb.makemytrip.com/corporate/v1/create/partner/travel-request");
-        //    request.Headers.Add("partner-apikey", "08b1cb0c8c5b3f39bae10ad5cb3888eba4501449");
-        //    request.Headers.Add("client-code", "A836CD1C6B2B3");
-        //    request.Headers.Add("Cookie", "_abck=1BB518837275EF0EB2627F5541D45DBC~-1~YAAQ5KTUF9m+p+qZAQAA+lLdEA7+F44y+Qm+jyI4FpHQ7DxH8fCXPs+osijOmKekw4l7EBE2pQwho9fHyZrbfw36hglyifsvYV6O+d/HBEmUvIg/T1Im/MTmXFY3KrjddbPBQO1NH0FZLTgLpWJsJQtmAQcU9OGQl3ffiTd3IyoSRsMBhHVdJhDbfOQ7WbYY5hps3kCC4rbelIcwA2109l0WvzbcAFUejM1rKsL2n2QgmcOjirTbg/X5cCxqzc3+KJ3hzyiOygX05dQphDo3990kQ6muTI2xwMVyDBD7zGysXK4qRwuBV9z2c3GYN7sn3fIMtkB5DOCsk0TguFCSP96GBILFtr60W/ZZo315lTDszdT/wUB6dXochNgZv0yEntQVSav4eqBhleS8IuaYQQSAu86/cKwFDQbGKhMl3jn4bqKD32A0MuQpXCVnJq1C2PEsFwVVE/3CcNXu+tktWpWiiczWX5Q=~-1~-1~-1~-1~-1; ak_bmsc=21816718D45C06CB66A1E3ACE991AD56~000000000000000000000000000000~YAAQ56TUFz13YvWZAQAArAaQER2Mdg2giFzns8yHUISxcLg5eOuKTnc0nqAvMpJbHPJAJVC6GxzSfkXvzFDmp0R+KUNBTz3pb8ESexCKwDAdAJxgdt1nwzw4fBXyhxzi8cPhkr1BB9kQvmPeEfdS9OlF1nvt6JRdA5WPr33tPb4yPZcOKyslS8pG0jaCMpbqV3KgwhDdQfIuxJBXQL/YZbH1fH9B0OZMgU7hwtdyq9kH7IgAe1EYBRJHYtLgAHZ+hDCph/tjnGMvjI26hVlrizyek5PNs9RMyr9DioeemUG++yB6szamWmtpEk4u4QqADx35V9FYZyv7YrVQNOU3fdIfkn6MIHZqvEaC3m9otcmurw==; bm_sz=77839A08C45CEF945B811C7AC62C16F1~YAAQ5KTUF9u+p+qZAQAA+lLdEB3Uow9P1ij3XlkH4dyF5PZNs5ZyqeO8ooycI4/whfN5GcijPx4mC2WzyFqjS3Em1twr3XhHk6akAisvwBZ63LrP8lOWP7qCi6NP6CFanQsw9q5AxBsOrnaj2ehg7UT1uUTPRqxVfSeKTUld1iImPXwYg8WNQdfETocYNlcII9vy1KJ4koT+5IbVxVLjiJGcYbAe4H3nzy6eJ/jD+HUdJNcRll55oUDB812Cj6ap2e3rS7Y+UczGvct+bxLTSn4ABIZS/qh1btddLkKauQpN+DtG6P+kGagdYfZmrVDZxqbB13R1oXqJOJr6pAm/ajrgH+jOgYP6DMXsOONBmUqzJw==~3618356~3289904");
-
-        //    var payload = System.Text.Json.JsonSerializer.Serialize(mMMTTrip.MMTTrip, new JsonSerializerOptions
-        //    {
-        //        WriteIndented = true // Optional: for readable logs
-        //    });
-
-        //    request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
-
-        //    var response = await client.SendAsync(request);
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        var errorContent = await response.Content.ReadAsStringAsync();
-        //        return StatusCode((int)response.StatusCode, new { Error = "MMT API request failed", Details = errorContent });
-        //    }
-
-        //    var responseData = await response.Content.ReadAsStringAsync();
-
-        //    var responseResult = JsonConvert.DeserializeObject<object>(responseData);
-
-        //    return Ok(responseResult);
-        //}
 
     }
 }

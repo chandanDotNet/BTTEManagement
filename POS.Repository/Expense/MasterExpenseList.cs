@@ -202,7 +202,7 @@ namespace BTTEM.Repository.Expense
                    RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
                    CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
                    Expenses = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList(),
-                   //TotalDeviation = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList().Sum(x => x.DeviationAmount),
+                   ////TotalDeviation = _mapper.Map<List<ExpenseDto>>(cs.Expenses).ToList().Sum(x => x.DeviationAmount),
                    Trip = cs.Trip,
                    JourneyNumber = cs.JourneyNumber,
                    ReimbursementRemarks = cs.ReimbursementRemarks,

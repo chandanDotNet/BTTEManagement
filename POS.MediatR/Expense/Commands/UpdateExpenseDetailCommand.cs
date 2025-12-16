@@ -14,6 +14,7 @@ namespace BTTEM.MediatR.Commands
         public Guid? ExpenseId { get; set; }
         public Guid? MasterExpenseId { get; set; }
         public Guid? VendorId { get; set; }
+        public string? VendorCode { get; set; }
         public string? VendorName { get; set; }
         public Guid? SubVendorId { get; set; }
         public string? SubVendorName { get; set; }
@@ -34,5 +35,6 @@ namespace BTTEM.MediatR.Commands
         public DateTime? PostingDate { get; set; }
         public string CostCenter { get; set; }
         public bool CostCenterCheck { get; set; } = false;
+        public Guid? BusinessAreaId { get; set; }
     }
 }

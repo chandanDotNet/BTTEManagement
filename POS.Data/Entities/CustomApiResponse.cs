@@ -630,7 +630,6 @@ namespace BTTEM.Data.Entities
         public string CheckIn { get; set; }
         public string CheckOut { get; set; }
     }
-
     public class AllFinancialYearDataResponse
     {
         public bool status { get; set; }
@@ -644,7 +643,6 @@ namespace BTTEM.Data.Entities
         public List<FinancialYearData> FinancialYear { get; set; }
 
     }
-
     public class FinancialYearData
     {
         public int Id { get; set; }
@@ -653,6 +651,102 @@ namespace BTTEM.Data.Entities
         public string Name { get; set; }
 
     }
-
-
+    public class MMTTripResponse
+    {
+        public string BookingId { get; set; }
+        public string PNRNos { get; set; }
+        public string TicketNos { get; set; }
+        public string AirlineNames { get; set; }
+        public string JourneyType { get; set; }
+        public string TravelClass { get; set; }
+        public string CreatedDate { get; set; }
+        public string UpdatedDate { get; set; }
+        public string DepartureDate { get; set; }
+        public string ArrivalDate { get; set; }
+        public string FromCity { get; set; }
+        public string ToCity { get; set; }
+        public string BookerEmail { get; set; }
+        public string BookerName { get; set; }
+        public string BookerEmployeeID { get; set; }
+        public string BookerDepartment { get; set; }
+        public string BookerComment { get; set; }
+        public int NoOfPassengers { get; set; }
+        public int NoOfAdults { get; set; }
+        public int NoOfChildren { get; set; }
+        public int NoOfInfants { get; set; }
+        public string FromCityCode { get; set; }
+        public string ToCityCode { get; set; }
+        public int SegmentCount { get; set; }
+        public int LegCount { get; set; }
+        public decimal AverageSegmentPrice { get; set; }
+        public decimal AverageLegPrice { get; set; }
+        public bool IsWeekendStay { get; set; }
+        public string SupplierAddress { get; set; }
+        public string SupplierName { get; set; }
+        public string AlliancePartner { get; set; }
+        public decimal TaxableAmount { get; set; }
+        public decimal NonTaxableAmount { get; set; }
+        public string TaxableDataApiStatus { get; set; }
+        public string PassengerEmails { get; set; }
+        public string PassengerNames { get; set; }
+        public string PassengerEmployeeIDs { get; set; }
+        public string PassengerDepartments { get; set; }
+        public string ApproverEmail { get; set; }
+        public string ApproverName { get; set; }
+        public string ApproverEmployeeID { get; set; }
+        public string ApproverComment { get; set; }
+        public string ApproverDepartment { get; set; }
+        public string ApprovalStatus { get; set; }
+        public string PolicyStatus { get; set; }
+        public string OutOfPolicyReason { get; set; }
+        public string BookerCostCenter { get; set; }
+        public string PassengerCostCenter { get; set; }
+        public string ExpenseCode { get; set; }
+        public string BookingAction { get; set; }
+        public string BookingMode { get; set; }
+        public decimal TotalAmountChargedByAirline { get; set; }
+        public decimal AirlineGST { get; set; }
+        public decimal ConvenienceFeeChargedByMMT { get; set; }
+        public decimal TransactionHandlingCharge { get; set; }
+        public decimal GSTChargedByMMT { get; set; }
+        public decimal CGSTChargedByMMT { get; set; }
+        public decimal SGSTChargedByMMT { get; set; }
+        public decimal IGSTChargedByMMT { get; set; }
+        public decimal AddonCharges { get; set; }
+        public decimal ECouponAmount { get; set; }
+        public decimal CancellationPenalty { get; set; }
+        public decimal OtherChargesOrDiscounts { get; set; }
+        public decimal NetAmountCharged { get; set; }
+        public decimal GSTClaimableAmount { get; set; }
+        public string MMTInvoiceNo { get; set; }
+        public string GSTInvoiceNo { get; set; }
+        public string MMTGSTN { get; set; }
+        public string AirlineGSTN { get; set; }
+        public string CustomerGSTN { get; set; }
+        public string PaymentSource { get; set; }
+        public string ClaimReason { get; set; }
+        public bool NonOfficialBooking { get; set; }
+        public string NoShowPassengers { get; set; }
+        public int NoOfNoShowPassengers { get; set; }
+        public string AddOnSeats { get; set; }
+        public string AddOnMeals { get; set; }
+        public string AddOnInsurance { get; set; }
+        public string AddOnBaggage { get; set; }
+        public string AddOnSeatMealCombo { get; set; }
+        public string AddOnFastForward { get; set; }
+        public string UniqueID { get; set; }
+        public string RequisitionID { get; set; }
+        public string PartnerTripID { get; set; }
+        public string ReasonForTravel { get; set; }
+        public string ServiceClass { get; set; }
+        public string FareType { get; set; }
+        public string DepartureAirportName { get; set; }
+        public string ArrivalAirportName { get; set; }
+        public string FareBasisCode { get; set; }
+        public string FlightDuration { get; set; }
+        public decimal AddonRefunds { get; set; }
+        public string WalletTransactionIDs { get; set; }
+        public string MMTInvoiceDate { get; set; }
+        public string MandatorySelection { get; set; }
+    }
 }

@@ -131,6 +131,7 @@ namespace POS.Domain
         public DbSet<Sap> Saps { get; set; }
         public DbSet<CostCenter> CostCenters { get; set; }
         public DbSet<BusinessArea> BusinessAreas { get; set; }
+        public DbSet<MMTCity> MMTCities { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -737,7 +738,13 @@ namespace POS.Domain
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-
+            builder.Entity<MMTCity>(b =>
+            {
+                b.HasOne(e => e.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(ur => ur.CreatedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             builder.Entity<User>().ToTable("Users");
             builder.Entity<Role>().ToTable("Roles");
