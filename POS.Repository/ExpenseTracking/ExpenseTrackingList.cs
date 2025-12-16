@@ -64,6 +64,7 @@ namespace BTTEM.Repository
                     ProfilePhoto = c.ActionByUser.ProfilePhoto,
                     ActionDate = c.ActionDate,
                     ExpenseTypeName = c.ExpenseTypeName,
+                    
 
                 }).ToListAsync();
             return entities;

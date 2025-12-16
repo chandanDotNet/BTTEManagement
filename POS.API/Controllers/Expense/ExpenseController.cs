@@ -1078,6 +1078,7 @@ namespace POS.API.Controllers.Expense
                                                 if (!userDetails.IsDirector)
                                                 {
                                                     updateExpenseStatusCommand.DeviationAmount = expense.Amount - PoliciesLodgingFooding;
+                                                    updateExpenseStatusCommand.Status = "PENDING";
                                                 }
                                             }
 
@@ -1148,6 +1149,7 @@ namespace POS.API.Controllers.Expense
                                                 if (!userDetails.IsDirector)
                                                 {
                                                     updateExpenseStatusCommand.DeviationAmount = expense.Amount - PoliciesLodgingFooding;
+                                                    updateExpenseStatusCommand.Status = "PENDING";
                                                 }
                                             }
                                             else

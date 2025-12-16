@@ -58,11 +58,10 @@ namespace BTTEM.Data
         public string ReceiptPath { get; set; }
         public string? AccountTeam { get; set; }
         public int? SapJourneyNumber { get; set; }
-        public string? SapDocumentNumber { get; set; }
-
-        public string? RejectedReason { get; set; }
+        public string? SapDocumentNumber { get; set; }       
 
         public DateTime? ExpensesAppliedOn { get; set; }
+        public string? RejectedReason { get; set; }
 
         public CompanyAccount CompanyAccounts { get; set; }
         public List<GroupExpense> GroupExpenses { get; set; }

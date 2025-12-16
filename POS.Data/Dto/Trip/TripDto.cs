@@ -83,5 +83,6 @@ namespace BTTEM.Data
         public bool IsTripEndNotConfirmed { get; set; } = false;
         public DateTime? TripAppliedOn { get; set; }
         public string TripBy { get; set; }
+        public DateTime? ApprovalOn { get; set; }
     }
 }

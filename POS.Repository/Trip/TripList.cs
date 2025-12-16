@@ -36,7 +36,7 @@ namespace BTTEM.Repository
             AddRange(items);
         }
 
-        public async Task<TripList> Create(IQueryable<Data.Trip> source, int skip, int pageSize)
+        public async Task<TripList> Create(IQueryable<Trip> source, int skip, int pageSize)
         {
 
             var dtoList = await GetDtos(source, skip, pageSize);
@@ -46,11 +46,90 @@ namespace BTTEM.Repository
             return dtoPageList;
         }
 
-        public async Task<int> GetCount(IQueryable<Data.Trip> source)
+        public async Task<int> GetCount(IQueryable<Trip> source)
         {
             try
             {
-                return await source.AsNoTracking().CountAsync();
+                var aaa = await source.AsNoTracking().CountAsync();
+                return aaa;
+                //var entities = await source
+                //   .AsNoTracking()
+                //   .Select(cs => new TripDto
+                //   {
+                //       Id = cs.Id,
+                //       Description = cs.Description,
+                //       TripNo = cs.TripNo,
+                //       Name = cs.Name,
+                //       TripStarts = cs.TripStarts,
+                //       TripEnds = cs.TripEnds,
+                //       TotalDays = (cs.TripEnds - cs.TripStarts).Days,
+                //       TripType = cs.TripType,
+                //       //Purpose = _mapper.Map<PurposeDto>(cs.Purpose),
+                //       PurposeId = cs.PurposeId,
+                //       CreatedDate = cs.CreatedDate,
+                //       Approval = cs.Approval,
+                //       Status = cs.Status,
+                //       DepartmentId = cs.DepartmentId,
+                //       SourceCityId = cs.SourceCityId,
+                //       DestinationCityId = cs.DestinationCityId,
+                //       AdvanceMoney = cs.AdvanceMoney,
+                //       AdvanceMoneyApprovedAmount = cs.AdvanceMoneyApprovedAmount,
+                //       IsRequestAdvanceMoney = cs.IsRequestAdvanceMoney,
+                //       ModeOfTrip = cs.ModeOfTrip,
+                //       MultiCity = cs.MultiCity,
+                //       RequestAdvanceMoneyDate = cs.RequestAdvanceMoneyDate,
+                //       RequestAdvanceMoneyStatus = cs.RequestAdvanceMoneyStatus,
+                //       AdvanceMoneyRemarks = cs.AdvanceMoneyRemarks,
+                //       //Department = _mapper.Map<DepartmentDto>(cs.Department),
+                //       //DestinationCity = _mapper.Map<CityDto>(cs.DestinationCity),
+                //       //SourceCity = _mapper.Map<CityDto>(cs.SourceCity),
+                //       //CreatedByUser = cs.CreatedByUser,//p
+                //       TripItinerarys = cs.TripItinerarys,
+                //       //GradeName = cs.CreatedByUser.Grades.GradeName, //p
+                //       //BranchName = cs.CreatedByUser.CompanyAccountBranch.Name,//p
+                //       IsTripCompleted = cs.IsTripCompleted,
+                //       SourceCityName = cs.SourceCityName,
+                //       DestinationCityName = cs.DestinationCityName,
+                //       CompanyAccountId = cs.CompanyAccountId,
+                //       DepartmentName = cs.DepartmentName,
+                //       PurposeFor = cs.PurposeFor,
+                //       VendorCode = cs.VendorCode,
+                //       PendingItineraryApprove = cs.TripItinerarys.Where(a => a.ApprovalStatus == "PENDING" && a.IsDeleted == false).Count(),
+                //       PendingHotelApprove = cs.TripHotelBookings.Where(a => a.ApprovalStatus == "PENDING" && a.IsDeleted == false).Count(),
+                //       //TravelDocument = _mapper.Map<List<TravelDocumentDto>>(cs.CreatedByUser.TravelDocuments),
+                //       TripHotelBookings = cs.TripHotelBookings,
+                //       RequestAdvanceMoneyStatusBys = cs.RequestAdvanceMoneyStatusBys,
+                //       RequestAdvanceMoneyStatusBy = cs.RequestAdvanceMoneyStatusBy,
+                //       RollbackCount = cs.RollbackCount != null ? cs.RollbackCount : 0,
+                //       CancellationDateTime = cs.CancellationDateTime,
+                //       CancellationConfirmation = cs.CancellationConfirmation,
+                //       CancellationReason = cs.CancellationReason,
+                //       TravelDeskId = cs.TravelDeskId,
+                //       TravelDeskName = cs.TravelDeskName,
+                //       JourneyNumber = cs.JourneyNumber,
+                //       IsGroupTrip = cs.IsGroupTrip,
+                //       NoOfPerson = cs.NoOfPerson,
+                //       Consent = cs.Consent,
+                //       IsGroupTripCancelRequest = cs.IsGroupTripCancelRequest == null ? false : cs.IsGroupTripCancelRequest,
+                //       GroupTrips = _mapper.Map<List<GroupTripDto>>(cs.GroupTrips),
+                //       //CompanyAccount = _mapper.Map<CompanyAccountDto>(cs.CreatedByUser.CompanyAccounts),
+                //       BillingCompanyName = cs.CompanyAccount.AccountName,
+                //       AdvanceAccountApprovedAmount = cs.AdvanceAccountApprovedAmount,
+                //       AdvanceAccountApprovedBy = cs.AdvanceAccountApprovedBy,
+                //       AdvanceAccountApprovedOn = cs.AdvanceAccountApprovedOn,
+                //       AdvanceAccountApprovedStatus = cs.AdvanceAccountApprovedStatus,
+                //       ProjectType = cs.ProjectType,
+                //       Remarks = cs.Remarks,
+                //       ApprovedBy = _mapper.Map<UserDto>(cs.ApprovedBy),
+                //       CreatedBy = cs.CreatedBy,
+                //       RejectedReason = cs.RejectedReason,
+                //       IsTripEndNotConfirmed = cs.IsTripEndNotConfirmed,
+                //       TripAppliedOn = cs.TripAppliedOn,
+                //       TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)) : cs.TripItinerarys.FirstOrDefault().TripBy,
+                //       // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
+                //       ApprovalOn = cs.ApprovalOn
+                //   }).ToListAsync();
+                //return entities.Count();
             }
             catch (Exception ex)
             {
@@ -58,7 +137,7 @@ namespace BTTEM.Repository
             }
         }
 
-        public async Task<List<TripDto>> GetDtos(IQueryable<Data.Trip> source, int skip, int pageSize)
+        public async Task<List<TripDto>> GetDtos(IQueryable<Trip> source, int skip, int pageSize)
         {
             if (pageSize == 0)
             {
@@ -137,7 +216,7 @@ namespace BTTEM.Repository
                         TripAppliedOn = cs.TripAppliedOn,
                         TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)): cs.TripItinerarys.FirstOrDefault().TripBy,
                         // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
-
+                        ApprovalOn = cs.ApprovalOn
                     })
                     .ToListAsync();
                 return entities;
@@ -219,9 +298,9 @@ namespace BTTEM.Repository
                  RejectedReason = cs.RejectedReason,
                  IsTripEndNotConfirmed = cs.IsTripEndNotConfirmed,
                  TripAppliedOn = cs.TripAppliedOn,
-                 TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)) : cs.TripItinerarys.FirstOrDefault().TripBy
+                 TripBy = cs.TripItinerarys.ToList().Count() > 0 ? string.Join(',', cs.TripItinerarys.ToList().Select(x => x.TripBy)) : cs.TripItinerarys.FirstOrDefault().TripBy,
                  // CreatedByUser = cs.CreatedByUser != null ? _mapper.Map<UserDto>(cs.CreatedByUser) : null,
-
+                  ApprovalOn = cs.ApprovalOn
              })
              .ToListAsync();
                 return entities;

@@ -56,7 +56,8 @@ namespace BTTEM.Data.Resources
         public int? Month { get; set; }
         public int? Year { get; set; }
         public bool IsUpcoming { get; set; } = false;
-
+        public string? CommonStatus { get; set; }
+        public string? AccountTeam { get; set; }
         // public bool? TripCompleted { get; set; }
 
 

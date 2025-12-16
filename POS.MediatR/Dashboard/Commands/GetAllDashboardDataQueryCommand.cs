@@ -17,6 +17,8 @@ namespace BTTEM.MediatR.Dashboard.Commands
         public int Month { get; set; } = 0;
         public string DeviceKey { get; set; }
         public bool IsDeviceTypeAndroid { get; set; }
+        public string? StartDate { get; set; }
+        public string? EndDate { get; set; }
     }
    
   

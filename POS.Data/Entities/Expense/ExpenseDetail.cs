@@ -27,7 +27,7 @@ namespace BTTEM.Data
         public decimal? CGST { get; set; }
         public decimal? SGST { get; set; }
         public decimal? IGST { get; set; }
-        public string SSECode { get; set; }
+        public string? SSECode { get; set; }
         public string BillCreditType { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public DateTime? PostingDate { get; set; }

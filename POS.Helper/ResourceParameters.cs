@@ -8,7 +8,7 @@ namespace POS.Helper
         {
             this.OrderBy = orderBy;
         }
-        const int maxPageSize = 100;
+        const int maxPageSize = 1000;
         public int Skip { get; set; } =0;
 
         private int _pageSize = 10;

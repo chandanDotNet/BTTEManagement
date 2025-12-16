@@ -64,6 +64,11 @@ namespace BTTEM.MediatR.Trip.Handlers
             if (!string.IsNullOrEmpty(request.Approval))
             {
                 entityExist.Approval = request.Approval;
+
+                if(request.Approval== "APPROVED")
+                {
+                    entityExist.ApprovalOn = DateTime.Now;
+                }
             }
 
             if (request.Approval == "REJECTED")

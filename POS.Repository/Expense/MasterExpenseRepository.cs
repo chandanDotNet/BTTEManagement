@@ -84,7 +84,7 @@ namespace BTTEM.Repository
             }
 
             //var collectionBeforePaging = AllIncluding(c => c.CreatedByUser).ApplySort(expenseResource.OrderBy,
-            //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>());
+            //    _propertyMappingService.GetPropertyMapping<MasterExpenseDto, MasterExpense>()); 
 
             var collectionBeforePaging = All
                 .Include(a => a.CompanyAccounts)
@@ -148,7 +148,19 @@ namespace BTTEM.Repository
             if (expenseResource.ReportingHeadId.HasValue)
             {
                 collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.ReportingTo == expenseResource.ReportingHeadId);
+
+                if (userDetails.IsDirector == true)
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CreatedByUser.ReportingTo == expenseResource.ReportingHeadId && a.CreatedBy != LoginUserId);
+                }
+                else
+                {
+                    collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CreatedByUser.ReportingTo == expenseResource.ReportingHeadId);
+                }
+
             }
             if (expenseResource.CreatedBy.HasValue)
             {

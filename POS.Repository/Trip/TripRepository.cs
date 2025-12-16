@@ -59,6 +59,7 @@ namespace BTTEM.Repository
                     {
                         if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //Reporting Manager
                         {
+
                             tripResource.ReportingHeadId = LoginUserId;
                         }
                         //else if (Role.Id != new Guid("F72616BE-260B-41BB-A4EE-89146622179A") || Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Travel Desk or Submitter
@@ -68,6 +69,10 @@ namespace BTTEM.Repository
                         else if (Role.Id == new Guid("E1BD3DCE-EECF-468D-B930-1875BD59D1F4")) //Submitter
                         {
                             tripResource.CreatedBy = LoginUserId;
+                        }
+                        else if (Role.Id == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")) //Account
+                        {
+                            tripResource.AccountTeam = companyAccountId.AccountTeamActionFor;
                         }
                     }
                 }
@@ -100,24 +105,40 @@ namespace BTTEM.Repository
 
             //Filter For Infra Only
 
-            if (Role.Id == new Guid("241772cb-c907-4961-88cb-a0bf8004bbb2"))
+            //if (Role.Id == new Guid("241772cb-c907-4961-88cb-a0bf8004bbb2"))
+            //{
+            //    if (companyAccountId.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
+            //    {
+            //        collectionBeforePaging = collectionBeforePaging
+            //                            .Where(t => t.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));                   
+            //    }
+            //    else
+            //    {
+            //        collectionBeforePaging = collectionBeforePaging
+            //                            .Where(t => t.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
+            //    }
+            //}
+
+            if (!string.IsNullOrEmpty(tripResource.AccountTeam))
             {
-                if (companyAccountId.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"))
-                {
-                    collectionBeforePaging = collectionBeforePaging
-                                        .Where(t => t.CompanyAccountId == new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
-                }
-                else
-                {
-                    collectionBeforePaging = collectionBeforePaging
-                                        .Where(t => t.CompanyAccountId != new Guid("d0ccea5f-5393-4a34-9df6-43a9f51f9f91"));
-                }
+                collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.AccountTeam == tripResource.AccountTeam);
             }
 
             if (tripResource.ReportingHeadId.HasValue)
             {
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId);
+
+                if (companyAccountId.IsDirector == true)
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId && a.CreatedBy != LoginUserId);
+                }
+                else
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                   .Where(a => a.CreatedByUser.ReportingTo == tripResource.ReportingHeadId);
+                }
+
             }
             //if (tripResource.CompanyAccountId.HasValue)
             //{
@@ -253,6 +274,90 @@ namespace BTTEM.Repository
                   .Where(a => a.CreatedDate.Year == tripResource.Year);
             }
 
+            if (!string.IsNullOrEmpty(tripResource.CommonStatus))
+            {
+                if (tripResource.IsMyRequest == true)
+                {
+                    if (tripResource.CommonStatus == "PENDING")
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                       .Where(a => a.Approval == "PENDING" && a.Status == "APPLIED");
+                    }
+                    if (tripResource.CommonStatus == "APPROVED")
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                       .Where(a => a.Approval == "APPROVED");
+                    }
+                    if (tripResource.CommonStatus == "REJECTED")
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                       .Where(a => a.Approval == "REJECTED");
+                    }
+                    if (tripResource.CommonStatus == "CANCELLED")
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                       .Where(a => a.Status == "CANCELLED");
+                    }
+                }
+                else
+                {
+                    //if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //TD
+                    //{
+                    //    collectionBeforePaging = collectionBeforePaging
+                    //                       .Where(a => a.Status.Trim() != "YET TO SUBMIT");
+
+                    //    // collectionBeforePaging = collectionBeforePaging
+                    //    //.Where(a => a.TripItinerarys.Any(a => a.BookTypeBy == "Travel Desk"));
+
+                    //    // collectionBeforePaging = collectionBeforePaging
+                    //    //.Where(a => a.TripHotelBookings.Any(a => a.BookTypeBy == "Travel Desk"));
+
+                    //    //collectionBeforePaging = collectionBeforePaging
+                    //    //.Where(a =>
+                    //    //a.TripItinerarys.Any(t => t.BookTypeBy == "Travel Desk")
+                    //    //|| a.TripHotelBookings.Any(h => h.BookTypeBy == "Travel Desk")
+                    //    // );
+                    //}
+                    //collectionBeforePaging = collectionBeforePaging
+                    //                       .Where(a => a.Status.Trim() != "YET TO SUBMIT");
+
+
+                    if (tripResource.CommonStatus == "PENDING")
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                       .Where(a => a.Approval == "PENDING" && a.Status == "APPLIED");
+                    }
+                    if (tripResource.CommonStatus == "APPROVED")
+                    {
+                        // collectionBeforePaging = collectionBeforePaging
+                        //.Where(a => a.Approval == "APPROVED" && a.Status== "APPLIED" || EF.Functions.Like(a.Status, $"%COMPLETED%")
+                        //|| EF.Functions.Like(a.Status, $"%CANCEL REQUEST%"));
+
+                        var status = new List<string> { "APPLIED", "COMPLETED" };  //, "CANCEL REQUEST"
+                        collectionBeforePaging = collectionBeforePaging
+                      .Where(a => status.Contains(a.Status) && a.Approval == "APPROVED");
+                    }
+                    if (tripResource.CommonStatus == "REJECTED")
+                    {
+                        var status = new List<string> { "APPLIED", "COMPLETED" };  //, "CANCEL REQUEST" 
+                                                                                   // collectionBeforePaging = collectionBeforePaging
+                                                                                   //.Where(a => a.Approval == "REJECTED" && a.Status == "APPLIED"
+                                                                                   //&& EF.Functions.Like(a.Status, $"%COMPLETED%")
+                                                                                   //&& EF.Functions.Like(a.Status, $"%CANCEL REQUEST%"));
+                                                                                   //&& a.Status == "COMPLETED" && a.Status == "CANCEL REQUEST");
+
+                        collectionBeforePaging = collectionBeforePaging
+                        .Where(a => status.Contains(a.Status) && a.Approval == "REJECTED");
+                    }
+                    if (tripResource.CommonStatus == "CANCELLED")
+                    {
+                        collectionBeforePaging = collectionBeforePaging
+                       .Where(a => a.Status == "CANCELLED");
+                    }
+                }
+
+            }
+
             if (!string.IsNullOrEmpty(tripResource.SearchQuery))
             {
                 var searchQueryForWhereClause = tripResource.SearchQuery
@@ -277,16 +382,27 @@ namespace BTTEM.Repository
             if (tripResource.IsMyRequest == false)
             {
 
-                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E"))
+                if (Role.Id == new Guid("F9B4CCD2-6E06-443C-B964-23BF935F859E")) //RM
                 {
                     collectionBeforePaging = collectionBeforePaging
-                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT" && a.Status.Trim() != "CANCELLED");
+                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT"); //&& a.Status.Trim() != "CANCELLED"
+                }
+                if (Role.Id == new Guid("F72616BE-260B-41BB-A4EE-89146622179A")) //TD
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                           .Where(a => a.Status.Trim() != "YET TO SUBMIT"); //&& a.Status.Trim() != "CANCELLED"
+                }
+                if (Role.Id == new Guid("241772CB-C907-4961-88CB-A0BF8004BBB2")) //Account
+                {
+                    collectionBeforePaging = collectionBeforePaging
+                                           .Where(a => a.Status != "YET TO SUBMIT" && a.CreatedBy != LoginUserId);
+                   
                 }
             }
-            if(tripResource.IsUpcoming == true)
+            if (tripResource.IsUpcoming == true)
             {
                 collectionBeforePaging = collectionBeforePaging
-                  .Where(a => a.TripStarts >DateTime.Now );
+                  .Where(a => a.TripStarts > DateTime.Now);
             }
 
 

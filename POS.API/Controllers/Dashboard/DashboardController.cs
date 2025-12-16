@@ -362,6 +362,37 @@ namespace POS.API.Controllers.Dashboard
             }
             return Ok(allFinancialYearDataResponse);
         }
-        
+
+
+        /// <summary>
+        /// Get Team List Data
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetTeamListData")]
+        // [Produces("application/json", "application/xml", Type = typeof(int))]
+        public async Task<IActionResult> GetTeamListData(Guid Id)
+        {
+
+            GetTeamListDataCommand getTeamListDataCommand = new GetTeamListDataCommand();
+            getTeamListDataCommand.ID = Id;
+            TeamListDataResponse teamListDataResponse = new TeamListDataResponse();
+
+            //GetFinancialYearDataCommandHandler
+            var result = await _mediator.Send(getTeamListDataCommand);
+            if (result != null)
+            {
+                teamListDataResponse.status = true;
+                teamListDataResponse.StatusCode = 200;
+                teamListDataResponse.Data = result;
+            }
+            else
+            {
+                teamListDataResponse.status = false;
+                teamListDataResponse.StatusCode = 500;
+                teamListDataResponse.Data = result;
+            }
+            return Ok(teamListDataResponse);
+        }
+
     }
 }

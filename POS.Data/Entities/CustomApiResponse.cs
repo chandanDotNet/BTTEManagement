@@ -332,11 +332,19 @@ namespace BTTEM.Data.Entities
 
         public int TotalTripRejectCount { get; set; } = 0;
         public int TotalTripCanceledCount { get; set; } = 0;
-        public int TotalExpenseCount { get; set; } = 0;
-        public int TotalExpensePendingCount { get; set; } = 0;
-        public int TotalExpenseApproveCount { get; set; } = 0;
-        public int TotalExpenseRejectCount { get; set; } = 0;
-        public int TotalExpenseRembCount { get; set; } = 0;
+        public int TotalTripCancelRequestCount { get; set; } = 0;
+        public int YettoSubmitTripCount { get; set; } = 0;
+        public int TotalExpenseCount { get; set; } 
+        public int TotalExpensePendingCount { get; set; } 
+        public int TotalExpenseApproveCount { get; set; } 
+        public int TotalExpenseRejectCount { get; set; } 
+        public int TotalExpenseRembCount { get; set; }
+        public string TotalExpense { get; set; }
+        public string TotalExpensePending { get; set; }
+        public string TotalExpenseApprove { get; set; }
+        public string TotalExpenseReject { get; set; }
+        public string TotalExpenseRemb { get; set; }
+        public string DeductedExpense { get; set; }
 
         public decimal PermanentAdvance { get; set; }
         public string Name { get; set; }
@@ -352,11 +360,19 @@ namespace BTTEM.Data.Entities
         public int TotalTripApproveCount { get; set; } = 0;
         public int TotalTripRejectCount { get; set; } = 0;
         public int TotalTripCanceledCount { get; set; } = 0;
+        public int TotalTripCancelRequestCount { get; set; } = 0;
         public int TotalExpenseCount { get; set; } = 0;
         public int TotalExpensePendingCount { get; set; } = 0;
         public int TotalExpenseApproveCount { get; set; } = 0;
         public int TotalExpenseRejectCount { get; set; } = 0;
         public int TotalExpenseRembCount { get; set; } = 0;
+
+        public string TotalExpense { get; set; }
+        public string TotalExpensePending { get; set; }
+        public string TotalExpenseApprove { get; set; }
+        public string TotalExpenseReject { get; set; }
+        public string TotalExpenseRemb { get; set; }
+        public string DeductedExpense { get; set; }
 
     }
     public class AllDashboardDataResponse
@@ -549,6 +565,9 @@ namespace BTTEM.Data.Entities
         public string AppliedOn { get; set; }
         public string AppliedBy { get; set; }
         public string TripBy { get; set; }
+        public string Approval { get; set; }
+        public string Status { get; set; }
+        public string ReportingToName { get; set; }
 
     }
 
@@ -564,6 +583,9 @@ namespace BTTEM.Data.Entities
         public string AppliedOn { get; set; }
         public string AppliedBy { get; set; }
         public string TripBy { get; set; }
+        public string Approval { get; set; }
+        public string Status { get; set; }
+        public string ReportingToName { get; set; }
 
     }
 
@@ -578,6 +600,8 @@ namespace BTTEM.Data.Entities
         public decimal ReimbursementAmount { get; set; }
         public string AppliedOn { get; set; }
         public string AppliedBy { get; set; }
+        public string ApprovedOn { get; set; }
+        public string BillCount { get; set; }
 
     }
 
@@ -592,6 +616,8 @@ namespace BTTEM.Data.Entities
         public decimal ReimbursementAmount { get; set; }
         public string AppliedOn { get; set; }
         public string AppliedBy { get; set; }
+        public string ApprovedOn { get; set; }
+        public string BillCount { get; set; }
 
     }
     public class MMTData
@@ -649,6 +675,35 @@ namespace BTTEM.Data.Entities
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string Name { get; set; }
+
+    }
+
+    public class TeamListDataResponse
+    {
+        public bool status { get; set; }
+        public int StatusCode { get; set; }
+        public string message { get; set; }
+        public AllTeamListData Data { get; set; }
+    }
+    public class AllTeamListData
+    {
+        public List<TeamListData> TeamListData { get; set; }
+
+    }
+
+    public class TeamListData
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string EmailId { get; set; }
+        public string CompanyName { get; set; }
+        public string Branch { get; set; }
+        public string Department { get; set; }
+        public string Designation { get; set; }
+        public string SapCode { get; set; }
+        public string EmpId { get; set; }
+        public string MobileNo { get; set; }
+        public string Grade { get; set; }
 
     }
     public class MMTTripResponse
