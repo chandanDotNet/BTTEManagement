@@ -94,6 +94,7 @@ namespace POS.API.Helpers.Mapping
                 mc.AddProfile(new SapProfile());
                 mc.AddProfile(new CostCenterProfile());
                 mc.AddProfile(new BusinessAreaProfile());
+                mc.AddProfile(new MMTCityProfile());
             });
             return mappingConfig.CreateMapper();
         }

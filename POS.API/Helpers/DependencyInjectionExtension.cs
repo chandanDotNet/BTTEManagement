@@ -3,6 +3,7 @@ using POS.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using BTTEM.Repository;
 using BTTEM.Repository.Expense;
+using BTTEM.Repository.MMT;
 
 namespace POS.API.Helpers
 {
@@ -133,6 +134,7 @@ namespace POS.API.Helpers
             services.AddScoped<ISapRepository, SapRepository>();
             services.AddScoped<ICostCenterRepository, CostCenterRepository>();
             services.AddScoped<IBusinessAreaRepository, BusinessAreaRepository>();
+            services.AddScoped<IMMTCityRepository, MMTCityRepository>();
         }
     }
 }

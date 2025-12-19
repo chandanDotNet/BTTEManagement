@@ -12,6 +12,7 @@ namespace BTTEM.Data
         public Guid ExpenseId { get; set; }
         public Guid? MasterExpenseId { get; set; }
         public Guid? VendorId { get; set; }
+        public string? VendorCode { get; set; }
         public string? VendorName { get; set; }
         public Guid? SubVendorId { get; set; }
         public string? SubVendorName { get; set; }        
@@ -30,6 +31,7 @@ namespace BTTEM.Data
         public string BillCreditType { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public DateTime? PostingDate { get; set; }
-        public string? CostCenter { get; set; }
+        public string CostCenter { get; set; }
+        public Guid? BusinessAreaId { get; set; }
     }
 }

@@ -16,6 +16,7 @@
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
     <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,10 +25,6 @@
     <ProjectReference Include="..\POS.Domain\BTTEM.Domain.csproj" />
     <ProjectReference Include="..\POS.Helper\BTTEM.Helper.csproj" />
     <ProjectReference Include="..\POS.Repository\BTTEM.Repository.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MMT\Handler\" />
   </ItemGroup>
 
 </Project>
