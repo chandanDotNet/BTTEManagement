@@ -91,6 +91,7 @@ namespace BTTEM.MediatR.Expense.Handlers
             {
                 entityExist.RollbackCount = entityExist.RollbackCount + 1;
                 entityExist.Status = "YET TO SUBMIT";
+                entityExist.ApprovalStage = "PENDING";
             }
 
             if (request.ApprovalStage == "REJECTED")

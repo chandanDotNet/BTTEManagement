@@ -5,6 +5,7 @@ using BTTEM.Data.Resources;
 using Microsoft.EntityFrameworkCore;
 using POS.Common.GenericRepository;
 using POS.Common.UnitOfWork;
+using POS.Data.Resources;
 using POS.Domain;
 using POS.Repository;
 using System;
@@ -49,7 +50,8 @@ namespace BTTEM.Repository
             if (!string.IsNullOrEmpty(vendorResource.VendorCode))
             {
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => EF.Functions.Like(a.VendorCode, $"%{vendorResource.VendorCode}%"));
+                    .Where(a => EF.Functions.Like(a.VendorCode, $"%{vendorResource.VendorCode}%")
+                    || EF.Functions.Like(a.VendorName, $"%{vendorResource.VendorCode}%"));
             }
 
 
