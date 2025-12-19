@@ -145,14 +145,26 @@ namespace BTTEM.API.Controllers.Trip
                     ActionDate = DateTime.Now,
                 };
                 var response = await _mediator.Send(addTripTrackingCommand);
+
+                tripDetailsData.status = true;
+                tripDetailsData.StatusCode = 200;
+                tripDetailsData.message = "Trip added successfully";
+            }
+            else
+            {
+                //An unexpected fault happened. Try again later.
+                tripDetailsData.status = false;
+                tripDetailsData.StatusCode = 500;
+                tripDetailsData.message = "Something went wrong!! please try again";
+
             }
 
             List<TripDto> tripDtoList = new List<TripDto>();
             tripDtoList.Add(result.Data);
             tripDetailsData.Data = tripDtoList;
-            tripDetailsData.status = true;
-            tripDetailsData.StatusCode = 200;
-            tripDetailsData.message = "Trip added successfully";
+            //tripDetailsData.status = true;
+            //tripDetailsData.StatusCode = 200;
+            //tripDetailsData.message = "Trip added successfully"; 
             return Ok(tripDetailsData);
 
             //return ReturnFormattedResponse(result);
